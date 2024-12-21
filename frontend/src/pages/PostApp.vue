@@ -28,7 +28,7 @@
           </div>
 
           <div class="form-control">
-            <label class="form-label">デモURL</label>
+            <label class="form-label">アプリのURL</label>
             <input
               v-model="formData.demoUrl"
               type="url"
@@ -48,15 +48,15 @@
           </div>
 
           <div class="form-control">
-            <label class="form-label">ジャンル</label>
+            <label class="form-label">アプリタイプ</label>
             <select
               v-model="formData.genre"
               class="form-input"
               required
             >
-              <option v-for="(label, genre) in AppGenreLabels" 
-                      :key="genre" 
-                      :value="genre"
+              <option v-for="(label, type) in AppTypeLabels" 
+                      :key="type" 
+                      :value="type"
               >
                 {{ label }}
               </option>
@@ -119,11 +119,76 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { AppGenre, AppGenreLabels } from '@/types/app'
+import { useAuthStore } from '@/stores/auth'
+import { AppType, AppTypeLabels } from '@/types/app'
 
 const router = useRouter()
+const authStore = useAuthStore()
+
+// 下書きのキー名を定数化
+const DRAFT_KEY = 'appPostDraft'
+
+// 自動保存の間隔（ミリ秒）
+const AUTO_SAVE_INTERVAL = 900000  // 15分 (1000ミリ秒 × 60秒 × 15分)
+
+// 自動保存のタイマーID
+let autoSaveTimer: number
+
+// フォームデータを自動保存
+const autoSaveForm = () => {
+  const draftData = {
+    ...formData.value,
+    lastSaved: new Date().toISOString(),
+    screenshots: [] // Fileオブジェクトは保存できないので除外
+  }
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData))
+  console.log('下書きを保存しました:', new Date().toLocaleTimeString())
+}
+
+// コンポーネントのマウント時
+onMounted(() => {
+  // ログインチェック
+  if (!authStore.isAuthenticated) {
+    router.push({
+      name: 'Login',
+      query: { redirect: '/post' }
+    })
+    return
+  }
+
+  // 下書きの確認と復元
+  const savedDraft = localStorage.getItem(DRAFT_KEY)
+  if (savedDraft) {
+    const draft = JSON.parse(savedDraft)
+    const lastSaved = new Date(draft.lastSaved)
+    const timeDiff = Math.round((Date.now() - lastSaved.getTime()) / (1000 * 60)) // 分単位
+
+    if (confirm(`${timeDiff}分前の下書きがあります。復元しますか？`)) {
+      // スクリーンショット以外のデータを復元
+      formData.value = {
+        ...draft,
+        screenshots: [] // スクリーンショットは新規に追加してもらう
+      }
+    } else {
+      // 下書きを削除
+      localStorage.removeItem(DRAFT_KEY)
+    }
+  }
+
+  // 自動保存を開始
+  autoSaveTimer = window.setInterval(autoSaveForm, AUTO_SAVE_INTERVAL)
+})
+
+// コンポーネントのアンマウント時
+onUnmounted(() => {
+  // 自動保存を停止
+  if (autoSaveTimer) {
+    clearInterval(autoSaveTimer)
+  }
+})
+
 const isSubmitting = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
 
@@ -135,7 +200,7 @@ const formData = ref({
   demoUrl: '',
   sourceUrl: '',
   screenshots: [] as File[],
-  genre: AppGenre.UNSPECIFIED
+  genre: AppType.UNSPECIFIED
 })
 
 const previews = ref<string[]>([])
@@ -226,8 +291,11 @@ const handleSubmit = async () => {
       throw new Error('アプリの投稿に失敗しました')
     }
 
+    // 投稿成功時に下書きを削除
+    localStorage.removeItem(DRAFT_KEY)
     alert('投稿が完了しました！')
     router.push('/')
+
   } catch (error) {
     console.error('投稿エラー:', error)
     alert(error instanceof Error ? error.message : 'アプリの投稿に失敗しました')

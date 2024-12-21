@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/pages/Home.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -12,7 +13,8 @@ const router = createRouter({
     {
       path: '/post-app',
       name: 'PostApp',
-      component: () => import('@/pages/PostApp.vue')
+      component: () => import('@/pages/PostApp.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -30,6 +32,19 @@ const router = createRouter({
       component: () => import('../pages/VerifyEmail.vue')
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next({ 
+      name: 'Login', 
+      query: { redirect: to.fullPath }
+    })
+  } else {
+    next()
+  }
 })
 
 export default router 

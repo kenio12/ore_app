@@ -1,61 +1,53 @@
 <template>
   <div class="login-container">
-    <div class="form-box">
+    <div class="login-box">
       <h1 class="title">ログイン</h1>
       
-      <form @submit.prevent="handleSubmit" class="login-form">
-        <div class="form-control">
-          <label class="form-label">メールアドレス</label>
+      <form @submit.prevent="handleSubmit">
+        <div class="form-group">
+          <label for="email">メールアドレス</label>
           <input
+            id="email"
             v-model="formData.email"
             type="email"
-            class="form-input"
             required
-            placeholder="example@email.com"
+            class="form-input"
+            placeholder="example@example.com"
           />
         </div>
-
-        <div class="form-control">
-          <label class="form-label">パスワード</label>
+        
+        <div class="form-group">
+          <label for="password">パスワード</label>
           <input
+            id="password"
             v-model="formData.password"
             type="password"
-            class="form-input"
             required
+            class="form-input"
             placeholder="パスワードを入力"
           />
         </div>
-
-        <div class="button-group">
-          <button
-            type="submit"
-            class="btn btn-primary"
-            :disabled="isLoading"
-          >
-            {{ isLoading ? 'ログイン中...' : 'ログイン' }}
-          </button>
-        </div>
-
-        <div class="signup-link">
-          アカウントをお持ちでない方は
-          <router-link to="/signup" class="link">
-            新規登録
-          </router-link>
-          へ
-        </div>
+        
+        <button type="submit" class="btn btn-primary">
+          ログイン
+        </button>
       </form>
+      
+      <div class="links">
+        <router-link to="/signup">アカウントをお持ちでない方</router-link>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { useRouter } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
-const isLoading = ref(false)
 
 const formData = ref({
   email: '',
@@ -64,37 +56,21 @@ const formData = ref({
 
 const handleSubmit = async () => {
   try {
-    isLoading.value = true
-    
-    // FormDataオブジェクトを作成
-    const formDataObj = new FormData()
-    formDataObj.append('username', formData.value.email)  // emailをusernameとして送信
-    formDataObj.append('password', formData.value.password)
-
-    // APIリクエストを直接送信
-    const response = await fetch('http://localhost:8000/api/auth/login', {
-      method: 'POST',
-      body: formDataObj,
-    })
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      throw new Error(data.detail || 'ログインに失敗しました')
+    if (!formData.value.email || !formData.value.password) {
+      alert('メールアドレスとパスワードを入力してください')
+      return
     }
 
-    // 成功時の処理
-    authStore.updateUser(data.user)
-    authStore.updateAuthenticated(true)
-    localStorage.setItem('token', data.access_token)
+    console.log('送信するデータ:', formData.value)
     
-    console.log('ログイン成功')
-    router.push('/')
+    await authStore.login(formData.value)
+    
+    const redirectPath = route.query.redirect as string
+    router.push(redirectPath || '/')
+    
   } catch (error) {
     console.error('ログインエラー:', error)
     alert(error instanceof Error ? error.message : 'ログインに失敗しました')
-  } finally {
-    isLoading.value = false
   }
 }
 </script>
@@ -102,60 +78,82 @@ const handleSubmit = async () => {
 <style scoped>
 .login-container {
   min-height: 100vh;
-  padding: 2.5rem 1rem;
-  background-color: var(--color-background);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
+  background-color: #F7FAFC;
 }
 
-.form-box {
+.login-box {
   background: white;
   padding: 2rem;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 32rem;
+  max-width: 400px;
 }
 
 .title {
+  text-align: center;
+  margin-bottom: 2rem;
   font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  text-align: center;
+  color: #2D3748;
 }
 
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.form-group {
+  margin-bottom: 1rem;
 }
 
-.button-group {
-  margin-top: 1rem;
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #4A5568;
 }
 
-.button-group .btn {
+.form-input {
   width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #E2E8F0;
+  border-radius: 0.375rem;
+  font-size: 1rem;
 }
 
-.btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
+.form-input:focus {
+  outline: none;
+  border-color: #4299E1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
 }
 
-.signup-link {
+.btn {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.btn-primary {
+  background-color: #4299E1;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #3182CE;
+}
+
+.links {
   margin-top: 1rem;
   text-align: center;
-  color: var(--color-gray);
 }
 
-.link {
-  color: var(--color-primary);
+.links a {
+  color: #4299E1;
   text-decoration: none;
 }
 
-.link:hover {
+.links a:hover {
   text-decoration: underline;
 }
 </style> 

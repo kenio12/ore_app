@@ -16,18 +16,18 @@
             <div 
               class="app-genre"
               :style="{
-                backgroundColor: AppGenreColors[app.genre || AppGenre.UNSPECIFIED].bg,
-                color: AppGenreColors[app.genre || AppGenre.UNSPECIFIED].text
+                backgroundColor: AppTypeColors[app.genre || AppType.UNSPECIFIED].bg,
+                color: AppTypeColors[app.genre || AppType.UNSPECIFIED].text
               }"
             >
-              <span class="metadata-label hide-on-mobile">ジャンル:</span>
-              {{ AppGenreLabels[app.genre || AppGenre.UNSPECIFIED] }}
+              <span class="metadata-label hide-on-mobile">タイプ:</span>
+              {{ AppTypeLabels[app.genre || AppType.UNSPECIFIED] }}
             </div>
           </div>
 
           <div 
             class="card-accent"
-            :style="{ backgroundColor: AppGenreColors[app.genre || AppGenre.UNSPECIFIED].border }"
+            :style="{ backgroundColor: AppTypeColors[app.genre || AppType.UNSPECIFIED].border }"
           ></div>
 
           <div v-if="app.screenshots?.length" class="screenshot-container">
@@ -61,7 +61,7 @@
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import { AppGenre, AppGenreLabels, AppGenreColors } from '@/types/app'
+import { AppType, AppTypeLabels, AppTypeColors } from '@/types/app'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -70,7 +70,7 @@ interface App {
   _id: string
   title: string
   description: string
-  genre?: AppGenre
+  genre?: AppType
   demo_url?: string
   github_url?: string
   screenshots: string[]

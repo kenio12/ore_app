@@ -72,6 +72,7 @@ async def get_apps(limit: int = 100, db = Depends(get_db)):
                 "created_at": app.get("created_at"),
                 "prefix_icon": app.get("prefix_icon", "🗡️"),
                 "suffix_icon": app.get("suffix_icon", "🏴‍☠️"),
+                "genre": app.get("genre", "UNSPECIFIED"),  # ジャンル情報を追加
             }
             
             # ユーザー情報を追加

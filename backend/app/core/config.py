@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     # JWTの設定
     SECRET_KEY: str = os.getenv("JWT_SECRET")
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 240  # 4時間
     
     # データベース設定
     MONGODB_URL: str = os.getenv("MONGODB_URI")

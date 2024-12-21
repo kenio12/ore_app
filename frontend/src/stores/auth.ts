@@ -1,51 +1,75 @@
 import { defineStore } from 'pinia'
-import api from '@/utils/api'
+import { ref, computed } from 'vue'
 
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    user: null,
-    isAuthenticated: false
-  }),
+export const useAuthStore = defineStore('auth', () => {
+  const token = ref<string | null>(localStorage.getItem('token'))
+  const user = ref<any | null>(null)
 
-  actions: {
-    updateUser(user: any) {
-      this.user = user
-    },
-    updateAuthenticated(status: boolean) {
-      this.isAuthenticated = status
-    },
-    async logout() {
-      try {
-        await api.post('/api/auth/logout')
-        
-        // ローカルのステートをクリア
-        this.user = null
-        this.isAuthenticated = false
-        
-        // ローカルストレージもクリア（もし使ってたら）
-        localStorage.removeItem('user')
-        
-      } catch (error) {
-        console.error('Logout failed:', error)
-        throw error
+  const isAuthenticated = computed(() => !!token.value)
+
+  const login = async (credentials: { email: string; password: string }) => {
+    try {
+      const formData = new FormData()
+      formData.append('username', credentials.email)
+      formData.append('password', credentials.password)
+
+      const response = await fetch('http://localhost:8000/api/auth/login', {
+        method: 'POST',
+        body: formData
+      })
+
+      if (!response.ok) {
+        throw new Error('ログインに失敗しました')
       }
-    },
-    async deleteAccount() {
-      try {
-        await api.delete('/api/auth/delete-account')
-        
-        // ローカルのステートをクリア
-        this.user = null
-        this.isAuthenticated = false
-        
-        // ローカルストレージもクリア
-        localStorage.removeItem('user')
-        localStorage.removeItem('token')  // トークンも削除
-        
-      } catch (error) {
-        console.error('Account deletion failed:', error)
-        throw error
-      }
+
+      const data = await response.json()
+      token.value = data.access_token
+      localStorage.setItem('token', data.access_token)
+      
+      // await fetchUser()  // 一時的にコメントアウト
+
+      return data
+    } catch (error) {
+      console.error('Login error:', error)
+      throw error
     }
+  }
+
+  const logout = async () => {
+    token.value = null
+    user.value = null
+    localStorage.removeItem('token')
+  }
+
+  const fetchUser = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/api/users/me', {
+        headers: {
+          'Authorization': `Bearer ${token.value}`
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('ユーザー情報の取得に失敗しました')
+      }
+
+      user.value = await response.json()
+    } catch (error) {
+      console.error('Error fetching user:', error)
+      throw error
+    }
+  }
+
+  if (token.value) {
+    fetchUser()
+  }
+
+  return {
+    token,
+    user,
+    isAuthenticated,
+    login,
+    logout,
+    fetchUser
   }
 }) 

@@ -11,7 +11,7 @@
       </router-link>
 
       <div class="nav-buttons">
-        <router-link to="/post-app">
+        <router-link v-if="authStore.isAuthenticated" to="/post-app">
           <button class="btn btn-primary">
             <span class="btn-text">アプリを投稿</span>
             <span class="mobile-text">投</span>
