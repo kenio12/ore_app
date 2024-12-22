@@ -33,9 +33,9 @@
       </div>
 
       <div v-if="authStore.isAuthenticated" class="account-actions">
-        <button @click="handleDeleteAccount" class="delete-account-btn">
+        <a @click="handleDeleteAccount" class="delete-account-link">
           退会する
-        </button>
+        </a>
       </div>
     </div>
   </div>
@@ -87,7 +87,7 @@ onMounted(async () => {
     })
     console.log('取得したアプリ:', apps.value)
   } catch (error) {
-    console.error('アプリの取得に失敗しました:', error)
+    console.error('アプリの取���に失敗しました:', error)
   }
 })
 
@@ -146,12 +146,18 @@ const formatDate = (dateString: string) => {
 }
 
 .screenshot-container {
-  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
   background: #F7FAFC;
+  padding: 1rem;
 }
 
 .screenshot {
   max-width: 100%;
+  display: block;
+  margin: 0 auto;
 }
 
 .header {
@@ -193,5 +199,21 @@ const formatDate = (dateString: string) => {
   .screenshot-mobile {
     width: 60px;
   }
+}
+
+.account-actions {
+  text-align: right;
+  margin: 2rem 0;
+}
+
+.delete-account-link {
+  color: #666;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.delete-account-link:hover {
+  color: #ff4444;
 }
 </style> 
