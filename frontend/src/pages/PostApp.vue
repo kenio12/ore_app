@@ -64,7 +64,10 @@
           </div>
 
           <div class="form-control">
-            <label class="form-label">スクリーンショット</label>
+            <label class="form-label">
+              スクリーンショット（1-3枚）<span class="required">*</span>
+              <span class="hint">※ ホーム画面には最初の1-2枚が表示されます</span>
+            </label>
             <div
               class="dropzone"
               @dragover.prevent
@@ -147,7 +150,7 @@ const autoSaveForm = () => {
   console.log('下書きを保存しました:', new Date().toLocaleTimeString())
 }
 
-// コンポーネントのマウント時
+// コンポ��ネントのマウント時
 onMounted(() => {
   // ログインチェック
   if (!authStore.isAuthenticated) {
@@ -222,6 +225,12 @@ const handleDrop = (event: DragEvent) => {
 }
 
 const handleFiles = (files: File[]) => {
+  // 既存の画像と新しい画像の合計が3枚を超える場合はアラート
+  if (formData.value.screenshots.length + files.length > 3) {
+    alert('スクリーンショットは最大3枚までアップロードできます')
+    return
+  }
+  
   formData.value.screenshots = [...formData.value.screenshots, ...files]
   
   // プレビューURLの生成
@@ -242,6 +251,16 @@ const removeImage = (index: number) => {
 
 const handleSubmit = async () => {
   try {
+    // バリデーションチェック
+    if (formData.value.screenshots.length === 0) {
+      alert('スクリーンショットを1-3枚アップロードしてください')
+      return
+    }
+    if (formData.value.screenshots.length > 3) {
+      alert('スクリーンショットは最大3枚までです')
+      return
+    }
+
     isSubmitting.value = true
 
     // まず画像をアップロード
@@ -402,5 +421,11 @@ const handleSubmit = async () => {
 
 .button-group .btn {
   flex: 1;
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: #666;
+  margin-left: 0.5rem;
 }
 </style> 

@@ -7,43 +7,27 @@
       </div>
 
       <div class="apps-grid">
-        <div v-for="app in apps" :key="app._id" class="app-card">
-          <div class="app-metadata">
-            <h3 class="app-title">
-              <span class="metadata-label hide-on-mobile">アプリ名：</span>
-              {{ app.title }}
-            </h3>
-            <div 
-              class="app-genre"
-              :style="{
-                backgroundColor: AppTypeColors[app.genre || AppType.UNSPECIFIED].bg,
-                color: AppTypeColors[app.genre || AppType.UNSPECIFIED].text
-              }"
-            >
-              <span class="metadata-label hide-on-mobile">タイプ:</span>
+        <div v-for="app in apps" :key="app._id" class="app-card" :style="{ borderColor: AppTypeColors[app.genre || AppType.UNSPECIFIED] }">
+          <h3 class="app-title">
+            <span class="metadata-label">アプリ名：</span>
+            {{ app.title }}
+          </h3>
+
+          <div class="app-info">
+            <div class="app-genre">
+              <span class="metadata-label">タイプ:</span>
               {{ AppTypeLabels[app.genre || AppType.UNSPECIFIED] }}
             </div>
+            <div class="app-creator">作成者: {{ app.user?.display_name || app.user?.username || '不明なユーザー' }}</div>
           </div>
 
-          <div 
-            class="card-accent"
-            :style="{ backgroundColor: AppTypeColors[app.genre || AppType.UNSPECIFIED].border }"
-          ></div>
-
-          <div v-if="app.screenshots?.length" class="screenshot-container">
-            <img
-              :src="app.screenshots[0]"
-              :alt="`${app.title}のスクリーンショット`"
-              class="screenshot"
-            />
+          <div class="screenshot-container">
+            <img class="screenshot" :src="app.screenshots[0]" :alt="app.title" />
           </div>
 
-          <div class="app-footer">
-            <p class="app-creator">作成者: {{ app.user?.display_name || app.user?.username || '不明なユーザー' }}</p>
-            <div class="app-date">
-              <span class="metadata-label hide-on-mobile">投稿日:</span>
-              {{ formatDate(app.created_at) }}
-            </div>
+          <div class="app-date">
+            <span class="metadata-label">投稿日:</span>
+            {{ formatDate(app.created_at) }}
           </div>
         </div>
       </div>
@@ -130,193 +114,84 @@ const formatDate = (dateString: string) => {
 </script>
 
 <style scoped>
+/* リセット用の基本スタイル */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .home-container {
   background-color: #EBF8FF;
   min-height: 100vh;
-  padding: 1.5rem 0;
+  width: 100%;
 }
 
 .container {
   max-width: 1280px;
   margin: 0 auto;
+  width: 100%;
   padding: 0 1rem;
+}
+
+.app-card {
+  width: 100%;
+  margin: 0 auto;
+  background: white;
+  border: 3px solid;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.screenshot-container {
+  padding: 1rem;
+  background: #F7FAFC;
+}
+
+.screenshot {
+  max-width: 100%;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 1rem;
-  padding: 0.5rem 0;
+  margin: 2rem 0;
 }
 
 .title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #2D3748;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 3rem;
 }
 
 .subtitle {
-  font-size: 1.25rem;
-  color: #4A5568;
-}
-
-.apps-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 0.5rem 1rem;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.app-card {
-  padding: 1rem;
-  border-radius: 0.75rem;
-  background: white;
-  transition: all 0.3s ease;
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  position: relative;
-  overflow: hidden;
-}
-
-.app-card::before {
-  content: none;
-}
-
-.app-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
-  border-color: #CBD5E0;
-}
-
-.screenshot-container {
+  font-size: 1.5rem;
   margin-top: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  background: #F7FAFC;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.screenshot {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  max-width: 100%;
-  max-height: 400px;
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-.screenshot:hover {
-  transform: scale(1.02);
-}
-
-.app-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1.5rem;
-  margin-top: 0.5rem;
 }
 
 .app-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #2D3748;
-  margin: 0;
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
-.app-creator {
-  font-size: 0.875rem;
-  color: #718096;
-  margin: 0;
-}
-
-.app-date {
-  font-size: 0.8rem;
-  color: #718096;
-  background-color: #F7FAFC;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.account-actions {
-  margin-top: 4rem;
-  padding: 2rem 0;
-  text-align: right;
-  border-top: 1px solid #E2E8F0;
-}
-
-.delete-account-btn {
-  background: none;
-  border: none;
-  color: #718096;
-  font-size: 0.8rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  opacity: 0.85;
-}
-
-.delete-account-btn:hover {
-  color: #E53E3E;
-  text-decoration: underline;
-  opacity: 1;
-}
-
-@media (max-width: 640px) {
-  .account-actions {
-    margin-top: 3rem;
-    padding: 1.5rem 0.5rem;
-  }
-  
-  .delete-account-btn {
-    font-size: 0.75rem;
-  }
-
-  .hide-on-mobile {
-    display: none;
-  }
-
-  .app-metadata, .app-footer {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .app-title {
-    font-size: 1rem;
-  }
-}
-
-.app-metadata {
+.app-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1.5rem;
-  position: relative;
+  margin-bottom: 1rem;
 }
 
-.metadata-label {
-  font-weight: 600;
-  margin-right: 0.25rem;
-  color: #718096;
+.app-creator {
+  margin-left: auto;
 }
 
-.card-accent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  border-radius: 4px 0 0 4px;
+.app-date {
+  text-align: right;
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .screenshot-mobile {
+    width: 60px;
+  }
 }
 </style> 
