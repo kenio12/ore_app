@@ -4,8 +4,15 @@ import { ref, computed } from 'vue'
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(localStorage.getItem('token'))
   const user = ref<any | null>(null)
+  const isAuthenticated = ref(false)
 
-  const isAuthenticated = computed(() => !!token.value)
+  const updateUser = (userData: any) => {
+    user.value = userData
+  }
+
+  const updateAuthenticated = (value: boolean) => {
+    isAuthenticated.value = value
+  }
 
   const login = async (credentials: { email: string; password: string }) => {
     try {
@@ -25,8 +32,9 @@ export const useAuthStore = defineStore('auth', () => {
       const data = await response.json()
       token.value = data.access_token
       localStorage.setItem('token', data.access_token)
+      updateAuthenticated(true)
       
-      // await fetchUser()  // 一時的にコメントアウト
+      await fetchUser()
 
       return data
     } catch (error) {
@@ -38,6 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = async () => {
     token.value = null
     user.value = null
+    updateAuthenticated(false)
     localStorage.removeItem('token')
   }
 
@@ -53,7 +62,9 @@ export const useAuthStore = defineStore('auth', () => {
         throw new Error('ユーザー情報の取得に失敗しました')
       }
 
-      user.value = await response.json()
+      const userData = await response.json()
+      updateUser(userData)
+      updateAuthenticated(true)
     } catch (error) {
       console.error('Error fetching user:', error)
       throw error
@@ -70,6 +81,8 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     login,
     logout,
-    fetchUser
+    fetchUser,
+    updateUser,
+    updateAuthenticated
   }
 }) 

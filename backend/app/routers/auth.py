@@ -8,12 +8,13 @@ from app.utils.auth import verify_password, get_password_hash, create_access_tok
 from app.utils.email import send_verification_email
 from jose import jwt
 from jose import JWTError
-from app.config import settings
+from app.core.config import settings
 from datetime import datetime
 from fastapi.responses import JSONResponse
 from ..utils.auth import get_current_user
 from typing import Optional
 from ..redis_client import redis_client
+import uuid
 
 router = APIRouter(tags=["auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")

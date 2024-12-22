@@ -8,11 +8,13 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     
     # JWTの設定
-    SECRET_KEY: str = os.getenv("JWT_SECRET")
+    JWT_SECRET: str = os.getenv("JWT_SECRET")
+    SECRET_KEY: str = os.getenv("SECRET_KEY")
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 240  # 4時間
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 240
     
     # データベース設定
+    MONGODB_URI: str = os.getenv("MONGODB_URI")
     MONGODB_URL: str = os.getenv("MONGODB_URI")
     
     # Redis設定
@@ -22,7 +24,7 @@ class Settings(BaseSettings):
     MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
     MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
     MAIL_FROM: str = os.getenv("MAIL_FROM")
-    MAIL_PORT: int = int(os.getenv("MAIL_PORT", 587))
+    MAIL_PORT: int = int(os.getenv("MAIL_PORT", "587"))
     MAIL_SERVER: str = os.getenv("MAIL_SERVER")
     
     # Cloudinary設定
@@ -32,6 +34,8 @@ class Settings(BaseSettings):
 
     class Config:
         case_sensitive = True
+        env_file = ".env"
+        extra = "allow"
 
 # グローバル設定オブジェクトを作成
 settings = Settings()
@@ -45,5 +49,6 @@ MAIL_CONFIG = ConnectionConfig(
     MAIL_SERVER=settings.MAIL_SERVER,
     MAIL_STARTTLS=True,
     MAIL_SSL_TLS=False,
-    USE_CREDENTIALS=True
+    USE_CREDENTIALS=True,
+    VALIDATE_CERTS=True
 ) 

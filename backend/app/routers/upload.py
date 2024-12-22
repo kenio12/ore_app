@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from typing import List
 import cloudinary
 import cloudinary.uploader
-from ..config import settings
+from ..core.config import settings
 from datetime import datetime
 
 router = APIRouter()

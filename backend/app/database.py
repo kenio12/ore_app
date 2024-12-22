@@ -1,6 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.server_api import ServerApi
-from app.config import settings
+from app.core.config import settings
 
 # MongoDBクライアントの設定
 async def get_mongodb_client():

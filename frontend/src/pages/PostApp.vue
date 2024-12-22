@@ -50,7 +50,7 @@
           <div class="form-control">
             <label class="form-label">アプリタイプ</label>
             <select
-              v-model="formData.genre"
+              v-model="formData.app_type"
               class="form-input"
               required
             >
@@ -203,7 +203,7 @@ const formData = ref({
   demoUrl: '',
   sourceUrl: '',
   screenshots: [] as File[],
-  genre: AppType.UNSPECIFIED
+  app_type: AppType.UNSPECIFIED
 })
 
 const previews = ref<string[]>([])
@@ -292,7 +292,7 @@ const handleSubmit = async () => {
       screenshots: uploadedUrls,
       prefix_icon: formData.value.prefix_icon,
       suffix_icon: formData.value.suffix_icon,
-      genre: formData.value.genre
+      app_type: formData.value.app_type
     }
 
     console.log('送信するデータ:', postData)
