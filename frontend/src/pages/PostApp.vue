@@ -150,7 +150,7 @@ const autoSaveForm = () => {
   console.log('下書きを保存しました:', new Date().toLocaleTimeString())
 }
 
-// コンポ��ネントのマウント時
+// コンポーネントのマウント時
 onMounted(() => {
   // ログインチェック
   if (!authStore.isAuthenticated) {
@@ -307,10 +307,21 @@ const handleSubmit = async () => {
     })
 
     if (!response.ok) {
-      throw new Error('アプリの投稿に失敗しました')
+      // エラーレスポンスをJSONとしてパース
+      const errorData = await response.json()
+      
+      // バリデーションエラーの場合（422）
+      if (response.status === 422) {
+        const errorMessage = errorData.detail?.[0]?.msg || '入力内容を確認してください'
+        alert(`エラー: ${errorMessage}`)
+        return
+      }
+      
+      // その他のエラー
+      throw new Error(errorData.detail || 'アプリの投稿に失敗しました')
     }
 
-    // 投稿成功時に下書きを削除
+    // 投稿成功時
     localStorage.removeItem(DRAFT_KEY)
     alert('投稿が完了しました！')
     router.push('/')

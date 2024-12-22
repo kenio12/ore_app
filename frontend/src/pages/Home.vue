@@ -7,16 +7,16 @@
       </div>
 
       <div class="apps-grid">
-        <div v-for="app in apps" :key="app._id" class="app-card" :style="{ borderColor: AppTypeColors[app.genre || AppType.UNSPECIFIED] }">
+        <div v-for="app in apps" :key="app._id" class="app-card" :style="{ borderColor: AppTypeColors[app.app_type || AppType.UNSPECIFIED] }">
           <h3 class="app-title">
             <span class="metadata-label">アプリ名：</span>
             {{ app.title }}
           </h3>
 
           <div class="app-info">
-            <div class="app-genre">
+            <div class="app-type">
               <span class="metadata-label">タイプ:</span>
-              {{ AppTypeLabels[app.genre || AppType.UNSPECIFIED] }}
+              {{ AppTypeLabels[app.app_type || AppType.UNSPECIFIED] }}
             </div>
             <div class="app-creator">作成者: {{ app.user?.display_name || app.user?.username || '不明なユーザー' }}</div>
           </div>
@@ -45,26 +45,10 @@
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
-import { AppType, AppTypeLabels, AppTypeColors } from '@/types/app'
+import { App, AppType, AppTypeLabels, AppTypeColors } from '@/types/app'
 
 const authStore = useAuthStore()
 const router = useRouter()
-
-interface App {
-  _id: string
-  title: string
-  description: string
-  genre?: AppType
-  demo_url?: string
-  github_url?: string
-  screenshots: string[]
-  created_at: string
-  user?: {
-    _id: string
-    username: string
-    display_name?: string
-  }
-}
 
 const apps = ref<App[]>([])
 
@@ -87,7 +71,7 @@ onMounted(async () => {
     })
     console.log('取得したアプリ:', apps.value)
   } catch (error) {
-    console.error('アプリの取���に失敗しました:', error)
+    console.error('アプリの取得に失敗しました:', error)
   }
 })
 

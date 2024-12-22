@@ -16,7 +16,10 @@ from typing import Optional
 from ..redis_client import redis_client
 import uuid
 
-router = APIRouter(tags=["auth"])
+router = APIRouter(
+    prefix="/auth",
+    tags=["auth"]
+)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
 async def create_session(user_id: str) -> str:

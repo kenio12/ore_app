@@ -4,9 +4,9 @@ from app.database import get_db
 from app.models.user import User
 from app.schemas.user import UserResponse
 from typing import List
+from app.utils.auth import get_current_user
 
 router = APIRouter(
-    prefix="/api/users",
     tags=["users"]
 )
 
@@ -22,4 +22,8 @@ async def get_user(user_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="User not found"
-    ) 
+    )
+
+@router.get("/api/users/me")
+async def get_current_user_info(current_user: dict = Depends(get_current_user)):
+    return current_user

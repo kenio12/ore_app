@@ -17,16 +17,16 @@ app = FastAPI(
 # CORSの設定を修正
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # フロントエンドのURL
+    allow_origins=["http://localhost:5173"],  # Viteの開発サーバーのURL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ルーターの追加
-app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
-app.include_router(users.router, prefix="/api/users")
-app.include_router(apps.router, prefix="/api/apps", tags=["apps"])
+# ルーターの設定
+app.include_router(auth.router, prefix="/api")
+app.include_router(users.router)
+app.include_router(apps.router, prefix="/api/apps")
 
 # 静的ファイル用のディレクトリをマウント
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")

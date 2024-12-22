@@ -26,4 +26,21 @@ export const AppTypeColors: Record<AppType, string> = {
   [AppType.CLI_TOOL]: "orange",
   [AppType.GAME]: "red",
   [AppType.OTHER]: "gray"
+}
+
+export interface App {
+  _id: string
+  title: string
+  description: string
+  app_type: AppType
+  category?: string
+  demo_url?: string
+  github_url?: string
+  screenshots: string[]
+  created_at: string
+  user?: {
+    _id: string
+    username: string
+    display_name?: string
+  }
 } 

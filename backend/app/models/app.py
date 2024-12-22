@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from typing import Optional, List
 
@@ -7,10 +7,18 @@ class AppCreate(BaseModel):
     description: str
     github_url: str | None = None
     demo_url: str | None = None
-    genre: str
+    app_type: str
     prefix_icon: str | None = None
     suffix_icon: str | None = None
     screenshots: list[str] = []
+
+    @validator('screenshots')
+    def validate_screenshots(cls, v):
+        if len(v) > 3:
+            raise ValueError('スクリーンショットは最大3枚までです')
+        if len(v) == 0:
+            raise ValueError('スクリーンショットは最低1枚必要です')
+        return v
 
 class App(AppCreate):
     id: str = Field(alias="_id")
