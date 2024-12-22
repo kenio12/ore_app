@@ -30,6 +30,25 @@ class AppCreate(BaseModel):
             raise ValueError('スクリーンショットは最低1枚必要です')
         return v
 
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "title": "My App",
+                "prefix_icon": "🗡️",
+                "suffix_icon": "🏴‍☠️",
+                "description": "This is my awesome app",
+                "demo_url": "https://demo.example.com",
+                "github_url": "https://github.com/example/myapp",
+                "screenshots": [
+                    "https://example.com/screenshots/1.jpg",
+                    "https://example.com/screenshots/2.jpg"
+                ]
+            }
+        }
+        json_encoders = {
+            AppType: lambda v: v.value  # Enumの値を文字列として保存
+        }
+
 class App(AppCreate):
     id: str = Field(alias="_id")
     created_at: datetime = Field(default_factory=datetime.utcnow)

@@ -21,6 +21,7 @@ async def create_app(
         
         # アプリデータを辞書形式に変換
         app_dict = app.dict()
+        app_dict["app_type"] = app.app_type.value  # ここでEnumの値を文字列に変換
         app_dict["created_at"] = datetime.utcnow()
         app_dict["user_id"] = str(current_user["_id"])  # 追加：現在のユーザーIDを設定
         
@@ -42,8 +43,8 @@ async def create_app(
 @router.get("/")
 async def get_apps(limit: int = 100, db = Depends(get_db)):
     try:
-        # 1. まずアプリを全部取得
-        apps = await db["apps"].find().to_list(length=limit)
+        # created_atで降順（新しい順）にソート
+        apps = await db["apps"].find().sort("created_at", -1).to_list(length=limit)
         
         # 2. 有効なユーザーIDだけを集める
         valid_user_ids = set()
