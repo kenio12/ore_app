@@ -1,13 +1,23 @@
+from enum import Enum
 from pydantic import BaseModel, Field, validator
 from datetime import datetime
 from typing import Optional, List
+
+class AppType(Enum):
+    UNSPECIFIED = "UNSPECIFIED"
+    WEB_APP = "WEB_APP"
+    MOBILE_APP = "MOBILE_APP"
+    DESKTOP_APP = "DESKTOP_APP"
+    CLI_TOOL = "CLI_TOOL"
+    GAME = "GAME"
+    OTHER = "OTHER"
 
 class AppCreate(BaseModel):
     title: str
     description: str
     github_url: str | None = None
     demo_url: str | None = None
-    app_type: str
+    app_type: AppType
     prefix_icon: str | None = None
     suffix_icon: str | None = None
     screenshots: list[str] = []

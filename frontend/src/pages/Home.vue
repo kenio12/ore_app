@@ -2,7 +2,7 @@
   <div class="home-container">
     <div class="container">
       <div class="header">
-        <h1 class="title">🗡️ 俺のアプリ 🏴‍☠️</h1>
+        <h1 class="title">🗡️ 俺、自作 🏴‍☠️</h1>
         <p class="subtitle">アプリ王になる！</p>
       </div>
 
@@ -49,7 +49,6 @@ import { App, AppType, AppTypeLabels, AppTypeColors } from '@/types/app'
 
 const authStore = useAuthStore()
 const router = useRouter()
-
 const apps = ref<App[]>([])
 
 onMounted(async () => {
@@ -65,11 +64,9 @@ onMounted(async () => {
     }
     
     const data = await response.json()
-    // 新着順（降順）に並び替
-    apps.value = data.sort((a: App, b: App) => {
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-    })
-    console.log('取得したアプリ:', apps.value)
+    console.log('取得したアプリデータ:', data)
+    apps.value = data
+
   } catch (error) {
     console.error('アプリの取得に失敗しました:', error)
   }
@@ -86,7 +83,7 @@ const handleDeleteAccount = async () => {
   }
 }
 
-// 付フォーマット用の関数を追加
+// 付フォーマット用の関数を��加
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)
   return date.toLocaleDateString('ja-JP', {

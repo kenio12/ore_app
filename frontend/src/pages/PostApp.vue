@@ -48,18 +48,18 @@
           </div>
 
           <div class="form-control">
-            <label class="form-label">アプリタイプ</label>
+            <label class="form-label">アプリの種類</label>
             <select
               v-model="formData.app_type"
               class="form-input"
               required
             >
-              <option v-for="(label, type) in AppTypeLabels" 
-                      :key="type" 
-                      :value="type"
-              >
-                {{ label }}
-              </option>
+              <option value="">選択してください</option>
+              <option value="WEB_APP">Webアプリ</option>
+              <option value="MOBILE_APP">モバイルアプリ</option>
+              <option value="DESKTOP_APP">デスクトップアプリ</option>
+              <option value="GAME">ゲーム</option>
+              <option value="OTHER">その他</option>
             </select>
           </div>
 
@@ -150,7 +150,7 @@ const autoSaveForm = () => {
   console.log('下書きを保存しました:', new Date().toLocaleTimeString())
 }
 
-// コンポーネントのマウント時
+// コンポーネントの���ウント時
 onMounted(() => {
   // ログインチェック
   if (!authStore.isAuthenticated) {
@@ -164,18 +164,30 @@ onMounted(() => {
   // 下書きの確認と復元
   const savedDraft = localStorage.getItem(DRAFT_KEY)
   if (savedDraft) {
-    const draft = JSON.parse(savedDraft)
-    const lastSaved = new Date(draft.lastSaved)
-    const timeDiff = Math.round((Date.now() - lastSaved.getTime()) / (1000 * 60)) // 分単位
+    try {
+      const draft = JSON.parse(savedDraft)
+      const lastSaved = new Date(draft.lastSaved)
+      const timeDiff = Math.round((Date.now() - lastSaved.getTime()) / (1000 * 60)) // 分単位
 
-    if (confirm(`${timeDiff}分前の下書きがあります。復元しますか？`)) {
-      // スクリーンショット以外のデータを復元
-      formData.value = {
-        ...draft,
-        screenshots: [] // スクリーンショットは新規に追加してもらう
+      if (confirm(`${timeDiff}分前の下書きがあります。復元しますか？`)) {
+        // フォームデータを復元（スクリーンショット以外）
+        formData.value = {
+          name: draft.name || '',
+          description: draft.description || '',
+          demoUrl: draft.demoUrl || '',
+          sourceUrl: draft.sourceUrl || '',
+          app_type: draft.app_type || '',
+          prefix_icon: draft.prefix_icon || '',
+          suffix_icon: draft.suffix_icon || '',
+          screenshots: [] // スクリーンショットは新規に追加
+        }
+        console.log('下書きを復元しました:', formData.value)
+      } else {
+        // 下書きを削除
+        localStorage.removeItem(DRAFT_KEY)
       }
-    } else {
-      // 下書きを削除
+    } catch (error) {
+      console.error('下書きの復元に失敗:', error)
       localStorage.removeItem(DRAFT_KEY)
     }
   }
@@ -197,13 +209,13 @@ const fileInput = ref<HTMLInputElement | null>(null)
 
 const formData = ref({
   name: '',
-  prefix_icon: '🗡️',
-  suffix_icon: '🏴‍☠️',
   description: '',
   demoUrl: '',
   sourceUrl: '',
-  screenshots: [] as File[],
-  app_type: AppType.UNSPECIFIED
+  app_type: '',
+  prefix_icon: '',
+  suffix_icon: '',
+  screenshots: [] as File[]
 })
 
 const previews = ref<string[]>([])
@@ -317,7 +329,7 @@ const handleSubmit = async () => {
         return
       }
       
-      // その他のエラー
+      // その他エラー
       throw new Error(errorData.detail || 'アプリの投稿に失敗しました')
     }
 

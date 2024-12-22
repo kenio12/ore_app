@@ -4,6 +4,7 @@ import cloudinary
 import cloudinary.uploader
 from ..core.config import settings
 from datetime import datetime
+import logging
 
 router = APIRouter()
 
@@ -51,7 +52,8 @@ async def upload_screenshots(files: List[UploadFile] = File(...)):
                 result = cloudinary.uploader.upload(
                     contents,
                     folder="makeandshowapp",
-                    public_id=f"{timestamp}_{file.filename}"
+                    public_id=f"{timestamp}_{file.filename}",
+                    timeout=60
                 )
                 
                 uploaded_urls.append(result["secure_url"])
