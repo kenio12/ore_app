@@ -6,7 +6,8 @@ from app.database import get_db
 from app.core.config import settings
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse
-from app.utils.auth import verify_password, get_password_hash, create_access_token
+from app.utils.auth import verify_password, get_password_hash, create_access_token, create_verification_token
+from app.utils.email import send_verification_email
 from datetime import datetime, timedelta
 from fastapi.responses import JSONResponse
 
@@ -76,12 +77,15 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db))
                 content={"detail": "Username already taken"}
             )
         
+        # メール確認トークンの生成
+        verification_token = create_verification_token(user.email)
+        
         # 新規ユーザーの作成
         user_dict = {
             "email": user.email,
             "username": user.username,
             "hashed_password": get_password_hash(user.password),
-            "is_active": True,  # 直接アクティブに
+            "is_active": False,  # メール確認までFalse
             "created_at": datetime.utcnow()
         }
         
@@ -89,8 +93,11 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db))
         created_user = await db.users.find_one({"_id": result.inserted_id})
         created_user["_id"] = str(created_user["_id"])
         
+        # 確認メールの送信
+        await send_verification_email(user.email, user.username, verification_token)
+        
         return {
-            "message": "Registration successful",
+            "message": "Registration successful. Please check your email to verify your account.",
             "user": {
                 "id": str(created_user["_id"]),
                 "email": created_user["email"],
@@ -159,3 +166,27 @@ async def delete_account(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/verify-email/{token}")
+async def verify_email(token: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+    try:
+        # トークンの検証
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        email = payload.get("sub")
+        
+        if not email:
+            raise HTTPException(status_code=400, detail="Invalid token")
+            
+        # ユーザーのアクティベート
+        result = await db.users.update_one(
+            {"email": email},
+            {"$set": {"is_active": True}}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="User not found")
+            
+        return {"message": "Email verified successfully"}
+        
+    except JWTError:
+        raise HTTPException(status_code=400, detail="Invalid token")
