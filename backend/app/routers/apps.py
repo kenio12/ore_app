@@ -12,18 +12,25 @@ router = APIRouter()
 
 @router.post("/")
 async def create_app(
-    app: AppCreate, 
+    app_data: AppCreate, 
     current_user = Depends(get_current_user),  # 追加：現在のユーザーを取得
     db = Depends(get_db)
 ):
     try:
-        print("Creating new app:", app.dict())
+        print("Creating new app:", app_data.dict())
         
-        # アプリデータを辞書形式に変換
-        app_dict = app.dict()
-        app_dict["app_type"] = app.app_type.value  # ここでEnumの値を文字列に変換
+        # Enumの値を文字列に変換
+        app_dict = app_data.dict()
+        app_dict["app_type"] = app_data.app_type.value if app_data.app_type else None
+        app_dict["status"] = app_data.status.value if app_data.status else None
+        
+        app_dict["user_id"] = current_user["_id"]
+        app_dict["user"] = {
+            "_id": current_user["_id"],
+            "username": current_user["username"],
+            "display_name": current_user.get("display_name")
+        }
         app_dict["created_at"] = datetime.utcnow()
-        app_dict["user_id"] = str(current_user["_id"])  # 追加：現在のユーザーIDを設定
         
         # MongoDBに保存
         result = await db["apps"].insert_one(app_dict)

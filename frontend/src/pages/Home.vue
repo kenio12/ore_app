@@ -3,7 +3,7 @@
     <div class="container">
       <div class="header">
         <h1 class="title">🗡️ 俺、自作 🏴‍☠️</h1>
-        <p class="subtitle">アプリ王になる！</p>
+        <p class="subtitle">アプリになる！</p>
       </div>
 
       <div class="apps-grid">
