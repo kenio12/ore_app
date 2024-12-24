@@ -5,97 +5,244 @@
 
       <div class="form-box">
         <form @submit.prevent="handleSubmit">
-          <div class="form-control">
-            <label class="form-label">アプリの種類</label>
-            <select v-model="formData.app_type" class="form-input" required>
-              <option value="UNSPECIFIED">未指定</option>
-              <option value="WEB_APP">Webアプリ</option>
-              <option value="MOBILE_APP">モバイルアプリ</option>
-              <option value="DESKTOP_APP">デスクトップアプリ</option>
-              <option value="CLI_TOOL">CLIツール</option>
-              <option value="GAME">ゲーム</option>
-              <option value="OTHER">その他</option>
-            </select>
-          </div>
+          <section class="section">
+            <h2>基本情報</h2>
+            <div class="form-control">
+              <label class="form-label">アプリの種類</label>
+              <select v-model="formData.app_type" class="form-input" required>
+                <option value="UNSPECIFIED">未指定</option>
+                <option value="WEB_APP">Webアプリ</option>
+                <option value="MOBILE_APP">モバイルアプリ</option>
+                <option value="DESKTOP_APP">デスクトップアプリ</option>
+                <option value="CLI_TOOL">CLIツール</option>
+                <option value="GAME">ゲーム</option>
+                <option value="OTHER">その他</option>
+              </select>
+            </div>
 
-          <div class="form-control">
-            <label class="form-label">開発状況</label>
-            <select v-model="formData.status" class="form-input" required>
-              <option value="IN_DEVELOPMENT">開発中 🚧</option>
-              <option value="COMPLETED">完成済み ✨</option>
-            </select>
-          </div>
+            <div class="form-control">
+              <label class="form-label">開発状況</label>
+              <select v-model="formData.status" class="form-input" required>
+                <option value="IN_DEVELOPMENT">開発中 🚧</option>
+                <option value="COMPLETED">完成済み ✨</option>
+              </select>
+            </div>
 
-          <div class="form-control">
-            <label class="form-label">アプリ名</label>
-            <input v-model="formData.title" type="text" class="form-input" required />
-          </div>
+            <div class="form-control">
+              <label class="form-label">アプリ名</label>
+              <input v-model="formData.title" type="text" class="form-input" required />
+            </div>
 
-          <div class="form-control">
-            <label class="form-label">説明</label>
-            <textarea v-model="formData.description" class="form-input" rows="6" required />
-          </div>
+            <div class="form-control">
+              <label class="form-label">説明</label>
+              <textarea v-model="formData.description" class="form-input" rows="6" required />
+            </div>
 
-          <div class="form-control">
-            <label class="form-label">デモURL</label>
-            <input v-model="formData.demo_url" type="url" class="form-input" />
-          </div>
+            <div class="form-control">
+              <label class="form-label">デモURL</label>
+              <input v-model="formData.demo_url" type="url" class="form-input" />
+            </div>
 
-          <div class="form-control">
-            <label class="form-label">GitHubリンク</label>
-            <input v-model="formData.github_url" type="url" class="form-input" />
-          </div>
+            <div class="form-control">
+              <label class="form-label">GitHubリンク</label>
+              <input v-model="formData.github_url" type="url" class="form-input" />
+            </div>
 
-          <div class="form-control">
-            <label class="form-label">アイコン</label>
-            <div class="icon-selector">
-              <div class="prefix-icon">
-                <label>前</label>
-                <input v-model="formData.prefix_icon" type="text" class="form-input" placeholder="🗡️" />
-              </div>
-              <div class="suffix-icon">
-                <label>後</label>
-                <input v-model="formData.suffix_icon" type="text" class="form-input" placeholder="🏴‍☠️" />
+            <div class="form-control">
+              <label class="form-label">アイコン</label>
+              <div class="icon-selector">
+                <div class="prefix-icon">
+                  <label>前</label>
+                  <input v-model="formData.prefix_icon" type="text" class="form-input" placeholder="🗡️" />
+                </div>
+                <div class="suffix-icon">
+                  <label>後</label>
+                  <input v-model="formData.suffix_icon" type="text" class="form-input" placeholder="🏴‍☠️" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="form-control">
-            <label class="form-label">スクリーンショット（1-3枚）</label>
-            <div 
-              class="dropzone"
-              :class="{ 'dropzone-active': isDragging }"
-              @dragenter.prevent="isDragging = true"
-              @dragleave.prevent="isDragging = false"
-              @dragover.prevent
-              @drop.prevent="handleDrop"
-            >
-              <div class="dropzone-content">
-                <span v-if="!screenshots.length">
-                  ここにファイルをドラッグ＆ドロップ<br>
-                  または
-                </span>
+            <div class="form-control">
+              <label class="form-label">スクリーンショット（1-3枚）</label>
+              <div 
+                class="dropzone"
+                :class="{ 'dropzone-active': isDragging }"
+                @dragenter.prevent="isDragging = true"
+                @dragleave.prevent="isDragging = false"
+                @dragover.prevent
+                @drop.prevent="handleDrop"
+              >
+                <div class="dropzone-content">
+                  <span v-if="!screenshots.length">
+                    ここにファイルをドラッグ＆ドロップ<br>
+                    または
+                  </span>
+                  <input 
+                    type="file" 
+                    @change="handleFileChange" 
+                    accept="image/*" 
+                    multiple 
+                    class="file-input"
+                    id="file-input"
+                  />
+                  <label for="file-input" class="file-label">
+                    ファイルを選択
+                  </label>
+                </div>
+              </div>
+
+              <div class="preview-container" v-if="previewUrls.length">
+                <div v-for="(url, index) in previewUrls" :key="index" class="preview-item">
+                  <img :src="url" alt="プレビュー" />
+                  <button type="button" @click="removeImage(index)" class="remove-btn">×</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <h2>技術スタック 🛠️</h2>
+            
+            <div class="tech-stack">
+              <h3>フロントエンド</h3>
+              <div class="form-control">
+                <label>言語</label>
+                <select v-model="formData.frontend.language" class="form-input">
+                  <option value="typescript">TypeScript</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="other">その他</option>
+                </select>
                 <input 
-                  type="file" 
-                  @change="handleFileChange" 
-                  accept="image/*" 
-                  multiple 
-                  class="file-input"
-                  id="file-input"
+                  v-if="formData.frontend.language === 'other'"
+                  v-model="formData.frontend.customLanguage"
+                  type="text"
+                  placeholder="言語を入力"
+                  class="form-input"
                 />
-                <label for="file-input" class="file-label">
-                  ファイルを選択
-                </label>
+              </div>
+              <div class="form-control">
+                <label>選定理由</label>
+                <textarea 
+                  v-model="formData.frontend.reason"
+                  class="form-input"
+                  rows="3"
+                  placeholder="この技術を選んだ理由を教えてください"
+                />
               </div>
             </div>
 
-            <div class="preview-container" v-if="previewUrls.length">
-              <div v-for="(url, index) in previewUrls" :key="index" class="preview-item">
-                <img :src="url" alt="プレビュー" />
-                <button type="button" @click="removeImage(index)" class="remove-btn">×</button>
+            <div class="tech-stack">
+              <h3>バックエンド</h3>
+              <div class="form-control">
+                <label>言語</label>
+                <select v-model="formData.backend.language" class="form-input">
+                  <option value="typescript">TypeScript</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="other">その他</option>
+                </select>
+                <input 
+                  v-if="formData.backend.language === 'other'"
+                  v-model="formData.backend.customLanguage"
+                  type="text"
+                  placeholder="言語を入力"
+                  class="form-input"
+                />
+              </div>
+              <div class="form-control">
+                <label>選定理由</label>
+                <textarea 
+                  v-model="formData.backend.reason"
+                  class="form-input"
+                  rows="3"
+                  placeholder="この技術を選んだ理由を教えてください"
+                />
               </div>
             </div>
-          </div>
+
+            <div class="tech-stack">
+              <h3>データベース</h3>
+              <div class="form-control">
+                <label>言語</label>
+                <select v-model="formData.database.language" class="form-input">
+                  <option value="typescript">TypeScript</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="other">その他</option>
+                </select>
+                <input 
+                  v-if="formData.database.language === 'other'"
+                  v-model="formData.database.customLanguage"
+                  type="text"
+                  placeholder="言語を入力"
+                  class="form-input"
+                />
+              </div>
+              <div class="form-control">
+                <label>選定理由</label>
+                <textarea 
+                  v-model="formData.database.reason"
+                  class="form-input"
+                  rows="3"
+                  placeholder="この技術を選んだ理由を教えてください"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <h2>開発ストーリー 📖</h2>
+            <div class="form-control">
+              <label>企画のきっかけ</label>
+              <textarea 
+                v-model="formData.story.motivation"
+                class="form-input"
+                rows="4"
+              />
+            </div>
+          </section>
+
+          <section class="section">
+            <h2>開発日記 📝</h2>
+            <div class="diary-entries">
+              <div 
+                v-for="(entry, index) in formData.diary"
+                :key="index"
+                class="diary-entry"
+              >
+                <div class="form-control">
+                  <label>日付</label>
+                  <input 
+                    type="date"
+                    v-model="entry.date"
+                    class="form-input"
+                  />
+                </div>
+                <div class="form-control">
+                  <label>進捗報告</label>
+                  <textarea 
+                    v-model="entry.content"
+                    class="form-input"
+                    rows="4"
+                  />
+                </div>
+                <div class="form-control">
+                  <label>画像（オプション）</label>
+                  <input 
+                    type="file"
+                    @change="(e) => handleDiaryImage(e, index)"
+                    accept="image/*"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+              <button 
+                type="button"
+                @click="addDiaryEntry"
+                class="btn btn-secondary"
+              >
+                新しいエントリーを追加
+              </button>
+            </div>
+          </section>
 
           <div class="button-group">
             <button type="submit" class="btn btn-primary">投稿する</button>
@@ -119,7 +266,40 @@ const formData = ref({
   app_type: 'UNSPECIFIED',
   status: 'IN_DEVELOPMENT',
   prefix_icon: '🗡️',
-  suffix_icon: '🏴‍☠️'
+  suffix_icon: '🏴‍☠️',
+  frontend: {
+    language: '',
+    framework: '',
+    hosting: '',
+    customLanguage: '',
+    customFramework: '',
+    customHosting: '',
+    reason: ''
+  },
+  backend: {
+    language: '',
+    customLanguage: '',
+    reason: ''
+  },
+  database: {
+    language: '',
+    customLanguage: '',
+    reason: ''
+  },
+  story: {
+    motivation: '',
+    challenges: '',
+    current_issues: '',
+    failures: '',
+    future_plans: ''
+  },
+  diary: [
+    {
+      date: '',
+      content: '',
+      image: null as File | null
+    }
+  ]
 })
 
 // スクリーンショット関連の状態
@@ -185,12 +365,29 @@ const handleDrop = (event: DragEvent) => {
   // 追加可能な枚数だけ取得
   const newFiles = files.slice(0, remainingSlots)
   
-  // 既存の配��に追加
+  // 既存の配列に追加
   screenshots.value = [...screenshots.value, ...newFiles]
 
   // 新しい画像のプレビューURLを生成して追加
   const newPreviewUrls = newFiles.map(file => URL.createObjectURL(file))
   previewUrls.value = [...previewUrls.value, ...newPreviewUrls]
+}
+
+// 開発日記エントリーを追加
+const addDiaryEntry = () => {
+  formData.value.diary.push({
+    date: '',
+    content: '',
+    image: null
+  })
+}
+
+// 開発日記の画像をハンドル
+const handleDiaryImage = (event: Event, index: number) => {
+  const input = event.target as HTMLInputElement
+  if (input.files && input.files[0]) {
+    formData.value.diary[index].image = input.files[0]
+  }
 }
 
 const handleSubmit = async () => {
@@ -335,5 +532,29 @@ const handleSubmit = async () => {
   width: 100%;
   text-align: center;
   font-size: 1.5rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.section h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.tech-stack {
+  margin-bottom: 1.5rem;
+}
+
+.diary-entry {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 </style> 
