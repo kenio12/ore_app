@@ -82,30 +82,66 @@
         <div class="tech-stack-group">
           <h4>フロントエンド</h4>
           <div class="form-group">
-            <label>言語</label>
-            <select v-model="appData.frontend.language">
-              <option value="JavaScript">JavaScript</option>
-              <option value="TypeScript">TypeScript</option>
-              <option value="HTML/CSS">HTML/CSS</option>
-              <option value="Dart">Dart</option>
-              <option value="その他">その他</option>
-            </select>
+            <label>フロントエンド言語（複数選択可）</label>
+            <div class="checkbox-group">
+              <label>
+                <input 
+                  type="checkbox" 
+                  v-model="appData.frontend.languages" 
+                  value="JavaScript"
+                /> JavaScript
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  v-model="appData.frontend.languages" 
+                  value="TypeScript"
+                /> TypeScript
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  v-model="appData.frontend.languages" 
+                  value="HTML"
+                /> HTML
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  v-model="appData.frontend.languages" 
+                  value="CSS"
+                /> CSS
+              </label>
+              <label>
+                <input 
+                  type="checkbox" 
+                  v-model="appData.frontend.languages" 
+                  value="その他"
+                /> その他
+              </label>
+            </div>
             <input 
-              v-if="appData.frontend.language === 'その他'"
+              v-if="appData.frontend.languages.includes('その他')"
               type="text"
               v-model="appData.frontend.customLanguage"
-              placeholder="使用言語を入力"
+              placeholder="その他の言語を入力"
             />
           </div>
           <div class="form-group">
             <label>フレームワーク</label>
             <select v-model="appData.frontend.framework">
-              <option value="Vue.js">Vue.js</option>
+              <!-- React系 -->
               <option value="React">React</option>
-              <option value="Next.js">Next.js</option>
-              <option value="Nuxt">Nuxt</option>
+              <option value="Next.js">Next.js (React)</option>
+              
+              <!-- Vue系 -->
+              <option value="Vue.js">Vue.js</option>
+              <option value="Nuxt">Nuxt (Vue.js)</option>
+              
+              <!-- その他のフレームワーク -->
               <option value="Angular">Angular</option>
               <option value="Svelte">Svelte</option>
+              <option value="SvelteKit">SvelteKit (Svelte)</option>
               <option value="Flutter">Flutter</option>
               <option value="その他">その他</option>
             </select>
@@ -240,7 +276,7 @@ const appData = ref({
   suffix_icon: '🏴‍☠️',
   screenshots: [],
   frontend: {
-    language: '',
+    languages: [],
     customLanguage: '',
     framework: '',
     customFramework: '',
@@ -392,5 +428,22 @@ h1 {
   width: 100%;
   padding: 8px;
   margin-top: 4px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin: 0;
 }
 </style> 
