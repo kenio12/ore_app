@@ -55,11 +55,26 @@ export const useAuthStore = defineStore('auth', () => {
     delete api.defaults.headers.common['Authorization']
   }
 
+  // トークンを設定するメソッドを追加
+  const setToken = (newToken: string) => {
+    token.value = newToken
+    localStorage.setItem('token', newToken)
+    api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`
+  }
+
+  // ユーザー情報を設定するメソッドを追加
+  const setUser = (newUser: any) => {
+    user.value = newUser
+    localStorage.setItem('user', JSON.stringify(newUser))
+  }
+
   return {
     token,
     user,
     isAuthenticated,
     login,
-    logout
+    logout,
+    setToken,
+    setUser
   }
 }) 

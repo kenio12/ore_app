@@ -68,6 +68,7 @@
 import { ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import api from '@/utils/api'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -84,31 +85,33 @@ const passwordMismatch = computed(() => {
   return formData.value.password !== formData.value.passwordConfirm
 })
 
-const handleSubmit = async () => {
+const handleSubmit = async (e: Event) => {
   try {
+    console.log('1. サインアップ開始')
     isLoading.value = true
-    
-    const response = await fetch('http://localhost:8000/api/auth/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData.value),
-      credentials: 'include'
+
+    const response = await api.post('/api/auth/register', {
+      email: formData.value.email,
+      username: formData.value.username,
+      password: formData.value.password
     })
 
-    const data = await response.json()
+    console.log('2. APIレスポンス:', response.data)
 
-    if (!response.ok) {
-      throw new Error(data.detail || 'サインアップに失敗しました')
+    // ユーザー情報があれば成功
+    if (response.data.user) {
+      // ユーザー情報だけ保存
+      await authStore.setUser(response.data.user)
+      
+      // メッセージを表示
+      window.alert('登録が完了しました！メールアドレス確認用のメールを送信しましたので、ご確認ください。')
+      
+      // ホームページへリダイレクト
+      router.push('/')
     }
-
-    alert('サインアップが完了しました！メールを確認して、アカウントを有効化してください。')
-    
-    router.push('/')
-    
-  } catch (error) {
-    alert(error instanceof Error ? error.message : '予期せぬエラーが発生しました')
+  } catch (error: any) {
+    console.error('エラー発生:', error)
+    alert(error.response?.data?.detail || 'サインアップに失敗しました。')
   } finally {
     isLoading.value = false
   }

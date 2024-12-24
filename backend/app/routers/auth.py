@@ -77,9 +77,6 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db))
                 content={"detail": "Username already taken"}
             )
         
-        # メール確認トークンの生成
-        verification_token = create_verification_token(user.email)
-        
         # 新規ユーザーの作成
         user_dict = {
             "email": user.email,
@@ -93,11 +90,20 @@ async def register(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db))
         created_user = await db.users.find_one({"_id": result.inserted_id})
         created_user["_id"] = str(created_user["_id"])
         
-        # 確認メールの送信
+        # メール確認トークンの生成と送信
+        verification_token = create_verification_token(user.email)
         await send_verification_email(user.email, user.username, verification_token)
         
+        # アクセストークンの生成
+        access_token = create_access_token(
+            data={"sub": user.email},
+            expires_delta=timedelta(minutes=30)
+        )
+        
         return {
-            "message": "Registration successful. Please check your email to verify your account.",
+            "message": "Registration successful. Please check your email.",
+            "access_token": access_token,
+            "token_type": "bearer",
             "user": {
                 "id": str(created_user["_id"]),
                 "email": created_user["email"],
@@ -142,7 +148,7 @@ async def login(
 
 @router.post("/logout")
 async def logout():
-    # JWTの場合、サーバー側でのログアウト処理は不要
+    # JWTの場合、サーバー側でのログアウト処��は不要
     # フロントエンドでトークンを削除するだけ
     return {"message": "Logged out successfully"}
 

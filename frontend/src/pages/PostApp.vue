@@ -1,7 +1,9 @@
 <template>
   <div class="post-app">
-    <h1>アプリ投稿</h1>
-    <p>投稿者: {{ authStore.user?.email }}</p>
+    <div class="header-section">
+      <h1>アプリ投稿</h1>
+      <p class="author">投稿者: {{ authStore.user?.username || '名前未設定' }}</p>
+    </div>
 
     <form @submit.prevent="handleSubmit" class="post-form">
       <div class="form-group">
@@ -24,11 +26,12 @@
       </div>
 
       <div class="form-group">
-        <label for="demo_url">デモURL</label>
+        <label for="demo_url">アプリURL（任意）</label>
         <input 
           type="url" 
           id="demo_url" 
           v-model="appData.demo_url"
+          placeholder="https://example.com"
         />
       </div>
 
@@ -50,13 +53,162 @@
         >
           <option value="生産性・仕事効率化">生産性・仕事効率化</option>
           <option value="エンターテイメント">エンターテイメント</option>
+          <option value="趣味・創作">趣味・創作</option>
           <option value="ゲーム">ゲーム</option>
           <option value="プログラミング">プログラミング</option>
           <option value="教育">教育</option>
           <option value="ビジネス">ビジネス</option>
+          <option value="ユーケティング・宣伝">マーケティング・宣伝</option>
           <option value="ユーティリティ">ユーティリティ</option>
           <option value="その他">その他</option>
         </select>
+      </div>
+
+      <div class="form-group">
+        <label for="app_type">アプリタイプ</label>
+        <select id="app_type" v-model="appData.app_type" required>
+          <option value="WEB_APP">Webアプリ</option>
+          <option value="MOBILE_APP">モバイルアプリ</option>
+          <option value="DESKTOP_APP">デスクトップアプリ</option>
+          <option value="CLI_TOOL">CLIツール</option>
+          <option value="GAME">ゲーム</option>
+          <option value="OTHER">その他</option>
+        </select>
+      </div>
+
+      <div class="tech-stack-section">
+        <h3>技術スタック</h3>
+        
+        <div class="tech-stack-group">
+          <h4>フロントエンド</h4>
+          <div class="form-group">
+            <label>言語</label>
+            <select v-model="appData.frontend.language">
+              <option value="JavaScript">JavaScript</option>
+              <option value="TypeScript">TypeScript</option>
+              <option value="HTML/CSS">HTML/CSS</option>
+              <option value="Dart">Dart</option>
+              <option value="その他">その他</option>
+            </select>
+            <input 
+              v-if="appData.frontend.language === 'その他'"
+              type="text"
+              v-model="appData.frontend.customLanguage"
+              placeholder="使用言語を入力"
+            />
+          </div>
+          <div class="form-group">
+            <label>フレームワーク</label>
+            <select v-model="appData.frontend.framework">
+              <option value="Vue.js">Vue.js</option>
+              <option value="React">React</option>
+              <option value="Next.js">Next.js</option>
+              <option value="Nuxt">Nuxt</option>
+              <option value="Angular">Angular</option>
+              <option value="Svelte">Svelte</option>
+              <option value="Flutter">Flutter</option>
+              <option value="その他">その他</option>
+            </select>
+            <input 
+              v-if="appData.frontend.framework === 'その他'"
+              type="text"
+              v-model="appData.frontend.customFramework"
+              placeholder="フレームワークを入力"
+            />
+          </div>
+          <div class="form-group">
+            <label>選定理由</label>
+            <textarea v-model="appData.frontend.reason"></textarea>
+          </div>
+        </div>
+
+        <div class="tech-stack-group">
+          <h4>バックエンド</h4>
+          <div class="form-group">
+            <label>言語</label>
+            <select v-model="appData.backend.language">
+              <option value="Python">Python</option>
+              <option value="Node.js">Node.js</option>
+              <option value="Ruby">Ruby</option>
+              <option value="PHP">PHP</option>
+              <option value="Go">Go</option>
+              <option value="Java">Java</option>
+              <option value="C#">C#</option>
+              <option value="その他">その他</option>
+            </select>
+            <input 
+              v-if="appData.backend.language === 'その他'"
+              type="text"
+              v-model="appData.backend.customLanguage"
+              placeholder="使用言語を入力"
+            />
+          </div>
+          <div class="form-group">
+            <label>フレームワーク</label>
+            <select v-model="appData.backend.framework">
+              <option value="FastAPI">FastAPI</option>
+              <option value="Django">Django</option>
+              <option value="Flask">Flask</option>
+              <option value="Express">Express</option>
+              <option value="Ruby on Rails">Ruby on Rails</option>
+              <option value="Laravel">Laravel</option>
+              <option value="Spring Boot">Spring Boot</option>
+              <option value="その他">その他</option>
+            </select>
+            <input 
+              v-if="appData.backend.framework === 'その他'"
+              type="text"
+              v-model="appData.backend.customFramework"
+              placeholder="フレームワークを入力"
+            />
+          </div>
+          <div class="form-group">
+            <label>選定理由</label>
+            <textarea v-model="appData.backend.reason"></textarea>
+          </div>
+        </div>
+
+        <div class="tech-stack-group">
+          <h4>データベース</h4>
+          <div class="form-group">
+            <label>タイプ</label>
+            <input type="text" v-model="appData.database.type" />
+          </div>
+          <div class="form-group">
+            <label>ホスティング</label>
+            <input type="text" v-model="appData.database.hosting" />
+          </div>
+          <div class="form-group">
+            <label>選定理由</label>
+            <textarea v-model="appData.database.reason"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>スクリーンショット</label>
+        <input 
+          type="file" 
+          @change="handleImageUpload" 
+          multiple 
+          accept="image/*"
+        />
+        <div class="preview-images">
+          <!-- プレビュー表示領域 -->
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>企画のきっかけ</label>
+        <textarea v-model="appData.story.motivation"></textarea>
+      </div>
+      <div class="form-group">
+        <label>苦労した点</label>
+        <textarea v-model="appData.story.challenges"></textarea>
+      </div>
+      <div class="form-group">
+        <label>今後の展望</label>
+        <textarea v-model="appData.story.future_plans"></textarea>
       </div>
 
       <button type="submit">投稿する</button>
@@ -84,9 +236,35 @@ const appData = ref({
   status: 'IN_DEVELOPMENT',
   genres: ['ゲーム'],
   custom_genres: [],
-  prefix_icon: '🗡️',
+  prefix_icon: '����️',
   suffix_icon: '🏴‍☠️',
-  screenshots: []
+  screenshots: [],
+  frontend: {
+    language: '',
+    customLanguage: '',
+    framework: '',
+    customFramework: '',
+    hosting: 'Render',
+    reason: ''
+  },
+  backend: {
+    language: '',
+    customLanguage: '',
+    framework: '',
+    customFramework: '',
+    hosting: 'Render',
+    reason: ''
+  },
+  database: {
+    type: '',
+    hosting: 'MONGODB_ATLAS',
+    reason: ''
+  },
+  story: {
+    motivation: '',
+    challenges: '',
+    future_plans: ''
+  }
 })
 
 // ジャンルの対応表を逆にする（英語→日本語）
@@ -130,12 +308,20 @@ const handleSubmit = async () => {
     }
   }
 }
+
+const handleImageUpload = async (event: Event) => {
+  const files = (event.target as HTMLInputElement).files
+  if (!files) return
+
+  // TODO: Cloudinaryへのアップロード処理を実装
+}
 </script>
 
 <style scoped>
 .post-form {
-  max-width: 600px;
+  max-width: 800px;
   margin: 20px auto;
+  padding: 0 20px;
 }
 
 .form-group {
@@ -161,5 +347,50 @@ textarea {
 .error {
   color: red;
   margin-top: 10px;
+}
+
+.tech-stack-section {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tech-stack-group {
+  margin: 15px 0;
+}
+
+.preview-images {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px 0;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.author {
+  font-size: 1.1em;
+  color: #666;
+}
+
+.tech-stack-group select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.tech-stack-group input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
 }
 </style> 
