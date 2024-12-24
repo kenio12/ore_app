@@ -7,8 +7,18 @@ from typing import List
 from app.utils.auth import get_current_user
 
 router = APIRouter(
+    prefix="/users",
     tags=["users"]
 )
+
+@router.get("/me")
+async def read_users_me(current_user: dict = Depends(get_current_user)):
+    return {
+        "id": str(current_user["_id"]),
+        "email": current_user["email"],
+        "username": current_user["username"],
+        "is_active": current_user.get("is_active", True)
+    }
 
 @router.get("/", response_model=List[UserResponse])
 async def get_users(db: AsyncIOMotorDatabase = Depends(get_db)):
@@ -23,8 +33,3 @@ async def get_user(user_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         status_code=status.HTTP_404_NOT_FOUND,
         detail="User not found"
     )
-
-@router.get("/me")
-async def read_users_me(current_user: dict = Depends(get_current_user)):
-    print("Current user session:", current_user)  # デバッグ用
-    return current_user

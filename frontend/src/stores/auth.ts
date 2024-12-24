@@ -1,80 +1,58 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import api from '@/utils/api'
-import { useRouter } from 'vue-router'
-import axios from 'axios'
 
 export const useAuthStore = defineStore('auth', () => {
-  const router = useRouter()
+  // ローカルストレージからトークンとユーザー情報を復元
   const token = ref<string | null>(localStorage.getItem('token'))
-  const user = ref<any | null>(null)
-  const isAuthenticated = ref(false)
+  const user = ref<any | null>(JSON.parse(localStorage.getItem('user') || 'null'))
+
+  const isAuthenticated = computed(() => {
+    return !!token.value && !!user.value
+  })
 
   const login = async (email: string, password: string) => {
     try {
-      console.log('Attempting login with:', { email, password })
-
-      const formData = new FormData()
+      const formData = new URLSearchParams()
       formData.append('username', email)
       formData.append('password', password)
 
-      console.log('Sending form data:', {
-        username: formData.get('username'),
-        password: formData.get('password')
-      })
-
-      const response = await api.post('/api/auth/login', formData, {
+      const { data } = await api.post('/api/auth/login', formData.toString(), {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       })
-
-      console.log('Login response:', response.data)
-
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token)
-        token.value = response.data.token
-        await fetchUser()
-        
-        const redirect = router.currentRoute.value.query.redirect as string
-        router.push(redirect || '/')
-      }
+      
+      // デバッグログを追加
+      console.log('Login response:', data)
+      
+      token.value = data.access_token
+      user.value = data.user
+      
+      // ローカルストレージに保存
+      localStorage.setItem('token', data.access_token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+      
+      // デバッグログを追加
+      console.log('After login:', { 
+        token: token.value, 
+        user: user.value,
+        isAuthenticated: isAuthenticated.value 
+      })
+      
+      api.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`
+      
+      return data
     } catch (error) {
       console.error('Login error:', error)
-      if (axios.isAxiosError(error)) {
-        console.error('Response data:', error.response?.data)
-      }
       throw error
     }
   }
 
-  const fetchUser = async () => {
-    try {
-      console.log('Fetching user data...')
-      const response = await api.get('/api/users/me')
-      console.log('User data response:', response)
-      
-      if (response.data) {
-        updateUser(response.data)
-        updateAuthenticated(true)
-      }
-    } catch (error) {
-      console.error('Error fetching user:', error)
-      updateAuthenticated(false)
-      throw error
-    }
-  }
-
-  const updateUser = (userData: any) => {
-    user.value = userData
-  }
-
-  const updateAuthenticated = (value: boolean) => {
-    isAuthenticated.value = value
-  }
-
-  if (token.value) {
-    fetchUser().catch(console.error)
+  const logout = () => {
+    token.value = null
+    user.value = null
+    delete api.defaults.headers.common['Authorization']
   }
 
   return {
@@ -82,8 +60,6 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     isAuthenticated,
     login,
-    fetchUser,
-    updateUser,
-    updateAuthenticated
+    logout
   }
 }) 

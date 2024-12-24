@@ -44,12 +44,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import type { AuthStore } from '@/stores/auth'
 
-const authStore = useAuthStore()
+const authStore = useAuthStore() as AuthStore
 const router = useRouter()
+
+// デバッグ用のwatcher
+watch(() => authStore.isAuthenticated, (newValue) => {
+  console.log('認証状態:', newValue)
+  console.log('トークン:', authStore.token)
+  console.log('ユーザー:', authStore.user)
+})
+
+// 初期状態をログ出力
+console.log('初期認証状態:', authStore.isAuthenticated)
+console.log('初期トークン:', authStore.token)
+console.log('初期ユーザー:', authStore.user)
 
 // スクロール関連の変数
 let lastScrollY = 0

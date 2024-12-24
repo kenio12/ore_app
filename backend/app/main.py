@@ -37,7 +37,7 @@ app.add_middleware(
 
 # ルーターの設定
 app.include_router(auth.router, prefix="/api")
-app.include_router(users.router)
+app.include_router(users.router, prefix="/api")
 app.include_router(apps.router, prefix="/api/apps")
 
 # 静的ファイル用のディレクトリをマウント

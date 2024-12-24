@@ -1,48 +1,17 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000',  // APIのベースURL
-  withCredentials: true,  // CORSでクッキーを送信するために必要
-  headers: {
-    'Content-Type': 'application/json',
-  }
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
+  withCredentials: true
 })
 
-// リクエストインターセプターでデバッグ情報を出力
-api.interceptors.request.use(
-  (config) => {
-    console.log('API Request:', {
-      url: config.url,
-      method: config.method,
-      headers: config.headers,
-      data: config.data
-    })
-    return config
-  },
-  (error) => {
-    console.error('API Request Error:', error)
-    return Promise.reject(error)
+// リクエストインターセプター：ローカルストレージからトークンを取得して設定
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
-)
-
-// レスポンスインターセプターでデバッグ情報を出力
-api.interceptors.response.use(
-  (response) => {
-    console.log('API Response:', {
-      status: response.status,
-      data: response.data,
-      headers: response.headers
-    })
-    return response
-  },
-  (error) => {
-    console.error('API Response Error:', {
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message
-    })
-    return Promise.reject(error)
-  }
-)
+  return config
+})
 
 export default api 

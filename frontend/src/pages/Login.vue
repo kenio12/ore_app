@@ -1,59 +1,59 @@
 <template>
   <div class="login-container">
-    <div class="login-box">
-      <h1 class="title">ログイン</h1>
-      
-      <form @submit.prevent="handleSubmit">
-        <div class="form-group">
-          <label for="email">メールアドレス</label>
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            required
-            class="form-input"
-            placeholder="example@example.com"
-          />
-        </div>
-        
-        <div class="form-group">
-          <label for="password">パスワード</label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            required
-            class="form-input"
-            placeholder="パスワードを入力"
-          />
-        </div>
-        
-        <button type="submit" class="btn btn-primary">
-          ログイン
-        </button>
-      </form>
-      
-      <div class="links">
-        <router-link to="/signup">アカウントをお持ちでない方</router-link>
+    <form @submit.prevent="handleSubmit">
+      <div class="form-group">
+        <input
+          v-model="email"
+          type="email"
+          required
+          placeholder="メールアドレス"
+        />
       </div>
-    </div>
+      
+      <div class="form-group">
+        <input
+          v-model="password"
+          type="password"
+          required
+          placeholder="パスワード"
+        />
+      </div>
+      
+      <button type="submit" :disabled="isLoading">
+        {{ isLoading ? 'ログイン中...' : 'ログイン' }}
+      </button>
+      
+      <div v-if="error" class="error">
+        {{ error }}
+      </div>
+    </form>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const authStore = useAuthStore()
+
 const email = ref('')
 const password = ref('')
+const error = ref('')
+const isLoading = ref(false)
 
 const handleSubmit = async () => {
   try {
-    // 文字列として値を渡す
+    isLoading.value = true
+    error.value = ''
+    
     await authStore.login(email.value, password.value)
-  } catch (error) {
-    console.error('ログインエラー:', error)
+    router.push('/')
+  } catch (err) {
+    error.value = 'ログインに失敗しました'
+  } finally {
+    isLoading.value = false
   }
 }
 </script>
