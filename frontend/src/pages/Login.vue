@@ -8,7 +8,7 @@
           <label for="email">メールアドレス</label>
           <input
             id="email"
-            v-model="formData.email"
+            v-model="email"
             type="email"
             required
             class="form-input"
@@ -20,7 +20,7 @@
           <label for="password">パスワード</label>
           <input
             id="password"
-            v-model="formData.password"
+            v-model="password"
             type="password"
             required
             class="form-input"
@@ -42,35 +42,18 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
-const router = useRouter()
-const route = useRoute()
 const authStore = useAuthStore()
-
-const formData = ref({
-  email: '',
-  password: ''
-})
+const email = ref('')
+const password = ref('')
 
 const handleSubmit = async () => {
   try {
-    if (!formData.value.email || !formData.value.password) {
-      alert('メールアドレスとパスワードを入力してください')
-      return
-    }
-
-    console.log('送信するデータ:', formData.value)
-    
-    await authStore.login(formData.value)
-    
-    const redirectPath = route.query.redirect as string
-    router.push(redirectPath || '/')
-    
+    // 文字列として値を渡す
+    await authStore.login(email.value, password.value)
   } catch (error) {
     console.error('ログインエラー:', error)
-    alert(error instanceof Error ? error.message : 'ログインに失敗しました')
   }
 }
 </script>

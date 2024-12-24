@@ -1,10 +1,69 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
+import api from '@/utils/api'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 export const useAuthStore = defineStore('auth', () => {
+  const router = useRouter()
   const token = ref<string | null>(localStorage.getItem('token'))
   const user = ref<any | null>(null)
   const isAuthenticated = ref(false)
+
+  const login = async (email: string, password: string) => {
+    try {
+      console.log('Attempting login with:', { email, password })
+
+      const formData = new FormData()
+      formData.append('username', email)
+      formData.append('password', password)
+
+      console.log('Sending form data:', {
+        username: formData.get('username'),
+        password: formData.get('password')
+      })
+
+      const response = await api.post('/api/auth/login', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      console.log('Login response:', response.data)
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token)
+        token.value = response.data.token
+        await fetchUser()
+        
+        const redirect = router.currentRoute.value.query.redirect as string
+        router.push(redirect || '/')
+      }
+    } catch (error) {
+      console.error('Login error:', error)
+      if (axios.isAxiosError(error)) {
+        console.error('Response data:', error.response?.data)
+      }
+      throw error
+    }
+  }
+
+  const fetchUser = async () => {
+    try {
+      console.log('Fetching user data...')
+      const response = await api.get('/api/users/me')
+      console.log('User data response:', response)
+      
+      if (response.data) {
+        updateUser(response.data)
+        updateAuthenticated(true)
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error)
+      updateAuthenticated(false)
+      throw error
+    }
+  }
 
   const updateUser = (userData: any) => {
     user.value = userData
@@ -14,65 +73,8 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated.value = value
   }
 
-  const login = async (credentials: { email: string; password: string }) => {
-    try {
-      const formData = new FormData()
-      formData.append('username', credentials.email)
-      formData.append('password', credentials.password)
-
-      const response = await fetch('http://localhost:8000/api/auth/login', {
-        method: 'POST',
-        body: formData
-      })
-
-      if (!response.ok) {
-        throw new Error('ログインに失敗しました')
-      }
-
-      const data = await response.json()
-      token.value = data.access_token
-      localStorage.setItem('token', data.access_token)
-      updateAuthenticated(true)
-      
-      await fetchUser()
-
-      return data
-    } catch (error) {
-      console.error('Login error:', error)
-      throw error
-    }
-  }
-
-  const logout = async () => {
-    token.value = null
-    user.value = null
-    updateAuthenticated(false)
-    localStorage.removeItem('token')
-  }
-
-  const fetchUser = async () => {
-    try {
-      const response = await fetch('http://localhost:8000/api/users/me', {
-        headers: {
-          'Authorization': `Bearer ${token.value}`
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error('ユーザー情報の取得に失敗しました')
-      }
-
-      const userData = await response.json()
-      updateUser(userData)
-      updateAuthenticated(true)
-    } catch (error) {
-      console.error('Error fetching user:', error)
-      throw error
-    }
-  }
-
   if (token.value) {
-    fetchUser()
+    fetchUser().catch(console.error)
   }
 
   return {
@@ -80,7 +82,6 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     isAuthenticated,
     login,
-    logout,
     fetchUser,
     updateUser,
     updateAuthenticated

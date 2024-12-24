@@ -17,3 +17,4 @@ aiofiles
 cloudinary==1.37.0
 fastapi-mail==1.4.1
 PyJWT==2.8.0
+itsdangerous==2.1.2

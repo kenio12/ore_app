@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import List
 from ..database import get_db
-from ..models.app import AppCreate
+from ..models.app import AppCreate, AppGenre
 from datetime import datetime
 from bson import ObjectId
 from ..utils.auth import get_current_user  # 追加：認証用
@@ -13,16 +13,23 @@ router = APIRouter()
 @router.post("/")
 async def create_app(
     app_data: AppCreate, 
-    current_user = Depends(get_current_user),  # 追加：現在のユーザーを取得
+    current_user: dict = Depends(get_current_user),  # 認証必須
     db = Depends(get_db)
 ):
     try:
-        print("Creating new app:", app_data.dict())
+        if not current_user:  # ユーザーが認証されているか確認
+            raise HTTPException(
+                status_code=401,
+                detail="Not authenticated"
+            )
         
-        # Enumの値を文字列に変換
+        # Enumの値を全て文字列に変換
         app_dict = app_data.dict()
-        app_dict["app_type"] = app_data.app_type.value if app_data.app_type else None
-        app_dict["status"] = app_data.status.value if app_data.status else None
+        app_dict["genres"] = [genre.value for genre in app_data.genres]
+        app_dict["app_type"] = app_data.app_type.value  # AppTypeを文字列に
+        app_dict["status"] = app_data.status.value      # AppStatusを文字列に
+        
+        print("Creating new app:", app_dict)
         
         app_dict["user_id"] = current_user["_id"]
         app_dict["user"] = {
@@ -80,7 +87,7 @@ async def get_apps(limit: int = 100, db = Depends(get_db)):
                 "created_at": app.get("created_at"),
                 "prefix_icon": app.get("prefix_icon", "🗡️"),
                 "suffix_icon": app.get("suffix_icon", "🏴‍☠️"),
-                "app_type": app.get("app_type", "UNSPECIFIED"),  # genreを完全駆逐してapp_typeに変更！
+                "app_type": app.get("app_type", "UNSPECIFIED"),  # genreを完全駆逐してapp_type変更！
             }
             
             # ユーザー情報を追加

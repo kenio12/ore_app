@@ -24,6 +24,7 @@ async def get_user(user_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
         detail="User not found"
     )
 
-@router.get("/api/users/me")
-async def get_current_user_info(current_user: dict = Depends(get_current_user)):
+@router.get("/me")
+async def read_users_me(current_user: dict = Depends(get_current_user)):
+    print("Current user session:", current_user)  # デバッグ用
     return current_user

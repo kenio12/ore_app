@@ -1,23 +1,46 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
-  withCredentials: true,  // これ重要！
+  baseURL: 'http://localhost:8000',  // APIのベースURL
+  withCredentials: true,  // CORSでクッキーを送信するために必要
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   }
 })
 
-// リクエストインターセプターを追加
+// リクエストインターセプターでデバッグ情報を出力
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
-    }
+    console.log('API Request:', {
+      url: config.url,
+      method: config.method,
+      headers: config.headers,
+      data: config.data
+    })
     return config
   },
   (error) => {
+    console.error('API Request Error:', error)
+    return Promise.reject(error)
+  }
+)
+
+// レスポンスインターセプターでデバッグ情報を出力
+api.interceptors.response.use(
+  (response) => {
+    console.log('API Response:', {
+      status: response.status,
+      data: response.data,
+      headers: response.headers
+    })
+    return response
+  },
+  (error) => {
+    console.error('API Response Error:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    })
     return Promise.reject(error)
   }
 )

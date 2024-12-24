@@ -9,12 +9,13 @@ from app.utils.email import send_verification_email
 from jose import jwt
 from jose import JWTError
 from app.core.config import settings
-from datetime import datetime
+from datetime import datetime, timedelta
 from fastapi.responses import JSONResponse
 from ..utils.auth import get_current_user
 from typing import Optional
 from ..redis_client import redis_client
 import uuid
+from ..dependencies.session import get_session
 
 router = APIRouter(
     prefix="/auth",
@@ -26,6 +27,15 @@ async def create_session(user_id: str) -> str:
     session_id = str(uuid.uuid4())
     await redis_client.set(f"session:{session_id}", user_id, ex=1800)
     return session_id
+
+async def authenticate_user(email: str, password: str, db):
+    # データベースからユーザーを検索
+    user = await db["users"].find_one({"email": email})
+    if not user:
+        return False
+    if not verify_password(password, user["hashed_password"]):
+        return False
+    return user
 
 @router.post("/register", response_model=UserResponse)
 async def register(user: UserCreate, response: Response, db: AsyncIOMotorDatabase = Depends(get_db)):
@@ -105,35 +115,31 @@ async def register(user: UserCreate, response: Response, db: AsyncIOMotorDatabas
 @router.post("/login")
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: AsyncIOMotorDatabase = Depends(get_db)
+    response: Response = None,
+    session = Depends(get_session),
+    db = Depends(get_db)
 ):
-    # ユーザーの検索
-    user = await db.users.find_one({"email": form_data.username})
+    print("Login attempt with:", form_data.username)  # デバッグ用
     
-    # ユーザーが存在しないかパスワードが間違っている場合
-    if not user or not verify_password(form_data.password, user["hashed_password"]):
+    user = await authenticate_user(form_data.username, form_data.password, db)
+    if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password"
+            status_code=401,
+            detail="Incorrect username or password"
         )
-    
-    # メール認証が完了していない場合
-    if not user.get("is_verified", False):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Please verify your email before logging in"
-        )
-    
-    # アカウントが有効でない場合
-    if not user.get("is_active", False):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Account is not active"
-        )
-    
-    # JWTトークンの生成
-    access_token = create_access_token(data={"sub": user["email"]})
-    return {"access_token": access_token, "token_type": "bearer"}
+
+    # セッションにユーザーIDを保存
+    session["user_id"] = str(user["_id"])
+    print("Session saved:", session)  # デバッグ用
+
+    return {
+        "access_token": str(user["_id"]),
+        "token_type": "bearer",
+        "user": {
+            "id": str(user["_id"]),
+            "username": user["username"]
+        }
+    }
 
 @router.post("/verify-email/{token}")
 async def verify_email(token: str, response: Response, db: AsyncIOMotorDatabase = Depends(get_db)):
@@ -173,7 +179,7 @@ async def verify_email(token: str, response: Response, db: AsyncIOMotorDatabase 
             samesite="lax"
         )
         
-        # JWTトークンを生成
+        # JWTトークンを���成
         access_token = create_access_token(data={"sub": email})
         
         # ユーザー情報を整形
