@@ -19,6 +19,24 @@
         @enderror
     </div>
 
+    <!-- アプリの紹介 -->
+    <div class="mb-6">
+        <label for="description" class="block text-sm font-medium text-gray-700">
+            アプリの紹介 <span class="text-red-500">*</span>
+        </label>
+        <textarea 
+            name="description" 
+            id="description"
+            rows="8"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            placeholder="あなたのアプリの特徴や魅力を簡潔に説明してください"
+            required
+        >{{ old('description', $app->description ?? '') }}</textarea>
+        @error('description')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
     <!-- 公開状態 -->
     <div class="mb-6">
         <label for="publish_status" class="block text-sm font-medium text-gray-700">
@@ -46,7 +64,7 @@
     <!-- デモURL -->
     <div class="mb-6">
         <label for="demo_url" class="block text-sm font-medium text-gray-700">
-            アプリへのアクセス
+            アプリへのアクセス <span class="text-red-500">*</span>
         </label>
         <input 
             type="url" 
@@ -55,6 +73,7 @@
             value="{{ old('demo_url', $app->demo_url ?? '') }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="https://your-demo-site.com"
+            required
         >
         @error('demo_url')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -64,7 +83,7 @@
     <!-- GitHubリポジトリURL -->
     <div class="mb-6">
         <label for="github_url" class="block text-sm font-medium text-gray-700">
-            GitHubリポジトリURL
+            GitHubリポジトリURL <span class="text-red-500">*</span>
         </label>
         <input 
             type="url" 
@@ -73,6 +92,7 @@
             value="{{ old('github_url', $app->github_url ?? '') }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="https://github.com/username/repo"
+            required
         >
         @error('github_url')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -143,26 +163,52 @@
         @enderror
     </div>
 
+    <!-- アプリの種類 -->
+    <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            アプリの種類 <span class="text-red-500">*</span>
+        </label>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            @foreach([
+                'web_app' => 'Webアプリケーション',
+                'ios_app' => 'iOSアプリ',
+                'android_app' => 'Androidアプリ',
+                'windows_app' => 'Windowsアプリ',
+                'mac_app' => 'macOSアプリ',
+                'linux_app' => 'Linuxアプリ',
+                'game' => 'ゲーム',
+                'other' => 'その他'
+            ] as $value => $label)
+                <label class="flex items-center gap-2">
+                    <input
+                        type="radio"
+                        name="app_type"
+                        value="{{ $value }}"
+                        {{ old('app_type', $app->app_type ?? '') == $value ? 'checked' : '' }}
+                        class="rounded-full border-gray-300 text-blue-600 focus:ring-blue-500"
+                        required
+                    >
+                    <span class="text-gray-700">{{ $label }}</span>
+                </label>
+            @endforeach
+        </div>
+        @error('app_type')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
     <!-- ジャンル -->
-    <div class="mb-6">
+    <div class="mb-6 bg-white p-4 rounded-lg border border-gray-200">
         <label class="block text-sm font-medium text-gray-700 mb-2">
             ジャンル（複数選択可） <span class="text-red-500">*</span>
         </label>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             @foreach([
-                'web_app' => 'Webアプリケーション',
-                'mobile_app' => 'モバイルアプリ',
-                'desktop_app' => 'デスクトップアプリ',
-                'game' => 'ゲーム',
-                'tool' => '開発ツール',
-                'api' => 'API/Webサービス',
-                'cms' => 'CMS',
-                'e_commerce' => 'ECサイト',
                 'sns' => 'SNS',
-                'netshop' => 'ネットショップ',
+                'netshop' => 'ネットショップ/EC',
                 'matching' => 'マッチングサービス',
                 'learning_service' => '学習サービス',
-                'work' => '仕事',
+                'work' => '仕事効率化',
                 'entertainment' => '娯楽',
                 'daily_life' => '日常生活',
                 'communication' => 'コミュニケーション',
@@ -181,6 +227,11 @@
                 'game' => 'ゲーム',
                 'sports' => 'スポーツ',
                 'academic' => '学問',
+                'development_tool' => '開発ツール',
+                'api_service' => 'API/Webサービス',
+                'cms' => 'CMS',
+                'blog' => 'ブログ/メディア',
+                'portfolio' => 'ポートフォリオ',
                 'other' => 'その他'
             ] as $value => $label)
                 <label class="flex items-center gap-2">
