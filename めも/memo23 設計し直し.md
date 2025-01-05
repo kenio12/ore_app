@@ -38,7 +38,7 @@ ore_app/                    # プロジェクトルート
 src/
 └── app/
     ├── Modules/              
-    │   ├── AppPost/         # アプリ投稿モジュール
+    │   ├── App/         # アプリモジュール
     │   │   ├── Controllers/
     │   │   ├── Models/
     │   │   └── Views/

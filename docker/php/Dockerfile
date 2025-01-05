@@ -8,15 +8,19 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
+    unzip \
+    libicu-dev
 
-# PHPの拡張機能をインストール
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+# Node.jsとnpmの最新版をインストール（これ一つだけでOK）
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+# PHP拡張のインストール
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
 
 # Composerのインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 作業ディレクトリの設定
 WORKDIR /var/www/html
 
 # ユーザーを作成

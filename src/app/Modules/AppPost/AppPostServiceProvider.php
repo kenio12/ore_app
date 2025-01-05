@@ -14,7 +14,10 @@ class AppPostServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // ここに追加
+        $this->app->bind('files', function () {
+            return new \Illuminate\Filesystem\Filesystem();
+        });
     }
 
     /**
@@ -22,11 +25,14 @@ class AppPostServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // ビューの登録
+        // ビューの場所を登録
         $this->loadViewsFrom(__DIR__ . '/Views', 'AppPost');
 
+        // マイグレーションの場所を登録
+        $this->loadMigrationsFrom(__DIR__ . '/Database/Migrations');
+
         // ルートの登録
-        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 
         // ポリシーの登録
         Gate::policy(AppPost::class, AppPostPolicy::class);

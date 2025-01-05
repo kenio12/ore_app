@@ -6,6 +6,10 @@ services:
       dockerfile: docker/php/Dockerfile
     volumes:
       - ./src:/var/www/html
+    ports:
+      - "5175:5175"
+    env_file:
+      - ./src/.env
     depends_on:
       - db
 
@@ -15,7 +19,6 @@ services:
       dockerfile: docker/nginx/Dockerfile
     ports:
       - "80:80"
-      - "5173:5173"
     volumes:
       - ./src:/var/www/html
     depends_on:
@@ -28,8 +31,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
     ports:
