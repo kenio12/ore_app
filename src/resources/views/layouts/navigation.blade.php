@@ -13,8 +13,20 @@
             <!-- Navigation Links -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <div class="space-x-4">
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-gray-900">ログイン</a>
-                    <a href="{{ route('register') }}" class="text-sm text-gray-700 hover:text-gray-900">新規登録</a>
+                    @auth
+                        <!-- ログイン済みの場合 -->
+                        <span class="text-sm text-gray-700">{{ Auth::user()->name }}</span>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-sm text-gray-700 hover:text-gray-900">
+                                ログアウト
+                            </button>
+                        </form>
+                    @else
+                        <!-- 未ログインの場合 -->
+                        <a href="{{ route('login') }}" class="text-sm text-gray-700 hover:text-gray-900">ログイン</a>
+                        <a href="{{ route('register') }}" class="text-sm text-gray-700 hover:text-gray-900">新規登録</a>
+                    @endauth
                 </div>
             </div>
         </div>
