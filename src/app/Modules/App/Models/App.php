@@ -3,20 +3,20 @@
 namespace App\Modules\App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class App extends Model
 {
     protected $fillable = [
         'title',
-        'description',
-        'app_type',
-        'status',
-        'user_id'
+        'publish_status',
+        'demo_url',
+        'source_url',
+        'development_period_years',
+        'development_period_months',
+        'genres',
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $casts = [
+        'genres' => 'array',
+    ];
 } 
