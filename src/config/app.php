@@ -173,6 +173,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Modules\Home\Providers\HomeServiceProvider::class,
+
+        App\Modules\Profile\ProfileServiceProvider::class,
     ],
 
 ];
