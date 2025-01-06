@@ -9,9 +9,14 @@
         <textarea 
             name="motivation" 
             id="motivation"
-            rows="4"
+            rows="8"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             required
+            placeholder="例：
+- このアプリを作ろうと思ったきっかけ
+- 解決したかった課題
+- 目指した理想の状態
+- 個人的な興味や関心"
         >{{ old('motivation', $app->motivation ?? '') }}</textarea>
         @error('motivation')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -26,7 +31,7 @@
         <textarea 
             name="challenges" 
             id="challenges"
-            rows="4"
+            rows="8"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             required
         >{{ old('challenges', $app->challenges ?? '') }}</textarea>
@@ -43,7 +48,7 @@
         <textarea 
             name="devised_points" 
             id="devised_points"
-            rows="4"
+            rows="8"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             required
         >{{ old('devised_points', $app->devised_points ?? '') }}</textarea>
@@ -60,7 +65,7 @@
         <textarea 
             name="learnings" 
             id="learnings"
-            rows="4"
+            rows="8"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             required
         >{{ old('learnings', $app->learnings ?? '') }}</textarea>
@@ -77,7 +82,7 @@
         <textarea 
             name="future_plans" 
             id="future_plans"
-            rows="4"
+            rows="8"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
         >{{ old('future_plans', $app->future_plans ?? '') }}</textarea>
         @error('future_plans')

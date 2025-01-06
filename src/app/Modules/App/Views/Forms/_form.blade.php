@@ -9,13 +9,12 @@
 @include('App::Forms.01_BasicInfoForm')
 @include('App::Forms.02_DevelopmentStoryForm')
 @include('App::Forms.03_HardwareSection')
-@include('App::Forms.04_1_SoftwareEnvironmentSection')
-@include('App::Forms.04_2_ArchitectureSection')
+@include('App::Forms.04_1_BasicDevEnvironment')
+@include('App::Forms.04_2_DevToolsEnvironment')
+@include('App::Forms.04_3_ArchitectureSection')
 @include('App::Forms.05_BackendSection')
 @include('App::Forms.06_FrontendSection')
 @include('App::Forms.07_DatabaseSection')
-@include('App::Forms.08_OtherEnvironmentSection')
-@include('App::Forms.09_OthersSection')
 
 <!-- 送信ボタン -->
 <div class="mt-8 flex justify-end space-x-4">
