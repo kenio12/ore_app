@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libicu-dev
 
-# Node.jsとnpmの最新版をインストール（これ一つだけでOK）
+# Node.jsとnpmの最新版をインストール
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
@@ -20,6 +20,9 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
 
 # Composerのインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# PHPの設定ファイルをコピー（パスを修正）
+COPY php.ini /usr/local/etc/php/php.ini
 
 WORKDIR /var/www/html
 

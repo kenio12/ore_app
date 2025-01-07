@@ -22,7 +22,7 @@
     <!-- スクリーンショット -->
     <div class="mb-6">
         <label class="block text-sm font-medium text-gray-700">
-            スクリーンショット（3枚まで）
+            スクリーンショット（1〜3枚） <span class="text-red-500">*</span>
         </label>
         <div 
             class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-md"
@@ -78,7 +78,9 @@
             @if(isset($app) && $app->screenshots)
                 @foreach($app->screenshots as $screenshot)
                     <div class="relative group">
-                        <img src="{{ $screenshot }}" alt="スクリーンショット" class="w-full h-48 object-cover rounded-lg">
+                        <img src="{{ $screenshot }}" 
+                             alt="スクリーンショット" 
+                             class="w-auto h-auto max-w-full max-h-[150px] object-contain rounded-lg cursor-pointer mx-auto">
                         <button type="button" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity" onclick="removeScreenshot(this)">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -91,6 +93,9 @@
         </div>
 
         @error('screenshots')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+        @error('screenshots.*')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
@@ -119,7 +124,7 @@
             このサイト内の公開状態 <span class="text-red-500">*</span>
         </label>
         <select 
-            name="publish_status" 
+            name="publish_status"
             id="publish_status"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             required
@@ -177,24 +182,24 @@
 
     <!-- アプリの状態 -->
     <div class="mb-6">
-        <label for="status" class="block text-sm font-medium text-gray-700">
+        <label for="app_status" class="block text-sm font-medium text-gray-700">
             アプリの状態 <span class="text-red-500">*</span>
         </label>
         <select 
-            name="status" 
-            id="status"
+            name="app_status"
+            id="app_status"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             required
         >
             <option value="">選択してください</option>
-            <option value="completed" {{ old('status', $app->status ?? '') == 'completed' ? 'selected' : '' }}>
+            <option value="completed" {{ old('app_status', $app->app_status ?? '') == 'completed' ? 'selected' : '' }}>
                 完成
             </option>
-            <option value="in_development" {{ old('status', $app->status ?? '') == 'in_development' ? 'selected' : '' }}>
+            <option value="in_development" {{ old('app_status', $app->app_status ?? '') == 'in_development' ? 'selected' : '' }}>
                 開発中
             </option>
         </select>
-        @error('status')
+        @error('app_status')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
@@ -326,29 +331,165 @@
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
+
+    <!-- デバッグ情報 -->
+    @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 </div> 
+
+<style>
+/* リセット用のスタイル */
+.modal-preview-image {
+    all: unset !important;
+    display: block !important;
+    margin: auto !important;
+}
+
+/* モーダル用のスタイル */
+.modal-container {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 9999 !important;
+}
+
+/* プレビューモーダル用の完全に独立したスタイル */
+#preview-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+#preview-modal img {
+    /* すべてのTailwindスタイルをリセット */
+    all: initial;
+    /* 必要な属性のみ設定 */
+    display: block;
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+}
+
+/* プレビュー画像用のスタイル */
+.preview-container {
+    max-width: 100%;
+    margin-top: 1rem;
+}
+
+.preview-image {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 0.5rem;
+}
+
+/* モーダル表示用のスタイル */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 90%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('#app-form');
+    
+    // フォームの入力値を自動保存（1秒ごと）
+    const inputs = form.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+        // 保存されたデータがあれば復元
+        const savedValue = localStorage.getItem(`form_${input.id}`);
+        if (savedValue && !input.value) {
+            input.value = savedValue;
+        }
+
+        // 入力値の変更を監視して保存
+        input.addEventListener('input', () => {
+            localStorage.setItem(`form_${input.id}`, input.value);
+        });
+    });
+
+    // フォーム送信時にローカルストレージをクリア
+    form.addEventListener('submit', () => {
+        inputs.forEach(input => {
+            localStorage.removeItem(`form_${input.id}`);
+        });
+    });
+
     const input = document.getElementById('screenshots');
+    if (!input) {
+        console.error('File input element not found!');
+        return;
+    }
+
     const previewContainer = document.getElementById('preview-container');
     const maxFiles = 3;
     const maxSize = 5 * 1024 * 1024; // 5MB
 
+    // ファイル選択時の処理
     input.addEventListener('change', function(e) {
         const files = Array.from(e.target.files);
         
-        if (files.length + previewContainer.children.length > maxFiles) {
+        // 既存のプレビュー数をチェック
+        const existingPreviews = previewContainer.querySelectorAll('.relative.group').length;
+        if (files.length + existingPreviews > maxFiles) {
             alert('スクリーンショットは最大3枚までです');
             return;
         }
 
         files.forEach(file => {
+            // ファイルサイズチェック
             if (file.size > maxSize) {
-                alert(`${file.name}のサイズが5MBを超えています`);
+                alert(`${file.name}は5MB以上です`);
                 return;
             }
 
+            // ファイル形式チェック
             if (!file.type.startsWith('image/')) {
                 alert(`${file.name}は画像ファイルではありません`);
                 return;
@@ -356,22 +497,118 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const preview = document.createElement('div');
-                preview.className = 'relative group';
-                preview.innerHTML = `
-                    <img src="${e.target.result}" alt="スクリーンショット" class="w-full h-48 object-cover rounded-lg">
-                    <button type="button" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity" onclick="removeScreenshot(this)">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                `;
-                previewContainer.appendChild(preview);
+                // プレビュー用のコンテナを作成
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'relative block mb-4';
+
+                // プレビュー用の画像要素を作成
+                const previewImg = document.createElement('img');
+                previewImg.src = e.target.result;
+                
+                // 画像の縦横比をチェックするため、一時的な画像を作成
+                const tempImg = new Image();
+                tempImg.src = e.target.result;
+                
+                tempImg.onload = function() {
+                    const aspectRatio = this.width / this.height;
+                    
+                    if (aspectRatio < 1) {  // 縦長画像（スマホスクショ）
+                        const viewportHeight = window.innerHeight;
+                        const imageHeight = Math.floor(viewportHeight * 0.8);
+                        
+                        previewImg.style.cssText = `
+                            height: ${imageHeight}px;
+                            width: auto;
+                            object-fit: contain;
+                            border-radius: 0.5rem;
+                            cursor: pointer;
+                            margin: 0 auto;
+                            display: block;
+                        `;
+                    } else {  // 横長画像（パソコンスクショ）
+                        const viewportWidth = window.innerWidth;
+                        const imageWidth = Math.floor(viewportWidth * 0.9);
+                        
+                        previewImg.style.cssText = `
+                            width: ${imageWidth}px;
+                            height: auto;
+                            object-fit: contain;
+                            border-radius: 0.5rem;
+                            cursor: pointer;
+                            margin: 0 auto;
+                            display: block;
+                        `;
+                    }
+                };
+                
+                previewImg.onclick = function() {
+                    showFullPreview(this);
+                };
+
+                // 削除ボタンを追加
+                const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = '×';
+                deleteButton.className = 'absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center';
+                deleteButton.onclick = function() {
+                    imageContainer.remove();
+                };
+
+                // 画像とボタンをコンテナに追加
+                imageContainer.appendChild(previewImg);
+                imageContainer.appendChild(deleteButton);
+
+                // プレビューコンテナに追加
+                const previewContainer = document.getElementById('preview-container');
+                previewContainer.appendChild(imageContainer);
+
+                // ウィンドウサイズ変更時も比率を維持
+                window.addEventListener('resize', function() {
+                    const aspectRatio = tempImg.width / tempImg.height;
+                    
+                    if (aspectRatio < 1) {  // 縦長画像（スマホスクショ）
+                        const newHeight = Math.floor(window.innerHeight * 0.8);
+                        previewImg.style.height = `${newHeight}px`;
+                        previewImg.style.width = 'auto';
+                    } else {  // 横長画像（パソコンスクショ）
+                        const newWidth = Math.floor(window.innerWidth * 0.9);
+                        previewImg.style.width = `${newWidth}px`;
+                        previewImg.style.height = 'auto';
+                    }
+                });
             };
             reader.readAsDataURL(file);
         });
     });
 });
+
+// フルパー関数は外に出す
+function showFullPreview(img) {
+    const fullImg = new Image();
+    
+    fullImg.onload = function() {
+        // モーダルコンテナを作成
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75';
+        modal.id = 'preview-modal';
+        
+        // 新しい画像要素を作成（サイズ制限付き）
+        const previewImg = document.createElement('img');
+        previewImg.src = this.src;
+        previewImg.className = 'max-w-[90vw] max-h-[90vh] object-contain';
+        
+        // モーダルに画像を追加
+        modal.appendChild(previewImg);
+        
+        // クリックでモーダルを閉じる
+        modal.onclick = function() {
+            this.remove();
+        };
+        
+        document.body.appendChild(modal);
+    };
+    
+    fullImg.src = img.src;
+}
 
 function removeScreenshot(button) {
     button.closest('.relative').remove();
