@@ -23,6 +23,12 @@ class App extends Model
         'development_period_months',
         'app_type',
         'genres',
+        'security_measures',
+        'performance_optimizations',
+        'testing_tools',
+        'monitoring_tools',
+        'code_quality_tools',
+        'security_notes',
     ];
 
     protected $casts = [
@@ -31,6 +37,11 @@ class App extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
         'genres' => 'array',
+        'security_measures' => 'array',
+        'performance_optimizations' => 'array',
+        'testing_tools' => 'array',
+        'monitoring_tools' => 'array',
+        'code_quality_tools' => 'array',
     ];
 
     // ユーザーとのリレーション

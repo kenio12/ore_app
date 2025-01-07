@@ -55,8 +55,8 @@ class AppController extends Controller
                 'description' => 'nullable|string|max:1000',
                 'demo_url' => 'nullable|url|max:255',
                 'github_url' => 'nullable|url|max:255',
-                'publish_status' => 'required|in:published,draft',  // 公開状態
-                'app_status' => 'required|in:completed,in_development',  // アプリの状態
+                'status' => 'required|in:published,draft',  // publish_status から status に変更
+                'app_status' => 'required|in:completed,in_development',
                 'screenshots' => 'required|array|min:1|max:3',
                 'screenshots.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
             ]);
@@ -77,10 +77,10 @@ class AppController extends Controller
             $app->user_id = Auth::id();
             $app->save();
 
-            // 公開状態（publish_status）によって遷移先を変更
-            if ($app->publish_status === 'published') {
-                // 公開する場合はホームページへ
-                return redirect()->route('home')
+            // statusによって遷移先を変更
+            if ($app->status === 'published') {
+                // 公開する場合はトップページへ
+                return redirect('/')
                     ->with('success', 'アプリを公開しました！');
             } else {
                 // 下書きの場合は自身のプロフィールへ
@@ -183,5 +183,18 @@ class AppController extends Controller
     {
         $app = App::with('user')->findOrFail($id);  // ユーザー情報も取得
         return view('App::show', compact('app'));
+    }
+
+    protected function rules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'demo_url' => 'required|url',
+            'github_url' => 'required|url',
+            'status' => 'required|in:draft,published',  // publish_status から status に変更
+            'screenshots' => 'required|array|min:1|max:3',
+            'screenshots.*' => 'image|max:5120', // 5MB
+        ];
     }
 } 

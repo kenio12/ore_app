@@ -22,6 +22,7 @@
     @include('App::Forms.04_1_BasicDevEnvironment')
     @include('App::Forms.04_2_DevToolsEnvironment')
     @include('App::Forms.04_3_ArchitectureSection')
+    @include('App::Forms.04_4_SecuritySection')
     @include('App::Forms.05_BackendSection')
     @include('App::Forms.06_FrontendSection')
     @include('App::Forms.07_DatabaseSection')
