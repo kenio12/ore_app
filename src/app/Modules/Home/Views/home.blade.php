@@ -10,6 +10,15 @@
             </div>
         </div>
 
+        <!-- フラッシュメッセージ -->
+        @if (session('status'))
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-lg shadow-sm">
+                    {{ session('status') }}
+                </div>
+            </div>
+        @endif
+
         <!-- コンテンツコンテナ -->
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- アプリグリッド -->

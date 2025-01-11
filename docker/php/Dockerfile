@@ -22,7 +22,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # PHPの設定ファイルをコピー（パスを修正）
-COPY php.ini /usr/local/etc/php/php.ini
+COPY ./docker/php/php.ini /usr/local/etc/php/php.ini
 
 WORKDIR /var/www/html
 

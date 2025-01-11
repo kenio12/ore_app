@@ -29,6 +29,20 @@ class App extends Model
         'monitoring_tools',
         'code_quality_tools',
         'security_notes',
+        'dev_team_size',
+        'virtualization',
+        'other_virtualization',
+        'os_type',
+        'os_version',
+        'editors',
+        'other_editor',
+        'version_control',
+        'other_version_control',
+        'monitor_count',
+        'main_monitor_size',
+        'main_monitor_resolution',
+        'monitor_details',
+        'dev_env_notes'
     ];
 
     protected $casts = [
@@ -42,6 +56,9 @@ class App extends Model
         'testing_tools' => 'array',
         'monitoring_tools' => 'array',
         'code_quality_tools' => 'array',
+        'virtualization' => 'array',
+        'editors' => 'array',
+        'version_control' => 'array',
     ];
 
     // ユーザーとのリレーション
