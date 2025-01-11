@@ -174,7 +174,7 @@ return [
 
         App\Modules\Home\Providers\HomeServiceProvider::class,
 
-        App\Modules\Profile\ProfileServiceProvider::class,
+        App\Modules\Profile\Providers\ProfileServiceProvider::class,
 
         App\Modules\App\Providers\AppServiceProvider::class,
     ],
