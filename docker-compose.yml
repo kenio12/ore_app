@@ -12,6 +12,8 @@ services:
       - ./src/.env
     depends_on:
       - db
+    environment:
+      - DOCKER_ENV=true
 
   web:
     build:

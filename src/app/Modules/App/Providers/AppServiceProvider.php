@@ -22,5 +22,8 @@ class AppServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
         // コンポーネントの登録
         Blade::componentNamespace('App\\Modules\\App\\Views\\components', 'app');
+
+        // マイグレーションパスの登録
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
     }
 } 

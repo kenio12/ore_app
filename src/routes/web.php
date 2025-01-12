@@ -11,9 +11,11 @@ Route::get('/', [HomeController::class, 'index']);
 require __DIR__.'/auth.php';
 
 // ダッシュボードルートを追加
-Route::get('/dashboard', function () {
-    return redirect('/');  // ホームページにリダイレクト
-})->middleware(['auth'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
 
 // メール認証が必要なルートをここに記述
 Route::middleware(['auth', 'verified'])->group(function () {
