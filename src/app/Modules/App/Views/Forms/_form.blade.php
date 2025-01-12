@@ -6,26 +6,24 @@
     @csrf
 
     <!-- プログレスバー -->
-    <div class="mb-8" 
-         x-data="{ progress: 0 }" 
-         x-init="$nextTick(() => window.progressBar = $data)">
-        <div class="bg-gray-200 rounded-full h-2.5">
-            <div class="bg-blue-600 h-2.5 rounded-full" 
+    <div class="mb-8">
+        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 relative overflow-hidden">
+            <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500"
                  x-bind:style="{ width: progress + '%' }"></div>
         </div>
     </div>
 
     <!-- フォームセクション -->
-    @include('App::Forms.01_BasicInfoForm')
-    @include('App::Forms.02_DevelopmentStoryForm')
-    @include('App::Forms.03_HardwareSection')
-    @include('App::Forms.04_1_BasicDevEnvironment')
-    @include('App::Forms.04_2_DevToolsEnvironment')
-    @include('App::Forms.04_3_ArchitectureSection')
-    @include('App::Forms.04_4_SecuritySection')
-    @include('App::Forms.05_BackendSection')
-    @include('App::Forms.06_FrontendSection')
-    @include('App::Forms.07_DatabaseSection')
+    @include('app::forms.01_BasicInfoForm')
+    @include('app::forms.02_DevelopmentStoryForm')
+    @include('app::forms.03_HardwareSection')
+    @include('app::forms.04_1_BasicDevEnvironment')
+    @include('app::forms.04_2_DevToolsEnvironment')
+    @include('app::forms.04_3_ArchitectureSection')
+    @include('app::forms.04_4_SecuritySection')
+    @include('app::forms.05_BackendSection')
+    @include('app::forms.06_FrontendSection')
+    @include('app::forms.07_DatabaseSection')
 
     <!-- 送信ボタン -->
     <div class="mt-8 flex justify-end space-x-4">
@@ -38,7 +36,6 @@
     </div>
 </form>
 
-<!-- フォームデータ保持用スクリプト -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('app-form');

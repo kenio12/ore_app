@@ -314,32 +314,7 @@
     @endif
 </div> 
 
-<style>
-/* プレビューモーダル用の完全に独立したスタイル */
-#preview-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-#preview-modal img {
-    /* すべてのTailwindスタイルをリセット */
-    all: initial;
-    /* 必要な属性のみ設定 */
-    display: block;
-    max-width: 90vw;
-    max-height: 90vh;
-    width: auto;
-    height: auto;
-}
-</style>
+<x-app::app-screenshot-modal />
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -414,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 previewImg.onclick = function() {
-                    showFullPreview(this);
+                    $dispatch('open-app-screenshot-modal', { src: this.src });
                 };
 
                 const deleteButton = document.createElement('button');
@@ -429,64 +404,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 previewContainer.appendChild(imageContainer);
             };
             reader.readAsDataURL(file);
-        });
-    });
-});
-
-function showFullPreview(img) {
-    const modal = document.createElement('div');
-    modal.id = 'preview-modal';
-    
-    const modalImg = document.createElement('img');
-    modalImg.src = img.src;
-    
-    modal.appendChild(modalImg);
-    modal.onclick = () => modal.remove();
-    document.body.appendChild(modal);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    if (!form) return;
-
-    // file型以外の入力要素を対象に
-    const inputs = form.querySelectorAll('input:not([type="file"]), textarea, select');
-    
-    // 保存されたデータの復元
-    inputs.forEach(input => {
-        const savedValue = localStorage.getItem(`form_${input.id}`);
-        if (savedValue && input.type !== 'file') {
-            input.value = savedValue;
-        }
-
-        // 入力値の変更を監視して保存
-        input.addEventListener('input', () => {
-            localStorage.setItem(`form_${input.id}`, input.value);
-        });
-    });
-
-    // フォーム送信が成功した時のみローカルストレージをクリア
-    form.addEventListener('submit', function(e) {
-        // デフォルトの送信をキャンセル
-        e.preventDefault();
-        
-        // フォームデータを送信
-        fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form)
-        })
-        .then(response => {
-            if (response.ok) {
-                // 成功時のみローカルストレージをクリア
-                inputs.forEach(input => {
-                    localStorage.removeItem(`form_${input.id}`);
-                });
-                // フォームを送信
-                form.submit();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
         });
     });
 });

@@ -40,6 +40,7 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'ce9671a430e4846b44e1c68c7611f9f5' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'a1cfe24d14977df6878b9bf804af2d1c' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Phpunit/Autoload.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
+        'cc37509b667671f1b7810c9ad725dc14' => __DIR__ . '/../..' . '/app/Modules/App/Helpers/ColorHelper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -559,6 +560,7 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'App\\Modules\\AppPost\\Policies\\AppPostPolicy' => __DIR__ . '/../..' . '/app/Modules/AppPost/Policies/AppPostPolicy.php',
         'App\\Modules\\AppPost\\Requests\\AppPostRequest' => __DIR__ . '/../..' . '/app/Modules/AppPost/Requests/AppPostRequest.php',
         'App\\Modules\\App\\Controllers\\AppController' => __DIR__ . '/../..' . '/app/Modules/App/Controllers/AppController.php',
+        'App\\Modules\\App\\Database\\Seeders\\AppTypeSeeder' => __DIR__ . '/../..' . '/app/Modules/App/Database/Seeders/AppTypeSeeder.php',
         'App\\Modules\\App\\Models\\App' => __DIR__ . '/../..' . '/app/Modules/App/Models/App.php',
         'App\\Modules\\App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Modules/App/Providers/AppServiceProvider.php',
         'App\\Modules\\App\\Requests\\AppRequest' => __DIR__ . '/../..' . '/app/Modules/App/Requests/AppRequest.php',

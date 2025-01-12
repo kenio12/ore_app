@@ -14,7 +14,7 @@ class AppController extends Controller
     public function create()
     {
         $app = new App();
-        return view('App::create', ['app' => $app]);
+        return view('app::create', ['app' => $app]);
     }
 
     private function uploadScreenshot($file)

@@ -29,12 +29,10 @@
                             <!-- バッジエリア -->
                             <div class="flex justify-between items-center mb-3">
                                 <div class="flex flex-wrap gap-2">
-                                    @foreach($app->app_types as $appType)
-                                        <span class="px-3 py-1 rounded-full text-sm font-medium text-white"
-                                            style="background-color: {{ $appTypeColors[$appType] ?? '#9CA3AF' }}">
-                                            {{ $appTypeLabels[$appType] ?? 'その他' }}
-                                        </span>
-                                    @endforeach
+                                    <span class="px-3 py-1 rounded-full text-sm font-medium text-white"
+                                        style="background-color: {{ $appTypeColors[$app->app_type] ?? '#9CA3AF' }}">
+                                        {{ $appTypeLabels[$app->app_type] ?? 'その他' }}
+                                    </span>
                                 </div>
                             </div>
 
@@ -47,8 +45,10 @@
                                 </span>
                             </div>
 
-                            <!-- スクリーンショット -->
-                            <div class="bg-gray-50 flex justify-center items-center mb-4">
+                            <!-- スクリーンショット（クリックでモーダル表示） -->
+                            <div class="bg-gray-50 flex justify-center items-center mb-4 cursor-pointer"
+                                 x-data
+                                 @click="$dispatch('open-app-screenshot-modal', { src: '{{ $app->screenshots[0] ?? '/default-app-image.png' }}' })">
                                 @if($app->screenshots && count($app->screenshots) > 0)
                                     <img class="max-h-[80vh] object-contain w-full"
                                         src="{{ $app->screenshots[0] }}"
@@ -61,7 +61,7 @@
                             <div class="flex justify-between items-center pt-4 border-t border-gray-200">
                                 <div class="flex items-center gap-2">
                                     <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                                        style="background-color: {{ generateColorFromString($app->user->name) }}">
+                                        style="background-color: {{ \App\Modules\App\Helpers\ColorHelper::generateColorFromString($app->user->name) }}">
                                         {{ substr($app->user->name, 0, 1) }}
                                     </div>
                                     <span class="text-gray-700">{{ $app->user->name }}</span>
@@ -90,5 +90,8 @@
                 </div>
             @endauth
         </div>
+
+        <!-- スクリーンショットモーダル -->
+        <x-app::app-screenshot-modal />
     </div>
 </x-app-layout> 
