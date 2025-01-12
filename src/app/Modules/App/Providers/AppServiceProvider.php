@@ -16,10 +16,10 @@ class AppServiceProvider extends ServiceProvider
         require_once app_path('Modules/App/Helpers/ColorHelper.php');
     }
 
-    public function boot()
+    public function boot(): void
     {
-        $this->loadViewsFrom(__DIR__.'/../Views', 'app');
-        $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
+        $this->loadViewsFrom(__DIR__ . '/../Views', 'app');
         // コンポーネントの登録
         Blade::componentNamespace('App\\Modules\\App\\Views\\components', 'app');
 

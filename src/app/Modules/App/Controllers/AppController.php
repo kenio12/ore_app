@@ -8,17 +8,57 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AppController extends Controller
 {
-    public function create()
+    private array $sections = [
+        'basic-info',
+        'development-story',
+        'hardware',
+        'dev-tools',
+        'architecture',
+        'security',
+        'backend',
+        'frontend',
+        'database'
+    ];
+
+    public function create(Request $request, string $section = 'basic-info')
     {
-        $app = new App();
+        // セクションの存在確認
+        if (!in_array($section, $this->sections)) {
+            return redirect()->route('app.create');
+        }
+
+        // 現在のインデックスを取得
+        $currentIndex = array_search($section, $this->sections);
         
+        // 前後のセクションを決定
+        $previousSection = $currentIndex > 0 ? $this->sections[$currentIndex - 1] : null;
+        $nextSection = isset($this->sections[$currentIndex + 1]) ? $this->sections[$currentIndex + 1] : null;
+
+        // セクションのタイトルマップ
+        $sectionTitles = [
+            'basic-info' => '基本情報',
+            'development-story' => '開発ストーリー',
+            'hardware' => 'ハードウェア環境',
+            'dev-tools' => '開発ツール環境',
+            'architecture' => 'アーキテクチャ',
+            'security' => 'セキュリティと品質管理',
+            'backend' => 'バックエンド環境',
+            'frontend' => 'フロントエンド環境',
+            'database' => 'データベース環境'
+        ];
+
         return view('app::app-form', [
-            'app' => $app,
-            'currentSection' => 'basic-info',  // 最初のセクション
-            'sectionTitle' => '基本情報'
+            'currentSection' => $section,
+            'previousSection' => $previousSection,
+            'nextSection' => $nextSection,
+            'sectionTitle' => $sectionTitles[$section] ?? '不明なセクション',
+            'sections' => $sectionTitles,
+            'app' => new App()
         ]);
     }
 
@@ -36,52 +76,69 @@ class AppController extends Controller
         return $result->getSecurePath();
     }
 
-    public function store(Request $request)
+    public function store(Request $request, string $section)
     {
+        // セッションにフォームデータを保存
+        $request->session()->put("app_form.{$section}", $request->all());
+        
+        // 次のセクションを決定
+        $nextSection = $this->getNextSection($section);
+        
+        // 最後のセクションなら、全データを保存
+        if (!$nextSection) {
+            return $this->saveAllSections($request);
+        }
+        
+        // 次のセクションへリダイレクト
+        return redirect()->route('app.create', ['section' => $nextSection])
+                        ->with('success', 'セクションを保存しました！');
+    }
+
+    private function getNextSection(string $currentSection): ?string
+    {
+        $sections = [
+            'basic-info',
+            'development-story',
+            'hardware',
+            'dev-tools',
+            'architecture',
+            'security',
+            'backend',
+            'frontend',
+            'database'
+        ];
+        
+        $currentIndex = array_search($currentSection, $sections);
+        return isset($sections[$currentIndex + 1]) ? $sections[$currentIndex + 1] : null;
+    }
+
+    private function saveAllSections(Request $request)
+    {
+        DB::beginTransaction();
+        
         try {
-            // バリデーション
-            $validated = $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string|max:1000',
-                'demo_url' => 'nullable|url|max:255',
-                'github_url' => 'nullable|url|max:255',
-                'status' => 'required|in:published,draft',
-                'app_status' => 'required|in:completed,in_development',
-                'screenshots' => 'required|array|min:1|max:3',
-                'screenshots.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+            // appsテーブルにメインレコード作成
+            $app = App::create([
+                'user_id' => auth()->id(),
+                'uuid' => Str::uuid()
             ]);
 
-            // スクリーンショットの処理
-            $screenshots = [];
-            if ($request->hasFile('screenshots')) {
-                foreach ($request->file('screenshots') as $file) {
-                    // 直接URLを配列に追加
-                    $screenshots[] = $this->uploadScreenshot($file);
-                }
-            }
+            // 各セクションのデータを保存
+            $this->saveBasicInfo($app, $request);
+            $this->saveDevelopmentStory($app, $request);
+            // ... 他のセクションも同様に保存
 
-            // アプリの保存
-            $app = new App();
-            $app->fill($validated);
-            $app->screenshots = $screenshots;
-            $app->user_id = Auth::id();
-            $app->save();
-
-            // statusによって遷移先を変更
-            if ($app->status === 'published') {
-                // 公開する場合はトップページへ
-                return redirect('/')
-                    ->with('success', 'アプリを公開しました！');
-            } else {
-                // 下書きの場合は自身のプロフィールへ
-                return redirect()->route('profile.index')
-                    ->with('success', 'アプリを保存しました！');
-            }
-
+            DB::commit();
+            
+            // セッションデータをクリア
+            $request->session()->forget('app_form');
+            
+            return redirect()->route('app.show', $app->uuid)
+                           ->with('success', 'アプリを登録しました！');
+                           
         } catch (\Exception $e) {
-            return back()
-                ->withInput($request->except('screenshots'))
-                ->with('error', 'エラーが発生しました：' . $e->getMessage());
+            DB::rollBack();
+            return back()->with('error', '登録に失敗しました。');
         }
     }
 

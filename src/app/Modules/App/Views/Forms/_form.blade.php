@@ -1,104 +1,89 @@
 @php
-    $formData = session('form_data', []);
+    // セッションから現在のセクションのデータを取得
+    $sectionData = session("app_form.{$currentSection}", []);
 @endphp
 
-<div class="app-sections">
-    <!-- プログレスバー -->
-    <div class="mb-8">
-        <div class="steps flex justify-between mb-8">
-            <div class="step {{ $currentSection === 'basic-info' ? 'active' : '' }} 
-                         {{ $app->basic_info ? 'completed' : '' }}">
-                <span class="step-number">1</span>
-                <span class="step-text">基本情報</span>
-                @if($app->basic_info)
-                    <span class="step-check">✓</span>
-                @endif
+{{-- プログレスバー --}}
+<div class="mb-8">
+    <div class="flex justify-between mb-2">
+        @foreach($sections as $key => $title)
+            <div class="flex flex-col items-center">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center 
+                    {{ $key === $currentSection ? 'bg-blue-500 text-white' : 
+                       (array_search($key, $sections) < array_search($currentSection, $sections) ? 'bg-green-500 text-white' : 'bg-gray-200') }}">
+                    {{ $loop->iteration }}
+                </div>
+                <span class="text-xs mt-1 {{ $key === $currentSection ? 'text-blue-500 font-bold' : 'text-gray-500' }}">
+                    {{ $title }}
+                </span>
             </div>
-            <!-- 他のステップも同様 -->
-        </div>
+            @if(!$loop->last)
+                <div class="flex-1 h-1 mt-4 mx-2 
+                    {{ array_search($key, $sections) < array_search($currentSection, $sections) ? 'bg-green-500' : 'bg-gray-200' }}">
+                </div>
+            @endif
+        @endforeach
     </div>
-
-    <!-- 現在のセクションのみを表示 -->
-    @if($currentSection === 'basic-info')
-        @include('app::forms.01_BasicInfoForm')
-    @elseif($currentSection === 'development-story')
-        @include('app::forms.02_DevelopmentStoryForm')
-    @endif
-    <!-- 他のセクションも同様 -->
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('app-form');
-    if (!form) return;
+<form method="POST" action="{{ route('app.store', ['section' => $currentSection]) }}" class="space-y-6">
+    @csrf
+    
+    {{-- 現在のセクションの説明 --}}
+    <div class="bg-blue-50 p-4 rounded-lg mb-6">
+        <h3 class="text-lg font-semibold text-blue-800 mb-2">
+            {{ $sectionTitle }}の入力
+        </h3>
+        <p class="text-blue-600">
+            @switch($currentSection)
+                @case('basic-info')
+                    アプリの基本的な情報を入力してください。この情報は一覧ページやカード表示で使用されます。
+                    @break
+                @case('development-story')
+                    アプリ開発の経緯や苦労した点、工夫した点などを共有してください。
+                    @break
+                {{-- 他のセクションの説明も追加 --}}
+            @endswitch
+        </p>
+    </div>
 
-    // フォームの入力値を監視して自動保存
-    form.addEventListener('input', function(e) {
-        const field = e.target;
-        if (!field.name || field.type === 'file') return; // ファイルフィールドをスキップ
+    {{-- フォームの内容 --}}
+    @if($currentSection === 'basic-info')
+        @include('app::Forms.01_BasicInfoForm', ['data' => $sectionData])
+    @elseif($currentSection === 'development-story')
+        @include('app::Forms.02_DevelopmentStoryForm', ['data' => $sectionData])
+    @endif
+    
+    {{-- ナビゲーションボタン --}}
+    <div class="flex justify-between mt-8 pt-6 border-t">
+        @if($previousSection)
+            <a href="{{ route('app.create', ['section' => $previousSection]) }}" 
+               class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                前のセクションへ戻る
+            </a>
+        @else
+            <div></div>
+        @endif
         
-        try {
-            if (field.type === 'checkbox' || field.type === 'radio') {
-                localStorage.setItem(`form_${field.name}`, field.checked);
-            } else {
-                localStorage.setItem(`form_${field.name}`, field.value);
-            }
-        } catch (e) {
-            console.error('フォームデータの保存に失敗しました:', e);
-        }
-    });
+        <button type="submit" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center">
+            @if($nextSection)
+                <span class="mr-2">このセクションを保存して次へ</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            @else
+                <span>すべての入力を完了して登録</span>
+            @endif
+        </button>
+    </div>
 
-    // プログレスバーの更新処理を修正
-    function updateProgress() {
-        const totalFields = form.querySelectorAll('input:not([type="file"]), textarea, select').length;
-        let filledFields = 0;
-        
-        form.querySelectorAll('input:not([type="file"]), textarea, select').forEach(field => {
-            if (field.value.trim() !== '') filledFields++;
-        });
-
-        const progress = Math.round((filledFields / totalFields) * 100);
-        
-        // プログレスバーの更新処理を修正
-        if (window.progressBar) {
-            window.progressBar.progress = progress;
-        }
-    }
-
-    // 入力時にプログレスバーを更新
-    form.addEventListener('input', updateProgress);
-
-    // 既存のフォームデータを復元
-    const formFields = form.querySelectorAll('input:not([type="file"]), textarea, select');
-    try {
-        formFields.forEach(field => {
-            if (!field.name) return;
-            const savedValue = localStorage.getItem(`form_${field.name}`);
-            if (savedValue && !field.value) {
-                if (field.type === 'checkbox' || field.type === 'radio') {
-                    field.checked = savedValue === 'true';
-                } else {
-                    field.value = savedValue;
-                }
-            }
-        });
-        // 初期表示時にもプログレスバーを更新
-        updateProgress();
-    } catch (e) {
-        console.error('フォームデータの復元に失敗しました:', e);
-    }
-
-    // フォーム送信時にローカルストレージをクリア
-    form.addEventListener('submit', function() {
-        try {
-            formFields.forEach(field => {
-                if (field.name) {
-                    localStorage.removeItem(`form_${field.name}`);
-                }
-            });
-        } catch (e) {
-            console.error('フーカルストレージのクリアに失敗しました:', e);
-        }
-    });
-});
-</script>
+    {{-- 保存状態の表示 --}}
+    @if(session('success'))
+        <div class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
+            {{ session('success') }}
+        </div>
+    @endif
+</form>
