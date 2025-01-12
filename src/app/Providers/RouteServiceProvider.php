@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    public const HOME = '/profile';
+
     public function boot(): void
     {
         $this->routes(function () {
