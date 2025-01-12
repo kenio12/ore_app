@@ -45,15 +45,18 @@
                                 </span>
                             </div>
 
-                            <!-- スクリーンショット（クリックでモーダル表示） -->
-                            <div class="bg-gray-50 flex justify-center items-center mb-4 cursor-pointer"
-                                 x-data
-                                 @click="$dispatch('open-app-screenshot-modal', { src: '{{ $app->screenshots[0] ?? '/default-app-image.png' }}' })">
+                            <!-- スクリーンショット -->
+                            <div class="bg-gray-50 flex justify-center items-center mb-4">
                                 @if($app->screenshots && count($app->screenshots) > 0)
-                                    <img class="max-h-[80vh] object-contain w-full"
-                                        src="{{ $app->screenshots[0] }}"
-                                        alt="{{ $app->title }}"
-                                        onerror="this.src='/default-app-image.png'">
+                                    <a href="{{ $app->screenshots[0] }}" target="_blank" rel="noopener noreferrer">
+                                        <img 
+                                            class="object-contain w-auto cursor-pointer hover:opacity-90 transition-opacity"
+                                            style="max-height: 330px;"
+                                            src="{{ $app->screenshots[0] }}"
+                                            alt="{{ $app->title }}"
+                                            onerror="this.src='/default-app-image.png'"
+                                        >
+                                    </a>
                                 @endif
                             </div>
 
@@ -90,8 +93,8 @@
                 </div>
             @endauth
         </div>
-
-        <!-- スクリーンショットモーダル -->
-        <x-app::app-screenshot-modal />
     </div>
+
+    <!-- モーダルコンポーネントを追加 -->
+    <x-app::app-screenshot-modal />
 </x-app-layout> 

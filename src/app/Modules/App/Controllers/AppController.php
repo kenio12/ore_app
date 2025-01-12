@@ -19,31 +19,16 @@ class AppController extends Controller
 
     private function uploadScreenshot($file)
     {
-        // オリジナル画像をアップロード
+        // 画質80%固定で安定した表示を実現
         $result = Cloudinary::upload($file->getRealPath(), [
             'folder' => 'app_screenshots',
             'transformation' => [
-                'quality' => 'auto',
-                'fetch_format' => 'auto',
+                'quality' => 80,  // 80%固定
+                'fetch_format' => 'auto'
             ]
         ]);
 
-        // サムネイル用の変換を追加
-        $thumbnail = Cloudinary::upload($file->getRealPath(), [
-            'folder' => 'app_screenshots/thumbnails',
-            'transformation' => [
-                'width' => 300,
-                'height' => 200,
-                'crop' => 'fill',
-                'quality' => 'auto',
-                'fetch_format' => 'auto',
-            ]
-        ]);
-
-        return [
-            'original' => $result->getSecurePath(),
-            'thumbnail' => $thumbnail->getSecurePath()
-        ];
+        return $result->getSecurePath();
     }
 
     public function store(Request $request)
@@ -55,7 +40,7 @@ class AppController extends Controller
                 'description' => 'nullable|string|max:1000',
                 'demo_url' => 'nullable|url|max:255',
                 'github_url' => 'nullable|url|max:255',
-                'status' => 'required|in:published,draft',  // publish_status から status に変更
+                'status' => 'required|in:published,draft',
                 'app_status' => 'required|in:completed,in_development',
                 'screenshots' => 'required|array|min:1|max:3',
                 'screenshots.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
@@ -65,8 +50,8 @@ class AppController extends Controller
             $screenshots = [];
             if ($request->hasFile('screenshots')) {
                 foreach ($request->file('screenshots') as $file) {
-                    $result = $this->uploadScreenshot($file);
-                    $screenshots[] = $result['original'];
+                    // 直接URLを配列に追加
+                    $screenshots[] = $this->uploadScreenshot($file);
                 }
             }
 
