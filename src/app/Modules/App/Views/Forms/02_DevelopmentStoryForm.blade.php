@@ -89,4 +89,21 @@
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
+
+    <!-- 総合感想（最後に追加） -->
+    <div class="mb-6">
+        <label for="overall_thoughts" class="block text-sm font-medium text-gray-700">
+            総合感想
+        </label>
+        <textarea 
+            name="overall_thoughts" 
+            id="overall_thoughts"
+            rows="8"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            placeholder="このアプリケーション開発を通じての総合的な感想をお書きください"
+        >{{ old('overall_thoughts', $app->overall_thoughts ?? '') }}</textarea>
+        @error('overall_thoughts')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
 </div> 

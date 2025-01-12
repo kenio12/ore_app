@@ -14,7 +14,12 @@ class AppController extends Controller
     public function create()
     {
         $app = new App();
-        return view('app::create', ['app' => $app]);
+        
+        return view('app::app-form', [
+            'app' => $app,
+            'currentSection' => 'basic-info',  // 最初のセクション
+            'sectionTitle' => '基本情報'
+        ]);
     }
 
     private function uploadScreenshot($file)
@@ -80,10 +85,25 @@ class AppController extends Controller
         }
     }
 
-    public function edit($id)
+    public function editBasicInfo(App $app)
     {
-        $app = App::findOrFail($id);
-        return view('App::edit', ['app' => $app]);
+        return view('app::app-form', [
+            'app' => $app,
+            'currentSection' => 'basic-info',
+            'sectionTitle' => '基本情報'
+        ]);
+    }
+
+    public function updateBasicInfo(BasicInfoRequest $request, App $app)
+    {
+        $app->basicInfo()->updateOrCreate(
+            ['app_id' => $app->id],
+            $request->validated()
+        );
+
+        return redirect()
+            ->route('apps.development-story.edit', $app)
+            ->with('success', '基本情報を保存しました');
     }
 
     public function update(Request $request, $id)

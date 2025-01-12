@@ -2,39 +2,30 @@
     $formData = session('form_data', []);
 @endphp
 
-<form id="app-form" method="POST" action="{{ route('apps.store') }}" enctype="multipart/form-data">
-    @csrf
-
+<div class="app-sections">
     <!-- プログレスバー -->
     <div class="mb-8">
-        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 relative overflow-hidden">
-            <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500"
-                 x-bind:style="{ width: progress + '%' }"></div>
+        <div class="steps flex justify-between mb-8">
+            <div class="step {{ $currentSection === 'basic-info' ? 'active' : '' }} 
+                         {{ $app->basic_info ? 'completed' : '' }}">
+                <span class="step-number">1</span>
+                <span class="step-text">基本情報</span>
+                @if($app->basic_info)
+                    <span class="step-check">✓</span>
+                @endif
+            </div>
+            <!-- 他のステップも同様 -->
         </div>
     </div>
 
-    <!-- フォームセクション -->
-    @include('app::forms.01_BasicInfoForm')
-    @include('app::forms.02_DevelopmentStoryForm')
-    @include('app::forms.03_HardwareSection')
-    @include('app::forms.04_1_BasicDevEnvironment')
-    @include('app::forms.04_2_DevToolsEnvironment')
-    @include('app::forms.04_3_ArchitectureSection')
-    @include('app::forms.04_4_SecuritySection')
-    @include('app::forms.05_BackendSection')
-    @include('app::forms.06_FrontendSection')
-    @include('app::forms.07_DatabaseSection')
-
-    <!-- 送信ボタン -->
-    <div class="mt-8 flex justify-end space-x-4">
-        <button type="button" onclick="history.back()" class="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600">
-            キャンセル
-        </button>
-        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">
-            {{ isset($app) ? '更新する' : '投稿する' }}
-        </button>
-    </div>
-</form>
+    <!-- 現在のセクションのみを表示 -->
+    @if($currentSection === 'basic-info')
+        @include('app::forms.01_BasicInfoForm')
+    @elseif($currentSection === 'development-story')
+        @include('app::forms.02_DevelopmentStoryForm')
+    @endif
+    <!-- 他のセクションも同様 -->
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
