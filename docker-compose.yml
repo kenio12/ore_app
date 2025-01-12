@@ -28,11 +28,9 @@ services:
 
   db:
     image: mysql:8.0
-    env_file:
-      - ./src/.env
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ore_app
     volumes:
       - db-data:/var/lib/mysql
     ports:

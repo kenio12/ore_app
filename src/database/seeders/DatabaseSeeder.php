@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Modules\App\Models\App;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -17,7 +18,15 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'unique@example.com',
+        ]);
+
+        App::create([
+            'name' => 'Test App',
+            'description' => 'This is a test app',
+            'user_id' => 1,
+            'type' => 'web',
+            'status' => 'active'
         ]);
     }
 }

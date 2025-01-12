@@ -561,6 +561,7 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'App\\Modules\\AppPost\\Requests\\AppPostRequest' => __DIR__ . '/../..' . '/app/Modules/AppPost/Requests/AppPostRequest.php',
         'App\\Modules\\App\\Controllers\\AppController' => __DIR__ . '/../..' . '/app/Modules/App/Controllers/AppController.php',
         'App\\Modules\\App\\Database\\Seeders\\AppTypeSeeder' => __DIR__ . '/../..' . '/app/Modules/App/Database/Seeders/AppTypeSeeder.php',
+        'App\\Modules\\App\\Helpers\\ColorHelper' => __DIR__ . '/../..' . '/app/Modules/App/Helpers/ColorHelper.php',
         'App\\Modules\\App\\Models\\App' => __DIR__ . '/../..' . '/app/Modules/App/Models/App.php',
         'App\\Modules\\App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Modules/App/Providers/AppServiceProvider.php',
         'App\\Modules\\App\\Requests\\AppRequest' => __DIR__ . '/../..' . '/app/Modules/App/Requests/AppRequest.php',

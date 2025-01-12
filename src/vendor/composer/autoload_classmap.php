@@ -29,6 +29,7 @@ return array(
     'App\\Modules\\AppPost\\Requests\\AppPostRequest' => $baseDir . '/app/Modules/AppPost/Requests/AppPostRequest.php',
     'App\\Modules\\App\\Controllers\\AppController' => $baseDir . '/app/Modules/App/Controllers/AppController.php',
     'App\\Modules\\App\\Database\\Seeders\\AppTypeSeeder' => $baseDir . '/app/Modules/App/Database/Seeders/AppTypeSeeder.php',
+    'App\\Modules\\App\\Helpers\\ColorHelper' => $baseDir . '/app/Modules/App/Helpers/ColorHelper.php',
     'App\\Modules\\App\\Models\\App' => $baseDir . '/app/Modules/App/Models/App.php',
     'App\\Modules\\App\\Providers\\AppServiceProvider' => $baseDir . '/app/Modules/App/Providers/AppServiceProvider.php',
     'App\\Modules\\App\\Requests\\AppRequest' => $baseDir . '/app/Modules/App/Requests/AppRequest.php',
