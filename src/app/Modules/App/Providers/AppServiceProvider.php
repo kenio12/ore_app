@@ -4,6 +4,7 @@ namespace App\Modules\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use App\Modules\App\Services\AppProgressManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,6 +15,11 @@ class AppServiceProvider extends ServiceProvider
         );
         // ヘルパー関数を登録
         require_once app_path('Modules/App/Helpers/ColorHelper.php');
+
+        // AppProgressManagerの登録を追加
+        $this->app->singleton(AppProgressManager::class, function ($app) {
+            return new AppProgressManager();
+        });
     }
 
     public function boot(): void

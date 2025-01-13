@@ -42,7 +42,9 @@ class App extends Model
         'main_monitor_size',
         'main_monitor_resolution',
         'monitor_details',
-        'dev_env_notes'
+        'dev_env_notes',
+        'user_id',
+        'progress'
     ];
 
     protected $casts = [
@@ -59,6 +61,7 @@ class App extends Model
         'virtualization' => 'array',
         'editors' => 'array',
         'version_control' => 'array',
+        'progress' => 'array'
     ];
 
     // ユーザーとのリレーション

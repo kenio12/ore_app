@@ -177,8 +177,9 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         ),
         'A' => 
         array (
-            'App\\Modules\\AppPost\\Database\\Seeders\\' => 37,
-            'App\\Modules\\' => 12,
+            'App\\Modules\\Profile\\' => 20,
+            'App\\Modules\\Home\\' => 17,
+            'App\\Modules\\App\\' => 16,
             'App\\' => 4,
         ),
     );
@@ -494,13 +495,11 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         ),
         'Database\\Seeders\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/database/seeders',
-            1 => __DIR__ . '/..' . '/laravel/pint/database/seeders',
+            0 => __DIR__ . '/..' . '/laravel/pint/database/seeders',
         ),
         'Database\\Factories\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/database/factories',
-            1 => __DIR__ . '/..' . '/laravel/pint/database/factories',
+            0 => __DIR__ . '/..' . '/laravel/pint/database/factories',
         ),
         'Cron\\' => 
         array (
@@ -522,13 +521,17 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
         ),
-        'App\\Modules\\AppPost\\Database\\Seeders\\' => 
+        'App\\Modules\\Profile\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/app/Modules/AppPost/Database/Seeders',
+            0 => __DIR__ . '/../..' . '/app/Modules/Profile',
         ),
-        'App\\Modules\\' => 
+        'App\\Modules\\Home\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/app/Modules',
+            0 => __DIR__ . '/../..' . '/app/Modules/Home',
+        ),
+        'App\\Modules\\App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app/Modules/App',
         ),
         'App\\' => 
         array (
@@ -551,27 +554,25 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'App\\Http\\Requests\\Auth\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Auth/LoginRequest.php',
         'App\\Http\\Requests\\ProfileUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/ProfileUpdateRequest.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
-        'App\\Modules\\AppPost\\AppPostServiceProvider' => __DIR__ . '/../..' . '/app/Modules/AppPost/AppPostServiceProvider.php',
-        'App\\Modules\\AppPost\\Controllers\\AppPostController' => __DIR__ . '/../..' . '/app/Modules/AppPost/Controllers/AppPostController.php',
-        'App\\Modules\\AppPost\\Database\\Factories\\AppPostFactory' => __DIR__ . '/../..' . '/app/Modules/AppPost/Database/Factories/AppPostFactory.php',
-        'App\\Modules\\AppPost\\Database\\Seeders\\AppPostSeeder' => __DIR__ . '/../..' . '/app/Modules/AppPost/Database/Seeders/AppPostSeeder.php',
-        'App\\Modules\\AppPost\\Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/app/Modules/AppPost/Database/Seeders/DatabaseSeeder.php',
-        'App\\Modules\\AppPost\\Models\\AppPost' => __DIR__ . '/../..' . '/app/Modules/AppPost/Models/AppPost.php',
-        'App\\Modules\\AppPost\\Policies\\AppPostPolicy' => __DIR__ . '/../..' . '/app/Modules/AppPost/Policies/AppPostPolicy.php',
-        'App\\Modules\\AppPost\\Requests\\AppPostRequest' => __DIR__ . '/../..' . '/app/Modules/AppPost/Requests/AppPostRequest.php',
         'App\\Modules\\App\\Controllers\\AppController' => __DIR__ . '/../..' . '/app/Modules/App/Controllers/AppController.php',
+        'App\\Modules\\App\\Controllers\\Base\\SectionController' => __DIR__ . '/../..' . '/app/Modules/App/Controllers/Base/SectionController.php',
+        'App\\Modules\\App\\Controllers\\Sections\\A_BasicInfoController' => __DIR__ . '/../..' . '/app/Modules/App/Controllers/Sections/A_BasicInfoController.php',
+        'App\\Modules\\App\\Controllers\\Sections\\B_DevelopmentStoryController' => __DIR__ . '/../..' . '/app/Modules/App/Controllers/Sections/B_DevelopmentStoryController.php',
         'App\\Modules\\App\\Database\\Seeders\\AppTypeSeeder' => __DIR__ . '/../..' . '/app/Modules/App/Database/Seeders/AppTypeSeeder.php',
         'App\\Modules\\App\\Helpers\\ColorHelper' => __DIR__ . '/../..' . '/app/Modules/App/Helpers/ColorHelper.php',
         'App\\Modules\\App\\Models\\App' => __DIR__ . '/../..' . '/app/Modules/App/Models/App.php',
         'App\\Modules\\App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Modules/App/Providers/AppServiceProvider.php',
-        'App\\Modules\\App\\Requests\\AppRequest' => __DIR__ . '/../..' . '/app/Modules/App/Requests/AppRequest.php',
+        'App\\Modules\\App\\Requests\\BasicInfoRequest' => __DIR__ . '/../..' . '/app/Modules/App/Requests/BasicInfoRequest.php',
+        'App\\Modules\\App\\Services\\AppProgressManager' => __DIR__ . '/../..' . '/app/Modules/App/Services/AppProgressManager.php',
         'App\\Modules\\Home\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Modules/Home/Controllers/HomeController.php',
         'App\\Modules\\Home\\Providers\\HomeServiceProvider' => __DIR__ . '/../..' . '/app/Modules/Home/Providers/HomeServiceProvider.php',
+        'App\\Modules\\Home\\Services\\HomeService' => __DIR__ . '/../..' . '/app/Modules/Home/Services/HomeService.php',
         'App\\Modules\\Profile\\Controllers\\PasswordChangeController' => __DIR__ . '/../..' . '/app/Modules/Profile/Controllers/PasswordChangeController.php',
         'App\\Modules\\Profile\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Modules/Profile/Controllers/ProfileController.php',
         'App\\Modules\\Profile\\Providers\\ProfileServiceProvider' => __DIR__ . '/../..' . '/app/Modules/Profile/Providers/ProfileServiceProvider.php',
         'App\\Notifications\\Auth\\VerifyEmail' => __DIR__ . '/../..' . '/app/Notifications/Auth/VerifyEmail.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
+        'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\View\\Components\\AppLayout' => __DIR__ . '/../..' . '/app/View/Components/AppLayout.php',
         'App\\View\\Components\\GuestLayout' => __DIR__ . '/../..' . '/app/View/Components/GuestLayout.php',
@@ -1350,8 +1351,6 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'Cron\\HoursField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/HoursField.php',
         'Cron\\MinutesField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MinutesField.php',
         'Cron\\MonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MonthField.php',
-        'Database\\Factories\\UserFactory' => __DIR__ . '/../..' . '/database/factories/UserFactory.php',
-        'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
         'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
         'DateException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateException.php',
         'DateInvalidOperationException' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateInvalidOperationException.php',

@@ -5,17 +5,18 @@ namespace App\Modules\Profile\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
     public function index()
     {
-        \Log::info('Profile index method called');
+        Log::info('Profile index method called');
         
         try {
             return view('Profile::index');
         } catch (\Exception $e) {
-            \Log::error('View error: ' . $e->getMessage());
+            Log::error('View error: ' . $e->getMessage());
             dd($e->getMessage());
         }
     }

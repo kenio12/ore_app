@@ -1,12 +1,14 @@
+<?php
+
 namespace App\Modules\Home\Services;
 
-use App\Modules\AppPost\Models\AppPost;
+use App\Modules\App\Models\App;
 
 class HomeService
 {
     public function getLatestApps()
     {
-        return AppPost::with('user')
+        return App::with('user')
             ->latest()
             ->get();
     }

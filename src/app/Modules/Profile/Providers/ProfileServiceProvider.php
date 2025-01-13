@@ -8,11 +8,16 @@ class ProfileServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/../Config/config.php', 'profile'
+        );
     }
 
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
-        $this->loadViewsFrom(__DIR__ . '/../Views', 'Profile');
+        $this->loadViewsFrom(__DIR__.'/../Views', 'Profile');
+        $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
     }
 } 

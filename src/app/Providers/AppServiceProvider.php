@@ -3,25 +3,29 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
-use Illuminate\Foundation\MaintenanceModeManager;
-use Illuminate\Contracts\Foundation\MaintenanceMode;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Register any application services.
+     */
     public function register(): void
     {
-        $this->app->singleton(MaintenanceMode::class, function ($app) {
-            return $app->make(MaintenanceModeManager::class)->driver();
-        });
+        //
     }
 
+    /**
+     * Bootstrap any application services.
+     */
     public function boot(): void
     {
-        // Auth モジュールのビューを登録
-        View::addNamespace('Auth', base_path('app/Modules/Auth/Views'));
-        
-        // Home モジュールのビューを登録
-        View::addNamespace('Home', base_path('app/Modules/Home/Views'));
+        // 本番環境ではHTTPSを強制
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
+        // AppPostのルート読み込みを削除
+        // $this->loadRoutesFrom(base_path('app/Modules/AppPost/Routes/web.php'));
     }
 }

@@ -125,7 +125,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Autoloaded Service Providers
+    | Application Service Providers
     |--------------------------------------------------------------------------
     |
     | The service providers listed here will be automatically loaded on the
@@ -164,19 +164,34 @@ return [
         /*
          * Package Service Providers...
          */
-        App\Modules\AppPost\AppPostServiceProvider::class,
+        CloudinaryLabs\CloudinaryLaravel\CloudinaryServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Module Service Providers...
+         */
         App\Modules\Home\Providers\HomeServiceProvider::class,
+        App\Modules\App\Providers\AppServiceProvider::class,
 
         App\Modules\Profile\Providers\ProfileServiceProvider::class,
+    ],
 
-        App\Modules\App\Providers\AppServiceProvider::class,
+    'aliases' => [
+        // Laravel Framework Aliases
+        'App' => Illuminate\Support\Facades\App::class,
+        'Artisan' => Illuminate\Support\Facades\Artisan::class,
+        'Auth' => Illuminate\Support\Facades\Auth::class,
+        // ... 他のエイリアス ...
+
+        // Module Aliases
+        'Home' => App\Modules\Home\Facades\Home::class,
+        'App' => App\Modules\App\Facades\App::class,
     ],
 
 ];

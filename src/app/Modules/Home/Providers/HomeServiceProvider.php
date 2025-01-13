@@ -16,6 +16,6 @@ class HomeServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadViewsFrom(__DIR__.'/../Views', 'Home');
-        $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../Routes/web.php'); 
     }
 } 

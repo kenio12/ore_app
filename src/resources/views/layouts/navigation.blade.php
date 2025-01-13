@@ -18,7 +18,7 @@
                         <a href="{{ route('apps.create') }}" class="text-sm text-gray-700 hover:text-gray-900">
                             アプリを投稿
                         </a>
-                        <a href="{{ route('profile.index') }}" class="text-sm text-gray-700 hover:text-gray-900">
+                        <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 hover:text-gray-900">
                             {{ Auth::user()->name }}
                         </a>
                         <form method="POST" action="{{ route('logout') }}" class="inline">

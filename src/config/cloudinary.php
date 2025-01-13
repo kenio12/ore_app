@@ -34,16 +34,39 @@ return [
 
     /**
      * Upload Preset From Cloudinary Dashboard
+     * 
+     * プリセットを使用することで、クライアントサイドでの直接アップロードが可能になります。
+     * セキュリティのため、unsigned_uploadingを有効にしたプリセットを使用してください。
      */
     'upload_preset' => env('CLOUDINARY_UPLOAD_PRESET'),
 
     /**
+     * スクリーンショットのアップロード設定
+     */
+    'screenshots' => [
+        'folder' => env('CLOUDINARY_FOLDER', 'ore_app/screenshots'),
+        'transformation' => [
+            'quality' => 'auto',
+            'fetch_format' => 'auto',
+            'width' => 800,
+            'height' => 600,
+            'crop' => 'limit'
+        ]
+    ],
+
+    /**
      * Route to get cloud_image_url from Blade Upload Widget
      */
-    'upload_route' => env('CLOUDINARY_UPLOAD_ROUTE'),
+    'upload_route' => env('CLOUDINARY_UPLOAD_ROUTE', 'cloudinary.upload'),
 
     /**
      * Controller action to get cloud_image_url from Blade Upload Widget
      */
-    'upload_action' => env('CLOUDINARY_UPLOAD_ACTION'),
+    'upload_action' => env('CLOUDINARY_UPLOAD_ACTION', 'CloudinaryController@upload'),
+
+    // 基本認証情報を追加
+    'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+    'api_key' => env('CLOUDINARY_API_KEY'),
+    'api_secret' => env('CLOUDINARY_API_SECRET'),
+    'secure' => env('CLOUDINARY_SECURE', true),
 ];
