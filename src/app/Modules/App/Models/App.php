@@ -59,20 +59,14 @@ class App extends Model
     | 開発状態関連
     |--------------------------------------------------------------------------
     */
-    public const APP_STATUS_PLANNING = 'planning';
-    public const APP_STATUS_DEVELOPMENT = 'development';
-    public const APP_STATUS_TESTING = 'testing';
-    public const APP_STATUS_RELEASED = 'released';
-    public const APP_STATUS_MAINTENANCE = 'maintenance';
+    public const APP_STATUS_COMPLETED = 'completed';
+    public const APP_STATUS_IN_DEVELOPMENT = 'in_development';
 
     public static function getAppStatusOptions(): array
     {
         return [
-            self::APP_STATUS_PLANNING => '計画中',
-            self::APP_STATUS_DEVELOPMENT => '開発中',
-            self::APP_STATUS_TESTING => 'テスト中',
-            self::APP_STATUS_RELEASED => 'リリース済み',
-            self::APP_STATUS_MAINTENANCE => 'メンテナンス中'
+            self::APP_STATUS_COMPLETED => '完成',
+            self::APP_STATUS_IN_DEVELOPMENT => '開発中'
         ];
     }
 
@@ -180,6 +174,7 @@ class App extends Model
         'development_period_years',
         'development_period_months',
         'app_type',
+        'app_status',
         'genres',
         'security_measures',
         'performance_optimizations',

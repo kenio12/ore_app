@@ -24,7 +24,7 @@ return new class extends Migration
                 ->comment('アプリの種類: web_app, ios_app, android_app, windows_app, mac_app, linux_app, game, other');
             $table->json('genres')->nullable()->comment('ジャンル（複数選択可）');
             $table->string('app_status')
-                ->comment('開発状態: planning, development, testing, released, maintenance');
+                ->comment('開発状態: completed（完成）, in_development（開発中）');
             $table->integer('development_period_years')->default(0)->comment('開発期間（年）');
             $table->integer('development_period_months')->default(0)->comment('開発期間（月）');
             $table->timestamps();

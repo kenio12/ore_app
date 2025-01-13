@@ -96,21 +96,6 @@
                     <p class="text-center text-gray-500">まだアプリがありません。</p>
                 @endforelse
             </div>
-
-            <!-- アカウント操作 -->
-            @auth
-                <div class="text-center mb-8">
-                    <form action="{{ route('profile.destroy') }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit"
-                            class="px-6 py-3 border border-red-500 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors duration-200"
-                            onclick="return confirm('本当にアカウントを削除しますか？\n\n⚠️ この操作は取り消せません。\n- すべての投稿が削除されます\n- アカウント情報が完全に削除されます')">
-                            退会する
-                        </button>
-                    </form>
-                </div>
-            @endauth
         </div>
     </div>
 

@@ -44,7 +44,8 @@ class A_BasicInfoController extends SectionController
                 'demo_url' => $request->demo_url,
                 'github_url' => $request->github_url,
                 'status' => $request->status,
-                'color' => ColorHelper::generateColorFromString($request->title)
+                'color' => ColorHelper::generateColorFromString($request->title),
+                'app_status' => $request->app_status
             ]);
 
             // スクリーンショットの処理
@@ -87,7 +88,9 @@ class A_BasicInfoController extends SectionController
                 'github_url' => $request->github_url,
                 'status' => $request->status,
                 'color' => ColorHelper::generateColorFromString($request->title),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
+                'app_type' => $request->app_type,
+                'app_status' => $request->app_status
             ]);
 
             $app->save();
