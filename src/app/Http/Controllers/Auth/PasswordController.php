@@ -24,7 +24,7 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return back()->with('status', 'password-updated');
+        return back()->with('status', 'パスワードが正常に更新されました。');
     }
 
     public function edit()

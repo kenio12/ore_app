@@ -9,6 +9,21 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
+                    @if (session('status'))
+                        <div class="mb-4 font-medium text-sm text-green-600">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+                    @if ($errors->updatePassword->any())
+                        <div class="mb-4 font-medium text-sm text-red-600">
+                            <ul>
+                                @foreach ($errors->updatePassword->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <section>
                         <header>
                             <h2 class="text-lg font-medium text-gray-900">

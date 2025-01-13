@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
-        $this->loadViewsFrom(__DIR__ . '/../Views', 'App');
+        $this->loadViewsFrom(__DIR__ . '/../Views', 'app');
         // コンポーネントの登録を修正
         Blade::componentNamespace('App\\Modules\\App\\Views\\components', 'app');
 
