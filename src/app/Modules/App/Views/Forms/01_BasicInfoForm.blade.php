@@ -25,53 +25,74 @@
             スクリーンショット（1〜3枚） <span class="text-red-500">*</span>
         </label>
         @if($viewOnly ?? false)
+            <!-- デバッグ表示 -->
+            <pre class="bg-gray-100 p-4 mb-4">
+                @php
+                    print_r($app->screenshots ?? 'No screenshots available');
+                @endphp
+            </pre>
+
             <div class="mt-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($app->screenshots ?? [] as $screenshot)
-                    <div class="relative">
+                    <div class="relative aspect-video">
                         <img src="{{ $screenshot['url'] }}" 
                              alt="スクリーンショット" 
-                             class="rounded-lg shadow cursor-pointer hover:shadow-lg transition-shadow"
+                             class="w-full h-full object-cover rounded-lg shadow cursor-pointer hover:shadow-lg transition-shadow"
                              onclick="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
                     </div>
                 @endforeach
             </div>
         @else
-            <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-md"
-                id="dropzone">
-                <div class="space-y-1 text-center">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    <div class="flex text-sm text-gray-600">
-                        <label for="screenshots" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                            <span>画像をアップロード</span>
-                            <input 
-                                id="screenshots" 
-                                name="screenshots[]" 
-                                type="file" 
-                                class="sr-only"
-                                accept="image/*"
-                                multiple
-                                max="3"
-                            >
-                        </label>
-                        <p class="pl-1">またはドラッグ＆ドロップ</p>
+            <div class="mt-2"
+                x-data="{ 
+                    isDragging: false,
+                    handleDragOver(e) {
+                        e.preventDefault();
+                        this.isDragging = true;
+                    },
+                    handleDragLeave() {
+                        this.isDragging = false;
+                    },
+                    handleDrop(e) {
+                        e.preventDefault();
+                        this.isDragging = false;
+                        const input = document.getElementById('screenshots');
+                        input.files = e.dataTransfer.files;
+                        input.dispatchEvent(new Event('change'));
+                    }
+                }"
+                x-on:dragover.prevent="handleDragOver($event)"
+                x-on:dragleave.prevent="handleDragLeave"
+                x-on:drop.prevent="handleDrop($event)"
+            >
+                <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md"
+                    x-bind:class="{ 
+                        'border-gray-300': !isDragging,
+                        'border-blue-500 bg-blue-50': isDragging 
+                    }"
+                >
+                    <div class="space-y-1 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div class="flex text-sm text-gray-600">
+                            <label for="screenshots" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                                <span>ファイルを選択</span>
+                                <input type="file" name="screenshots[]" id="screenshots" multiple accept="image/*" class="sr-only">
+                            </label>
+                            <p class="pl-1">またはドラッグ＆ドロップ</p>
+                        </div>
+                        <p class="text-xs text-gray-500">
+                            PNG, JPG, GIF up to 10MB
+                        </p>
                     </div>
-                    <p class="text-xs text-gray-500">
-                        PNG, JPG, GIF 最大3枚まで（1枚5MB以下）
-                    </p>
                 </div>
+                <div id="preview-container" class="mt-4 space-y-4"></div>
             </div>
-            <!-- プレビュー領域 -->
-            <div id="preview-container"></div>
+            @error('screenshots')
+                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+            @enderror
         @endif
-
-        @error('screenshots')
-            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
-        @error('screenshots.*')
-            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
     </div>
 
     <!-- アプリの紹介 -->

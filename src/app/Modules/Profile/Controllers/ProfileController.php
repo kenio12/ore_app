@@ -12,27 +12,13 @@ class ProfileController extends Controller
 {
     public function index()
     {
-        Log::info('Profile index method called');
-        
-        try {
-            $apps = App::where('user_id', auth()->id())
-                       ->latest()
-                       ->get();
+        $user = auth()->user();
+        $apps = $user->apps;  // ユーザーの投稿したアプリを取得
 
-            $statusLabels = [
-                'development' => '開発中',
-                'released' => 'リリース済み',
-                'maintenance' => 'メンテナンス中',
-            ];
-
-            return view('Profile::index', [
-                'apps' => $apps,
-                'statusLabels' => $statusLabels,
-            ]);
-        } catch (\Exception $e) {
-            Log::error('View error: ' . $e->getMessage());
-            dd($e->getMessage());
-        }
+        return view('Profile::index', [
+            'user' => $user,
+            'apps' => $apps
+        ]);
     }
 
     public function destroy(Request $request)

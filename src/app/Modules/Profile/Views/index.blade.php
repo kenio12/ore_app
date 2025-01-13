@@ -6,53 +6,44 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- プロフィール情報 -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6 text-gray-900">
-                    ようこそ、{{ Auth::user()->name }}さん！
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">
+                        {{ __('プロフィール情報') }}
+                    </h2>
+                    <!-- プロフィール情報の表示 -->
                 </div>
             </div>
 
-            <!-- 作成したアプリ一覧 -->
+            <!-- アプリ一覧（apps.indexと同じレイアウト） -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">
-                        {{ __('作成したアプリ') }}
-                    </h3>
-                    
-                    <div class="space-y-6">
+                <div class="p-6 text-gray-900">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @forelse($apps as $app)
-                            <div class="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200">
-                                <!-- スクリーンショット（装飾なし） -->
-                                @if($app->screenshots && count($app->screenshots) > 0)
-                                    <div class="mb-3">
-                                        <img src="{{ $app->screenshots[0] }}"
-                                            alt="{{ $app->title }}"
-                                            onerror="this.src='/default-app-image.png'">
-                                    </div>
+                            <div class="border rounded-lg p-4 hover:bg-gray-50">
+                                @if($app->screenshot_url)
+                                    <img 
+                                        src="{{ $app->screenshot_url }}" 
+                                        alt="{{ $app->name }}のスクリーンショット"
+                                        class="w-full h-48 object-cover rounded-lg mb-4"
+                                    >
                                 @endif
-
-                                <!-- その他の情報（元の装飾を維持） -->
-                                <div class="p-6 text-gray-900">
-                                    <h4 class="text-xl font-bold">{{ $app->title }}</h4>
-                                    <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                        {{ $statusLabels[$app->status] ?? '開発中' }}
-                                    </span>
-                                    <div class="mt-2 text-gray-600">
-                                        作成日: {{ $app->created_at->format('Y年n月j日') }}
-                                    </div>
-                                </div>
+                                <h3 class="text-lg font-semibold mb-2">{{ $app->name }}</h3>
+                                <p class="text-gray-600 mb-4">{{ $app->description }}</p>
+                                <a href="{{ route('apps.show', $app) }}" class="text-blue-600 hover:underline">
+                                    詳細を見る →
+                                </a>
                             </div>
                         @empty
-                            <p class="text-gray-600">まだアプリを作成していません。</p>
+                            <div class="col-span-full text-center py-8 text-gray-600">
+                                まだアプリを投稿していません。
+                            </div>
                         @endforelse
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- スクリーンショットモーダル -->
-    <x-app::app-screenshot-modal />
 </x-app-layout> 

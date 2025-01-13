@@ -21,12 +21,13 @@ class AppController extends Controller
 
     public function index()
     {
-        return view('App::index');
+        $apps = App::latest()->paginate(12);  // 最新順に12件ずつ取得
+        return view('App::index', compact('apps'));
     }
 
     public function show(App $app)
     {
-        return view('app::show', [
+        return view('App::show', [
             'app' => $app,
             'appTypeLabels' => config('app.app_type_labels', []),
             'statusLabels' => config('app.status_labels', [])
@@ -89,5 +90,33 @@ class AppController extends Controller
         ]);
         
         // ... 保存処理 ...
+    }
+
+    public function edit(App $app)
+    {
+        // アプリの詳細データを取得（リレーションも含めて）
+        $app->load([
+            'screenshots',
+            'developmentStory',
+            'hardware',
+            'devEnvironment',
+            'devTools',
+            'architecture',
+            'security',
+            'backend',
+            'frontend',
+            'database'
+        ]);
+
+        $currentSection = session('current_section', 'basic-info');
+        $sectionTitle = config('app.section_titles.' . $currentSection, '基本情報');
+
+        return view('App::app-form', [
+            'app' => $app,
+            'currentSection' => $currentSection,
+            'sectionTitle' => $sectionTitle,
+            'appTypeLabels' => config('app.app_type_labels', []),
+            'statusLabels' => config('app.status_labels', [])
+        ]);
     }
 } 

@@ -2,21 +2,21 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- 各セクションを表示 -->
-            @include('app::Forms.01_BasicInfoForm', ['app' => $app])
-            @include('app::Forms.02_DevelopmentStoryForm', ['app' => $app])
-            @include('app::Forms.03_HardwareSection', ['app' => $app])
-            @include('app::Forms.04_BasicDevEnvironment', ['app' => $app])
-            @include('app::Forms.05_DevToolsEnvironment', ['app' => $app])
-            @include('app::Forms.06_ArchitectureSection', ['app' => $app])
-            @include('app::Forms.07_SecuritySection', ['app' => $app])
-            @include('app::Forms.08_BackendSection', ['app' => $app])
-            @include('app::Forms.09_FrontendSection', ['app' => $app])
-            @include('app::Forms.10_DatabaseSection', ['app' => $app])
+            @include('App::Forms.01_BasicInfoForm', ['app' => $app])
+            @include('App::Forms.02_DevelopmentStoryForm', ['app' => $app])
+            @include('App::Forms.03_HardwareSection', ['app' => $app])
+            @include('App::Forms.04_BasicDevEnvironment', ['app' => $app])
+            @include('App::Forms.05_DevToolsEnvironment', ['app' => $app])
+            @include('App::Forms.06_ArchitectureSection', ['app' => $app])
+            @include('App::Forms.07_SecuritySection', ['app' => $app])
+            @include('App::Forms.08_BackendSection', ['app' => $app])
+            @include('App::Forms.09_FrontendSection', ['app' => $app])
+            @include('App::Forms.10_DatabaseSection', ['app' => $app])
         </div>
     </div>
 
     <!-- スクリーンショットモーダル -->
-    <x-app::app-screenshot-modal />
+    <x-App::app-screenshot-modal />
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

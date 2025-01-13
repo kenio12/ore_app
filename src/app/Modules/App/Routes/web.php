@@ -30,4 +30,14 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
 
     // 編集画面のルートを追加
     Route::get('/apps/{app}/edit', [AppController::class, 'edit'])->name('apps.edit');
+});
+
+Route::middleware('auth')->group(function () {
+    // ダッシュボード用のルート（編集モード）
+    Route::get('/dashboard/apps/{app}/edit', [AppController::class, 'edit'])
+        ->name('dashboard.apps.edit');
+    
+    // 公開ページ用のルート（閲覧モード）
+    Route::get('/apps/{app}', [AppController::class, 'show'])
+        ->name('apps.show');
 }); 

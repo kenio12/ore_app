@@ -14,17 +14,17 @@ require __DIR__.'/auth.php';
 // ダッシュボードルート
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $apps = auth()->user()->apps;
+        return view('dashboard', compact('apps'));
     })->name('dashboard');
+
+    // パスワード変更ルート（追加）
+    Route::get('/password', [PasswordController::class, 'edit'])
+        ->name('password.edit');
 });
 
 // メール認証が必要なルート
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/apps/create', [AppController::class, 'create'])->name('apps.create');
-});
-
-Route::middleware('auth')->group(function () {
-    Route::get('/password', [PasswordController::class, 'edit'])->name('password.edit');
-    Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
 });
 

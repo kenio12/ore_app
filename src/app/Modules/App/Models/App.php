@@ -173,6 +173,8 @@ class App extends Model
         'source_url',
         'development_period_years',
         'development_period_months',
+        'development_start_date',
+        'development_end_date',
         'app_type',
         'app_status',
         'genres',
@@ -221,5 +223,18 @@ class App extends Model
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
+    }
+
+    /**
+     * スクリーンショットのURLを取得
+     */
+    public function getScreenshotUrlAttribute()
+    {
+        if (!empty($this->screenshots) && is_array($this->screenshots)) {
+            // 最初のスクリーンショットのURLを文字列として返す
+            $firstScreenshot = $this->screenshots[0] ?? null;
+            return is_array($firstScreenshot) ? $firstScreenshot['url'] : $firstScreenshot;
+        }
+        return null;
     }
 } 
