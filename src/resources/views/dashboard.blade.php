@@ -19,7 +19,7 @@
                             </a>
                         </div>
 
-                        <!-- パスワード変更 - 新規追加 -->
+                        <!-- パスワード変更 -->
                         <div class="p-4 border rounded-lg hover:bg-gray-50">
                             <a href="{{ route('password.edit') }}" class="block">
                                 <h3 class="text-lg font-semibold mb-2">パスワード変更</h3>
@@ -41,6 +41,26 @@
                                 <h3 class="text-lg font-semibold mb-2">新規アプリ投稿</h3>
                                 <p class="text-gray-600">新しいアプリを投稿する</p>
                             </a>
+                        </div>
+                    </div>
+
+                    <!-- 危険な操作エリア -->
+                    <div class="mt-8 border-t pt-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">危険な操作</h3>
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <form method="POST" action="{{ route('profile.destroy') }}" class="flex items-center justify-between">
+                                @csrf
+                                @method('DELETE')
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-900">アカウント削除</h4>
+                                    <p class="text-gray-600">一度削除すると、全てのデータが完全に削除され、復元できません。</p>
+                                </div>
+                                <button type="submit" 
+                                    class="bg-red-100 text-red-600 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors duration-200"
+                                    onclick="return confirm('本当にアカウントを削除しますか？この操作は取り消せません。')">
+                                    アカウントを削除する
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
