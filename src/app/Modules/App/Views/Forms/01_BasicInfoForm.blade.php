@@ -24,37 +24,47 @@
         <label class="block text-sm font-medium text-gray-700">
             スクリーンショット（1〜3枚） <span class="text-red-500">*</span>
         </label>
-        <div 
-            class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-md"
-            id="dropzone"
-        >
-            <div class="space-y-1 text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <div class="flex text-sm text-gray-600">
-                    <label for="screenshots" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                        <span>画像をアップロード</span>
-                        <input 
-                            id="screenshots" 
-                            name="screenshots[]" 
-                            type="file" 
-                            class="sr-only"
-                            accept="image/*"
-                            multiple
-                            max="3"
-                        >
-                    </label>
-                    <p class="pl-1">またはドラッグ＆ドロップ</p>
-                </div>
-                <p class="text-xs text-gray-500">
-                    PNG, JPG, GIF 最大3枚まで（1枚5MB以下）
-                </p>
+        @if($viewOnly ?? false)
+            <div class="mt-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @foreach($app->screenshots ?? [] as $screenshot)
+                    <div class="relative">
+                        <img src="{{ $screenshot['url'] }}" 
+                             alt="スクリーンショット" 
+                             class="rounded-lg shadow cursor-pointer hover:shadow-lg transition-shadow"
+                             onclick="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
+                    </div>
+                @endforeach
             </div>
-        </div>
-
-        <!-- プレビュー領域 -->
-        <div id="preview-container"></div>
+        @else
+            <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed border-gray-300 rounded-md"
+                id="dropzone">
+                <div class="space-y-1 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <div class="flex text-sm text-gray-600">
+                        <label for="screenshots" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                            <span>画像をアップロード</span>
+                            <input 
+                                id="screenshots" 
+                                name="screenshots[]" 
+                                type="file" 
+                                class="sr-only"
+                                accept="image/*"
+                                multiple
+                                max="3"
+                            >
+                        </label>
+                        <p class="pl-1">またはドラッグ＆ドロップ</p>
+                    </div>
+                    <p class="text-xs text-gray-500">
+                        PNG, JPG, GIF 最大3枚まで（1枚5MB以下）
+                    </p>
+                </div>
+            </div>
+            <!-- プレビュー領域 -->
+            <div id="preview-container"></div>
+        @endif
 
         @error('screenshots')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -170,9 +180,46 @@
 
     <!-- 開発期間 -->
     <div class="mb-6">
-        <label for="development_period" class="block text-sm font-medium text-gray-700">
+        <label class="block text-sm font-medium text-gray-700 mb-4">
             開発期間 <span class="text-red-500">*</span>
         </label>
+
+        <!-- 開発開始日・終了日 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label for="development_start_date" class="block text-sm text-gray-600 mb-1">
+                    開発開始日
+                </label>
+                <input 
+                    type="date" 
+                    name="development_start_date" 
+                    id="development_start_date"
+                    value="{{ old('development_start_date', $app->development_start_date?->format('Y-m-d') ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                @error('development_start_date')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="development_end_date" class="block text-sm text-gray-600 mb-1">
+                    開発終了日
+                </label>
+                <input 
+                    type="date" 
+                    name="development_end_date" 
+                    id="development_end_date"
+                    value="{{ old('development_end_date', $app->development_end_date?->format('Y-m-d') ?? '') }}"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                @error('development_end_date')
+                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </div>
+        </div>
+
+        <!-- 開発期間（年月） -->
         <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
                 <input 

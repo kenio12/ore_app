@@ -26,13 +26,11 @@ class AppController extends Controller
 
     public function show(App $app)
     {
-        Log::info('App Details:', [
-            'app_id' => $app->id,
-            'app_type' => $app->app_type,
-            'all_attributes' => $app->toArray()  // 全属性を出力
+        return view('app::show', [
+            'app' => $app,
+            'appTypeLabels' => config('app.app_type_labels', []),
+            'statusLabels' => config('app.status_labels', [])
         ]);
-        
-        return view('app::show', compact('app'));
     }
 
     public function create(Request $request, string $section = 'basic-info')

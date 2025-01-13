@@ -79,6 +79,18 @@
                                 @endif
                             </div>
 
+                            <!-- 詳細ボタンを中央配置 -->
+                            <div class="flex justify-center mb-4">
+                                <a href="{{ route('apps.show', $app) }}" 
+                                   class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 border border-transparent rounded-lg font-bold text-sm text-white uppercase tracking-wider hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                    <span class="mr-2">👀</span>
+                                    詳細を見る
+                                    <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                </a>
+                            </div>
+
                             <!-- メタ情報 -->
                             <div class="flex justify-between items-center pt-4 border-t border-gray-200">
                                 <div class="flex items-center gap-2">

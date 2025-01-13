@@ -27,4 +27,7 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
         Route::put('/development-story/{app}', [B_DevelopmentStoryController::class, 'update'])
             ->name('development-story.update');
     });
+
+    // 編集画面のルートを追加
+    Route::get('/apps/{app}/edit', [AppController::class, 'edit'])->name('apps.edit');
 }); 

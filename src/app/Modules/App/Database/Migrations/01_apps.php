@@ -27,6 +27,8 @@ return new class extends Migration
                 ->comment('開発状態: completed（完成）, in_development（開発中）');
             $table->integer('development_period_years')->default(0)->comment('開発期間（年）');
             $table->integer('development_period_months')->default(0)->comment('開発期間（月）');
+            $table->date('development_start_date')->nullable()->comment('開発開始日');
+            $table->date('development_end_date')->nullable()->comment('開発終了日');
             $table->timestamps();
             $table->softDeletes();
         });
