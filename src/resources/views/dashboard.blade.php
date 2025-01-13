@@ -19,6 +19,14 @@
                             </a>
                         </div>
 
+                        <!-- パスワード変更 - 新規追加 -->
+                        <div class="p-4 border rounded-lg hover:bg-gray-50">
+                            <a href="{{ route('password.edit') }}" class="block">
+                                <h3 class="text-lg font-semibold mb-2">パスワード変更</h3>
+                                <p class="text-gray-600">アカウントのパスワードを変更</p>
+                            </a>
+                        </div>
+
                         <!-- 投稿したアプリ一覧 -->
                         <div class="p-4 border rounded-lg hover:bg-gray-50">
                             <a href="{{ route('apps.index') }}" class="block">

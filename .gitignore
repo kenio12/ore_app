@@ -22,3 +22,7 @@ yarn-error.log
 /.vscode
 /.zed
 *.code-workspace
+
+# 環境設定ファイルのバックアップを無視
+.env.*
+!.env.example
