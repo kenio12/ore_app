@@ -8,6 +8,7 @@ use App\Modules\App\Services\AppProgressManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class AppController extends Controller
 {
@@ -23,10 +24,15 @@ class AppController extends Controller
         return view('App::index');
     }
 
-    public function show($id)
+    public function show(App $app)
     {
-        $app = App::with('user')->findOrFail($id);
-        return view('App::show', compact('app'));
+        Log::info('App Details:', [
+            'app_id' => $app->id,
+            'app_type' => $app->app_type,
+            'all_attributes' => $app->toArray()  // 全属性を出力
+        ]);
+        
+        return view('app::show', compact('app'));
     }
 
     public function create(Request $request, string $section = 'basic-info')
@@ -75,5 +81,15 @@ class AppController extends Controller
         return redirect()
             ->route('apps.show', $app)
             ->with('success', 'アプリを更新しました');
+    }
+
+    public function store(Request $request)
+    {
+        Log::info('Storing App Details:', [
+            'app_type' => $request->input('app_type'),
+            'all_inputs' => $request->all()  // 全入力値を出力
+        ]);
+        
+        // ... 保存処理 ...
     }
 } 

@@ -2,7 +2,18 @@
     <!-- メインコンテナ -->
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
         <!-- ヒーローセクション -->
-        <div class="relative text-center py-12 md:py-16 bg-gradient-to-r from-indigo-500 to-purple-600 mb-12 shadow-lg">
+        <div 
+            x-data="{ show: true }"
+            x-init="setTimeout(() => show = false, 10000)"
+            x-show="show"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform -translate-y-4"
+            x-transition:enter-end="opacity-100 transform translate-y-0"
+            x-transition:leave="transition ease-in duration-500"
+            x-transition:leave-start="opacity-100 transform translate-y-0"
+            x-transition:leave-end="opacity-0 transform -translate-y-4"
+            class="relative text-center py-12 md:py-16 bg-gradient-to-r from-indigo-500 to-purple-600 mb-6 shadow-lg"
+        >
             <div class="absolute inset-0 bg-black/20"></div>
             <div class="relative z-10">
                 <h1 class="text-4xl md:text-6xl font-extrabold mb-4 text-white drop-shadow-lg">🗡️ 俺は 🏴‍☠️</h1>
@@ -21,6 +32,14 @@
 
         <!-- コンテンツコンテナ -->
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- 上部スペーサー（ヒーローセクションの表示状態に応じて調整） -->
+            <div 
+                x-data="{ show: true }"
+                x-init="setTimeout(() => show = false, 10000)"
+                class="transition-all duration-300"
+                :class="{ 'h-8 md:h-12': !show, 'h-0': show }"
+            ></div>
+
             <!-- アプリグリッド -->
             <div class="space-y-8 mb-12">
                 @forelse($apps as $app)
@@ -30,7 +49,7 @@
                             <div class="flex justify-between items-center mb-3">
                                 <div class="flex flex-wrap gap-2">
                                     <span class="px-3 py-1 rounded-full text-sm font-medium text-white"
-                                        style="background-color: {{ $appTypeColors[$app->app_type] ?? '#9CA3AF' }}">
+                                        style="background-color: {{ \App\Modules\App\Helpers\ColorHelper::getAppTypeColor($app->app_type) }}">
                                         {{ $appTypeLabels[$app->app_type] ?? 'その他' }}
                                     </span>
                                 </div>
@@ -39,20 +58,20 @@
                             <!-- アプリヘッダー -->
                             <div class="flex justify-between items-center mb-4">
                                 <h3 class="text-2xl font-semibold">{{ $app->title }}</h3>
-                                <span class="px-3 py-1 rounded text-sm font-medium text-white
-                                    {{ $app->status === 'completed' ? 'bg-emerald-600' : 'bg-amber-600' }}">
-                                    {{ $statusLabels[$app->status] ?? '開発中' }}
+                                <span class="px-3 py-1 rounded text-sm font-medium text-white"
+                                    style="background-color: {{ \App\Modules\App\Helpers\ColorHelper::getStatusColor($app->status) }}">
+                                    {{ $statusLabels[$app->status] ?? '下書き' }}
                                 </span>
                             </div>
 
                             <!-- スクリーンショット -->
                             <div class="bg-gray-50 flex justify-center items-center mb-4">
                                 @if($app->screenshots && count($app->screenshots) > 0)
-                                    <a href="{{ $app->screenshots[0] }}" target="_blank" rel="noopener noreferrer">
+                                    <a href="{{ $app->screenshots[0]['url'] }}" target="_blank" rel="noopener noreferrer">
                                         <img 
                                             class="object-contain w-auto cursor-pointer hover:opacity-90 transition-opacity"
                                             style="max-height: 330px;"
-                                            src="{{ $app->screenshots[0] }}"
+                                            src="{{ $app->screenshots[0]['url'] }}"
                                             alt="{{ $app->title }}"
                                             onerror="this.src='/default-app-image.png'"
                                         >

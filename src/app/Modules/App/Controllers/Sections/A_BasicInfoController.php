@@ -6,16 +6,19 @@ use App\Modules\App\Controllers\Base\SectionController;
 use App\Modules\App\Models\App;
 use App\Modules\App\Requests\BasicInfoRequest;
 use App\Modules\App\Helpers\ColorHelper;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use App\Modules\App\Services\CloudinaryService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 
 class A_BasicInfoController extends SectionController
 {
-    public function __construct()
+    private CloudinaryService $cloudinaryService;
+
+    public function __construct(CloudinaryService $cloudinaryService)
     {
         parent::__construct(app('App\Modules\App\Services\AppProgressManager'));
+        $this->cloudinaryService = $cloudinaryService;
     }
 
     public function edit(string $appId)
@@ -76,11 +79,6 @@ class A_BasicInfoController extends SectionController
         try {
             DB::beginTransaction();
 
-            Log::info('Starting store process', [
-                'user_id' => auth()->id(),
-                'request_data' => $request->except(['screenshots'])
-            ]);
-
             // 基本情報の保存
             $app = new App([
                 'title' => $request->title,
@@ -94,13 +92,20 @@ class A_BasicInfoController extends SectionController
 
             $app->save();
 
-            // スクリーンショットの処理を追加
+            // スクリーンショットの処理
             if ($request->hasFile('screenshots')) {
                 $screenshots = [];
                 foreach ($request->file('screenshots') as $file) {
-                    $url = $this->uploadScreenshot($file);
-                    if ($url) {
-                        $screenshots[] = $url;
+                    $tempResult = $this->uploadScreenshot($file);
+                    if ($tempResult) {
+                        // 一時保存から本番環境への移動
+                        $result = $this->cloudinaryService->moveToProduction($tempResult['temp_public_id']);
+                        $screenshots[] = [
+                            'public_id' => $result['public_id'],
+                            'url' => $result['url'],
+                            'width' => $result['width'],
+                            'height' => $result['height']
+                        ];
                     }
                 }
                 if (!empty($screenshots)) {
@@ -139,47 +144,28 @@ class A_BasicInfoController extends SectionController
         }
 
         try {
-            // configから設定を取得
-            $config = config('cloudinary.screenshots');
-            
-            Log::info('Attempting to upload screenshot', [
-                'file' => $file->getClientOriginalName(),
-                'config' => $config
-            ]);
-
-            // アップロードオプションを設定
-            $uploadOptions = [
-                'folder' => $config['folder'] ?? 'ore_app/screenshots'
-            ];
-
-            if (isset($config['transformation'])) {
-                $uploadOptions['transformation'] = $config['transformation'];
-            }
-
-            // アップロード実行
-            $result = Cloudinary::upload($file->getRealPath(), $uploadOptions);
-
-            if (!$result) {
-                Log::error('Cloudinary upload returned null result');
-                return '';  // nullの代わりに空文字を返す
-            }
-
-            $url = $result->getSecurePath();
+            // CloudinaryServiceを使用して一時保存
+            $result = $this->cloudinaryService->uploadToTemp($file);
             
             Log::info('Screenshot upload successful', [
                 'file' => $file->getClientOriginalName(),
-                'url' => $url
+                'result' => $result
             ]);
 
-            return $url ?: '';  // nullの場合は空文字を返す
+            return [
+                'temp_public_id' => $result['temp_public_id'],
+                'url' => $result['url'],
+                'width' => $result['width'],
+                'height' => $result['height']
+            ];
 
         } catch (\Exception $e) {
-            Log::error('Cloudinary upload failed', [
+            Log::error('Screenshot upload failed', [
                 'error' => $e->getMessage(),
                 'file' => $file->getClientOriginalName(),
                 'trace' => $e->getTraceAsString()
             ]);
-            return '';  // nullの代わりに空文字を返す
+            throw $e;  // 上位で処理するために例外を投げる
         }
     }
 } 
