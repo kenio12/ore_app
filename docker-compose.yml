@@ -14,6 +14,7 @@ services:
       - db
     environment:
       - DOCKER_ENV=true
+      - VSCODE_REMOTE=1
 
   web:
     build:

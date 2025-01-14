@@ -27,8 +27,41 @@ class AppController extends Controller
 
     public function show(App $app)
     {
+        // データベースから確実にデータを取得
+        $app = App::with(['user'])->findOrFail($app->id);
+
+        // Cloudinaryの画像URLを確実に取得
+        $screenshots = [];
+        if ($app->screenshots) {
+            foreach ($app->screenshots as $screenshot) {
+                $screenshots[] = [
+                    'url' => $screenshot['url'] ?? '',
+                    'public_id' => $screenshot['public_id'] ?? ''
+                ];
+            }
+        }
+
+        // その他の関連データを取得
+        $app->load([
+            'screenshots',
+            'developmentStory',
+            'hardware',
+            'devEnvironment',
+            'devTools',
+            'architecture',
+            'security',
+            'backend',
+            'frontend',
+            'database'
+        ]);
+
+        // デバッグ用
+        \Log::info('App data:', ['app' => $app->toArray()]);
+        \Log::info('Screenshots:', ['screenshots' => $screenshots]);
+
         return view('App::show', [
             'app' => $app,
+            'screenshots' => $screenshots,
             'appTypeLabels' => config('app.app_type_labels', []),
             'statusLabels' => config('app.status_labels', [])
         ]);

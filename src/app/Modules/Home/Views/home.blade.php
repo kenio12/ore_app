@@ -110,7 +110,4 @@
             </div>
         </div>
     </div>
-
-    <!-- モーダルコンポーネントを追加 -->
-    <x-app::app-screenshot-modal />
 </x-app-layout> 

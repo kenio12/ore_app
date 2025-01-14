@@ -9,7 +9,6 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     // アプリの基本ルート
     Route::get('/apps', [AppController::class, 'index'])->name('apps.index');
     Route::get('/apps/create', [AppController::class, 'create'])->name('apps.create');
-    Route::get('/apps/{app}', [AppController::class, 'show'])->name('apps.show');
 
     // セクション別のルート
     Route::prefix('apps/sections')->name('app.sections.')->group(function () {
@@ -32,12 +31,11 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::get('/apps/{app}/edit', [AppController::class, 'edit'])->name('apps.edit');
 });
 
+Route::get('/apps/{app}', [AppController::class, 'show'])
+    ->name('apps.show');
+
 Route::middleware('auth')->group(function () {
     // ダッシュボード用のルート（編集モード）
     Route::get('/dashboard/apps/{app}/edit', [AppController::class, 'edit'])
         ->name('dashboard.apps.edit');
-    
-    // 公開ページ用のルート（閲覧モード）
-    Route::get('/apps/{app}', [AppController::class, 'show'])
-        ->name('apps.show');
 }); 

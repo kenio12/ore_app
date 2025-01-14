@@ -12,11 +12,11 @@
             id="title"
             value="{{ old('title', $app->title ?? '') }}"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            required
+            {{ $viewOnly ?? false ? 'disabled' : 'required' }}
         >
-        @error('title')
-            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
+        @if(isset($errors) && $errors->has('title'))
+            <p class="mt-1 text-sm text-red-600">{{ $errors->first('title') }}</p>
+        @endif
     </div>
 
     <!-- スクリーンショット -->
@@ -25,20 +25,12 @@
             スクリーンショット（1〜3枚） <span class="text-red-500">*</span>
         </label>
         @if($viewOnly ?? false)
-            <!-- デバッグ表示 -->
-            <pre class="bg-gray-100 p-4 mb-4">
-                @php
-                    print_r($app->screenshots ?? 'No screenshots available');
-                @endphp
-            </pre>
-
             <div class="mt-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($app->screenshots ?? [] as $screenshot)
                     <div class="relative aspect-video">
                         <img src="{{ $screenshot['url'] }}" 
                              alt="スクリーンショット" 
-                             class="w-full h-full object-cover rounded-lg shadow cursor-pointer hover:shadow-lg transition-shadow"
-                             onclick="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
+                             class="w-full h-full object-cover rounded-lg shadow">
                     </div>
                 @endforeach
             </div>
@@ -380,9 +372,65 @@
             </ul>
         </div>
     @endif
-</div> 
+</div>
 
-<x-app::app-screenshot-modal />
+<!-- スクリーンショットモーダル -->
+<div
+    x-data="{
+        show: false,
+        aspectRatio: 0,
+        calculateSize() {
+            const img = this.$refs.appScreenshotImage;
+            this.aspectRatio = img.naturalWidth / img.naturalHeight;
+            
+            if (this.aspectRatio < 1) {  // 縦長画像（スマホスクショ）
+                const viewportHeight = window.innerHeight;
+                img.style.height = `${Math.floor(viewportHeight * 0.8)}px`;
+                img.style.width = 'auto';
+            } else {  // 横長画像（パソコンスクショ）
+                const viewportWidth = window.innerWidth;
+                img.style.width = `${Math.floor(viewportWidth * 0.9)}px`;
+                img.style.height = 'auto';
+            }
+        }
+    }"
+    x-on:open-app-screenshot-modal.window="
+        show = true;
+        $refs.appScreenshotImage.src = $event.detail.src;
+        $nextTick(() => calculateSize());
+    "
+    x-on:close.stop="show = false"
+    x-on:keydown.escape.window="show = false"
+    x-show="show"
+    class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
+    style="display: none;"
+>
+    <div
+        x-show="show"
+        class="fixed inset-0 transform transition-all"
+        x-on:click="show = false"
+        x-transition:enter="ease-out duration-300"
+        x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100"
+        x-transition:leave="ease-in duration-200"
+        x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+    >
+        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+
+    <div
+        x-show="show"
+        class="flex items-center justify-center min-h-screen"
+    >
+        <img
+            x-ref="appScreenshotImage"
+            class="object-contain"
+            style="max-width: 90vw; max-height: 90vh;"
+            alt="アプリのスクリーンショット"
+        />
+    </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -425,39 +473,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 tempImg.src = e.target.result;
                 
                 tempImg.onload = function() {
-                    const aspectRatio = this.width / this.height;
-                    
-                    if (aspectRatio < 1) {  // 縦長画像（スマホスクショ）
-                        const viewportHeight = window.innerHeight;
-                        const imageHeight = Math.floor(viewportHeight * 0.8);
-                        
-                        previewImg.style.cssText = `
-                            height: ${imageHeight}px;
-                            width: auto;
-                            object-fit: contain;
-                            border-radius: 0.5rem;
-                            cursor: pointer;
-                            margin: 0 auto;
-                            display: block;
-                        `;
-                    } else {  // 横長画像（パソコンスクショ）
-                        const viewportWidth = window.innerWidth;
-                        const imageWidth = Math.floor(viewportWidth * 0.9);
-                        
-                        previewImg.style.cssText = `
-                            width: ${imageWidth}px;
-                            height: auto;
-                            object-fit: contain;
-                            border-radius: 0.5rem;
-                            cursor: pointer;
-                            margin: 0 auto;
-                            display: block;
-                        `;
-                    }
-                };
-                
-                previewImg.onclick = function() {
-                    $dispatch('open-app-screenshot-modal', { src: this.src });
+                    previewImg.style.cssText = `
+                        max-width: 100%;
+                        height: auto;
+                        object-fit: contain;
+                        border-radius: 0.5rem;
+                        margin: 0 auto;
+                        display: block;
+                    `;
                 };
 
                 const deleteButton = document.createElement('button');
