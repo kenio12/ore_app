@@ -177,7 +177,7 @@ return [
          * Module Service Providers...
          */
         App\Modules\Home\Providers\HomeServiceProvider::class,
-        App\Modules\App\Providers\AppServiceProvider::class,
+        App\Modules\App\Providers\AppModuleServiceProvider::class,
 
         App\Modules\Profile\Providers\ProfileServiceProvider::class,
     ],

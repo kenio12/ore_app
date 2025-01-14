@@ -7,8 +7,8 @@ use App\Modules\App\Models\App;
 use App\Modules\App\Services\AppProgressManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AppController extends Controller
 {
@@ -27,43 +27,10 @@ class AppController extends Controller
 
     public function show(App $app)
     {
-        // データベースから確実にデータを取得
-        $app = App::with(['user'])->findOrFail($app->id);
-
-        // Cloudinaryの画像URLを確実に取得
-        $screenshots = [];
-        if ($app->screenshots) {
-            foreach ($app->screenshots as $screenshot) {
-                $screenshots[] = [
-                    'url' => $screenshot['url'] ?? '',
-                    'public_id' => $screenshot['public_id'] ?? ''
-                ];
-            }
-        }
-
-        // その他の関連データを取得
-        $app->load([
-            'screenshots',
-            'developmentStory',
-            'hardware',
-            'devEnvironment',
-            'devTools',
-            'architecture',
-            'security',
-            'backend',
-            'frontend',
-            'database'
-        ]);
-
-        // デバッグ用
-        \Log::info('App data:', ['app' => $app->toArray()]);
-        \Log::info('Screenshots:', ['screenshots' => $screenshots]);
-
         return view('App::show', [
             'app' => $app,
-            'screenshots' => $screenshots,
-            'appTypeLabels' => config('app.app_type_labels', []),
-            'statusLabels' => config('app.status_labels', [])
+            'viewOnly' => true,
+            'errors' => new \Illuminate\Support\ViewErrorBag()
         ]);
     }
 
@@ -77,18 +44,25 @@ class AppController extends Controller
 
         // セクションの存在確認
         $sections = $this->progressManager->getSections();
+        
+        // デバッグ用にログを追加
+        Log::info('Sections data:', [
+            'sections' => $sections,
+            'currentSection' => $section
+        ]);
+
         if (!array_key_exists($section, $sections)) {
             return redirect()->route('app.create')
                 ->with('error', '無効なセクションです。');
         }
 
-        return view('app::app-form', [
+        return view('App::app-form', [
+            'app' => new App(),
             'currentSection' => $section,
             'sectionTitle' => $sections[$section]['title'],
             'sections' => $sections,
             'previousSection' => $this->progressManager->getPreviousSection($section),
-            'nextSection' => $this->progressManager->getNextSection($section),
-            'app' => new App(),
+            'nextSection' => $this->progressManager->getNextSection($section)
         ]);
     }
 

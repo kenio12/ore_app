@@ -5,11 +5,11 @@ use App\Modules\App\Controllers\Sections\A_BasicInfoController;
 use App\Modules\App\Controllers\Sections\B_DevelopmentStoryController;
 use Illuminate\Support\Facades\Route;
 
+// 認証が必要なルートをまとめて定義
 Route::middleware(['web', 'auth', 'verified'])->group(function () {
-    // アプリの基本ルート
-    Route::get('/apps', [AppController::class, 'index'])->name('apps.index');
+    // createを最初に
     Route::get('/apps/create', [AppController::class, 'create'])->name('apps.create');
-
+    
     // セクション別のルート
     Route::prefix('apps/sections')->name('app.sections.')->group(function () {
         // 基本情報セクション
@@ -27,15 +27,18 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
             ->name('development-story.update');
     });
 
-    // 編集画面のルートを追加
+    // 編集画面のルート
     Route::get('/apps/{app}/edit', [AppController::class, 'edit'])->name('apps.edit');
 });
 
-Route::get('/apps/{app}', [AppController::class, 'show'])
-    ->name('apps.show');
+// 認証不要の公開ルートを後に
+Route::middleware(['web'])->group(function () {
+    Route::get('/apps', [AppController::class, 'index'])->name('apps.index');
+    Route::get('/apps/{app}', [AppController::class, 'show'])->name('apps.show');
+});
 
+// ダッシュボード用のルート
 Route::middleware('auth')->group(function () {
-    // ダッシュボード用のルート（編集モード）
     Route::get('/dashboard/apps/{app}/edit', [AppController::class, 'edit'])
         ->name('dashboard.apps.edit');
 }); 

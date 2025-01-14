@@ -6,17 +6,15 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use App\Modules\App\Services\AppProgressManager;
 
-class AppServiceProvider extends ServiceProvider
+class AppModuleServiceProvider extends ServiceProvider
 {
     public function register()
     {
         $this->mergeConfigFrom(
             __DIR__.'/../Config/config.php', 'app'
         );
-        // ヘルパー関数を登録
-        require_once app_path('Modules/App/Helpers/ColorHelper.php');
 
-        // AppProgressManagerの登録を追加
+        // AppProgressManagerの登録
         $this->app->singleton(AppProgressManager::class, function ($app) {
             return new AppProgressManager();
         });
@@ -24,12 +22,16 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // ルートの読み込み
         $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
-        $this->loadViewsFrom(__DIR__ . '/../Views', 'App');
-        // コンポーネントの登録を修正
+
+        // ビューの読み込み - この行が重要！
+        $this->loadViewsFrom(__DIR__ . '/../Views', 'App');  // 'App'が名前空間
+
+        // コンポーネントの登録
         Blade::componentNamespace('App\\Modules\\App\\Views\\components', 'app');
 
-        // マイグレーションパスの登録
+        // マイグレーションの読み込み
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
     }
 } 

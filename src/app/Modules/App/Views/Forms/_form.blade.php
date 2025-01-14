@@ -60,9 +60,9 @@
 
     {{-- フォームの内容 --}}
     @if($currentSection === 'basic-info')
-        @include('app::Forms.01_BasicInfoForm', ['data' => $sectionData])
+        @include('App::Forms.01_BasicInfoForm', ['data' => $sectionData])
     @elseif($currentSection === 'development-story')
-        @include('app::Forms.02_DevelopmentStoryForm', ['app' => $sectionData])
+        @include('App::Forms.02_DevelopmentStoryForm', ['app' => $sectionData])
     @endif
     
     {{-- ナビゲーションボタンのコンテナ --}}

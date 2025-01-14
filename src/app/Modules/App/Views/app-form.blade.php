@@ -11,10 +11,13 @@
                 </p>
             </div>
 
-            @include('app::Forms._form', [
-                'app' => $app,
-                'currentSection' => $currentSection
-            ])
+            @include('App::Forms._form', [  // 大文字の'App::'
+    'app' => $app,
+    'currentSection' => $currentSection,
+    'sections' => $sections ?? [],
+    'previousSection' => $previousSection ?? null,
+    'nextSection' => $nextSection ?? null
+])
         </div>
     </div>
 </x-app-layout> 
