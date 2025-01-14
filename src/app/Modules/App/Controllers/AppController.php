@@ -29,8 +29,7 @@ class AppController extends Controller
     {
         return view('App::show', [
             'app' => $app,
-            'viewOnly' => true,
-            'errors' => new \Illuminate\Support\ViewErrorBag()
+            'viewOnly' => true
         ]);
     }
 

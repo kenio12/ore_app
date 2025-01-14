@@ -269,11 +269,11 @@
     </div>
 
     <!-- アプリの種類 -->
-    <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+    <div class="mb-6">
         <label class="block text-sm font-medium text-gray-700 mb-2">
-            アプリの種類 <span class="text-red-500">*</span>
+            アプリの種類（複数選択可） <span class="text-red-500">*</span>
         </label>
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
             @foreach([
                 'web_app' => 'Webアプリケーション',
                 'ios_app' => 'iOSアプリ',
@@ -286,18 +286,17 @@
             ] as $value => $label)
                 <label class="flex items-center gap-2">
                     <input
-                        type="radio"
-                        name="app_type"
+                        type="checkbox"
+                        name="app_types[]"
                         value="{{ $value }}"
-                        {{ old('app_type', $app->app_type ?? '') == $value ? 'checked' : '' }}
-                        class="rounded-full border-gray-300 text-blue-600 focus:ring-blue-500"
-                        required
+                        {{ in_array($value, old('app_types', $app->app_types ?? [])) ? 'checked' : '' }}
+                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
             @endforeach
         </div>
-        @error('app_type')
+        @error('app_types')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
     </div>
