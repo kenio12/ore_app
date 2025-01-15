@@ -25,12 +25,15 @@
             スクリーンショット（1〜3枚） <span class="text-red-500">*</span>
         </label>
         @if($viewOnly ?? false)
-            <div class="mt-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="mt-1 space-y-8">
                 @foreach($app->screenshots ?? [] as $screenshot)
-                    <div class="relative aspect-video">
+                    <div class="relative cursor-pointer flex justify-center" 
+                         x-data
+                         @click="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
                         <img src="{{ $screenshot['url'] }}" 
                              alt="スクリーンショット" 
-                             class="w-full h-full object-cover rounded-lg shadow">
+                             class="rounded-lg shadow-lg hover:opacity-95 transition-opacity"
+                             style="max-width: 100%; width: auto; height: auto; max-height: 90vh;">
                     </div>
                 @endforeach
             </div>

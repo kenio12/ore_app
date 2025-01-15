@@ -4,38 +4,46 @@ namespace App\Modules\App\Controllers\Sections;
 
 use App\Modules\App\Controllers\Base\SectionController;
 use App\Modules\App\Models\App;
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class B_DevelopmentStoryController extends SectionController
 {
     public function edit(string $appId)
     {
         $app = App::findOrFail($appId);
-        
-        return view('app::Forms.02_DevelopmentStoryForm', [
+
+        return view('App::Forms.02_DevelopmentStoryForm', [
             'app' => $app,
             'currentSection' => 'development-story'
         ]);
     }
 
-    public function update(FormRequest $request, string $appId)
+    public function update(Request $request, string $appId)
     {
         try {
             $app = App::findOrFail($appId);
             
-            // TODO: 開発ストーリーの更新処理を実装
+            // バリデーションを実行
+            $validatedData = $request->validate([
+                'motivation' => 'nullable|string|max:10000',
+                'challenges' => 'nullable|string|max:10000',
+                'devised_points' => 'nullable|string|max:10000',
+                'learnings' => 'nullable|string|max:10000',
+                'future_plans' => 'nullable|string|max:10000',
+                'overall_thoughts' => 'nullable|string|max:10000',
+            ]);
+            
+            // データを更新
+            $app->update($validatedData);
             
             // セクション完了をマーク
             $this->completeSection($appId, 'development-story');
             
             return redirect()
-                ->route('app.sections.next-section.edit', ['app' => $app->id])
-                ->with('success', '開発ストーリーを保存しました！');
-                
+                ->route('apps.sections.development-story.edit', $appId)
+                ->with('status', '開発ストーリーを更新しました！');
         } catch (\Exception $e) {
-            return back()
-                ->withInput()
-                ->with('error', 'データの保存に失敗しました: ' . $e->getMessage());
+            throw $e;
         }
     }
 } 

@@ -10,6 +10,7 @@ use App\Modules\App\Services\CloudinaryService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class A_BasicInfoController extends SectionController
 {
@@ -30,8 +31,11 @@ class A_BasicInfoController extends SectionController
         ]);
     }
 
-    public function update(FormRequest $request, string $appId)
+    public function update(Request $request, string $appId)
     {
+        // バリデーションをここで実行
+        $validatedData = app(BasicInfoRequest::class);
+        
         try {
             DB::beginTransaction();
 
@@ -75,12 +79,11 @@ class A_BasicInfoController extends SectionController
         }
     }
 
-    public function store(FormRequest $request)
+    public function store(Request $request)
     {
         try {
             DB::beginTransaction();
 
-            // 基本情報の保存
             $app = new App([
                 'title' => $request->title,
                 'description' => $request->description,
@@ -89,7 +92,7 @@ class A_BasicInfoController extends SectionController
                 'status' => $request->status,
                 'color' => ColorHelper::generateColorFromString($request->title),
                 'user_id' => auth()->id(),
-                'app_type' => $request->app_type,
+                'app_types' => $request->app_types,
                 'app_status' => $request->app_status
             ]);
 
@@ -127,13 +130,7 @@ class A_BasicInfoController extends SectionController
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Store process failed', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return back()
-                ->withInput()
-                ->with('error', 'データの保存に失敗しました: ' . $e->getMessage());
+            throw $e;
         }
     }
 

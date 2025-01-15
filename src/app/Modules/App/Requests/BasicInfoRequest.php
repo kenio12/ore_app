@@ -3,6 +3,7 @@
 namespace App\Modules\App\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\App\Models\App;
 
 class BasicInfoRequest extends FormRequest
 {
@@ -19,7 +20,10 @@ class BasicInfoRequest extends FormRequest
             'demo_url' => 'nullable|url|max:255',
             'github_url' => 'nullable|url|max:255',
             'status' => 'required|in:draft,published',
-            'screenshots.*' => 'image|mimes:jpeg,png,jpg|max:2048'
+            'screenshots.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'app_types' => 'required|array|min:1',
+            'app_types.*' => 'in:' . implode(',', array_keys(App::getAppTypeOptions())),
+            'app_status' => 'required|in:completed,in_development'
         ];
     }
 
@@ -36,7 +40,13 @@ class BasicInfoRequest extends FormRequest
             'status.in' => '無効な公開状態です',
             'screenshots.*.image' => 'スクリーンショットは画像ファイルである必要があります',
             'screenshots.*.mimes' => 'スクリーンショットはJPEG、PNG、JPG形式である必要があります',
-            'screenshots.*.max' => 'スクリーンショットは2MB以下である必要があります'
+            'screenshots.*.max' => 'スクリーンショットは2MB以下である必要があります',
+            'app_types.required' => 'アプリの種類は必須です',
+            'app_types.array' => 'アプリの種類は配列である必要があります',
+            'app_types.min' => '少なくとも1つのアプリの種類を選択してください',
+            'app_types.*.in' => '選択されたアプリの種類が無効です',
+            'app_status.required' => '開発状態は必須です',
+            'app_status.in' => '無効な開発状態です'
         ];
     }
 } 

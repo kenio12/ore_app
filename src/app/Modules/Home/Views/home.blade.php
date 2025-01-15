@@ -48,10 +48,12 @@
                             <!-- バッジエリア -->
                             <div class="flex justify-between items-center mb-3">
                                 <div class="flex flex-wrap gap-2">
-                                    <span class="px-3 py-1 rounded-full text-sm font-medium text-white"
-                                        style="background-color: {{ \App\Modules\App\Helpers\ColorHelper::getAppTypeColor($app->app_type) }}">
-                                        {{ $appTypeLabels[$app->app_type] ?? 'その他' }}
-                                    </span>
+                                    @foreach($app->app_types as $appType)
+                                        <span class="px-3 py-1 rounded-full text-sm font-medium text-white"
+                                            style="background-color: {{ \App\Modules\App\Helpers\ColorHelper::getAppTypeColor($appType) }}">
+                                            {{ $appTypeLabels[$appType] ?? 'その他' }}
+                                        </span>
+                                    @endforeach
                                 </div>
                             </div>
 

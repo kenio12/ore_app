@@ -33,8 +33,14 @@ class ColorHelper
         return $colors[$index];
     }
 
-    // アプリタイプ用の色を取得
-    public static function getAppTypeColor(?string $type): string
+    /**
+     * アプリタイプ用の色を取得
+     * 文字列または配列を受け取れるように修正
+     *
+     * @param string|array|null $type
+     * @return string
+     */
+    public static function getAppTypeColor($type): string
     {
         $colors = [
             'web_app' => '#4F46E5',      // インディゴ
@@ -46,6 +52,11 @@ class ColorHelper
             'game' => '#D97706',         // アンバー
             'other' => '#9CA3AF'         // グレー
         ];
+
+        // 配列の場合は最初の要素を使用
+        if (is_array($type)) {
+            $type = $type[0] ?? null;
+        }
 
         return $colors[$type ?? 'other'] ?? '#9CA3AF';
     }

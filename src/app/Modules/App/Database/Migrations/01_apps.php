@@ -20,7 +20,7 @@ return new class extends Migration
                 ->comment('公開ステータス: draft, published');
             $table->string('color')->nullable();
             $table->json('completed_sections')->nullable();
-            $table->string('app_type')
+            $table->json('app_types')
                 ->comment('アプリの種類: web_app, ios_app, android_app, windows_app, mac_app, linux_app, game, other');
             $table->json('genres')->nullable()->comment('ジャンル（複数選択可）');
             $table->string('app_status')
