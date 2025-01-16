@@ -27,12 +27,10 @@
         @if($viewOnly ?? false)
             <div class="mt-1 space-y-8">
                 @foreach($app->screenshots ?? [] as $screenshot)
-                    <div class="relative cursor-pointer flex justify-center" 
-                         x-data
-                         @click="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
+                    <div class="relative flex justify-center bg-gray-50 p-4 rounded-lg">
                         <img src="{{ $screenshot['url'] }}" 
                              alt="スクリーンショット" 
-                             class="rounded-lg shadow-lg hover:opacity-95 transition-opacity"
+                             class="rounded-lg shadow-lg"
                              style="max-width: 100%; width: auto; height: auto; max-height: 90vh;">
                     </div>
                 @endforeach
@@ -287,16 +285,26 @@
                 'game' => 'ゲーム',
                 'other' => 'その他'
             ] as $value => $label)
-                <label class="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        name="app_types[]"
-                        value="{{ $value }}"
-                        {{ in_array($value, old('app_types', $app->app_types ?? [])) ? 'checked' : '' }}
-                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    >
-                    <span class="text-gray-700">{{ $label }}</span>
-                </label>
+                <div class="flex items-center gap-2">
+                    @if($viewOnly ?? false)
+                        <div class="{{ in_array($value, old('app_types', $app->app_types ?? [])) 
+                            ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
+                            : 'text-gray-400' }}">
+                            {{ $label }}
+                        </div>
+                    @else
+                        <label class="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                name="app_types[]"
+                                value="{{ $value }}"
+                                {{ in_array($value, old('app_types', $app->app_types ?? [])) ? 'checked' : '' }}
+                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            >
+                            <span class="text-gray-700">{{ $label }}</span>
+                        </label>
+                    @endif
+                </div>
             @endforeach
         </div>
         @error('app_types')
@@ -341,16 +349,26 @@
                 'portfolio' => 'ポートフォリオ',
                 'other' => 'その他'
             ] as $value => $label)
-                <label class="flex items-center gap-2">
-                    <input
-                        type="checkbox"
-                        name="genres[]"
-                        value="{{ $value }}"
-                        {{ in_array($value, old('genres', $app->genres ?? [])) ? 'checked' : '' }}
-                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    >
-                    <span class="text-gray-700">{{ $label }}</span>
-                </label>
+                <div class="flex items-center gap-2">
+                    @if($viewOnly ?? false)
+                        <div class="{{ in_array($value, old('genres', $app->genres ?? [])) 
+                            ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
+                            : 'text-gray-400' }}">
+                            {{ $label }}
+                        </div>
+                    @else
+                        <label class="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                name="genres[]"
+                                value="{{ $value }}"
+                                {{ in_array($value, old('genres', $app->genres ?? [])) ? 'checked' : '' }}
+                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                            >
+                            <span class="text-gray-700">{{ $label }}</span>
+                        </label>
+                    @endif
+                </div>
             @endforeach
         </div>
         @error('genres')
@@ -378,59 +396,47 @@
 
 <!-- スクリーンショットモーダル -->
 <div
-    x-data="{
+    x-data="{ 
         show: false,
-        aspectRatio: 0,
-        calculateSize() {
-            const img = this.$refs.appScreenshotImage;
-            this.aspectRatio = img.naturalWidth / img.naturalHeight;
-            
-            if (this.aspectRatio < 1) {  // 縦長画像（スマホスクショ）
-                const viewportHeight = window.innerHeight;
-                img.style.height = `${Math.floor(viewportHeight * 0.8)}px`;
-                img.style.width = 'auto';
-            } else {  // 横長画像（パソコンスクショ）
-                const viewportWidth = window.innerWidth;
-                img.style.width = `${Math.floor(viewportWidth * 0.9)}px`;
-                img.style.height = 'auto';
-            }
+        imageSrc: '',
+        init() {
+            window.addEventListener('open-app-screenshot-modal', (e) => {
+                this.imageSrc = e.detail.src;
+                this.show = true;
+            });
         }
     }"
-    x-on:open-app-screenshot-modal.window="
-        show = true;
-        $refs.appScreenshotImage.src = $event.detail.src;
-        $nextTick(() => calculateSize());
-    "
-    x-on:close.stop="show = false"
-    x-on:keydown.escape.window="show = false"
     x-show="show"
-    class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
-    style="display: none;"
+    x-cloak
+    class="fixed inset-0 z-50 overflow-hidden"
+    style="background-color: rgba(0, 0, 0, 0.75);"
+    @click.self="show = false"
+    @keydown.escape.window="show = false"
 >
-    <div
-        x-show="show"
-        class="fixed inset-0 transform transition-all"
-        x-on:click="show = false"
-        x-transition:enter="ease-out duration-300"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="ease-in duration-200"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-    >
-        <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-    </div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative">
+            <!-- 閉じるボタン -->
+            <button 
+                @click="show = false"
+                class="absolute -top-4 -right-4 bg-red-500 hover:bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all duration-200 transform hover:scale-110 z-50"
+            >
+                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path 
+                        stroke-linecap="round" 
+                        stroke-linejoin="round" 
+                        stroke-width="3" 
+                        d="M6 18L18 6M6 6l12 12"
+                    />
+                </svg>
+            </button>
 
-    <div
-        x-show="show"
-        class="flex items-center justify-center min-h-screen"
-    >
-        <img
-            x-ref="appScreenshotImage"
-            class="object-contain"
-            style="max-width: 90vw; max-height: 90vh;"
-            alt="アプリのスクリーンショット"
-        />
+            <!-- 画像 -->
+            <img
+                :src="imageSrc"
+                class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                alt="拡大画像"
+            >
+        </div>
     </div>
 </div>
 

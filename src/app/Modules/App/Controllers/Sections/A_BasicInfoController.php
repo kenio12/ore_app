@@ -86,13 +86,11 @@ class A_BasicInfoController extends SectionController
 
     public function store(Request $request)
     {
-        // バリデーションを実行して結果を取得
         $validatedData = app(BasicInfoRequest::class)->validated();
         
         try {
             DB::beginTransaction();
 
-            // バリデーション済みデータを使用して新規作成
             $app = new App(array_merge($validatedData, [
                 'color' => ColorHelper::generateColorFromString($validatedData['title']),
                 'user_id' => auth()->id()
@@ -100,35 +98,25 @@ class A_BasicInfoController extends SectionController
 
             $app->save();
 
-            // スクリーンショットの処理を改善
+            // スクリーンショットの処理
             if ($request->hasFile('screenshots')) {
                 $screenshots = [];
                 foreach ($request->file('screenshots') as $file) {
-                    try {
-                        $tempResult = $this->uploadScreenshot($file);
-                        if ($tempResult) {
-                            $result = $this->cloudinaryService->moveToProduction($tempResult['temp_public_id']);
-                            $screenshots[] = [
-                                'public_id' => $result['public_id'],
-                                'url' => $result['url'],
-                                'width' => $result['width'],
-                                'height' => $result['height']
-                            ];
-                            \Log::info('Screenshot processed successfully', ['result' => $result]);
-                        }
-                    } catch (\Exception $e) {
-                        \Log::error('Error processing screenshot', [
-                            'error' => $e->getMessage(),
-                            'file' => $file->getClientOriginalName()
-                        ]);
-                        continue;  // エラーが発生しても次の画像の処理を続行
+                    $tempResult = $this->uploadScreenshot($file);
+                    if ($tempResult) {
+                        $result = $this->cloudinaryService->moveToProduction($tempResult['temp_public_id']);
+                        $screenshots[] = [
+                            'public_id' => $result['public_id'],
+                            'url' => $result['url'],
+                            'width' => $result['width'],
+                            'height' => $result['height']
+                        ];
                     }
                 }
                 
                 if (!empty($screenshots)) {
                     $app->screenshots = $screenshots;
                     $app->save();
-                    \Log::info('All screenshots saved', ['count' => count($screenshots)]);
                 }
             }
 
@@ -159,11 +147,6 @@ class A_BasicInfoController extends SectionController
             // CloudinaryServiceを使用して一時保存
             $result = $this->cloudinaryService->uploadToTemp($file);
             
-            Log::info('Screenshot upload successful', [
-                'file' => $file->getClientOriginalName(),
-                'result' => $result
-            ]);
-
             return [
                 'temp_public_id' => $result['temp_public_id'],
                 'url' => $result['url'],
@@ -172,12 +155,17 @@ class A_BasicInfoController extends SectionController
             ];
 
         } catch (\Exception $e) {
-            Log::error('Screenshot upload failed', [
-                'error' => $e->getMessage(),
-                'file' => $file->getClientOriginalName(),
-                'trace' => $e->getTraceAsString()
-            ]);
             throw $e;  // 上位で処理するために例外を投げる
         }
+    }
+
+    public function show(string $appId)
+    {
+        $app = App::findOrFail($appId);
+        return view('app::Forms.01_BasicInfoForm', [
+            'app' => $app,
+            'currentSection' => 'basic-info',
+            'viewOnly' => true
+        ]);
     }
 } 

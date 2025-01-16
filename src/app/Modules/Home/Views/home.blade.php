@@ -67,17 +67,16 @@
                             </div>
 
                             <!-- スクリーンショット -->
-                            <div class="bg-gray-50 flex justify-center items-center mb-4">
+                            <div class="bg-gray-50 flex justify-center items-center mb-4" x-data>
                                 @if(is_array($app->screenshots) && !empty($app->screenshots))
-                                    <a href="{{ $app->screenshots[0]['url'] ?? '' }}" target="_blank" rel="noopener noreferrer">
-                                        <img 
-                                            class="object-contain w-auto cursor-pointer hover:opacity-90 transition-opacity"
-                                            style="max-height: 330px;"
-                                            src="{{ $app->screenshots[0]['url'] ?? '/default-app-image.png' }}"
-                                            alt="{{ $app->title }}"
-                                            onerror="this.src='/default-app-image.png'"
-                                        >
-                                    </a>
+                                    <img 
+                                        class="object-contain w-auto cursor-zoom-in hover:opacity-90 transition-opacity"
+                                        style="max-height: 330px;"
+                                        src="{{ $app->screenshots[0]['url'] ?? '/default-app-image.png' }}"
+                                        alt="{{ $app->title }}"
+                                        onerror="this.src='/default-app-image.png'"
+                                        @click="$dispatch('open-app-screenshot-modal', { src: '{{ $app->screenshots[0]['url'] }}' })"
+                                    >
                                 @else
                                     <img 
                                         class="object-contain w-auto"
@@ -116,6 +115,52 @@
                 @empty
                     <p class="text-center text-gray-500">まだアプリがありません。</p>
                 @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- モーダル部分を追加 -->
+    <div
+        x-data="{ 
+            show: false,
+            imageSrc: '',
+            init() {
+                window.addEventListener('open-app-screenshot-modal', (e) => {
+                    this.imageSrc = e.detail.src;
+                    this.show = true;
+                });
+            }
+        }"
+        x-show="show"
+        x-cloak
+        class="fixed inset-0 z-50 overflow-hidden"
+        style="background-color: rgba(0, 0, 0, 0.75);"
+        @click.self="show = false"
+        @keydown.escape.window="show = false"
+    >
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="relative">
+                <!-- 閉じるボタン -->
+                <button 
+                    @click="show = false"
+                    class="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all duration-200 transform hover:scale-110"
+                >
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path 
+                            stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            stroke-width="2.5" 
+                            d="M6 18L18 6M6 6l12 12"
+                        />
+                    </svg>
+                </button>
+
+                <!-- 画像 -->
+                <img
+                    :src="imageSrc"
+                    class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                    alt="拡大画像"
+                >
             </div>
         </div>
     </div>
