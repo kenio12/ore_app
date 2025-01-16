@@ -25,21 +25,44 @@
                     @include('App::Forms.10_DatabaseSection', ['app' => $app, 'viewOnly' => true])
                 </form>
 
-                <!-- スクリーンショット表示部分を修正 -->
+                <!-- スクリーンショット表示部分 -->
                 <div class="bg-white p-8 rounded-lg shadow">
                     <h2 class="text-2xl font-bold mb-6">スクリーンショット</h2>
-                    <div class="space-y-12">
-                        @foreach($app->screenshots ?? [] as $screenshot)
-                            <div class="relative cursor-pointer flex justify-center" 
-                                 x-data
-                                 @click="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
-                                <img src="{{ $screenshot['url'] }}" 
-                                     alt="スクリーンショット" 
-                                     class="rounded-lg shadow-lg hover:opacity-95 transition-opacity"
-                                     style="max-width: 100%; width: auto; height: auto; max-height: 90vh;">
-                            </div>
-                        @endforeach
-                    </div>
+                    
+                    @if(is_array($app->screenshots) && !empty($app->screenshots))
+                        <div class="grid gap-8">
+                            @foreach($app->screenshots as $screenshot)
+                                <div class="relative w-full" x-data>
+                                    <!-- スクリーンショットコンテナ -->
+                                    <div class="flex justify-center items-center bg-gray-50 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                                         @click="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
+                                        
+                                        <!-- スクリーンショット画像 -->
+                                        <img src="{{ $screenshot['url'] }}" 
+                                             alt="アプリのスクリーンショット" 
+                                             class="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity duration-300"
+                                             style="max-height: 90vh; object-fit: contain;">
+                                        
+                                        <!-- オーバーレイ（ホバー時に表示） -->
+                                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity duration-300 flex items-center justify-center">
+                                            <span class="text-white text-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                                クリックで拡大
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- スクリーンショット番号 -->
+                                    <div class="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                                        {{ $loop->iteration }}/{{ count($app->screenshots) }}
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-12 bg-gray-50 rounded-lg">
+                            <p class="text-gray-500">スクリーンショットはまだ登録されていません。</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

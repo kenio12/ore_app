@@ -27,6 +27,7 @@ class AppController extends Controller
 
     public function show(App $app)
     {
+        // リレーションは不要。直接モデルのデータを使用
         return view('App::show', [
             'app' => $app,
             'viewOnly' => true

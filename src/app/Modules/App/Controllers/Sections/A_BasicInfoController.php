@@ -33,31 +33,36 @@ class A_BasicInfoController extends SectionController
 
     public function update(Request $request, string $appId)
     {
-        // バリデーションをここで実行
-        $validatedData = app(BasicInfoRequest::class);
+        // バリデーションを実行して結果を取得
+        $validatedData = app(BasicInfoRequest::class)->validated();
         
         try {
             DB::beginTransaction();
 
             $app = App::findOrFail($appId);
             
-            // 基本情報の更新
-            $app->update([
-                'title' => $request->title,
-                'description' => $request->description,
-                'demo_url' => $request->demo_url,
-                'github_url' => $request->github_url,
-                'status' => $request->status,
-                'color' => ColorHelper::generateColorFromString($request->title),
-                'app_status' => $request->app_status
-            ]);
+            // バリデーション済みデータを使用して更新
+            $app->update(array_merge($validatedData, [
+                'color' => ColorHelper::generateColorFromString($validatedData['title']),
+                'user_id' => auth()->id()
+            ]));
 
             // スクリーンショットの処理
             if ($request->hasFile('screenshots')) {
-                $screenshots = [];
+                // 既存のスクリーンショットを取得
+                $screenshots = $app->screenshots ?? [];
+                
+                // 新しいスクリーンショットを追加
                 foreach ($request->file('screenshots') as $file) {
-                    $screenshots[] = $this->uploadScreenshot($file);
+                    $newScreenshot = $this->uploadScreenshot($file);
+                    if ($newScreenshot) {
+                        $screenshots[] = $newScreenshot;
+                    }
                 }
+                
+                // 最大3枚までに制限
+                $screenshots = array_slice($screenshots, 0, 3);
+                
                 $app->screenshots = $screenshots;
                 $app->save();
             }
@@ -81,42 +86,49 @@ class A_BasicInfoController extends SectionController
 
     public function store(Request $request)
     {
+        // バリデーションを実行して結果を取得
+        $validatedData = app(BasicInfoRequest::class)->validated();
+        
         try {
             DB::beginTransaction();
 
-            $app = new App([
-                'title' => $request->title,
-                'description' => $request->description,
-                'demo_url' => $request->demo_url,
-                'github_url' => $request->github_url,
-                'status' => $request->status,
-                'color' => ColorHelper::generateColorFromString($request->title),
-                'user_id' => auth()->id(),
-                'app_types' => $request->app_types,
-                'app_status' => $request->app_status
-            ]);
+            // バリデーション済みデータを使用して新規作成
+            $app = new App(array_merge($validatedData, [
+                'color' => ColorHelper::generateColorFromString($validatedData['title']),
+                'user_id' => auth()->id()
+            ]));
 
             $app->save();
 
-            // スクリーンショットの処理
+            // スクリーンショットの処理を改善
             if ($request->hasFile('screenshots')) {
                 $screenshots = [];
                 foreach ($request->file('screenshots') as $file) {
-                    $tempResult = $this->uploadScreenshot($file);
-                    if ($tempResult) {
-                        // 一時保存から本番環境への移動
-                        $result = $this->cloudinaryService->moveToProduction($tempResult['temp_public_id']);
-                        $screenshots[] = [
-                            'public_id' => $result['public_id'],
-                            'url' => $result['url'],
-                            'width' => $result['width'],
-                            'height' => $result['height']
-                        ];
+                    try {
+                        $tempResult = $this->uploadScreenshot($file);
+                        if ($tempResult) {
+                            $result = $this->cloudinaryService->moveToProduction($tempResult['temp_public_id']);
+                            $screenshots[] = [
+                                'public_id' => $result['public_id'],
+                                'url' => $result['url'],
+                                'width' => $result['width'],
+                                'height' => $result['height']
+                            ];
+                            \Log::info('Screenshot processed successfully', ['result' => $result]);
+                        }
+                    } catch (\Exception $e) {
+                        \Log::error('Error processing screenshot', [
+                            'error' => $e->getMessage(),
+                            'file' => $file->getClientOriginalName()
+                        ]);
+                        continue;  // エラーが発生しても次の画像の処理を続行
                     }
                 }
+                
                 if (!empty($screenshots)) {
                     $app->screenshots = $screenshots;
                     $app->save();
+                    \Log::info('All screenshots saved', ['count' => count($screenshots)]);
                 }
             }
 

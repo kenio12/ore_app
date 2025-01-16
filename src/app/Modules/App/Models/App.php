@@ -168,59 +168,29 @@ class App extends Model
     protected $fillable = [
         'title',
         'description',
-        'publish_status',
         'demo_url',
         'github_url',
         'status',
-        'screenshots',
-        'source_url',
-        'development_period_years',
-        'development_period_months',
-        'development_start_date',
-        'development_end_date',
         'app_types',
         'app_status',
+        'development_start_date',
+        'development_end_date',
+        'development_period_years',
+        'development_period_months',
+        'screenshots',
         'genres',
-        'security_measures',
-        'performance_optimizations',
-        'testing_tools',
-        'monitoring_tools',
-        'code_quality_tools',
-        'security_notes',
-        'dev_team_size',
-        'virtualization',
-        'other_virtualization',
-        'os_type',
-        'os_version',
-        'editors',
-        'other_editor',
-        'version_control',
-        'other_version_control',
-        'monitor_count',
-        'main_monitor_size',
-        'main_monitor_resolution',
-        'monitor_details',
-        'dev_env_notes',
-        'user_id',
-        'progress'
+        'color',
+        'user_id'
     ];
 
     protected $casts = [
-        'screenshots' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
+        'development_start_date' => 'date',
+        'development_end_date' => 'date',
+        'development_period_years' => 'integer',
+        'development_period_months' => 'integer',
         'genres' => 'array',
         'app_types' => 'array',
-        'security_measures' => 'array',
-        'performance_optimizations' => 'array',
-        'testing_tools' => 'array',
-        'monitoring_tools' => 'array',
-        'code_quality_tools' => 'array',
-        'virtualization' => 'array',
-        'editors' => 'array',
-        'version_control' => 'array',
-        'progress' => 'array'
+        'screenshots' => 'array'
     ];
 
     // ユーザーとのリレーション
@@ -241,4 +211,10 @@ class App extends Model
         }
         return null;
     }
+
+    // 開発期間の取得用
+    protected $dates = [
+        'development_start_date',
+        'development_end_date',
+    ];
 } 

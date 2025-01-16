@@ -68,16 +68,23 @@
 
                             <!-- スクリーンショット -->
                             <div class="bg-gray-50 flex justify-center items-center mb-4">
-                                @if($app->screenshots && count($app->screenshots) > 0)
-                                    <a href="{{ $app->screenshots[0]['url'] }}" target="_blank" rel="noopener noreferrer">
+                                @if(is_array($app->screenshots) && !empty($app->screenshots))
+                                    <a href="{{ $app->screenshots[0]['url'] ?? '' }}" target="_blank" rel="noopener noreferrer">
                                         <img 
                                             class="object-contain w-auto cursor-pointer hover:opacity-90 transition-opacity"
                                             style="max-height: 330px;"
-                                            src="{{ $app->screenshots[0]['url'] }}"
+                                            src="{{ $app->screenshots[0]['url'] ?? '/default-app-image.png' }}"
                                             alt="{{ $app->title }}"
                                             onerror="this.src='/default-app-image.png'"
                                         >
                                     </a>
+                                @else
+                                    <img 
+                                        class="object-contain w-auto"
+                                        style="max-height: 330px;"
+                                        src="/default-app-image.png"
+                                        alt="デフォルト画像"
+                                    >
                                 @endif
                             </div>
 
