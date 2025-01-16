@@ -180,6 +180,8 @@ return [
         App\Modules\App\Providers\AppModuleServiceProvider::class,
 
         App\Modules\Profile\Providers\ProfileServiceProvider::class,
+
+        App\Providers\Filament\AdminPanelProvider::class,
     ],
 
     'aliases' => [

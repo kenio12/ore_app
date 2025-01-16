@@ -7,7 +7,6 @@ use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Traits\ForwardsCalls;
-use Illuminate\Support\Facades\Route;
 
 /**
  * @mixin \Illuminate\Routing\Router
@@ -74,10 +73,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->routes(function () {
-            Route::middleware('web')
-                ->group(base_path('app/Modules/AppPost/Routes/web.php'));
-        });
+        //
     }
 
     /**

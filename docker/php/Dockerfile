@@ -9,14 +9,15 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    libicu-dev
+    libicu-dev \
+    libzip-dev
 
 # Node.jsとnpmの最新版をインストール
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
 # PHP拡張のインストール
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd intl zip
 
 # Composerのインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
