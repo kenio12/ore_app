@@ -31,9 +31,7 @@
 
 {{-- メインのフォーム --}}
 <form method="POST" 
-    action="{{ $app->exists 
-        ? route('app.sections.basic-info.update', $app) 
-        : route('app.sections.basic-info.store') }}" 
+    action="{{ $app->exists ? route('app.sections.' . $currentSection . '.update', $app) : route('apps.create') }}" 
     enctype="multipart/form-data">
     @csrf
     @if($app->exists)
@@ -53,23 +51,33 @@
                 @case('development-story')
                     アプリ開発の経緯や苦労した点、工夫した点などを共有してください。
                     @break
+                @case('hardware')
+                    @include('App::Forms.03_HardwareSection', ['data' => $sectionData])
+                    @break
                 {{-- 他のセクションの説明も追加 --}}
             @endswitch
         </p>
     </div>
 
     {{-- フォームの内容 --}}
-    @if($currentSection === 'basic-info')
-        @include('App::Forms.01_BasicInfoForm', ['data' => $sectionData])
-    @elseif($currentSection === 'development-story')
-        @include('App::Forms.02_DevelopmentStoryForm', ['app' => $sectionData])
-    @endif
+    @switch($currentSection)
+        @case('basic-info')
+            @include('App::Forms.01_BasicInfoForm', ['data' => $sectionData])
+            @break
+        @case('development-story')
+            @include('App::Forms.02_DevelopmentStoryForm', ['data' => $sectionData])
+            @break
+        @case('hardware')
+            @include('App::Forms.03_HardwareSection', ['data' => $sectionData])
+            @break
+        {{-- 他のセクションも同様に追加 --}}
+    @endswitch
     
     {{-- ナビゲーションボタンのコンテナ --}}
     <div class="flex justify-between items-center mt-8 space-x-4">
         {{-- 「前へ」ボタン --}}
         @if($previousSection)
-            <a href="{{ route('app.create', ['section' => $previousSection]) }}" 
+            <a href="{{ route('apps.create', ['section' => $previousSection]) }}" 
                class="flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 ease-in-out">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -77,7 +85,7 @@
                 前のセクションへ
             </a>
         @else
-            <div></div> {{-- 左側の空きスペース確保 --}}
+            <div></div>
         @endif
 
         {{-- 「次へ/保存」ボタン --}}

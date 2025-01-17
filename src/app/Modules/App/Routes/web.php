@@ -19,12 +19,16 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
             ->name('basic-info.store');
         Route::put('/basic-info/{app}', [A_BasicInfoController::class, 'update'])
             ->name('basic-info.update');
+        Route::get('/basic-info/{app}/next', [A_BasicInfoController::class, 'next'])
+            ->name('basic-info.next');
 
         // 開発ストーリーセクション
         Route::get('/development-story/{app}', [B_DevelopmentStoryController::class, 'edit'])
             ->name('development-story.edit');
         Route::put('/development-story/{app}', [B_DevelopmentStoryController::class, 'update'])
             ->name('development-story.update');
+        Route::get('/development-story/{app}/next', [B_DevelopmentStoryController::class, 'next'])
+            ->name('development-story.next');
     });
 
     // 編集画面のルート

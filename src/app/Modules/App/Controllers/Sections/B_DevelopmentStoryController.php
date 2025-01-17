@@ -11,10 +11,17 @@ class B_DevelopmentStoryController extends SectionController
     public function edit(string $appId)
     {
         $app = App::findOrFail($appId);
+        
+        $sections = $this->progressManager->getSections();
+        $currentSection = 'development-story';
 
-        return view('App::Forms.02_DevelopmentStoryForm', [
+        return view('App::app-form', [
             'app' => $app,
-            'currentSection' => 'development-story'
+            'currentSection' => $currentSection,
+            'sectionTitle' => $sections[$currentSection]['title'],
+            'sections' => $sections,
+            'previousSection' => $this->progressManager->getPreviousSection($currentSection),
+            'nextSection' => $this->progressManager->getNextSection($currentSection)
         ]);
     }
 
@@ -23,7 +30,6 @@ class B_DevelopmentStoryController extends SectionController
         try {
             $app = App::findOrFail($appId);
             
-            // バリデーションを実行
             $validatedData = $request->validate([
                 'motivation' => 'nullable|string|max:10000',
                 'challenges' => 'nullable|string|max:10000',
@@ -33,15 +39,11 @@ class B_DevelopmentStoryController extends SectionController
                 'overall_thoughts' => 'nullable|string|max:10000',
             ]);
             
-            // データを更新
             $app->update($validatedData);
             
-            // セクション完了をマーク
             $this->completeSection($appId, 'development-story');
             
-            return redirect()
-                ->route('apps.sections.development-story.edit', $appId)
-                ->with('status', '開発ストーリーを更新しました！');
+            return $this->next($appId);
         } catch (\Exception $e) {
             throw $e;
         }

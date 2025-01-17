@@ -6,18 +6,22 @@
                 <h1 class="text-2xl font-bold mb-4">
                     {{ $app->exists ? 'アプリ情報の編集' : '新規アプリの登録' }}
                 </h1>
-                <p class="text-gray-600">
-                    現在のセクション: {{ $sectionTitle }}
-                </p>
+                <div class="text-sm breadcrumbs">
+                    <ul>
+                        <li><a href="{{ route('apps.index') }}">アプリ一覧</a></li>
+                        <li>{{ $sectionTitle }}</li>
+                    </ul>
+                </div>
             </div>
 
-            @include('App::Forms._form', [  // 大文字の'App::'
-    'app' => $app,
-    'currentSection' => $currentSection,
-    'sections' => $sections ?? [],
-    'previousSection' => $previousSection ?? null,
-    'nextSection' => $nextSection ?? null
-])
+            @include('App::Forms._form', [
+                'app' => $app,
+                'currentSection' => $currentSection,
+                'sections' => $sections,
+                'previousSection' => $previousSection ?? null,
+                'nextSection' => $nextSection ?? null,
+                'sectionData' => $sectionData ?? []
+            ])
         </div>
     </div>
 </x-app-layout> 
