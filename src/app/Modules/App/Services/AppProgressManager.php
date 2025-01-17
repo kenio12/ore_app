@@ -109,4 +109,23 @@ class AppProgressManager
         $app = App::findOrFail($appId);
         return $app->progress ?? [];
     }
+
+    /**
+     * 現在のセクション名を取得
+     */
+    public function getCurrentSection(): string
+    {
+        // URLから現在のセクション名を取得
+        $path = request()->path();
+        $segments = explode('/', $path);
+        
+        // sections/[セクション名]/[ID] の形式から[セクション名]を取得
+        $sectionIndex = array_search('sections', $segments);
+        if ($sectionIndex !== false && isset($segments[$sectionIndex + 1])) {
+            return $segments[$sectionIndex + 1];
+        }
+        
+        // デフォルトは basic-info
+        return 'basic-info';
+    }
 } 

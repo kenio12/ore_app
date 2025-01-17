@@ -180,7 +180,8 @@ class App extends Model
         'screenshots',
         'genres',
         'color',
-        'user_id'
+        'user_id',
+        'progress'
     ];
 
     protected $casts = [
@@ -190,7 +191,8 @@ class App extends Model
         'development_period_months' => 'integer',
         'genres' => 'array',
         'app_types' => 'array',
-        'screenshots' => 'array'
+        'screenshots' => 'array',
+        'progress' => 'array'
     ];
 
     // ユーザーとのリレーション
