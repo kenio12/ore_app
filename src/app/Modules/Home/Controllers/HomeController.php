@@ -10,8 +10,10 @@ class HomeController extends Controller
     public function index()
     {
         $apps = App::with('user')
+            ->select('apps.*')
+            ->distinct()
             ->where('status', 'published')
-            ->latest()
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return view('Home::home', [

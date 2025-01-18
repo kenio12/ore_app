@@ -1,0 +1,131 @@
+# アプリ登録フローの設計
+
+## 1. 進捗管理の基本構造
+
+### 1.1 セクション定義
+```php
+private array $sections = [
+    'basic-info' => [
+        'next' => 'development-story',
+        'prev' => null,
+    ],
+    'development-story' => [
+        'next' => 'hardware',
+        'prev' => 'basic-info',
+    ],
+    'hardware' => [
+        'next' => 'dev-tools',
+        'prev' => 'development-story',
+    ],
+    'dev-tools' => [
+        'next' => 'architecture',
+        'prev' => 'hardware',
+    ],
+    'architecture' => [
+        'next' => 'security',
+        'prev' => 'dev-tools',
+    ],
+    'security' => [
+        'next' => 'backend',
+        'prev' => 'architecture',
+    ],
+    'backend' => [
+        'next' => 'frontend',
+        'prev' => 'security',
+    ],
+    'frontend' => [
+        'next' => 'database',
+        'prev' => 'backend',
+    ],
+    'database' => [
+        'next' => null,
+        'prev' => 'frontend',
+    ]
+];
+```
+
+### 1.2 進捗データ構造
+```php
+// appsテーブルのprogressカラム（JSON型）
+$progress = [
+    'basic-info' => true,      // 完了
+    'development-story' => false,  // 未完了
+    // ... 他のセクション
+];
+```
+
+## 2. 主要メソッド
+
+### 2.1 ナビゲーション
+```php
+// 次のセクション取得
+public function getNextSection(string $currentSection): ?string
+{
+    return $this->sections[$currentSection]['next'] ?? null;
+}
+
+// 前のセクション取得
+public function getPreviousSection(string $currentSection): ?string
+{
+    return $this->sections[$currentSection]['prev'] ?? null;
+}
+```
+
+### 2.2 進捗管理
+```php
+// セクション完了マーク
+public function markSectionComplete(string $appId, string $section): void
+{
+    try {
+        $app = App::findOrFail($appId);
+        $progress = $app->progress ?? [];
+        $progress[$section] = true;
+        $app->progress = $progress;
+        $app->save();
+    } catch (\Exception $e) {
+        Log::error('Failed to mark section complete', [
+            'app_id' => $appId,
+            'section' => $section,
+            'error' => $e->getMessage()
+        ]);
+        throw $e;
+    }
+}
+
+// セクション完了チェック
+public function isSectionComplete(string $appId, string $section): bool
+{
+    $app = App::findOrFail($appId);
+    return isset($app->progress[$section]) && $app->progress[$section];
+}
+```
+
+### 2.3 現在位置の取得
+```php
+public function getCurrentSection(): string
+{
+    $path = request()->path();
+    $segments = explode('/', $path);
+    
+    $sectionIndex = array_search('sections', $segments);
+    if ($sectionIndex !== false && isset($segments[$sectionIndex + 1])) {
+        return $segments[$sectionIndex + 1];
+    }
+    
+    return 'basic-info';  // デフォルト
+}
+```
+
+## 3. エラーハンドリング方針
+
+1. すべての重要な操作はtry-catchで保護
+2. エラーは必ずログに記録
+3. ユーザーフレンドリーなエラーメッセージを返却
+4. データの整合性を保つためのトランザクション管理
+
+## 4. 設計のポイント
+
+1. シンプルな構造で保守性を確保
+2. エラーが起きにくい堅牢な実装
+3. デバッグのしやすさを重視
+4. 拡張性を考慮した設計

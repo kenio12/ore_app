@@ -10,39 +10,57 @@ class AppProgressManager
     private array $sections = [
         'basic-info' => [
             'title' => '基本情報',
+            'next' => 'development-story',
+            'prev' => null,
             'required' => true,
         ],
         'development-story' => [
             'title' => '開発ストーリー',
-            'required' => false,
+            'next' => 'hardware',
+            'prev' => 'basic-info',
+            'required' => true,
         ],
         'hardware' => [
-            'title' => 'ハードウェア環境',
+            'title' => 'ハードウェア',
+            'next' => 'dev-tools',
+            'prev' => 'development-story',
             'required' => false,
         ],
         'dev-tools' => [
-            'title' => '開発ツール環境',
-            'required' => false,
+            'title' => '開発ツール',
+            'next' => 'architecture',
+            'prev' => 'hardware',
+            'required' => true,
         ],
         'architecture' => [
             'title' => 'アーキテクチャ',
-            'required' => false,
+            'next' => 'security',
+            'prev' => 'dev-tools',
+            'required' => true,
         ],
         'security' => [
-            'title' => 'セキュリティと品質管理',
-            'required' => false,
+            'title' => 'セキュリティ',
+            'next' => 'backend',
+            'prev' => 'architecture',
+            'required' => true,
         ],
         'backend' => [
-            'title' => 'バックエンド環境',
-            'required' => false,
+            'title' => 'バックエンド',
+            'next' => 'frontend',
+            'prev' => 'security',
+            'required' => true,
         ],
         'frontend' => [
-            'title' => 'フロントエンド環境',
-            'required' => false,
+            'title' => 'フロントエンド',
+            'next' => 'database',
+            'prev' => 'backend',
+            'required' => true,
         ],
         'database' => [
-            'title' => 'データベース環境',
-            'required' => false,
+            'title' => 'データベース',
+            'next' => null,
+            'prev' => 'frontend',
+            'required' => true,
         ]
     ];
 
@@ -53,43 +71,33 @@ class AppProgressManager
 
     public function getNextSection(string $currentSection): ?string
     {
-        $sections = array_keys($this->sections);
-        $currentIndex = array_search($currentSection, $sections);
-        return isset($sections[$currentIndex + 1]) ? $sections[$currentIndex + 1] : null;
+        return $this->sections[$currentSection]['next'] ?? null;
     }
 
     public function getPreviousSection(string $currentSection): ?string
     {
-        $sections = array_keys($this->sections);
-        $currentIndex = array_search($currentSection, $sections);
-        return ($currentIndex > 0) ? $sections[$currentIndex - 1] : null;
+        return $this->sections[$currentSection]['prev'] ?? null;
     }
 
     /**
      * セクションの完了をマークする
      */
-    public function markSectionComplete(string $appId, string $section)
+    public function markSectionComplete(string $appId, string $section): void
     {
-        $app = App::findOrFail($appId);
-        
-        // 現在の進捗状況を取得
-        $progress = $app->progress ?? [];
-        
-        // セクションを完了としてマーク
-        $progress[$section] = [
-            'completed' => true,
-            'completed_at' => now()
-        ];
-        
-        // 進捗状況を更新
-        $app->progress = $progress;
-        $app->save();
-
-        Log::info('Section marked as complete', [
-            'app_id' => $appId,
-            'section' => $section,
-            'progress' => $progress
-        ]);
+        try {
+            $app = App::findOrFail($appId);
+            $progress = $app->progress ?? [];
+            $progress[$section] = true;
+            $app->progress = $progress;
+            $app->save();
+        } catch (\Exception $e) {
+            Log::error('Failed to mark section complete', [
+                'app_id' => $appId,
+                'section' => $section,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
     }
 
     /**
@@ -128,4 +136,5 @@ class AppProgressManager
         // デフォルトは basic-info
         return 'basic-info';
     }
-} 
+}
+    
