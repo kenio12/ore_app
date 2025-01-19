@@ -14,8 +14,8 @@ return [
     ],
 
     // ステータスの定義
-    'status' => [
-        'draft' => '下書き',
-        'published' => '公開中'
+    'app_status' => [
+        'completed' => '完成',
+        'in_development' => '開発中'
     ]
 ]; 

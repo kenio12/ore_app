@@ -61,8 +61,8 @@
                             <div class="flex justify-between items-center mb-4">
                                 <h3 class="text-2xl font-semibold">{{ $app->title }}</h3>
                                 <span class="px-3 py-1 rounded text-sm font-medium text-white"
-                                    style="background-color: {{ \App\Modules\App\Helpers\ColorHelper::getStatusColor($app->status) }}">
-                                    {{ config('app-module.constants')['status'][$app->status] ?? $app->status }}
+                                    style="background-color: {{ \App\Modules\App\Helpers\ColorHelper::getStatusColor($app->app_status) }}">
+                                    {{ config('app-module.constants')['app_status'][$app->app_status] ?? $app->app_status }}
                                 </span>
                             </div>
 

@@ -65,8 +65,8 @@ class ColorHelper
     public static function getStatusColor(string $status): string
     {
         $colors = [
-            'draft' => '#9CA3AF',     // グレー
-            'published' => '#2563EB'   // ブルー
+            'completed' => '#059669',    // エメラルド（完成）
+            'in_development' => '#D97706' // アンバー（開発中）
         ];
 
         return $colors[$status] ?? '#9CA3AF';
