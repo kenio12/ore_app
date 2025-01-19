@@ -74,16 +74,12 @@
                                         style="max-height: 330px;"
                                         src="{{ $app->screenshots[0]['url'] }}"
                                         alt="{{ $app->title }}"
-                                        onerror="this.src='/default-app-image.png'"
                                         @click="$dispatch('open-app-screenshot-modal', { src: '{{ $app->screenshots[0]['url'] }}' })"
                                     >
                                 @else
-                                    <img 
-                                        class="object-contain w-auto"
-                                        style="max-height: 330px;"
-                                        src="/default-app-image.png"
-                                        alt="デフォルト画像"
-                                    >
+                                    <div class="bg-gray-100 p-4 rounded-lg text-gray-500 flex items-center justify-center" style="height: 330px;">
+                                        <span>画像なし</span>
+                                    </div>
                                 @endif
                             </div>
 

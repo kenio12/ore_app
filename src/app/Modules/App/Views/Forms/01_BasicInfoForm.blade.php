@@ -31,10 +31,11 @@
                         @if(isset($screenshot['url']))
                             <img src="{{ $screenshot['url'] }}" 
                                  alt="スクリーンショット" 
-                                 class="rounded-lg shadow-lg"
-                                 style="max-width: 100%; width: auto; height: auto; max-height: 90vh;">
+                                 class="rounded-lg shadow-lg">
                         @else
-                            <p class="text-red-500">画像URLが見つかりません</p>
+                            <div class="bg-gray-100 p-4 rounded-lg text-gray-500 flex items-center justify-center">
+                                <span>画像なし</span>
+                            </div>
                         @endif
                     </div>
                 @endforeach

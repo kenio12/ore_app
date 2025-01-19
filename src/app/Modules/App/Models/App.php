@@ -207,9 +207,15 @@ class App extends Model
     public function getScreenshotUrlAttribute()
     {
         if (!empty($this->screenshots) && is_array($this->screenshots)) {
-            // 最初のスクリーンショットのURLを文字列として返す
             $firstScreenshot = $this->screenshots[0] ?? null;
-            return is_array($firstScreenshot) ? $firstScreenshot['url'] : $firstScreenshot;
+            // 配列かつ'url'キーが存在するかをチェック
+            if (is_array($firstScreenshot) && isset($firstScreenshot['url'])) {
+                return $firstScreenshot['url'];
+            }
+            // 文字列の場合はそのまま返す
+            if (is_string($firstScreenshot)) {
+                return $firstScreenshot;
+            }
         }
         return null;
     }
@@ -219,4 +225,10 @@ class App extends Model
         'development_start_date',
         'development_end_date',
     ];
+
+    // スコープを追加
+    public function scopeLatest($query)
+    {
+        return $query->orderBy('created_at', 'desc');
+    }
 } 

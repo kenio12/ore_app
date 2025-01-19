@@ -92,4 +92,27 @@ class AppController extends Controller
             'nextSection' => $progressManager->getNextSection($currentSection)
         ]);
     }
+
+    // ダッシュボード用のメソッド
+    public function dashboard()
+    {
+        // SQL文を直接確認するためにtoSqlを使用してデバッグ
+        \Log::info(
+            App::query()
+                ->where('user_id', auth()->id())
+                ->orderByDesc('created_at')
+                ->toSql()
+        );
+
+        // 確実に降順になるように明示的に指定
+        $apps = App::query()
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'DESC')  // 明示的にDESCを指定
+            ->get();
+
+        // コレクションを確実に逆順にする
+        $apps = $apps->sortByDesc('created_at')->values();
+
+        return view('dashboard', compact('apps'));
+    }
 } 
