@@ -51,7 +51,7 @@
                                     @foreach($app->app_types as $appType)
                                         <span class="px-3 py-1 rounded-full text-sm font-medium text-white"
                                             style="background-color: {{ \App\Modules\App\Helpers\ColorHelper::getAppTypeColor($appType) }}">
-                                            {{ $appTypeLabels[$appType] ?? 'その他' }}
+                                            {{ config('app-module.constants')['app_types'][$appType] ?? $appType }}
                                         </span>
                                     @endforeach
                                 </div>
@@ -62,7 +62,7 @@
                                 <h3 class="text-2xl font-semibold">{{ $app->title }}</h3>
                                 <span class="px-3 py-1 rounded text-sm font-medium text-white"
                                     style="background-color: {{ \App\Modules\App\Helpers\ColorHelper::getStatusColor($app->status) }}">
-                                    {{ $statusLabels[$app->status] ?? '下書き' }}
+                                    {{ config('app-module.constants')['status'][$app->status] ?? $app->status }}
                                 </span>
                             </div>
 

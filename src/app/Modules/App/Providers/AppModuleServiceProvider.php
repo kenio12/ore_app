@@ -13,7 +13,12 @@ class AppModuleServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'app'
+            __DIR__.'/../Config/config.php', 'app-module'
+        );
+
+        // 定数ファイルの追加
+        $this->mergeConfigFrom(
+            __DIR__.'/../Config/constants.php', 'app-module.constants'
         );
 
         // AppProgressManagerの登録
