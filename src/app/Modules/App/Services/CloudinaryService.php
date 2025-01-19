@@ -104,25 +104,30 @@ class CloudinaryService
     public function uploadToTemp(UploadedFile $file)
     {
         try {
-            Log::info('Attempting to upload file', [
-                'filename' => $file->getClientOriginalName(),
-                'size' => $file->getSize(),
-                'mime' => $file->getMimeType()
+            $result = $this->uploadApi->upload($file->getRealPath(), [
+                'folder' => 'ore_app/screenshots',
+                'transformation' => [
+                    'width' => 'auto',
+                    'height' => 'auto',
+                    'crop' => 'fit',
+                    'quality' => 'auto'
+                ]
             ]);
 
-            // Facadeの代わりに直接UploadAPIを使用
-            $result = $this->uploadApi->upload($file->getRealPath(), [
-                'folder' => config('cloudinary.folder', 'ore_app/screenshots'),
-                'resource_type' => 'image'
+            Log::info('Upload result:', [
+                'original_file' => [
+                    'name' => $file->getClientOriginalName(),
+                    'size' => $file->getSize(),
+                    'mime' => $file->getMimeType()
+                ],
+                'upload_result' => $result
             ]);
-            
-            Log::info('Upload result:', ['result' => $result]);
 
             return [
                 'public_id' => $result['public_id'],
                 'url' => $result['secure_url'],
-                'width' => $result['width'] ?? 0,
-                'height' => $result['height'] ?? 0
+                'width' => $result['width'],
+                'height' => $result['height']
             ];
 
         } catch (\Exception $e) {

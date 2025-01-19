@@ -31,10 +31,9 @@
                 <div class="bg-white p-8 rounded-lg shadow">
                     <h2 class="text-2xl font-bold mb-6">スクリーンショット</h2>
                     
-                    @if(is_array($app->screenshots) && !empty($app->screenshots))
+                    @if(is_array($app->screenshots) && !empty(array_filter($app->screenshots)))
                         <div class="grid gap-8">
-                            @foreach($app->screenshots as $screenshot)
-                                {{-- スクリーンショットデータの存在チェックを追加 --}}
+                            @foreach(array_filter($app->screenshots) as $index => $screenshot)
                                 @if(isset($screenshot['url']))
                                     <div class="relative w-full" x-data>
                                         <!-- スクリーンショットコンテナ -->
@@ -43,7 +42,7 @@
                                             
                                             <!-- スクリーンショット画像 -->
                                             <img src="{{ $screenshot['url'] }}" 
-                                                 alt="アプリのスクリーンショット" 
+                                                 alt="アプリのスクリーンショット {{ $index + 1 }}" 
                                                  class="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity duration-300"
                                                  style="max-height: 90vh; object-fit: contain;">
                                             
@@ -57,7 +56,7 @@
                                         
                                         <!-- スクリーンショット番号 -->
                                         <div class="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                                            {{ $loop->iteration }}/{{ count(array_filter($app->screenshots, fn($s) => isset($s['url']))) }}
+                                            {{ $index + 1 }}/{{ count(array_filter($app->screenshots, fn($s) => isset($s['url']))) }}
                                         </div>
                                     </div>
                                 @endif

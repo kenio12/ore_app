@@ -50,17 +50,8 @@ class A_BasicInfoController extends SectionController
 
             // スクリーンショットの処理
             if ($request->hasFile('screenshots')) {
-                Log::info('Processing screenshots', [
-                    'files_count' => count($request->file('screenshots')),
-                    'request_files' => $request->file('screenshots')
-                ]);
-
-                // 既存のスクリーンショットを取得
-                $screenshots = $app->screenshots ?? [];
-                Log::info('Existing screenshots before update', [
-                    'screenshots' => $screenshots,
-                    'app_id' => $app->id
-                ]);
+                // 既存のスクリーンショットを取得（空の要素を除去）
+                $screenshots = is_array($app->screenshots) ? array_filter($app->screenshots) : [];
                 
                 // 新しいスクリーンショットを追加
                 foreach ($request->file('screenshots') as $file) {
@@ -129,24 +120,8 @@ class A_BasicInfoController extends SectionController
     public function store(Request $request)
     {
         try {
-            // より詳細なリクエストの内容をログに記録
-            Log::info('Store method called with request:', [
-                'has_files' => $request->hasFile('screenshots'),
-                'all_data' => $request->all(),
-                'files' => $request->allFiles(),
-                'development_start_date' => $request->input('development_start_date'),
-                'cloudinary_config' => [
-                    'cloud_name' => config('cloudinary.cloud_name'),
-                    'api_key' => config('cloudinary.api_key'),
-                    'has_secret' => !empty(config('cloudinary.api_secret')),
-                    'secure' => config('cloudinary.secure'),
-                    'folder' => config('cloudinary.folder')
-                ]
-            ]);
-
             DB::beginTransaction();
-
-            // 1. アプリの基本情報を保存
+            
             $app = new App();
             $validatedData = app(BasicInfoRequest::class)->validated();
             
@@ -154,67 +129,27 @@ class A_BasicInfoController extends SectionController
                 'color' => ColorHelper::generateColorFromString($validatedData['title']),
                 'user_id' => auth()->id()
             ]));
+            
+            // スクリーンショットの配列を初期化（空の配列ではなく、nullで初期化）
+            $app->screenshots = null;
             $app->save();
 
             // スクリーンショットの処理
             if ($request->hasFile('screenshots')) {
-                Log::info('Processing screenshots', [
-                    'files_count' => count($request->file('screenshots')),
-                    'request_files' => $request->file('screenshots')
-                ]);
-
-                // 既存のスクリーンショットを取得
-                $screenshots = $app->screenshots ?? [];
-                Log::info('Existing screenshots before update', [
-                    'screenshots' => $screenshots,
-                    'app_id' => $app->id
-                ]);
+                $screenshots = [];  // 新しい配列として初期化
                 
-                // 新しいスクリーンショットを追加
                 foreach ($request->file('screenshots') as $file) {
-                    Log::info('Processing individual screenshot', [
-                        'filename' => $file->getClientOriginalName(),
-                        'size' => $file->getSize()
-                    ]);
-
                     $newScreenshot = $this->uploadScreenshot($file);
                     if ($newScreenshot) {
                         $screenshots[] = $newScreenshot;
-                        Log::info('Added new screenshot to array', [
-                            'new_screenshot' => $newScreenshot,
-                            'current_screenshots_count' => count($screenshots)
-                        ]);
                     }
                 }
                 
                 // 最大3枚までに制限
                 $screenshots = array_slice($screenshots, 0, 3);
                 
-                // 保存前の状態をログ
-                Log::info('About to save screenshots', [
-                    'app_id' => $app->id,
-                    'screenshots_to_save' => $screenshots,
-                    'screenshots_count' => count($screenshots)
-                ]);
-
                 $app->screenshots = $screenshots;
-                
-                // 保存直前の状態をログ
-                Log::info('App model state before save', [
-                    'app_id' => $app->id,
-                    'screenshots' => $app->screenshots,
-                    'isDirty' => $app->isDirty(),
-                    'dirtyAttributes' => $app->getDirty()
-                ]);
-                
                 $app->save();
-
-                // 保存後の状態を確認
-                $app->refresh();
-                Log::info('App model state after save', [
-                    'app_id' => $app->id,
-                    'screenshots' => $app->screenshots
-                ]);
             }
 
             // 2. セクションを完了マーク
