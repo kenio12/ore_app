@@ -11,16 +11,14 @@ class HomeController extends Controller
     {
         try {
             $apps = App::with('user')
-                ->select('apps.*')
-                ->distinct()
                 ->where('status', 'published')
-                ->orderBy('created_at', 'desc')
+                ->latest()
                 ->get();
 
             return view('Home::home', [
                 'apps' => $apps,
-                'appTypeLabels' => config('app.app_type_labels', []),
-                'statusLabels' => config('app.status_labels', [])
+                'appTypeLabels' => config('app-module.constants.app_types'),
+                'statusLabels' => config('app-module.constants.status')
             ]);
 
         } catch (\Exception $e) {
@@ -31,8 +29,8 @@ class HomeController extends Controller
 
             return view('Home::home', [
                 'apps' => collect([]),
-                'appTypeLabels' => config('app.app_type_labels', []),
-                'statusLabels' => config('app.status_labels', [])
+                'appTypeLabels' => config('app-module.constants.app_types'),
+                'statusLabels' => config('app-module.constants.status')
             ])->with('error', 'アプリの読み込み中にエラーが発生しました');
         }
     }

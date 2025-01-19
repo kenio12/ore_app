@@ -66,10 +66,7 @@ class ColorHelper
     {
         $colors = [
             'draft' => '#9CA3AF',     // グレー
-            'in_progress' => '#D97706', // アンバー
-            'completed' => '#059669',   // エメラルド
-            'published' => '#2563EB',   // ブルー
-            'archived' => '#6B7280'     // グレー（濃）
+            'published' => '#2563EB'   // ブルー
         ];
 
         return $colors[$status] ?? '#9CA3AF';
