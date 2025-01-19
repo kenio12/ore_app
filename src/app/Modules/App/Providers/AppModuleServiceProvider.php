@@ -27,8 +27,8 @@ class AppModuleServiceProvider extends ServiceProvider
         // ルートの読み込み
         $this->loadRoutesFrom(__DIR__ . '/../Routes/web.php');
 
-        // ビューの読み込み
-        $this->loadViewsFrom(__DIR__ . '/../Views', 'App');
+        // ビューの読み込み（Viewsをviewsに変更）
+        $this->loadViewsFrom(__DIR__ . '/../views', 'App');
 
         // コンポーネントの登録
         Blade::componentNamespace('App\\Modules\\App\\Views\\components', 'app');

@@ -31,12 +31,17 @@
 
 {{-- メインのフォーム --}}
 <form method="POST" 
-    action="{{ $app->exists ? route('app.sections.' . $currentSection . '.update', $app) : route('apps.create') }}" 
+    action="{{ $app->exists 
+        ? route('app.sections.' . $currentSection . '.update', $app) 
+        : route('basic-info.store') }}"  {{-- ここを修正：apps.store → basic-info.store --}}
     enctype="multipart/form-data">
     @csrf
     @if($app->exists)
         @method('PUT')
     @endif
+    
+    {{-- セクション情報を追加 --}}
+    <input type="hidden" name="current_section" value="{{ $currentSection }}">
     
     {{-- 現在のセクションの説明 --}}
     <div class="bg-blue-50 p-4 rounded-lg mb-6">

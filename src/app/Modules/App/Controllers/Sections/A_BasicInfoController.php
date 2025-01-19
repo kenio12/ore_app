@@ -11,14 +11,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use App\Modules\App\Services\AppProgressManager;
 
 class A_BasicInfoController extends SectionController
 {
     private CloudinaryService $cloudinaryService;
 
-    public function __construct(CloudinaryService $cloudinaryService)
+    public function __construct(CloudinaryService $cloudinaryService, AppProgressManager $progressManager)
     {
-        parent::__construct(app('App\Modules\App\Services\AppProgressManager'));
+        parent::__construct($progressManager);
         $this->cloudinaryService = $cloudinaryService;
     }
 
@@ -86,51 +87,52 @@ class A_BasicInfoController extends SectionController
 
     public function store(Request $request)
     {
-        $validatedData = app(BasicInfoRequest::class)->validated();
-        
         try {
             DB::beginTransaction();
 
-            $app = new App(array_merge($validatedData, [
+            // 1. アプリの基本情報を保存
+            $app = new App();
+            $validatedData = app(BasicInfoRequest::class)->validated();
+            
+            $app->fill(array_merge($validatedData, [
                 'color' => ColorHelper::generateColorFromString($validatedData['title']),
                 'user_id' => auth()->id()
             ]));
-
             $app->save();
 
             // スクリーンショットの処理
             if ($request->hasFile('screenshots')) {
-                $screenshots = [];
+                // 既存のスクリーンショットを取得
+                $screenshots = $app->screenshots ?? [];
+                
+                // 新しいスクリーンショットを追加
                 foreach ($request->file('screenshots') as $file) {
-                    $tempResult = $this->uploadScreenshot($file);
-                    if ($tempResult) {
-                        $result = $this->cloudinaryService->moveToProduction($tempResult['temp_public_id']);
-                        $screenshots[] = [
-                            'public_id' => $result['public_id'],
-                            'url' => $result['url'],
-                            'width' => $result['width'],
-                            'height' => $result['height']
-                        ];
+                    $newScreenshot = $this->uploadScreenshot($file);
+                    if ($newScreenshot) {
+                        $screenshots[] = $newScreenshot;
                     }
                 }
                 
-                if (!empty($screenshots)) {
-                    $app->screenshots = $screenshots;
-                    $app->save();
-                }
+                // 最大3枚までに制限
+                $screenshots = array_slice($screenshots, 0, 3);
+                
+                $app->screenshots = $screenshots;
+                $app->save();
             }
 
+            // 2. セクションを完了マーク
             $this->completeSection($app->id, 'basic-info');
 
             DB::commit();
 
-            return redirect()
-                ->route('app.sections.development-story.edit', ['app' => $app->id])
-                ->with('success', '基本情報を保存しました！');
+            // 3. 次のセクションへリダイレクト（SectionControllerのnextメソッドを使用）
+            return $this->next($app->id);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            throw $e;
+            return back()
+                ->withInput()
+                ->with('error', 'データの保存に失敗しました: ' . $e->getMessage());
         }
     }
 

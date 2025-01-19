@@ -14,13 +14,14 @@
                 </div>
             </div>
 
+            <!-- メインフォーム -->
             @include('App::Forms._form', [
                 'app' => $app,
                 'currentSection' => $currentSection,
                 'sections' => $sections,
-                'previousSection' => $previousSection ?? null,
-                'nextSection' => $nextSection ?? null,
-                'sectionData' => $sectionData ?? []
+                'sectionTitle' => $sectionTitle,
+                'previousSection' => $previousSection,
+                'nextSection' => $nextSection
             ])
         </div>
     </div>

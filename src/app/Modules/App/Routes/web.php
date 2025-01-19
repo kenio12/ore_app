@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Route;
 
 // 認証が必要なルートをまとめて定義
 Route::middleware(['web', 'auth', 'verified'])->group(function () {
-    // createを最初に
+    // createとstoreのルート
     Route::get('/apps/create', [AppController::class, 'create'])->name('apps.create');
+    Route::post('/basic-info', [A_BasicInfoController::class, 'store'])
+        ->name('basic-info.store');
     
     // セクション別のルート
     Route::prefix('apps/sections')->name('app.sections.')->group(function () {

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use App\Modules\App\Requests\BasicInfoRequest;  // 既存のRequestを使用
 
 class AppController extends Controller
 {
@@ -34,35 +35,19 @@ class AppController extends Controller
         ]);
     }
 
-    public function create(Request $request, string $section = 'basic-info')
+    public function create()
     {
-        // 基本情報が未完了の場合は、基本情報入力画面にリダイレクト
-        if ($section !== 'basic-info' && !$this->isBasicInfoCompleted($request)) {
-            return redirect()->route('app.create', ['section' => 'basic-info'])
-                ->with('warning', '先に基本情報を入力してください。');
-        }
-
-        // セクションの存在確認
-        $sections = $this->progressManager->getSections();
+        $app = new App();
+        $progressManager = app(AppProgressManager::class);
+        $currentSection = $progressManager->getCurrentSection();
         
-        // デバッグ用にログを追加
-        Log::info('Sections data:', [
-            'sections' => $sections,
-            'currentSection' => $section
-        ]);
-
-        if (!array_key_exists($section, $sections)) {
-            return redirect()->route('app.create')
-                ->with('error', '無効なセクションです。');
-        }
-
         return view('App::app-form', [
-            'app' => new App(),
-            'currentSection' => $section,
-            'sectionTitle' => $sections[$section]['title'],
-            'sections' => $sections,
-            'previousSection' => $this->progressManager->getPreviousSection($section),
-            'nextSection' => $this->progressManager->getNextSection($section)
+            'app' => $app,
+            'currentSection' => $currentSection,
+            'sections' => $progressManager->getSections(),
+            'sectionTitle' => $progressManager->getSections()[$currentSection]['title'],
+            'previousSection' => $progressManager->getPreviousSection($currentSection),
+            'nextSection' => $progressManager->getNextSection($currentSection)
         ]);
     }
 
@@ -89,14 +74,41 @@ class AppController extends Controller
             ->with('success', 'アプリを更新しました');
     }
 
-    public function store(Request $request)
+    public function store(BasicInfoRequest $request)
     {
         Log::info('Storing App Details:', [
             'app_type' => $request->input('app_type'),
-            'all_inputs' => $request->all()  // 全入力値を出力
         ]);
-        
-        // ... 保存処理 ...
+
+        try {
+            // BasicInfoRequestで既にバリデーション済みのデータを使用
+            $validatedData = $request->validated();
+            
+            // セッションに保存
+            $request->session()->put('app_form.basic-info', $validatedData);
+
+            // 次のセクションへリダイレクト
+            $nextSection = $this->progressManager->getNextSection('basic-info');
+            if ($nextSection) {
+                return redirect()->route('app.sections.' . $nextSection, [
+                    'section' => $nextSection
+                ])->with('success', '基本情報を保存しました。次のセクションに進みます。');
+            }
+
+            return back()
+                ->withInput()
+                ->withErrors(['error' => '次のセクションが見つかりませんでした。']);
+
+        } catch (\Exception $e) {
+            Log::error('App creation failed:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()
+                ->withInput()
+                ->withErrors(['error' => 'アプリの登録に失敗しました：' . $e->getMessage()]);
+        }
     }
 
     public function edit(App $app)
