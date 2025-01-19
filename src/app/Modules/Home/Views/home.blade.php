@@ -68,11 +68,11 @@
 
                             <!-- スクリーンショット -->
                             <div class="bg-gray-50 flex justify-center items-center mb-4" x-data>
-                                @if(is_array($app->screenshots) && !empty($app->screenshots))
+                                @if(is_array($app->screenshots) && !empty($app->screenshots) && isset($app->screenshots[0]['url']))
                                     <img 
                                         class="object-contain w-auto cursor-zoom-in hover:opacity-90 transition-opacity"
                                         style="max-height: 330px;"
-                                        src="{{ $app->screenshots[0]['url'] ?? '/default-app-image.png' }}"
+                                        src="{{ $app->screenshots[0]['url'] }}"
                                         alt="{{ $app->title }}"
                                         onerror="this.src='/default-app-image.png'"
                                         @click="$dispatch('open-app-screenshot-modal', { src: '{{ $app->screenshots[0]['url'] }}' })"
