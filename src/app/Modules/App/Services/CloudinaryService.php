@@ -107,10 +107,10 @@ class CloudinaryService
             $result = $this->uploadApi->upload($file->getRealPath(), [
                 'folder' => 'ore_app/screenshots',
                 'transformation' => [
-                    'width' => 'auto',
-                    'height' => 'auto',
-                    'crop' => 'fit',
-                    'quality' => 'auto'
+                    'width' => 1920,  // 最大幅を指定
+                    'height' => 1080, // 最大高さを指定
+                    'crop' => 'limit',  // 最大サイズを超えないように
+                    'quality' => 'auto:good'  // 画質は自動最適化
                 ]
             ]);
 
