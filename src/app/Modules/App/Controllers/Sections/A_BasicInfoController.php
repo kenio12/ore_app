@@ -50,22 +50,63 @@ class A_BasicInfoController extends SectionController
 
             // スクリーンショットの処理
             if ($request->hasFile('screenshots')) {
+                Log::info('Processing screenshots', [
+                    'files_count' => count($request->file('screenshots')),
+                    'request_files' => $request->file('screenshots')
+                ]);
+
                 // 既存のスクリーンショットを取得
                 $screenshots = $app->screenshots ?? [];
+                Log::info('Existing screenshots before update', [
+                    'screenshots' => $screenshots,
+                    'app_id' => $app->id
+                ]);
                 
                 // 新しいスクリーンショットを追加
                 foreach ($request->file('screenshots') as $file) {
+                    Log::info('Processing individual screenshot', [
+                        'filename' => $file->getClientOriginalName(),
+                        'size' => $file->getSize()
+                    ]);
+
                     $newScreenshot = $this->uploadScreenshot($file);
                     if ($newScreenshot) {
                         $screenshots[] = $newScreenshot;
+                        Log::info('Added new screenshot to array', [
+                            'new_screenshot' => $newScreenshot,
+                            'current_screenshots_count' => count($screenshots)
+                        ]);
                     }
                 }
                 
                 // 最大3枚までに制限
                 $screenshots = array_slice($screenshots, 0, 3);
                 
+                // 保存前の状態をログ
+                Log::info('About to save screenshots', [
+                    'app_id' => $app->id,
+                    'screenshots_to_save' => $screenshots,
+                    'screenshots_count' => count($screenshots)
+                ]);
+
                 $app->screenshots = $screenshots;
+                
+                // 保存直前の状態をログ
+                Log::info('App model state before save', [
+                    'app_id' => $app->id,
+                    'screenshots' => $app->screenshots,
+                    'isDirty' => $app->isDirty(),
+                    'dirtyAttributes' => $app->getDirty()
+                ]);
+                
                 $app->save();
+
+                // 保存後の状態を確認
+                $app->refresh();
+                Log::info('App model state after save', [
+                    'app_id' => $app->id,
+                    'screenshots' => $app->screenshots
+                ]);
             }
 
             // セクション完了をマーク
@@ -88,6 +129,21 @@ class A_BasicInfoController extends SectionController
     public function store(Request $request)
     {
         try {
+            // より詳細なリクエストの内容をログに記録
+            Log::info('Store method called with request:', [
+                'has_files' => $request->hasFile('screenshots'),
+                'all_data' => $request->all(),
+                'files' => $request->allFiles(),
+                'development_start_date' => $request->input('development_start_date'),
+                'cloudinary_config' => [
+                    'cloud_name' => config('cloudinary.cloud_name'),
+                    'api_key' => config('cloudinary.api_key'),
+                    'has_secret' => !empty(config('cloudinary.api_secret')),
+                    'secure' => config('cloudinary.secure'),
+                    'folder' => config('cloudinary.folder')
+                ]
+            ]);
+
             DB::beginTransaction();
 
             // 1. アプリの基本情報を保存
@@ -102,22 +158,63 @@ class A_BasicInfoController extends SectionController
 
             // スクリーンショットの処理
             if ($request->hasFile('screenshots')) {
+                Log::info('Processing screenshots', [
+                    'files_count' => count($request->file('screenshots')),
+                    'request_files' => $request->file('screenshots')
+                ]);
+
                 // 既存のスクリーンショットを取得
                 $screenshots = $app->screenshots ?? [];
+                Log::info('Existing screenshots before update', [
+                    'screenshots' => $screenshots,
+                    'app_id' => $app->id
+                ]);
                 
                 // 新しいスクリーンショットを追加
                 foreach ($request->file('screenshots') as $file) {
+                    Log::info('Processing individual screenshot', [
+                        'filename' => $file->getClientOriginalName(),
+                        'size' => $file->getSize()
+                    ]);
+
                     $newScreenshot = $this->uploadScreenshot($file);
                     if ($newScreenshot) {
                         $screenshots[] = $newScreenshot;
+                        Log::info('Added new screenshot to array', [
+                            'new_screenshot' => $newScreenshot,
+                            'current_screenshots_count' => count($screenshots)
+                        ]);
                     }
                 }
                 
                 // 最大3枚までに制限
                 $screenshots = array_slice($screenshots, 0, 3);
                 
+                // 保存前の状態をログ
+                Log::info('About to save screenshots', [
+                    'app_id' => $app->id,
+                    'screenshots_to_save' => $screenshots,
+                    'screenshots_count' => count($screenshots)
+                ]);
+
                 $app->screenshots = $screenshots;
+                
+                // 保存直前の状態をログ
+                Log::info('App model state before save', [
+                    'app_id' => $app->id,
+                    'screenshots' => $app->screenshots,
+                    'isDirty' => $app->isDirty(),
+                    'dirtyAttributes' => $app->getDirty()
+                ]);
+                
                 $app->save();
+
+                // 保存後の状態を確認
+                $app->refresh();
+                Log::info('App model state after save', [
+                    'app_id' => $app->id,
+                    'screenshots' => $app->screenshots
+                ]);
             }
 
             // 2. セクションを完了マーク
@@ -140,24 +237,50 @@ class A_BasicInfoController extends SectionController
     {
         if (!$file || !$file->isValid()) {
             Log::warning('Invalid file provided for upload', [
-                'file' => $file ? $file->getClientOriginalName() : 'null'
+                'file' => $file ? $file->getClientOriginalName() : 'null',
+                'error' => $file ? $file->getError() : 'null'
             ]);
             return null;
         }
 
         try {
-            // CloudinaryServiceを使用して一時保存
+            Log::info('Attempting to upload file', [
+                'filename' => $file->getClientOriginalName(),
+                'size' => $file->getSize(),
+                'mime' => $file->getMimeType()
+            ]);
+
             $result = $this->cloudinaryService->uploadToTemp($file);
             
-            return [
-                'temp_public_id' => $result['temp_public_id'],
+            // 詳細なログ出力を追加
+            Log::info('Upload result details:', [
+                'raw_result' => $result,
+                'public_id' => $result['public_id'] ?? null,
+                'url' => $result['url'] ?? null,
+                'width' => $result['width'] ?? null,
+                'height' => $result['height'] ?? null
+            ]);
+
+            $screenshot = [
+                'public_id' => $result['public_id'],
                 'url' => $result['url'],
                 'width' => $result['width'],
                 'height' => $result['height']
             ];
 
+            Log::info('Returning screenshot data:', [
+                'screenshot' => $screenshot
+            ]);
+
+            return $screenshot;
+
         } catch (\Exception $e) {
-            throw $e;  // 上位で処理するために例外を投げる
+            Log::error('Screenshot upload failed:', [
+                'error' => $e->getMessage(),
+                'file' => $file->getClientOriginalName(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e;
         }
     }
 

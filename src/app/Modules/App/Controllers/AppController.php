@@ -28,7 +28,11 @@ class AppController extends Controller
 
     public function show(App $app)
     {
-        // リレーションは不要。直接モデルのデータを使用
+        // デバッグ用にスクリーンショットデータを確認
+        Log::info('Screenshot data:', [
+            'screenshots' => $app->screenshots
+        ]);
+
         return view('App::show', [
             'app' => $app,
             'viewOnly' => true
@@ -74,68 +78,18 @@ class AppController extends Controller
             ->with('success', 'アプリを更新しました');
     }
 
-    public function store(BasicInfoRequest $request)
-    {
-        Log::info('Storing App Details:', [
-            'app_type' => $request->input('app_type'),
-        ]);
-
-        try {
-            // BasicInfoRequestで既にバリデーション済みのデータを使用
-            $validatedData = $request->validated();
-            
-            // セッションに保存
-            $request->session()->put('app_form.basic-info', $validatedData);
-
-            // 次のセクションへリダイレクト
-            $nextSection = $this->progressManager->getNextSection('basic-info');
-            if ($nextSection) {
-                return redirect()->route('app.sections.' . $nextSection, [
-                    'section' => $nextSection
-                ])->with('success', '基本情報を保存しました。次のセクションに進みます。');
-            }
-
-            return back()
-                ->withInput()
-                ->withErrors(['error' => '次のセクションが見つかりませんでした。']);
-
-        } catch (\Exception $e) {
-            Log::error('App creation failed:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return back()
-                ->withInput()
-                ->withErrors(['error' => 'アプリの登録に失敗しました：' . $e->getMessage()]);
-        }
-    }
-
     public function edit(App $app)
     {
-        // アプリの詳細データを取得（リレーションも含めて）
-        $app->load([
-            'screenshots',
-            'developmentStory',
-            'hardware',
-            'devEnvironment',
-            'devTools',
-            'architecture',
-            'security',
-            'backend',
-            'frontend',
-            'database'
-        ]);
-
-        $currentSection = session('current_section', 'basic-info');
-        $sectionTitle = config('app.section_titles.' . $currentSection, '基本情報');
-
+        $progressManager = app(AppProgressManager::class);
+        $currentSection = $progressManager->getCurrentSection();
+        
         return view('App::app-form', [
             'app' => $app,
             'currentSection' => $currentSection,
-            'sectionTitle' => $sectionTitle,
-            'appTypeLabels' => config('app.app_type_labels', []),
-            'statusLabels' => config('app.status_labels', [])
+            'sections' => $progressManager->getSections(),
+            'sectionTitle' => $progressManager->getSections()[$currentSection]['title'],
+            'previousSection' => $progressManager->getPreviousSection($currentSection),
+            'nextSection' => $progressManager->getNextSection($currentSection)
         ]);
     }
 } 

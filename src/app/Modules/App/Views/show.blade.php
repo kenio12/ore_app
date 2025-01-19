@@ -34,30 +34,33 @@
                     @if(is_array($app->screenshots) && !empty($app->screenshots))
                         <div class="grid gap-8">
                             @foreach($app->screenshots as $screenshot)
-                                <div class="relative w-full" x-data>
-                                    <!-- スクリーンショットコンテナ -->
-                                    <div class="flex justify-center items-center bg-gray-50 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-                                         @click="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
+                                {{-- スクリーンショットデータの存在チェックを追加 --}}
+                                @if(isset($screenshot['url']))
+                                    <div class="relative w-full" x-data>
+                                        <!-- スクリーンショットコンテナ -->
+                                        <div class="flex justify-center items-center bg-gray-50 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+                                             @click="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
+                                            
+                                            <!-- スクリーンショット画像 -->
+                                            <img src="{{ $screenshot['url'] }}" 
+                                                 alt="アプリのスクリーンショット" 
+                                                 class="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity duration-300"
+                                                 style="max-height: 90vh; object-fit: contain;">
+                                            
+                                            <!-- オーバーレイ（ホバー時に表示） -->
+                                            <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity duration-300 flex items-center justify-center">
+                                                <span class="text-white text-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                                    クリックで拡大
+                                                </span>
+                                            </div>
+                                        </div>
                                         
-                                        <!-- スクリーンショット画像 -->
-                                        <img src="{{ $screenshot['url'] }}" 
-                                             alt="アプリのスクリーンショット" 
-                                             class="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity duration-300"
-                                             style="max-height: 90vh; object-fit: contain;">
-                                        
-                                        <!-- オーバーレイ（ホバー時に表示） -->
-                                        <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity duration-300 flex items-center justify-center">
-                                            <span class="text-white text-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                                クリックで拡大
-                                            </span>
+                                        <!-- スクリーンショット番号 -->
+                                        <div class="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                                            {{ $loop->iteration }}/{{ count(array_filter($app->screenshots, fn($s) => isset($s['url']))) }}
                                         </div>
                                     </div>
-                                    
-                                    <!-- スクリーンショット番号 -->
-                                    <div class="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                                        {{ $loop->iteration }}/{{ count($app->screenshots) }}
-                                    </div>
-                                </div>
+                                @endif
                             @endforeach
                         </div>
                     @else

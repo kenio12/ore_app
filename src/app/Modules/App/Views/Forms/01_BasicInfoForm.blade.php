@@ -28,10 +28,14 @@
             <div class="mt-1 space-y-8">
                 @foreach($app->screenshots ?? [] as $screenshot)
                     <div class="relative flex justify-center bg-gray-50 p-4 rounded-lg">
-                        <img src="{{ $screenshot['url'] }}" 
-                             alt="スクリーンショット" 
-                             class="rounded-lg shadow-lg"
-                             style="max-width: 100%; width: auto; height: auto; max-height: 90vh;">
+                        @if(isset($screenshot['url']))
+                            <img src="{{ $screenshot['url'] }}" 
+                                 alt="スクリーンショット" 
+                                 class="rounded-lg shadow-lg"
+                                 style="max-width: 100%; width: auto; height: auto; max-height: 90vh;">
+                        @else
+                            <p class="text-red-500">画像URLが見つかりません</p>
+                        @endif
                     </div>
                 @endforeach
             </div>

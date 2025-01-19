@@ -12,7 +12,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Appモジュールの設定を登録
+        $this->mergeConfigFrom(
+            base_path('app/Modules/App/Config/cloudinary.php'), 
+            'App::cloudinary'
+        );
     }
 
     /**

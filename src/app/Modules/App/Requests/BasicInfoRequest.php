@@ -21,14 +21,14 @@ class BasicInfoRequest extends FormRequest
             'github_url' => 'nullable|url|max:255',
             'status' => 'required|in:draft,published',
             'screenshots.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-            'app_types' => 'required|array|min:1',
+            'app_types' => 'nullable|array',
             'app_types.*' => 'in:' . implode(',', array_keys(App::getAppTypeOptions())),
             'app_status' => 'required|in:completed,in_development',
             'development_start_date' => 'required|date',
-            'development_end_date' => 'required|date|after_or_equal:development_start_date',
+            'development_end_date' => 'nullable|date|after_or_equal:development_start_date',
             'development_period_years' => 'required|integer|min:0',
             'development_period_months' => 'required|integer|min:0|max:11',
-            'genres' => 'required|array|min:1',
+            'genres' => 'nullable|array',
             'genres.*' => 'in:sns,netshop,matching,learning_service,work,entertainment,daily_life,communication,healthcare,finance,news_media,food,travel,real_estate,education,recruitment,literature,art,music,pet,game,sports,academic,development_tool,api_service,cms,blog,portfolio,other'
         ];
     }
