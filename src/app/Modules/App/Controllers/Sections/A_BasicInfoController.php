@@ -50,10 +50,18 @@ class A_BasicInfoController extends SectionController
 
             // スクリーンショットの処理
             if ($request->hasFile('screenshots')) {
-                // 既存のスクリーンショットを取得（nullや空配列の場合は新しい配列を作成）
-                $screenshots = [];
+                $files = $request->file('screenshots');
                 
-                // 既存の有効なスクリーンショットがあれば追加
+                // 最大3枚までに制限
+                if (count($files) > 3) {
+                    $files = array_slice($files, 0, 3);
+                }
+
+                // 一括アップロード
+                $uploadResults = $this->cloudinaryService->uploadMultipleToTemp($files);
+                
+                // 既存のスクリーンショットを取得
+                $screenshots = [];
                 if (!empty($app->screenshots) && is_array($app->screenshots)) {
                     foreach ($app->screenshots as $screenshot) {
                         if (!empty($screenshot['url'])) {
@@ -61,24 +69,15 @@ class A_BasicInfoController extends SectionController
                         }
                     }
                 }
-                
+
                 // 新しいスクリーンショットを追加
-                foreach ($request->file('screenshots') as $file) {
-                    $newScreenshot = $this->uploadScreenshot($file);
-                    if ($newScreenshot) {
-                        $screenshots[] = $newScreenshot;
-                    }
-                }
+                $screenshots = array_merge($screenshots, $uploadResults);
                 
                 // 最大3枚までに制限
                 $screenshots = array_slice($screenshots, 0, 3);
                 
-                Log::info('Screenshots before save:', ['screenshots' => $screenshots]);
-                
                 $app->screenshots = $screenshots;
                 $app->save();
-                
-                Log::info('Screenshots after save:', ['screenshots' => $app->fresh()->screenshots]);
             }
 
             // セクション完了をマーク
@@ -102,47 +101,61 @@ class A_BasicInfoController extends SectionController
     {
         try {
             DB::beginTransaction();
-            
-            $app = new App();
+
             $validatedData = app(BasicInfoRequest::class)->validated();
             
+            $app = new App();
             $app->fill(array_merge($validatedData, [
                 'color' => ColorHelper::generateColorFromString($validatedData['title']),
                 'user_id' => auth()->id()
             ]));
             
-            // スクリーンショットの配列を初期化（空の配列ではなく、nullで初期化）
-            $app->screenshots = null;
-            $app->save();
-
-            // スクリーンショットの処理
+            $screenshots = [];
+            
             if ($request->hasFile('screenshots')) {
-                $screenshots = [];  // 新しい配列として初期化
+                $files = $request->file('screenshots');
                 
-                foreach ($request->file('screenshots') as $file) {
-                    $newScreenshot = $this->uploadScreenshot($file);
-                    if ($newScreenshot) {
-                        $screenshots[] = $newScreenshot;
-                    }
-                }
+                Log::info('Received files:', [
+                    'count' => count($files),
+                    'files' => array_map(function($file) {
+                        return $file->getClientOriginalName();
+                    }, $files)
+                ]);
                 
                 // 最大3枚までに制限
-                $screenshots = array_slice($screenshots, 0, 3);
+                if (count($files) > 3) {
+                    $files = array_slice($files, 0, 3);
+                }
+
+                // 一括アップロード
+                $uploadResults = $this->cloudinaryService->uploadMultipleToTemp($files);
                 
-                $app->screenshots = $screenshots;
-                $app->save();
+                Log::info('Upload results:', [
+                    'count' => count($uploadResults),
+                    'results' => $uploadResults
+                ]);
+
+                $screenshots = $uploadResults;
+                
+                Log::info('Saved screenshots:', [
+                    'app_id' => $app->id,
+                    'screenshots' => $screenshots
+                ]);
             }
-
-            // 2. セクションを完了マーク
-            $this->completeSection($app->id, 'basic-info');
-
+            
+            $app->screenshots = $screenshots;
+            $app->save();
+            
             DB::commit();
 
-            // 3. 次のセクションへリダイレクト（SectionControllerのnextメソッドを使用）
             return $this->next($app->id);
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Store failed:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return back()
                 ->withInput()
                 ->with('error', 'データの保存に失敗しました: ' . $e->getMessage());

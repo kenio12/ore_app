@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Api\Upload\UploadApi;
+use GuzzleHttp\Promise;
 
 class CloudinaryService
 {
@@ -44,61 +45,67 @@ class CloudinaryService
      * @param UploadedFile[] $files
      * @return array
      */
-    public function uploadMultipleToTemp(array $files): array
+    public function uploadMultipleToTemp(array $files)
     {
-        $results = [];
-        $errors = [];
+        try {
+            Log::info('Starting bulk upload:', ['total_files' => count($files)]);
+            
+            $results = [];
+            $uploadParams = [
+                'folder' => 'ore_app/screenshots',
+                'transformation' => [
+                    'width' => 1920,
+                    'height' => 1080,
+                    'crop' => 'limit',
+                    'quality' => 'auto:good'
+                ]
+            ];
 
-        foreach ($files as $index => $file) {
-            try {
-                Log::info('Attempting to upload file', [
-                    'index' => $index,
-                    'filename' => $file->getClientOriginalName(),
-                    'size' => $file->getSize(),
-                    'mime' => $file->getMimeType()
-                ]);
+            // 各ファイルを個別にアップロード
+            foreach ($files as $file) {
+                try {
+                    if (!$file instanceof UploadedFile) {
+                        Log::warning('Invalid file object:', ['file' => $file]);
+                        continue;
+                    }
 
-                $result = $this->uploadApi->upload($file->getRealPath(), [
-                    'folder' => env('CLOUDINARY_FOLDER', 'ore_app/screenshots'),
-                    'resource_type' => 'image'
-                ]);
-                
-                Log::info('Upload success:', [
-                    'index' => $index,
-                    'public_id' => $result['public_id']
-                ]);
-
-                $results[] = [
-                    'public_id' => $result['public_id'],
-                    'url' => $result['secure_url'],
-                    'width' => $result['width'] ?? 0,
-                    'height' => $result['height'] ?? 0
-                ];
-
-            } catch (\Exception $e) {
-                Log::error('Screenshot upload failed:', [
-                    'index' => $index,
-                    'error' => $e->getMessage(),
-                    'file' => $file->getClientOriginalName()
-                ]);
-                
-                $errors[] = [
-                    'index' => $index,
-                    'filename' => $file->getClientOriginalName(),
-                    'error' => $e->getMessage()
-                ];
+                    $result = $this->uploadApi->upload($file->getRealPath(), $uploadParams);
+                    
+                    $results[] = [
+                        'public_id' => $result['public_id'],
+                        'url' => $result['secure_url'],
+                        'width' => $result['width'],
+                        'height' => $result['height']
+                    ];
+                    
+                    Log::info('Successfully uploaded file:', [
+                        'filename' => $file->getClientOriginalName(),
+                        'result' => $result['public_id']
+                    ]);
+                    
+                } catch (\Exception $e) {
+                    Log::error('Failed to upload individual file:', [
+                        'filename' => $file->getClientOriginalName(),
+                        'error' => $e->getMessage()
+                    ]);
+                    // 個別のファイルの失敗は全体の処理を止めない
+                    continue;
+                }
             }
-        }
 
-        // エラーがあった場合でも、成功した分は返す
-        if (!empty($errors)) {
-            Log::warning('Some uploads failed:', ['errors' => $errors]);
-        }
+            Log::info('Bulk upload completed:', [
+                'successful_uploads' => count($results)
+            ]);
 
-        return [
-            'success' => $results,
-            'errors' => $errors
-        ];
+            return $results;
+
+        } catch (\Exception $e) {
+            Log::error('Bulk upload failed:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw new \RuntimeException('Failed to upload images: ' . $e->getMessage());
+        }
     }
 
     public function uploadToTemp(UploadedFile $file)

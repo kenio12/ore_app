@@ -75,7 +75,15 @@
                         <div class="flex text-sm text-gray-600">
                             <label for="screenshots" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                                 <span>ファイルを選択</span>
-                                <input type="file" name="screenshots[]" id="screenshots" multiple accept="image/*" class="sr-only">
+                                <input 
+                                    type="file" 
+                                    name="screenshots[]"
+                                    id="screenshots"
+                                    multiple
+                                    accept="image/*"
+                                    class="sr-only"
+                                    @change="handleFileSelect($event)"
+                                >
                             </label>
                             <p class="pl-1">またはドラッグ＆ドロップ</p>
                         </div>
@@ -452,13 +460,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewContainer = document.getElementById('preview-container');
     const maxFiles = 3;
     const maxSize = 5 * 1024 * 1024; // 5MB
+    let currentFiles = new DataTransfer(); // グローバルに保持
 
     input.addEventListener('change', function(e) {
         const files = Array.from(e.target.files);
-        
         const existingPreviews = previewContainer.querySelectorAll('.relative').length;
+        
         if (files.length + existingPreviews > maxFiles) {
-            alert('スクリーンショットは最大3枚までです');
+            alert(`スクリーンショットは最大${maxFiles}枚までです`);
             return;
         }
 
@@ -473,32 +482,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            // 有効なファイルをDataTransferに追加
+            currentFiles.items.add(file);
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 const imageContainer = document.createElement('div');
                 imageContainer.className = 'relative block mb-4';
+                imageContainer.dataset.fileName = file.name; // ファイル名を保存
 
                 const previewImg = document.createElement('img');
                 previewImg.src = e.target.result;
-                
-                const tempImg = new Image();
-                tempImg.src = e.target.result;
-                
-                tempImg.onload = function() {
-                    previewImg.style.cssText = `
-                        max-width: 100%;
-                        height: auto;
-                        object-fit: contain;
-                        border-radius: 0.5rem;
-                        margin: 0 auto;
-                        display: block;
-                    `;
-                };
+                previewImg.className = 'max-w-full h-auto rounded-lg mx-auto block';
 
                 const deleteButton = document.createElement('button');
                 deleteButton.innerHTML = '×';
                 deleteButton.className = 'absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center';
                 deleteButton.onclick = function() {
+                    // DataTransferから該当ファイルを削除
+                    const newDataTransfer = new DataTransfer();
+                    Array.from(currentFiles.files).forEach(f => {
+                        if (f.name !== file.name) {
+                            newDataTransfer.items.add(f);
+                        }
+                    });
+                    currentFiles = newDataTransfer;
+                    input.files = currentFiles.files;
                     imageContainer.remove();
                 };
 
@@ -508,6 +517,9 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             reader.readAsDataURL(file);
         });
+
+        // input要素のfilesを更新
+        input.files = currentFiles.files;
     });
 });
 </script> 
