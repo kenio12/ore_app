@@ -13,6 +13,20 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="space-y-6">
+                {{-- 編集ボタンを中央に配置 --}}
+                @if(auth()->id() === $app->user_id)
+                    <div class="flex justify-center mb-4">
+                        <a href="{{ route('apps.edit', ['app' => $app->id]) }}" 
+                           class="inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            このアプリを編集する
+                        </a>
+                    </div>
+                @endif
+
                 <form onsubmit="return false;" class="pointer-events-none">
                     {{-- 各セクションを読み取り専用で表示 --}}
                     @include('App::Forms.01_BasicInfoForm', ['app' => $app, 'viewOnly' => true])
@@ -26,48 +40,6 @@
                     @include('App::Forms.09_FrontendSection', ['app' => $app, 'viewOnly' => true])
                     @include('App::Forms.10_DatabaseSection', ['app' => $app, 'viewOnly' => true])
                 </form>
-
-                <!-- スクリーンショット表示部分 -->
-                <div class="bg-white p-8 rounded-lg shadow">
-                    <h2 class="text-2xl font-bold mb-6">スクリーンショット</h2>
-                    
-                    @if(is_array($app->screenshots) && !empty(array_filter($app->screenshots)))
-                        <div class="grid gap-8">
-                            @foreach(array_filter($app->screenshots) as $index => $screenshot)
-                                @if(isset($screenshot['url']))
-                                    <div class="relative w-full" x-data>
-                                        <!-- スクリーンショットコンテナ -->
-                                        <div class="flex justify-center items-center bg-gray-50 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-                                             @click="$dispatch('open-app-screenshot-modal', { src: '{{ $screenshot['url'] }}' })">
-                                            
-                                            <!-- スクリーンショット画像 -->
-                                            <img src="{{ $screenshot['url'] }}" 
-                                                 alt="アプリのスクリーンショット {{ $index + 1 }}" 
-                                                 class="w-full h-auto cursor-pointer hover:opacity-95 transition-opacity duration-300"
-                                                 style="max-height: 90vh; object-fit: contain;">
-                                            
-                                            <!-- オーバーレイ（ホバー時に表示） -->
-                                            <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-opacity duration-300 flex items-center justify-center">
-                                                <span class="text-white text-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                                    クリックで拡大
-                                                </span>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- スクリーンショット番号 -->
-                                        <div class="absolute top-4 left-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                                            {{ $index + 1 }}/{{ count(array_filter($app->screenshots, fn($s) => isset($s['url']))) }}
-                                        </div>
-                                    </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="text-center py-12 bg-gray-50 rounded-lg">
-                            <p class="text-gray-500">スクリーンショットはまだ登録されていません。</p>
-                        </div>
-                    @endif
-                </div>
             </div>
         </div>
     </div>

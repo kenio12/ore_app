@@ -12,32 +12,20 @@ use GuzzleHttp\Promise;
 class CloudinaryService
 {
     private $uploadApi;
+    private $defaultTransformation;
 
     public function __construct()
     {
-        // 設定を明示的に初期化
-        $config = new Configuration([
-            'cloud' => [
-                'cloud_name' => config('cloudinary.cloud_name'),
-                'api_key' => config('cloudinary.api_key'),
-                'api_secret' => config('cloudinary.api_secret')
-            ],
-            'url' => [
-                'secure' => config('cloudinary.secure', true)
+        // Laravel用のCloudinaryパッケージの正しい初期化方法
+        $this->defaultTransformation = [
+            'folder' => 'ore_app/screenshots',
+            'transformation' => [
+                'width' => 1920,
+                'height' => 1080,
+                'crop' => 'limit',
+                'quality' => 'auto:good'
             ]
-        ]);
-
-        // UploadAPIインスタンスを作成
-        $this->uploadApi = new UploadApi($config);
-
-        // デバッグ用ログ
-        Log::info('CloudinaryService initialized with config', [
-            'cloud_name' => config('cloudinary.cloud_name'),
-            'api_key' => config('cloudinary.api_key'),
-            'has_secret' => !empty(config('cloudinary.api_secret')),
-            'secret_length' => strlen(config('cloudinary.api_secret')),
-            'secure' => config('cloudinary.secure', true)
-        ]);
+        ];
     }
 
     /**
@@ -47,79 +35,53 @@ class CloudinaryService
      */
     public function uploadMultipleToTemp(array $files)
     {
-        try {
-            Log::info('Starting bulk upload:', ['total_files' => count($files)]);
-            
-            $results = [];
-            $uploadParams = [
-                'folder' => 'ore_app/screenshots',
-                'transformation' => [
-                    'width' => 1920,
-                    'height' => 1080,
-                    'crop' => 'limit',
-                    'quality' => 'auto:good'
-                ]
-            ];
+        Log::info('Starting bulk upload:', ['total_files' => count($files)]);
+        
+        $results = [];
+        foreach ($files as $file) {
+            try {
+                // アップロード実行
+                $result = Cloudinary::upload($file->getRealPath(), [
+                    'folder' => 'ore_app/screenshots',
+                    'transformation' => [
+                        'width' => 1920,
+                        'height' => 1080,
+                        'crop' => 'limit',
+                        'quality' => 'auto:good'
+                    ]
+                ]);
 
-            // 各ファイルを個別にアップロード
-            foreach ($files as $file) {
-                try {
-                    if (!$file instanceof UploadedFile) {
-                        Log::warning('Invalid file object:', ['file' => $file]);
-                        continue;
-                    }
-
-                    $result = $this->uploadApi->upload($file->getRealPath(), $uploadParams);
-                    
+                // getResponse()メソッドを使用して生のレスポンスを取得
+                $response = $result->getResponse();
+                
+                if ($response) {
                     $results[] = [
-                        'public_id' => $result['public_id'],
-                        'url' => $result['secure_url'],
-                        'width' => $result['width'],
-                        'height' => $result['height']
+                        'public_id' => $response['public_id'],
+                        'url' => $response['secure_url'],
+                        'width' => $response['width'] ?? 0,
+                        'height' => $response['height'] ?? 0
                     ];
-                    
-                    Log::info('Successfully uploaded file:', [
-                        'filename' => $file->getClientOriginalName(),
-                        'result' => $result['public_id']
-                    ]);
-                    
-                } catch (\Exception $e) {
-                    Log::error('Failed to upload individual file:', [
-                        'filename' => $file->getClientOriginalName(),
-                        'error' => $e->getMessage()
-                    ]);
-                    // 個別のファイルの失敗は全体の処理を止めない
-                    continue;
                 }
+            } catch (\Exception $e) {
+                Log::error('Failed to upload:', ['error' => $e->getMessage()]);
             }
-
-            Log::info('Bulk upload completed:', [
-                'successful_uploads' => count($results)
-            ]);
-
-            return $results;
-
-        } catch (\Exception $e) {
-            Log::error('Bulk upload failed:', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            throw new \RuntimeException('Failed to upload images: ' . $e->getMessage());
         }
+
+        Log::info('Cloudinaryアップロード結果:', [
+            'success_count' => count($results),
+            'results' => $results
+        ]);
+
+        return $results;
     }
 
     public function uploadToTemp(UploadedFile $file)
     {
         try {
-            $result = $this->uploadApi->upload($file->getRealPath(), [
-                'folder' => 'ore_app/screenshots',
-                'transformation' => [
-                    'width' => 1920,  // 最大幅を指定
-                    'height' => 1080, // 最大高さを指定
-                    'crop' => 'limit',  // 最大サイズを超えないように
-                    'quality' => 'auto:good'  // 画質は自動最適化
-                ]
-            ]);
+            $result = $this->uploadApi->upload(
+                $file->getRealPath(), 
+                $this->defaultTransformation
+            );
 
             Log::info('Upload result:', [
                 'original_file' => [
@@ -127,7 +89,13 @@ class CloudinaryService
                     'size' => $file->getSize(),
                     'mime' => $file->getMimeType()
                 ],
-                'upload_result' => $result
+                'upload_result' => [
+                    'public_id' => $result['public_id'],
+                    'url' => $result['secure_url'],
+                    'width' => $result['width'],
+                    'height' => $result['height'],
+                    'bytes' => $result['bytes']
+                ]
             ]);
 
             return [

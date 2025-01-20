@@ -32,8 +32,8 @@
 {{-- メインのフォーム --}}
 <form method="POST" 
     action="{{ $app->exists 
-        ? route('app.sections.' . $currentSection . '.update', $app) 
-        : route('basic-info.store') }}"  {{-- ここを修正：apps.store → basic-info.store --}}
+        ? route('app.sections.' . $currentSection . '.update', ['app' => $app->id]) 
+        : route('app.sections.' . $currentSection . '.store') }}"
     enctype="multipart/form-data">
     @csrf
     @if($app->exists)

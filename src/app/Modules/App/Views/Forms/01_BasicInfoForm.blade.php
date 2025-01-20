@@ -14,9 +14,27 @@
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             {{ $viewOnly ?? false ? 'disabled' : 'required' }}
         >
-        @if(isset($errors) && $errors->has('title'))
-            <p class="mt-1 text-sm text-red-600">{{ $errors->first('title') }}</p>
-        @endif
+        @error('title')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <!-- アプリの紹介 -->
+    <div class="mb-6">
+        <label for="description" class="block text-sm font-medium text-gray-700">
+            アプリの紹介 <span class="text-red-500">*</span>
+        </label>
+        <textarea 
+            name="description" 
+            id="description"
+            rows="8"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            placeholder="あなたのアプリの特徴や魅力を簡潔に説明してください"
+            {{ $viewOnly ?? false ? 'disabled' : 'required' }}
+        >{{ old('description', $app->description ?? '') }}</textarea>
+        @error('description')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
     <!-- スクリーンショット -->
@@ -24,50 +42,56 @@
         <label class="block text-sm font-medium text-gray-700">
             スクリーンショット（1〜3枚） <span class="text-red-500">*</span>
         </label>
+
         @if($viewOnly ?? false)
             <div class="mt-1 space-y-8">
-                @foreach($app->screenshots ?? [] as $screenshot)
-                    <div class="relative flex justify-center bg-gray-50 p-4 rounded-lg">
-                        @if(isset($screenshot['url']))
-                            <img src="{{ $screenshot['url'] }}" 
-                                 alt="スクリーンショット" 
-                                 class="rounded-lg shadow-lg">
-                        @else
-                            <div class="bg-gray-100 p-4 rounded-lg text-gray-500 flex items-center justify-center">
-                                <span>画像なし</span>
-                            </div>
-                        @endif
+                @if(isset($app->screenshots) && is_array($app->screenshots))
+                    @foreach($app->screenshots as $screenshot)
+                        <div class="relative flex justify-center bg-gray-50 p-4 rounded-lg">
+                            @if(isset($screenshot['url']))
+                                <img src="{{ $screenshot['url'] }}" 
+                                     alt="スクリーンショット" 
+                                     class="rounded-lg shadow-lg max-w-full h-auto">
+                            @else
+                                <div class="bg-gray-100 p-4 rounded-lg text-gray-500 flex items-center justify-center">
+                                    <span>画像なし</span>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                @else
+                    <div class="bg-gray-100 p-4 rounded-lg text-gray-500 flex items-center justify-center">
+                        <span>スクリーンショットはまだ登録されていません</span>
                     </div>
-                @endforeach
+                @endif
             </div>
         @else
-            <div class="mt-2"
-                x-data="{ 
-                    isDragging: false,
-                    handleDragOver(e) {
-                        e.preventDefault();
-                        this.isDragging = true;
-                    },
-                    handleDragLeave() {
-                        this.isDragging = false;
-                    },
-                    handleDrop(e) {
-                        e.preventDefault();
-                        this.isDragging = false;
-                        const input = document.getElementById('screenshots');
-                        input.files = e.dataTransfer.files;
-                        input.dispatchEvent(new Event('change'));
-                    }
-                }"
-                x-on:dragover.prevent="handleDragOver($event)"
-                x-on:dragleave.prevent="handleDragLeave"
-                x-on:drop.prevent="handleDrop($event)"
-            >
+            <div class="mt-2" x-data="{ isDragging: false }">
+                <div id="preview-container" class="mb-4">
+                    @if(isset($app->screenshots) && is_array($app->screenshots))
+                        @foreach($app->screenshots as $index => $screenshot)
+                            @if(isset($screenshot['url']))
+                                <div class="relative block mb-4">
+                                    <img src="{{ $screenshot['url'] }}" 
+                                         class="max-w-full h-auto rounded-lg mx-auto block">
+                                    <button type="button"
+                                            class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                                            onclick="removeScreenshot(this)">×</button>
+                                    <input type="hidden" name="existing_screenshots[]" value="{{ $index }}">
+                                </div>
+                            @endif
+                        @endforeach
+                    @endif
+                </div>
+
                 <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md"
                     x-bind:class="{ 
                         'border-gray-300': !isDragging,
                         'border-blue-500 bg-blue-50': isDragging 
                     }"
+                    x-on:dragover.prevent="handleDragOver($event)"
+                    x-on:dragleave.prevent="handleDragLeave"
+                    x-on:drop.prevent="handleDrop($event)"
                 >
                     <div class="space-y-1 text-center">
                         <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -93,30 +117,11 @@
                         </p>
                     </div>
                 </div>
-                <div id="preview-container" class="mt-4 space-y-4"></div>
             </div>
             @error('screenshots')
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         @endif
-    </div>
-
-    <!-- アプリの紹介 -->
-    <div class="mb-6">
-        <label for="description" class="block text-sm font-medium text-gray-700">
-            アプリの紹介 <span class="text-red-500">*</span>
-        </label>
-        <textarea 
-            name="description" 
-            id="description"
-            rows="8"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="あなたのアプリの特徴や魅力を簡潔に説明してください"
-            required
-        >{{ old('description', $app->description ?? '') }}</textarea>
-        @error('description')
-            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-        @enderror
     </div>
 
     <!-- 公開状態 -->
@@ -432,6 +437,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const maxFiles = 3;
     const maxSize = 5 * 1024 * 1024; // 5MB
     let currentFiles = new DataTransfer(); // グローバルに保持
+
+    // 既存の画像の削除処理を追加
+    window.removeScreenshot = function(button) {
+        const container = button.parentElement;
+        container.remove();
+    };
 
     input.addEventListener('change', function(e) {
         const files = Array.from(e.target.files);

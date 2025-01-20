@@ -35,7 +35,8 @@ class AppController extends Controller
 
         return view('App::show', [
             'app' => $app,
-            'viewOnly' => true
+            'viewOnly' => true,
+            'canEdit' => auth()->id() === $app->user_id  // 編集権限の有無を追加
         ]);
     }
 
@@ -89,7 +90,8 @@ class AppController extends Controller
             'sections' => $progressManager->getSections(),
             'sectionTitle' => $progressManager->getSections()[$currentSection]['title'],
             'previousSection' => $progressManager->getPreviousSection($currentSection),
-            'nextSection' => $progressManager->getNextSection($currentSection)
+            'nextSection' => $progressManager->getNextSection($currentSection),
+            'viewOnly' => false
         ]);
     }
 

@@ -35,6 +35,7 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
 
     // 編集画面のルート
     Route::get('/apps/{app}/edit', [AppController::class, 'edit'])->name('apps.edit');
+    Route::put('/apps/{app}', [AppController::class, 'update'])->name('apps.update');
 });
 
 // 認証不要の公開ルートを後に

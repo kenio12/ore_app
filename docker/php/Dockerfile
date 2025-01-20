@@ -34,3 +34,7 @@ RUN mkdir -p /home/dev/.composer && \
 
 # 権限の設定
 RUN chown -R dev:dev /var/www/html 
+
+# PHPの設定を更新
+RUN echo "upload_max_filesize = 5M" > /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size = 5M" >> /usr/local/etc/php/conf.d/uploads.ini 

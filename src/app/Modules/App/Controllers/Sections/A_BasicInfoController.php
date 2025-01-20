@@ -25,60 +25,106 @@ class A_BasicInfoController extends SectionController
 
     public function edit(string $appId)
     {
-        $app = App::findOrFail($appId);
-        return view('app::Forms.01_BasicInfoForm', [
-            'app' => $app,
-            'currentSection' => 'basic-info'
-        ]);
+        try {
+            $app = App::findOrFail($appId);
+            
+            // 権限チェック
+            if ($app->user_id !== auth()->id()) {
+                throw new \Exception('編集権限がありません。');
+            }
+
+            // スクリーンショットデータの準備
+            $screenshots = [];
+            if (!empty($app->screenshots) && is_array($app->screenshots)) {
+                foreach ($app->screenshots as $screenshot) {
+                    if (!empty($screenshot['url'])) {
+                        $screenshots[] = [
+                            'url' => $screenshot['url'],
+                            'public_id' => $screenshot['public_id'] ?? null,
+                            'width' => $screenshot['width'] ?? null,
+                            'height' => $screenshot['height'] ?? null
+                        ];
+                    }
+                }
+            }
+
+            Log::info('Editing app with screenshots:', [
+                'app_id' => $appId,
+                'screenshots' => $screenshots
+            ]);
+
+            return view('app::Forms.01_BasicInfoForm', [
+                'app' => $app,
+                'currentSection' => 'basic-info',
+                'screenshots' => $screenshots,
+                'viewOnly' => false
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Edit failed:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->with('error', '編集画面の表示に失敗しました: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, string $appId)
     {
-        // バリデーションを実行して結果を取得
-        $validatedData = app(BasicInfoRequest::class)->validated();
-        
         try {
             DB::beginTransaction();
 
             $app = App::findOrFail($appId);
             
-            // バリデーション済みデータを使用して更新
+            // 権限チェック
+            if ($app->user_id !== auth()->id()) {
+                throw new \Exception('更新権限がありません。');
+            }
+
+            // バリデーションを実行
+            $validatedData = app(BasicInfoRequest::class)->validated();
+            
+            // 基本データの更新
             $app->update(array_merge($validatedData, [
-                'color' => ColorHelper::generateColorFromString($validatedData['title']),
-                'user_id' => auth()->id()
+                'color' => ColorHelper::generateColorFromString($validatedData['title'])
             ]));
 
             // スクリーンショットの処理
-            if ($request->hasFile('screenshots')) {
-                $files = $request->file('screenshots');
-                
-                // 最大3枚までに制限
-                if (count($files) > 3) {
-                    $files = array_slice($files, 0, 3);
-                }
+            $screenshots = [];
 
-                // 一括アップロード
-                $uploadResults = $this->cloudinaryService->uploadMultipleToTemp($files);
-                
-                // 既存のスクリーンショットを取得
-                $screenshots = [];
-                if (!empty($app->screenshots) && is_array($app->screenshots)) {
-                    foreach ($app->screenshots as $screenshot) {
-                        if (!empty($screenshot['url'])) {
-                            $screenshots[] = $screenshot;
+            // 既存のスクリーンショットを保持（削除されていないもののみ）
+            if (!empty($app->screenshots) && is_array($app->screenshots)) {
+                $keepScreenshots = $request->input('keep_screenshots', []);
+                foreach ($app->screenshots as $index => $screenshot) {
+                    if (in_array($index, $keepScreenshots) && !empty($screenshot['url'])) {
+                        $screenshots[] = $screenshot;
+                    } else {
+                        // Cloudinaryから削除
+                        if (!empty($screenshot['public_id'])) {
+                            $this->cloudinaryService->delete($screenshot['public_id']);
                         }
                     }
                 }
-
-                // 新しいスクリーンショットを追加
-                $screenshots = array_merge($screenshots, $uploadResults);
-                
-                // 最大3枚までに制限
-                $screenshots = array_slice($screenshots, 0, 3);
-                
-                $app->screenshots = $screenshots;
-                $app->save();
             }
+
+            // 新しいスクリーンショットの追加
+            if ($request->hasFile('screenshots')) {
+                $files = $request->file('screenshots');
+                
+                // 既存と新規の合計が3枚を超えないようにチェック
+                $remainingSlots = 3 - count($screenshots);
+                if (count($files) > $remainingSlots) {
+                    $files = array_slice($files, 0, $remainingSlots);
+                }
+
+                // アップロード
+                $uploadResults = $this->cloudinaryService->uploadMultipleToTemp($files);
+                $screenshots = array_merge($screenshots, $uploadResults);
+            }
+
+            // スクリーンショットを保存
+            $app->screenshots = $screenshots;
+            $app->save();
 
             // セクション完了をマーク
             $this->completeSection($appId, 'basic-info');
@@ -87,13 +133,17 @@ class A_BasicInfoController extends SectionController
 
             return redirect()
                 ->route('app.sections.development-story.edit', $appId)
-                ->with('success', '基本情報を保存しました！');
+                ->with('success', '基本情報を更新しました！');
 
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Update failed:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return back()
                 ->withInput()
-                ->with('error', 'データの保存に失敗しました: ' . $e->getMessage());
+                ->with('error', 'データの更新に失敗しました: ' . $e->getMessage());
         }
     }
 
@@ -102,8 +152,38 @@ class A_BasicInfoController extends SectionController
         try {
             DB::beginTransaction();
 
+            // ファイルの詳細な情報をログ
+            if ($request->hasFile('screenshots')) {
+                $files = $request->file('screenshots');
+                Log::info('詳細なファイル情報:', [
+                    'ファイル数' => count($files),
+                    'ファイル詳細' => array_map(function($file) {
+                        return [
+                            'name' => $file->getClientOriginalName(),
+                            'size' => $file->getSize(),
+                            'mime' => $file->getMimeType(),
+                            'path' => $file->getRealPath(),
+                            'error' => $file->getError(),
+                            'extension' => $file->getClientOriginalExtension()
+                        ];
+                    }, $files)
+                ]);
+            } else {
+                Log::warning('ファイルが見つかりません');
+                Log::info('リクエスト内容:', [
+                    'has_files' => $request->hasFile('screenshots'),
+                    'all_input' => $request->all(),
+                    'files' => $request->files->all()
+                ]);
+            }
+
             $validatedData = app(BasicInfoRequest::class)->validated();
             
+            // バリデーション後のデータをログ
+            Log::info('バリデーション後のデータ:', [
+                'validated' => $validatedData
+            ]);
+
             $app = new App();
             $app->fill(array_merge($validatedData, [
                 'color' => ColorHelper::generateColorFromString($validatedData['title']),
@@ -115,33 +195,49 @@ class A_BasicInfoController extends SectionController
             if ($request->hasFile('screenshots')) {
                 $files = $request->file('screenshots');
                 
-                Log::info('Received files:', [
+                // アップロード前の状態確認
+                Log::info('アップロード前のファイル状態:', [
                     'count' => count($files),
                     'files' => array_map(function($file) {
-                        return $file->getClientOriginalName();
+                        return [
+                            'name' => $file->getClientOriginalName(),
+                            'valid' => $file->isValid(),
+                            'error' => $file->getError()
+                        ];
                     }, $files)
                 ]);
                 
-                // 最大3枚までに制限
                 if (count($files) > 3) {
                     $files = array_slice($files, 0, 3);
                 }
 
-                // 一括アップロード
+                // CloudinaryServiceに渡す直前の状態
+                Log::info('Cloudinaryアップロード直前:', [
+                    'files_to_upload' => array_map(function($file) {
+                        return [
+                            'name' => $file->getClientOriginalName(),
+                            'path' => $file->getRealPath(),
+                            'temp_path' => $file->getPathname()
+                        ];
+                    }, $files)
+                ]);
+
                 $uploadResults = $this->cloudinaryService->uploadMultipleToTemp($files);
                 
-                Log::info('Upload results:', [
-                    'count' => count($uploadResults),
+                // アップロード結果の詳細ログ
+                Log::info('Cloudinaryアップロード結果:', [
+                    'success_count' => count($uploadResults),
                     'results' => $uploadResults
                 ]);
 
                 $screenshots = $uploadResults;
-                
-                Log::info('Saved screenshots:', [
-                    'app_id' => $app->id,
-                    'screenshots' => $screenshots
-                ]);
             }
+            
+            // 最終保存前の状態確認
+            Log::info('保存前の最終状態:', [
+                'app_id' => $app->id,
+                'screenshots' => $screenshots
+            ]);
             
             $app->screenshots = $screenshots;
             $app->save();
@@ -152,9 +248,11 @@ class A_BasicInfoController extends SectionController
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Store failed:', [
+            Log::error('保存失敗:', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
             ]);
             return back()
                 ->withInput()
