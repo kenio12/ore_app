@@ -55,10 +55,7 @@ class AppResource extends Resource
 
                     Select::make('app_status')
                         ->label('開発状態')
-                        ->options([
-                            'completed' => '完成',
-                            'in_development' => '開発中'
-                        ])
+                        ->options(config('app-module.constants.app_status'))
                         ->required(),
 
                     TextInput::make('color')
@@ -186,27 +183,19 @@ class AppResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            TextColumn::make('title')
-                ->label('アプリ名')
-                ->searchable()
-                ->sortable(),
-            
-            TextColumn::make('status')
-                ->label('公開状態'),
-            
-            TextColumn::make('app_status')
-                ->label('開発状態'),
-            
-            TextColumn::make('development_start_date')
-                ->label('開発開始日')
-                ->date(),
-            
-            TextColumn::make('created_at')
-                ->label('作成日時')
-                ->dateTime('Y-m-d H:i')
-                ->sortable(),
-        ]);
+        return $table
+            ->defaultSort('created_at', 'desc')
+            ->columns([
+                TextColumn::make('title')
+                    ->label('アプリ名')
+                    ->searchable()
+                    ->sortable(),
+                
+                TextColumn::make('created_at')
+                    ->label('作成日時')
+                    ->dateTime('Y-m-d H:i')
+                    ->sortable(),
+            ]);
     }
 
     public static function getPages(): array

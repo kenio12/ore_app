@@ -331,37 +331,7 @@
             ジャンル（複数選択可） <span class="text-red-500">*</span>
         </label>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
-            @foreach([
-                'sns' => 'SNS',
-                'netshop' => 'ネットショップ/EC',
-                'matching' => 'マッチングサービス',
-                'learning_service' => '学習サービス',
-                'work' => '仕事効率化',
-                'entertainment' => '娯楽',
-                'daily_life' => '日常生活',
-                'communication' => 'コミュニケーション',
-                'healthcare' => 'ヘルスケア',
-                'finance' => '金融',
-                'news_media' => 'ニュース・メディア',
-                'food' => '飲食・フード',
-                'travel' => '旅行・観光',
-                'real_estate' => '不動産',
-                'education' => '教育',
-                'recruitment' => '採用・求人',
-                'literature' => '文学',
-                'art' => '美術',
-                'music' => '音楽',
-                'pet' => 'ペット',
-                'game' => 'ゲーム',
-                'sports' => 'スポーツ',
-                'academic' => '学問',
-                'development_tool' => '開発ツール',
-                'api_service' => 'API/Webサービス',
-                'cms' => 'CMS',
-                'blog' => 'ブログ/メディア',
-                'portfolio' => 'ポートフォリオ',
-                'other' => 'その他'
-            ] as $value => $label)
+            @foreach(config('app-module.constants.genres') as $value => $label)
                 <div class="flex items-center gap-2">
                     @if($viewOnly ?? false)
                         <div class="{{ in_array($value, old('genres', $app->genres ?? [])) 
