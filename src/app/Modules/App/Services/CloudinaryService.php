@@ -40,14 +40,20 @@ class CloudinaryService
         $results = [];
         foreach ($files as $file) {
             try {
-                // アップロード実行
+                // アップロード前のファイルサイズをログに記録
+                Log::info('Original file details:', [
+                    'name' => $file->getClientOriginalName(),
+                    'size_bytes' => $file->getSize(),
+                    'size_mb' => round($file->getSize() / 1024 / 1024, 2) . 'MB',
+                    'mime' => $file->getMimeType()
+                ]);
+
                 $result = Cloudinary::upload($file->getRealPath(), [
                     'folder' => 'ore_app/screenshots',
                     'transformation' => [
-                        'width' => 1920,
-                        'height' => 1080,
-                        'crop' => 'limit',
-                        'quality' => 'auto:good'
+                        'quality' => 'auto:eco',  // auto:good から auto:eco に変更
+                        'fetch_format' => 'auto',  // 追加：最適なフォーマットに自動変換
+                        'compression' => 'low'     // 追加：圧縮レベルを設定
                     ]
                 ]);
 
@@ -55,11 +61,18 @@ class CloudinaryService
                 $response = $result->getResponse();
                 
                 if ($response) {
+                    // アップロード後のファイルサイズもログに記録
+                    Log::info('Uploaded file details:', [
+                        'bytes' => $response['bytes'],
+                        'size_mb' => round($response['bytes'] / 1024 / 1024, 2) . 'MB',
+                        'format' => $response['format']
+                    ]);
+
                     $results[] = [
                         'public_id' => $response['public_id'],
                         'url' => $response['secure_url'],
-                        'width' => $response['width'] ?? 0,
-                        'height' => $response['height'] ?? 0
+                        'original_size' => round($file->getSize() / 1024 / 1024, 2) . 'MB',
+                        'compressed_size' => round($response['bytes'] / 1024 / 1024, 2) . 'MB'
                     ];
                 }
             } catch (\Exception $e) {
