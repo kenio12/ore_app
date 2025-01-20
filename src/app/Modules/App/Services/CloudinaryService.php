@@ -20,10 +20,9 @@ class CloudinaryService
         $this->defaultTransformation = [
             'folder' => 'ore_app/screenshots',
             'transformation' => [
-                'width' => 1920,
-                'height' => 1080,
-                'crop' => 'limit',
-                'quality' => 'auto:good'
+                'quality' => 'auto:good',
+                'fetch_format' => 'auto',
+                'compression' => 'low'
             ]
         ];
     }

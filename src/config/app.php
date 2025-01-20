@@ -186,14 +186,14 @@ return [
 
     'aliases' => [
         // Laravel Framework Aliases
-        'App' => Illuminate\Support\Facades\App::class,
+        'LaravelApp' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
         // ... 他のエイリアス ...
 
         // Module Aliases
         'Home' => App\Modules\Home\Facades\Home::class,
-        'App' => App\Modules\App\Facades\App::class,
+        'AppModule' => App\Modules\App\Facades\App::class,
     ],
 
 ];

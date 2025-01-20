@@ -16,7 +16,7 @@ class AppModuleServiceProvider extends ServiceProvider
             __DIR__.'/../Config/config.php', 'app-module'
         );
 
-        // 定数ファイルの追加
+        // 定数ファイルの読み込み方を修正
         $this->mergeConfigFrom(
             __DIR__.'/../Config/constants.php', 'app-module.constants'
         );
