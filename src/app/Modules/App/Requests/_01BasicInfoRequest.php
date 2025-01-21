@@ -5,7 +5,7 @@ namespace App\Modules\App\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Modules\App\Models\App;
 
-class BasicInfoRequest extends FormRequest
+class _01BasicInfoRequest extends FormRequest
 {
     public function authorize(): bool
     {

@@ -16,6 +16,9 @@ class CloudinaryService
 
     public function __construct()
     {
+        // Cloudinary APIの初期化
+        $this->uploadApi = new \Cloudinary\Api\Upload\UploadApi();
+
         // Laravel用のCloudinaryパッケージの正しい初期化方法
         $this->defaultTransformation = [
             'folder' => 'ore_app/screenshots',
@@ -129,6 +132,11 @@ class CloudinaryService
     public function delete(string $publicId): bool
     {
         try {
+            if (!$this->uploadApi) {
+                Log::warning('UploadApi not initialized');
+                return false;
+            }
+            
             $this->uploadApi->destroy($publicId);
             return true;
         } catch (\Exception $e) {

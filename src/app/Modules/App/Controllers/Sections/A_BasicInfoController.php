@@ -4,11 +4,9 @@ namespace App\Modules\App\Controllers\Sections;
 
 use App\Modules\App\Controllers\Base\SectionController;
 use App\Modules\App\Models\App;
-use App\Modules\App\Requests\BasicInfoRequest;
 use App\Modules\App\Helpers\ColorHelper;
 use App\Modules\App\Services\CloudinaryService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Modules\App\Services\AppProgressManager;
@@ -71,6 +69,13 @@ class A_BasicInfoController extends SectionController
 
     public function update(Request $request, string $appId)
     {
+        // FormRequestを直接インスタンス化して検証
+        $formRequest = new \App\Modules\App\Requests\_01BasicInfoRequest();
+        $formRequest->setContainer(app());  // コンテナをセット
+        $formRequest->initialize($request->all());  // リクエストデータを初期化
+        $formRequest->validateResolved();  // バリデーション実行
+        $validatedData = $request->all();  // 全データを取得
+
         try {
             DB::beginTransaction();
 
@@ -81,9 +86,6 @@ class A_BasicInfoController extends SectionController
                 throw new \Exception('更新権限がありません。');
             }
 
-            // バリデーションを実行
-            $validatedData = app(BasicInfoRequest::class)->validated();
-            
             // 基本データの更新
             $app->update(array_merge($validatedData, [
                 'color' => ColorHelper::generateColorFromString($validatedData['title'])
@@ -177,7 +179,7 @@ class A_BasicInfoController extends SectionController
                 ]);
             }
 
-            $validatedData = app(BasicInfoRequest::class)->validated();
+            $validatedData = app(_01BasicInfoRequest::class)->validated();
             
             // バリデーション後のデータをログ
             Log::info('バリデーション後のデータ:', [

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use App\Modules\App\Requests\BasicInfoRequest;  // 既存のRequestを使用
+use App\Modules\App\Requests\_01BasicInfoRequest;
 
 class AppController extends Controller
 {
@@ -116,5 +116,10 @@ class AppController extends Controller
         $apps = $apps->sortByDesc('created_at')->values();
 
         return view('dashboard', compact('apps'));
+    }
+
+    public function store(_01BasicInfoRequest $request)
+    {
+        // ...
     }
 } 

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Modules\App\Models\BasicInfo\BasicInfo;
 
 class App extends Model
 {
@@ -195,10 +197,19 @@ class App extends Model
         'progress' => 'array'
     ];
 
-    // ユーザーとのリレーション
-    public function user()
+    /*
+    |--------------------------------------------------------------------------
+    | リレーション
+    |--------------------------------------------------------------------------
+    */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class);
+    }
+
+    public function basicInfo(): HasOne
+    {
+        return $this->hasOne(BasicInfo::class);
     }
 
     /**
@@ -226,7 +237,11 @@ class App extends Model
         'development_end_date',
     ];
 
-    // スコープを追加
+    /*
+    |--------------------------------------------------------------------------
+    | スコープ
+    |--------------------------------------------------------------------------
+    */
     public function scopeLatest($query)
     {
         return $query->orderBy('created_at', 'desc');
