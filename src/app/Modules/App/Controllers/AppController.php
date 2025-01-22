@@ -30,75 +30,30 @@ class AppController extends Controller
     public function show($id)
     {
         try {
-            // 開始時のメモリ使用量
-            Log::debug('Show start:', [
-                'memory_start' => $this->formatBytes(memory_get_usage(true)),
-                'peak_start' => $this->formatBytes(memory_get_peak_usage(true))
-            ]);
-
-            // クエリ前
-            Log::debug('Before query:', [
-                'memory_before_query' => $this->formatBytes(memory_get_usage(true))
-            ]);
-
-            $app = App::select('id', 'title', 'description', 'user_id')
-                      ->findOrFail($id);
-
-            // クエリ後
-            Log::debug('After app query:', [
-                'memory_after_query' => $this->formatBytes(memory_get_usage(true)),
-                'app_data' => $this->formatBytes(strlen(serialize($app)))
-            ]);
-
-            // スクリーンショット取得前
-            Log::debug('Before screenshots:', [
-                'memory_before_screenshots' => $this->formatBytes(memory_get_usage(true))
-            ]);
-
-            $screenshots = DB::table('apps')
-                            ->select('screenshots')
-                            ->where('id', $id)
-                            ->value('screenshots');
-
-            // スクリーンショット取得後
-            Log::debug('After screenshots query:', [
-                'memory_after_screenshots' => $this->formatBytes(memory_get_usage(true)),
-                'screenshots_data' => $screenshots ? $this->formatBytes(strlen($screenshots)) : '0 B'
-            ]);
-
-            if ($screenshots) {
-                // JSON デコード前
-                Log::debug('Before JSON decode:', [
-                    'memory_before_decode' => $this->formatBytes(memory_get_usage(true))
-                ]);
-
-                $screenshots = json_decode($screenshots, true);
-                
-                // JSON デコード後
-                Log::debug('After JSON decode:', [
-                    'memory_after_decode' => $this->formatBytes(memory_get_usage(true)),
-                    'decoded_size' => $this->formatBytes(strlen(json_encode($screenshots)))
-                ]);
-
-                $app->screenshots = $screenshots;  // 全ての画像を渡す
-            }
-
-            // ビューに渡す直前
-            Log::debug('Before view render:', [
-                'memory_before_view' => $this->formatBytes(memory_get_usage(true)),
-                'peak_before_view' => $this->formatBytes(memory_get_peak_usage(true))
+            $app = App::findOrFail($id);
+            
+            // ここでデータの中身を確認
+            Log::debug('取得したデータ:', [
+                'app_id' => $app->id,
+                'title' => $app->title,
+                'description' => $app->description,
+                'publication_status' => $app->publication_status,
+                'app_url' => $app->app_url,
+                'github_url' => $app->github_url,
+                'app_status' => $app->app_status,
+                'development_start' => $app->development_start,
+                'development_end' => $app->development_end,
+                'app_types' => $app->app_types,
+                'genres' => $app->genres
             ]);
 
             return view('App::show', [
-                'app' => $app,
-                'has_more_screenshots' => count($screenshots ?? []) > 1
+                'app' => $app
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Show failed:', [
-                'error' => $e->getMessage(),
-                'memory_at_error' => $this->formatBytes(memory_get_usage(true)),
-                'peak_at_error' => $this->formatBytes(memory_get_peak_usage(true)),
+            Log::error('エラー発生:', [
+                'message' => $e->getMessage(),
                 'line' => $e->getLine(),
                 'file' => $e->getFile()
             ]);
