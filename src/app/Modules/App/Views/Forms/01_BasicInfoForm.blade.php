@@ -138,19 +138,13 @@
         <label for="status" class="block text-sm font-medium text-gray-700">
             このサイト内の公開状態 <span class="text-red-500">*</span>
         </label>
-        <select 
-            name="status"
-            id="status"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            required
-        >
+        <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
             <option value="">選択してください</option>
-            <option value="published" {{ old('status', $app->status ?? '') == 'published' ? 'selected' : '' }}>
-                公開する
-            </option>
-            <option value="draft" {{ old('status', $app->status ?? '') == 'draft' ? 'selected' : '' }}>
-                下書き（公開しない）
-            </option>
+            @foreach(config('app-module.constants.status_options') as $value => $label)
+                <option value="{{ $value }}" {{ old('status', $app->status ?? '') == $value ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+            @endforeach
         </select>
         @error('status')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -302,16 +296,7 @@
             アプリの種類（複数選択可） <span class="text-red-500">*</span>
         </label>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
-            @foreach([
-                'web_app' => 'Webアプリケーション',
-                'ios_app' => 'iOSアプリ',
-                'android_app' => 'Androidアプリ',
-                'windows_app' => 'Windowsアプリ',
-                'mac_app' => 'macOSアプリ',
-                'linux_app' => 'Linuxアプリ',
-                'game' => 'ゲーム',
-                'other' => 'その他'
-            ] as $value => $label)
+            @foreach(config('app-module.constants.app_types') as $value => $label)
                 <div class="flex items-center gap-2">
                     @if($viewOnly ?? false)
                         <div class="{{ in_array($value, old('app_types', $app->app_types ?? [])) 

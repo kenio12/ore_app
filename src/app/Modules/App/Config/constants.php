@@ -7,7 +7,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'app_types' => [
-        'web_app' => 'Webアプリ',
+        'web_app' => 'Webアプリケーション',
         'ios_app' => 'iOSアプリ',
         'android_app' => 'Androidアプリ',
         'windows_app' => 'Windowsアプリ',
@@ -65,18 +65,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | 3. ハードウェア環境 (03_HardwareSection)
+    | 3. ハードウェア環境 (03_Hardware)
     |--------------------------------------------------------------------------
     */
     'hardware' => [
         'device_types' => [
-            'smartphone' => 'スマートフォン',
+            'windows' => 'Windows PC',
+            'mac' => 'Mac',
+            'linux' => 'Linux PC',
+            'chrome_os' => 'Chrome OS',
             'tablet' => 'タブレット',
-            'laptop' => 'ノートPC',
-            'desktop' => 'デスクトップPC',
-            'wearable' => 'ウェアラブル',
-            'iot' => 'IoTデバイス',
-            'game_console' => 'ゲーム機',
+            'smartphone' => 'スマートフォン',
             'other' => 'その他'
         ],
         'os_types' => [
@@ -88,23 +87,23 @@ return [
             'other' => 'その他'
         ],
         'cpu_types' => [
+            'x86' => 'x86/x64',
             'arm' => 'ARM',
-            'x86' => 'x86',
-            'x64' => 'x64',
+            'apple_silicon' => 'Apple Silicon',
             'other' => 'その他'
         ],
         'memory_sizes' => [
+            '2gb' => '2GB以下',
+            '4gb' => '4GB',
             '8gb' => '8GB',
             '16gb' => '16GB',
-            '32gb' => '32GB',
-            '64gb' => '64GB',
-            '128gb' => '128GB以上',
-            'other' => 'その他'
+            '32gb' => '32GB以上'
         ],
         'storage_types' => [
-            'ssd' => 'SSD',
             'hdd' => 'HDD',
-            'nvme' => 'NVMe',
+            'ssd' => 'SSD',
+            'nvme' => 'NVMe SSD',
+            'emmc' => 'eMMC',
             'other' => 'その他'
         ]
     ],
@@ -423,5 +422,15 @@ return [
             'supabase' => 'Supabase',
             'other' => 'その他'
         ]
+    ],
+
+    'status_options' => [
+        'draft' => '下書き（公開しない）',
+        'published' => '公開する'
+    ],
+
+    'app_status_options' => [
+        'completed' => '完成',
+        'in_development' => '開発中'
     ]
 ]; 

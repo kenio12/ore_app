@@ -83,7 +83,10 @@
             ])
             @break
         @case('hardware')
-            @include('App::Forms.03_HardwareSection', ['data' => $sectionData])
+            @include('App::Forms.03_Hardware', [
+                'data' => $sectionData,
+                'app' => $app ?? null
+            ])
             @break
         @case('basic-dev')
             @include('App::Forms.04_BasicDevSection', ['data' => $sectionData])

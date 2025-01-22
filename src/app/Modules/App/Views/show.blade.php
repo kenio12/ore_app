@@ -30,8 +30,8 @@
                 <form onsubmit="return false;" class="pointer-events-none">
                     {{-- 基本情報フォーム --}}
                     @include('App::Forms.01_BasicInfoForm', ['app' => $app, 'viewOnly' => true])
-                    {{-- @include('App::Forms.02_DevelopmentStoryForm', ['app' => $app, 'viewOnly' => true]) --}}
-                    {{-- @include('App::Forms.03_HardwareSection', ['app' => $app, 'viewOnly' => true]) --}}
+                    @include('App::Forms.02_DevelopmentStoryForm', ['app' => $app, 'viewOnly' => true])
+                    @include('App::Forms.03_Hardware', ['app' => $app, 'viewOnly' => true])
                     {{-- @include('App::Forms.04_BasicDevSection', ['app' => $app, 'viewOnly' => true]) --}}
                     {{-- @include('App::Forms.05_DevToolsEnvironment', ['app' => $app, 'viewOnly' => true]) --}}
                     {{-- @include('App::Forms.06_ArchitectureSection', ['app' => $app, 'viewOnly' => true]) --}}
