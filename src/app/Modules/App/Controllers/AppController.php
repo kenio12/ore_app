@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Modules\App\Requests\_01BasicInfoRequest;
+use Illuminate\Support\Facades\DB;
 
 class AppController extends Controller
 {
@@ -26,18 +27,93 @@ class AppController extends Controller
         return view('App::index', compact('apps'));
     }
 
-    public function show(App $app)
+    public function show($id)
     {
-        // デバッグ用にスクリーンショットデータを確認
-        Log::info('Screenshot data:', [
-            'screenshots' => $app->screenshots
-        ]);
+        try {
+            // 開始時のメモリ使用量
+            Log::debug('Show start:', [
+                'memory_start' => $this->formatBytes(memory_get_usage(true)),
+                'peak_start' => $this->formatBytes(memory_get_peak_usage(true))
+            ]);
 
-        return view('App::show', [
-            'app' => $app,
-            'viewOnly' => true,
-            'canEdit' => auth()->id() === $app->user_id  // 編集権限の有無を追加
-        ]);
+            // クエリ前
+            Log::debug('Before query:', [
+                'memory_before_query' => $this->formatBytes(memory_get_usage(true))
+            ]);
+
+            $app = App::select('id', 'title', 'description', 'user_id')
+                      ->findOrFail($id);
+
+            // クエリ後
+            Log::debug('After app query:', [
+                'memory_after_query' => $this->formatBytes(memory_get_usage(true)),
+                'app_data' => $this->formatBytes(strlen(serialize($app)))
+            ]);
+
+            // スクリーンショット取得前
+            Log::debug('Before screenshots:', [
+                'memory_before_screenshots' => $this->formatBytes(memory_get_usage(true))
+            ]);
+
+            $screenshots = DB::table('apps')
+                            ->select('screenshots')
+                            ->where('id', $id)
+                            ->value('screenshots');
+
+            // スクリーンショット取得後
+            Log::debug('After screenshots query:', [
+                'memory_after_screenshots' => $this->formatBytes(memory_get_usage(true)),
+                'screenshots_data' => $screenshots ? $this->formatBytes(strlen($screenshots)) : '0 B'
+            ]);
+
+            if ($screenshots) {
+                // JSON デコード前
+                Log::debug('Before JSON decode:', [
+                    'memory_before_decode' => $this->formatBytes(memory_get_usage(true))
+                ]);
+
+                $screenshots = json_decode($screenshots, true);
+                
+                // JSON デコード後
+                Log::debug('After JSON decode:', [
+                    'memory_after_decode' => $this->formatBytes(memory_get_usage(true)),
+                    'decoded_size' => $this->formatBytes(strlen(json_encode($screenshots)))
+                ]);
+
+                $app->screenshots = $screenshots;  // 全ての画像を渡す
+            }
+
+            // ビューに渡す直前
+            Log::debug('Before view render:', [
+                'memory_before_view' => $this->formatBytes(memory_get_usage(true)),
+                'peak_before_view' => $this->formatBytes(memory_get_peak_usage(true))
+            ]);
+
+            return view('App::show', [
+                'app' => $app,
+                'has_more_screenshots' => count($screenshots ?? []) > 1
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Show failed:', [
+                'error' => $e->getMessage(),
+                'memory_at_error' => $this->formatBytes(memory_get_usage(true)),
+                'peak_at_error' => $this->formatBytes(memory_get_peak_usage(true)),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ]);
+            throw $e;
+        }
+    }
+
+    private function formatBytes($bytes)
+    {
+        if ($bytes > 1024*1024) {
+            return round($bytes/1024/1024, 2) . ' MB';
+        } elseif ($bytes > 1024) {
+            return round($bytes/1024, 2) . ' KB';
+        }
+        return $bytes . ' B';
     }
 
     public function create()

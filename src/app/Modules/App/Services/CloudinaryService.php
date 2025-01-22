@@ -19,13 +19,15 @@ class CloudinaryService
         // Cloudinary APIの初期化
         $this->uploadApi = new \Cloudinary\Api\Upload\UploadApi();
 
-        // Laravel用のCloudinaryパッケージの正しい初期化方法
+        // デフォルトの変換設定を最適化
         $this->defaultTransformation = [
-            'folder' => 'ore_app/screenshots',
+            'folder' => config('cloudinary.folder', 'ore_app/screenshots'),
             'transformation' => [
-                'quality' => 'auto:good',
-                'fetch_format' => 'auto',
-                'compression' => 'low'
+                'quality' => config('cloudinary.transformation.quality', 'auto:eco'),
+                'fetch_format' => config('cloudinary.transformation.fetch_format', 'auto'),
+                'width' => config('cloudinary.transformation.width', 800),
+                'crop' => config('cloudinary.transformation.crop', 'limit'),
+                'compression' => config('cloudinary.transformation.compression', 'low')
             ]
         ];
     }
@@ -45,36 +47,21 @@ class CloudinaryService
                 // アップロード前のファイルサイズをログに記録
                 Log::info('Original file details:', [
                     'name' => $file->getClientOriginalName(),
-                    'size_bytes' => $file->getSize(),
-                    'size_mb' => round($file->getSize() / 1024 / 1024, 2) . 'MB',
-                    'mime' => $file->getMimeType()
+                    'size_mb' => round($file->getSize() / 1024 / 1024, 2) . 'MB'
                 ]);
 
-                $result = Cloudinary::upload($file->getRealPath(), [
-                    'folder' => 'ore_app/screenshots',
-                    'transformation' => [
-                        'quality' => 'auto:eco',  // auto:good から auto:eco に変更
-                        'fetch_format' => 'auto',  // 追加：最適なフォーマットに自動変換
-                        'compression' => 'low'     // 追加：圧縮レベルを設定
-                    ]
-                ]);
-
-                // getResponse()メソッドを使用して生のレスポンスを取得
+                // デフォルトの変換設定を使用
+                $result = Cloudinary::upload($file->getRealPath(), $this->defaultTransformation);
                 $response = $result->getResponse();
                 
                 if ($response) {
-                    // アップロード後のファイルサイズもログに記録
-                    Log::info('Uploaded file details:', [
-                        'bytes' => $response['bytes'],
-                        'size_mb' => round($response['bytes'] / 1024 / 1024, 2) . 'MB',
-                        'format' => $response['format']
-                    ]);
-
                     $results[] = [
                         'public_id' => $response['public_id'],
                         'url' => $response['secure_url'],
                         'original_size' => round($file->getSize() / 1024 / 1024, 2) . 'MB',
-                        'compressed_size' => round($response['bytes'] / 1024 / 1024, 2) . 'MB'
+                        'compressed_size' => round($response['bytes'] / 1024 / 1024, 2) . 'MB',
+                        'width' => $response['width'] ?? null,
+                        'height' => $response['height'] ?? null
                     ];
                 }
             } catch (\Exception $e) {

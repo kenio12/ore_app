@@ -5,6 +5,7 @@ namespace App\Modules\App\Controllers\Base;
 use App\Http\Controllers\Controller;
 use App\Modules\App\Services\AppProgressManager;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 abstract class SectionController extends Controller
 {
@@ -23,15 +24,32 @@ abstract class SectionController extends Controller
      */
     public function next(string $appId)
     {
-        $currentSection = $this->getCurrentSection();
-        $nextSection = $this->progressManager->getNextSection($currentSection);
-        
-        if (!$nextSection) {
-            return redirect()->route('apps.show', $appId)
-                ->with('success', 'すべてのセクションが完了しました！');
-        }
+        try {
+            $currentSection = $this->getCurrentSection();
+            $nextSection = $this->progressManager->getNextSection($currentSection);
+            
+            if (!$nextSection) {
+                $this->progressManager = null; // インスタンスを解放
+                return redirect()->route('apps.show', $appId)
+                    ->with('success', 'すべてのセクションが完了しました！');
+            }
 
-        return redirect()->route("app.sections.{$nextSection}.edit", $appId);
+            $route = "app.sections.{$nextSection}.edit";
+            
+            // 使い終わったら解放
+            $this->progressManager = null;
+            
+            return redirect()->route($route, $appId);
+        } catch (\Exception $e) {
+            Log::error('Next section error:', [
+                'message' => $e->getMessage(),
+                'section' => $currentSection ?? 'unknown'
+            ]);
+            
+            // エラー時にも確実に解放
+            $this->progressManager = null;
+            throw $e;
+        }
     }
 
     /**
@@ -39,11 +57,44 @@ abstract class SectionController extends Controller
      */
     protected function getCurrentSection(): string
     {
-        return $this->progressManager->getCurrentSection();
+        try {
+            $sections = $this->progressManager->getSections();
+            $currentSection = $this->progressManager->getCurrentSection();
+            
+            if (!isset($sections[$currentSection])) {
+                Log::error('Invalid section:', [
+                    'current' => $currentSection,
+                    'sections' => array_keys($sections)
+                ]);
+                
+                $this->progressManager = null; // インスタンスを解放
+                throw new \Exception('Invalid section');
+            }
+
+            return $currentSection;
+        } catch (\Exception $e) {
+            // エラー時にも確実に解放
+            $this->progressManager = null;
+            Log::error('Get current section error:', [
+                'message' => $e->getMessage()
+            ]);
+            throw $e;
+        }
     }
 
     protected function completeSection(string $appId, string $section)
     {
-        $this->progressManager->markSectionComplete($appId, $section);
+        try {
+            $this->progressManager->markSectionComplete($appId, $section);
+            $this->progressManager = null; // 使い終わったら解放
+        } catch (\Exception $e) {
+            Log::error('Complete section error:', [
+                'error' => $e->getMessage(),
+                'appId' => $appId,
+                'section' => $section
+            ]);
+            $this->progressManager = null; // エラー時にも解放
+            throw $e;
+        }
     }
 } 

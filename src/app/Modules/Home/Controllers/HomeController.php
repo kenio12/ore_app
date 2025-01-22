@@ -18,7 +18,7 @@ class HomeController extends Controller
             return view('Home::home', [
                 'apps' => $apps,
                 'appTypeLabels' => config('app-module.constants.app_types'),
-                'statusLabels' => config('app-module.constants.status')
+                'statusLabels' => config('app-module.constants.app_status')
             ]);
 
         } catch (\Exception $e) {
@@ -30,7 +30,7 @@ class HomeController extends Controller
             return view('Home::home', [
                 'apps' => collect([]),
                 'appTypeLabels' => config('app-module.constants.app_types'),
-                'statusLabels' => config('app-module.constants.status')
+                'statusLabels' => config('app-module.constants.app_status')
             ])->with('error', 'アプリの読み込み中にエラーが発生しました');
         }
     }

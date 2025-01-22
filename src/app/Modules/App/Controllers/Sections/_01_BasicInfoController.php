@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Modules\App\Services\AppProgressManager;
 
-class A_BasicInfoController extends SectionController
+class _01_BasicInfoController extends SectionController
 {
     private CloudinaryService $cloudinaryService;
 

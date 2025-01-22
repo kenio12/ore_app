@@ -1,36 +1,47 @@
 <?php
 
 use App\Modules\App\Controllers\AppController;
-use App\Modules\App\Controllers\Sections\A_BasicInfoController;
-use App\Modules\App\Controllers\Sections\B_DevelopmentStoryController;
+use App\Modules\App\Controllers\Sections\_01_BasicInfoController;
+use App\Modules\App\Controllers\Sections\_02_DevelopmentStoryController;
+use App\Modules\App\Controllers\HardwareController;
 use Illuminate\Support\Facades\Route;
 
 // 認証が必要なルートをまとめて定義
 Route::middleware(['web', 'auth', 'verified'])->group(function () {
     // createとstoreのルート
     Route::get('/apps/create', [AppController::class, 'create'])->name('apps.create');
-    Route::post('/basic-info', [A_BasicInfoController::class, 'store'])
+    Route::post('/basic-info', [_01_BasicInfoController::class, 'store'])
         ->name('basic-info.store');
     
     // セクション別のルート
     Route::prefix('apps/sections')->name('app.sections.')->group(function () {
         // 基本情報セクション
-        Route::get('/basic-info/{app?}', [A_BasicInfoController::class, 'edit'])
+        Route::get('/basic-info/{app?}', [_01_BasicInfoController::class, 'edit'])
             ->name('basic-info.edit');
-        Route::post('/basic-info', [A_BasicInfoController::class, 'store'])
+        Route::post('/basic-info', [_01_BasicInfoController::class, 'store'])
             ->name('basic-info.store');
-        Route::put('/basic-info/{app}', [A_BasicInfoController::class, 'update'])
+        Route::put('/basic-info/{app}', [_01_BasicInfoController::class, 'update'])
             ->name('basic-info.update');
-        Route::get('/basic-info/{app}/next', [A_BasicInfoController::class, 'next'])
+        Route::get('/basic-info/{app}/next', [_01_BasicInfoController::class, 'next'])
             ->name('basic-info.next');
 
         // 開発ストーリーセクション
-        Route::get('/development-story/{app}', [B_DevelopmentStoryController::class, 'edit'])
+        Route::get('/development-story/{app}', [_02_DevelopmentStoryController::class, 'edit'])
             ->name('development-story.edit');
-        Route::put('/development-story/{app}', [B_DevelopmentStoryController::class, 'update'])
+        Route::put('/development-story/{app}', [_02_DevelopmentStoryController::class, 'update'])
             ->name('development-story.update');
-        Route::get('/development-story/{app}/next', [B_DevelopmentStoryController::class, 'next'])
+        Route::get('/development-story/{app}/next', [_02_DevelopmentStoryController::class, 'next'])
             ->name('development-story.next');
+
+        // ハードウェアセクション
+        Route::get('/hardware/{app}', [HardwareController::class, 'edit'])
+            ->name('hardware.edit');
+        Route::put('/hardware/{app}', [HardwareController::class, 'update'])
+            ->name('hardware.update');
+        Route::post('/hardware', [HardwareController::class, 'store'])
+            ->name('hardware.store');
+        Route::get('/hardware/{app}/next', [HardwareController::class, 'next'])
+            ->name('hardware.next');
     });
 
     // 編集画面のルート

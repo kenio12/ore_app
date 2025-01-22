@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Modules\App\Models\BasicInfo\BasicInfo;
+use App\Modules\App\Models\_01_BasicInfo\_01_BasicInfo;
 
 class App extends Model
 {
@@ -209,7 +209,7 @@ class App extends Model
 
     public function basicInfo(): HasOne
     {
-        return $this->hasOne(BasicInfo::class);
+        return $this->hasOne(_01_BasicInfo::class);
     }
 
     /**

@@ -6,7 +6,7 @@ use App\Modules\App\Controllers\Base\SectionController;
 use App\Modules\App\Models\App;
 use Illuminate\Http\Request;
 
-class B_DevelopmentStoryController extends SectionController
+class _02_DevelopmentStoryController extends SectionController
 {
     public function edit(string $appId)
     {

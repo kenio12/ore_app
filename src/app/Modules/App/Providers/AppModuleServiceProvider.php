@@ -12,14 +12,15 @@ class AppModuleServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'app-module'
-        );
+        // 一つの設定ファイルにまとめる
+        $config = require __DIR__.'/../Config/config.php';
+        $constants = require __DIR__.'/../Config/constants.php';
 
-        // 定数ファイルの読み込み方を修正
-        $this->mergeConfigFrom(
-            __DIR__.'/../Config/constants.php', 'app-module.constants'
-        );
+        // 設定をマージ
+        $this->app['config']->set('app-module', array_merge(
+            $config,
+            ['constants' => $constants]
+        ));
 
         // AppProgressManagerの登録
         $this->app->singleton(AppProgressManager::class, function ($app) {

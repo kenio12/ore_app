@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DevelopmentStory extends Model
+class _02_DevelopmentStory extends Model
 {
     use SoftDeletes;
 

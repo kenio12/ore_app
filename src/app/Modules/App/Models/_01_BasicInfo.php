@@ -5,9 +5,8 @@ namespace App\Modules\App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Modules\App\Models\App;
 
-class BasicInfo extends Model
+class _01_BasicInfo extends Model
 {
     use SoftDeletes;
 

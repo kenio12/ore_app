@@ -57,23 +57,36 @@
                     アプリ開発の経緯や苦労した点、工夫した点などを共有してください。
                     @break
                 @case('hardware')
-                    @include('App::Forms.03_HardwareSection', ['data' => $sectionData])
+                    ハードウェア環境に関する情報を入力してください。
+                    @break
+                @case('basic-dev')
+                    基本的な開発環境について入力してください。
                     @break
                 {{-- 他のセクションの説明も追加 --}}
             @endswitch
         </p>
     </div>
 
-    {{-- フォームの内容 --}}
+    {{-- フォームの内容（ここで1回だけinclude） --}}
     @switch($currentSection)
         @case('basic-info')
-            @include('App::Forms.01_BasicInfoForm', ['data' => $sectionData])
+            @include('App::Forms.01_BasicInfoForm', [
+                'data' => $sectionData,
+                'app' => $app ?? null,
+                'viewOnly' => $viewOnly ?? false
+            ])
             @break
         @case('development-story')
-            @include('App::Forms.02_DevelopmentStoryForm', ['data' => $sectionData])
+            @include('App::Forms.02_DevelopmentStoryForm', [
+                'data' => $sectionData,
+                'app' => $app ?? null
+            ])
             @break
         @case('hardware')
             @include('App::Forms.03_HardwareSection', ['data' => $sectionData])
+            @break
+        @case('basic-dev')
+            @include('App::Forms.04_BasicDevSection', ['data' => $sectionData])
             @break
         {{-- 他のセクションも同様に追加 --}}
     @endswitch

@@ -28,23 +28,23 @@
                 @endif
 
                 <form onsubmit="return false;" class="pointer-events-none">
-                    {{-- 各セクションを読み取り専用で表示 --}}
+                    {{-- 基本情報フォーム --}}
                     @include('App::Forms.01_BasicInfoForm', ['app' => $app, 'viewOnly' => true])
-                    @include('App::Forms.02_DevelopmentStoryForm', ['app' => $app, 'viewOnly' => true])
-                    @include('App::Forms.03_HardwareSection', ['app' => $app, 'viewOnly' => true])
-                    @include('App::Forms.04_BasicDevEnvironment', ['app' => $app, 'viewOnly' => true])
-                    @include('App::Forms.05_DevToolsEnvironment', ['app' => $app, 'viewOnly' => true])
-                    @include('App::Forms.06_ArchitectureSection', ['app' => $app, 'viewOnly' => true])
-                    @include('App::Forms.07_SecuritySection', ['app' => $app, 'viewOnly' => true])
-                    @include('App::Forms.08_BackendSection', ['app' => $app, 'viewOnly' => true])
-                    @include('App::Forms.09_FrontendSection', ['app' => $app, 'viewOnly' => true])
-                    @include('App::Forms.10_DatabaseSection', ['app' => $app, 'viewOnly' => true])
+                    {{-- @include('App::Forms.02_DevelopmentStoryForm', ['app' => $app, 'viewOnly' => true]) --}}
+                    {{-- @include('App::Forms.03_HardwareSection', ['app' => $app, 'viewOnly' => true]) --}}
+                    {{-- @include('App::Forms.04_BasicDevSection', ['app' => $app, 'viewOnly' => true]) --}}
+                    {{-- @include('App::Forms.05_DevToolsEnvironment', ['app' => $app, 'viewOnly' => true]) --}}
+                    {{-- @include('App::Forms.06_ArchitectureSection', ['app' => $app, 'viewOnly' => true]) --}}
+                    {{-- @include('App::Forms.07_SecuritySection', ['app' => $app, 'viewOnly' => true]) --}}
+                    {{-- @include('App::Forms.08_BackendSection', ['app' => $app, 'viewOnly' => true]) --}}
+                    {{-- @include('App::Forms.09_FrontendSection', ['app' => $app, 'viewOnly' => true]) --}}
+                    {{-- @include('App::Forms.10_DatabaseSection', ['app' => $app, 'viewOnly' => true]) --}}
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- スクリーンショットモーダル -->
+    {{-- モーダルは残す（フォームコンポーネントから使用される） --}}
     <div x-data="{ show: false }"
          x-on:open-app-screenshot-modal.window="
             show = true;
@@ -55,15 +55,11 @@
          x-show="show"
          class="fixed inset-0 z-50 overflow-hidden"
          style="display: none;">
-        
-        <!-- 背景オーバーレイ -->
         <div class="absolute inset-0 bg-black/75"
              x-show="show"
              x-transition.opacity
              @click="show = false">
         </div>
-
-        <!-- モーダルコンテンツ -->
         <div class="relative h-full w-full flex items-center justify-center p-8">
             <img x-ref="modalImage"
                  class="rounded-lg shadow-xl"
@@ -84,5 +80,15 @@
             cursor: default;
         }
     </style>
+
+    {{-- 画像モーダル用のスクリプト --}}
+    <script>
+        function openImageModal(src) {
+            // Alpine.jsのイベントを発火
+            window.dispatchEvent(new CustomEvent('open-app-screenshot-modal', {
+                detail: { src: src }
+            }));
+        }
+    </script>
 </body>
 </html> 

@@ -1,3 +1,10 @@
+@php
+    // データの初期化
+    $formData = $data ?? [];
+    $app = $app ?? null;
+    $viewOnly = $viewOnly ?? false;
+@endphp
+
 <div class="bg-white p-8 rounded-lg shadow mb-8">
     <h2 class="text-2xl font-bold mb-6">基本情報</h2>
 
@@ -44,24 +51,26 @@
         </label>
 
         @if($viewOnly ?? false)
-            <div class="mt-1 space-y-8">
+            <div class="mt-1 space-y-6">
                 @if(isset($app->screenshots) && is_array($app->screenshots))
-                    @foreach($app->screenshots as $screenshot)
-                        <div class="relative flex justify-center bg-gray-50 p-4 rounded-lg">
-                            @if(isset($screenshot['url']))
+                    @foreach($app->screenshots as $index => $screenshot)
+                        <div class="screenshot-item">
+                            <div class="text-center mb-2">
+                                <p class="text-sm text-gray-600">スクリーンショット {{ $index + 1 }}</p>
+                            </div>
+                            
+                            <div class="flex justify-center">
                                 <img src="{{ $screenshot['url'] }}" 
-                                     alt="スクリーンショット" 
-                                     class="rounded-lg shadow-lg max-w-full h-auto">
-                            @else
-                                <div class="bg-gray-100 p-4 rounded-lg text-gray-500 flex items-center justify-center">
-                                    <span>画像なし</span>
-                                </div>
-                            @endif
+                                     alt="Screenshot {{ $index + 1 }}"
+                                     style="height: 80vh; width: auto;"
+                                     class="max-w-4xl object-contain rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 cursor-pointer"
+                                     onclick="openImageModal(this.src)">
+                            </div>
                         </div>
                     @endforeach
                 @else
-                    <div class="bg-gray-100 p-4 rounded-lg text-gray-500 flex items-center justify-center">
-                        <span>スクリーンショットはまだ登録されていません</span>
+                    <div class="text-center text-gray-500 py-2">
+                        スクリーンショットはまだ登録されていません
                     </div>
                 @endif
             </div>
@@ -406,22 +415,13 @@
             <!-- 閉じるボタン -->
             <button 
                 @click="show = false"
-                class="absolute -top-4 -right-4 bg-red-500 hover:bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transition-all duration-200 transform hover:scale-110 z-50"
-            >
-                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path 
-                        stroke-linecap="round" 
-                        stroke-linejoin="round" 
-                        stroke-width="3" 
-                        d="M6 18L18 6M6 6l12 12"
-                    />
-                </svg>
-            </button>
+                class="absolute -top-4 -right-4 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg transition-all duration-200 z-50"
+            >×</button>
 
             <!-- 画像 -->
             <img
                 :src="imageSrc"
-                class="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                class="max-w-[50vw] max-h-[50vh] object-contain rounded-lg shadow-xl"
                 alt="拡大画像"
             >
         </div>
