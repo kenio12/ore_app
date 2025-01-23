@@ -69,10 +69,10 @@ class _01_BasicInfoController extends SectionController
     {
         // FormRequestを直接インスタンス化して検証
         $formRequest = new \App\Modules\App\Requests\_01BasicInfoRequest();
-        $formRequest->setContainer(app());  // コンテナをセット
-        $formRequest->initialize($request->all());  // リクエストデータを初期化
-        $formRequest->validateResolved();  // バリデーション実行
-        $validatedData = $request->all();  // 全データを取得
+        $formRequest->setContainer(app());
+        $formRequest->initialize($request->all());
+        $formRequest->validateResolved();
+        $validatedData = $request->all();
 
         try {
             DB::beginTransaction();
@@ -92,24 +92,30 @@ class _01_BasicInfoController extends SectionController
             // スクリーンショットの処理
             $screenshots = [];
 
-            // 既存のスクリーンショットを保持（削除されていないもののみ）
-            if (!empty($app->screenshots) && is_array($app->screenshots)) {
-                $keepScreenshots = $request->input('keep_screenshots', []);
-                foreach ($app->screenshots as $index => $screenshot) {
-                    if (in_array($index, $keepScreenshots) && !empty($screenshot['url'])) {
+            // 1. 既存画像の処理（削除されていないもののみ保持）
+            if ($request->has('existing_screenshots')) {
+                $existingScreenshots = $request->input('existing_screenshots', []);
+                foreach ($existingScreenshots as $screenshotJson) {
+                    $screenshot = json_decode($screenshotJson, true);
+                    if ($screenshot && isset($screenshot['url'])) {
                         $screenshots[] = $screenshot;
-                    } else {
-                        // Cloudinaryから削除
-                        if (!empty($screenshot['public_id'])) {
-                            $this->cloudinaryService->delete($screenshot['public_id']);
-                        }
                     }
                 }
             }
 
-            // 新しいスクリーンショットの追加
-            if ($request->hasFile('screenshots')) {
-                $files = $request->file('screenshots');
+            // 2. 削除された既存画像のCloudinary上のデータを削除
+            $keepPublicIds = array_column($screenshots, 'public_id');
+            if (!empty($app->screenshots)) {
+                foreach ($app->screenshots as $oldScreenshot) {
+                    if (!empty($oldScreenshot['public_id']) && !in_array($oldScreenshot['public_id'], $keepPublicIds)) {
+                        $this->cloudinaryService->delete($oldScreenshot['public_id']);
+                    }
+                }
+            }
+
+            // 3. 新規画像のアップロード
+            if ($request->hasFile('new_screenshots')) {
+                $files = $request->file('new_screenshots');
                 
                 // 既存と新規の合計が3枚を超えないようにチェック
                 $remainingSlots = 3 - count($screenshots);
