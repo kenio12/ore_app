@@ -41,16 +41,29 @@
         </label>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
             @foreach(config('app-module.constants.hardware.device_types') as $value => $label)
-                <div class="{{ in_array($value, $hardware->device_types ?? []) 
-                    ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
-                    : 'text-gray-400' }}">
-                    {{ $label }}
-                </div>
+                @if($viewOnly ?? false)
+                    <div class="{{ in_array($value, $hardware->device_types ?? []) 
+                        ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
+                        : 'text-gray-400' }}">
+                        {{ $label }}
+                    </div>
+                @else
+                    <label class="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            name="device_types[]"
+                            value="{{ $value }}"
+                            {{ in_array($value, old('device_types', $hardware->device_types ?? [])) ? 'checked' : '' }}
+                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        >
+                        <span class="text-gray-700">{{ $label }}</span>
+                    </label>
+                @endif
             @endforeach
         </div>
-        @if(in_array('other', $hardware->device_types ?? []))
-            <textarea readonly rows="3" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm">{{ $hardware->device_other ?? '' }}</textarea>
-        @endif
+        @error('device_types')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
     <!-- OS -->
     <div class="mb-6">
@@ -124,16 +137,29 @@
         </label>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
             @foreach(config('app-module.constants.hardware.cpu_types') as $value => $label)
-                <div class="{{ in_array($value, $hardware->cpu_types ?? []) 
-                    ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
-                    : 'text-gray-400' }}">
-                    {{ $label }}
-                </div>
+                @if($viewOnly ?? false)
+                    <div class="{{ in_array($value, $hardware->cpu_types ?? []) 
+                        ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
+                        : 'text-gray-400' }}">
+                        {{ $label }}
+                    </div>
+                @else
+                    <label class="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            name="cpu_types[]"
+                            value="{{ $value }}"
+                            {{ in_array($value, old('cpu_types', $hardware->cpu_types ?? [])) ? 'checked' : '' }}
+                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        >
+                        <span class="text-gray-700">{{ $label }}</span>
+                    </label>
+                @endif
             @endforeach
         </div>
-        @if(in_array('other', $hardware->cpu_types ?? []))
-            <textarea readonly rows="3" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm">{{ $hardware->cpu_other ?? '' }}</textarea>
-        @endif
+        @error('cpu_types')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
     <!-- メモリサイズ -->
@@ -143,16 +169,29 @@
         </label>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
             @foreach(config('app-module.constants.hardware.memory_sizes') as $value => $label)
-                <div class="{{ in_array($value, $hardware->memory_sizes ?? []) 
-                    ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
-                    : 'text-gray-400' }}">
-                    {{ $label }}
-                </div>
+                @if($viewOnly ?? false)
+                    <div class="{{ in_array($value, $hardware->memory_sizes ?? []) 
+                        ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
+                        : 'text-gray-400' }}">
+                        {{ $label }}
+                    </div>
+                @else
+                    <label class="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            name="memory_sizes[]"
+                            value="{{ $value }}"
+                            {{ in_array($value, old('memory_sizes', $hardware->memory_sizes ?? [])) ? 'checked' : '' }}
+                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        >
+                        <span class="text-gray-700">{{ $label }}</span>
+                    </label>
+                @endif
             @endforeach
         </div>
-        @if(in_array('other', $hardware->memory_sizes ?? []))
-            <textarea readonly rows="3" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm">{{ $hardware->memory_other ?? '' }}</textarea>
-        @endif
+        @error('memory_sizes')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
     <!-- ストレージ種類 -->
@@ -162,16 +201,29 @@
         </label>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
             @foreach(config('app-module.constants.hardware.storage_types') as $value => $label)
-                <div class="{{ in_array($value, $hardware->storage_types ?? []) 
-                    ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
-                    : 'text-gray-400' }}">
-                    {{ $label }}
-                </div>
+                @if($viewOnly ?? false)
+                    <div class="{{ in_array($value, $hardware->storage_types ?? []) 
+                        ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
+                        : 'text-gray-400' }}">
+                        {{ $label }}
+                    </div>
+                @else
+                    <label class="flex items-center gap-2">
+                        <input
+                            type="checkbox"
+                            name="storage_types[]"
+                            value="{{ $value }}"
+                            {{ in_array($value, old('storage_types', $hardware->storage_types ?? [])) ? 'checked' : '' }}
+                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        >
+                        <span class="text-gray-700">{{ $label }}</span>
+                    </label>
+                @endif
             @endforeach
         </div>
-        @if(in_array('other', $hardware->storage_types ?? []))
-            <textarea readonly rows="3" class="mt-2 block w-full rounded-md border-gray-300 shadow-sm">{{ $hardware->storage_other ?? '' }}</textarea>
-        @endif
+        @error('storage_types')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
     <!-- その他のハードウェア情報 -->

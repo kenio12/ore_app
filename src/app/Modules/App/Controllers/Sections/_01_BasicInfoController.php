@@ -46,15 +46,13 @@ class _01_BasicInfoController extends SectionController
                 }
             }
 
-            Log::info('Editing app with screenshots:', [
-                'app_id' => $appId,
-                'screenshots' => $screenshots
-            ]);
+            // ビューに渡すときは、URLだけの配列に変換
+            $screenshotUrls = array_column($screenshots, 'url');
 
             return view('app::Forms.01_BasicInfoForm', [
                 'app' => $app,
                 'currentSection' => 'basic-info',
-                'screenshots' => $screenshots,
+                'screenshots' => $screenshotUrls,  // URLの配列だけを渡す
                 'viewOnly' => false
             ]);
 

@@ -46,33 +46,78 @@
 
     <!-- スクリーンショット -->
     <div class="mb-6">
-        <label class="block text-sm font-medium text-gray-700">
-            スクリーンショット（1〜3枚） <span class="text-red-500">*</span>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+            スクリーンショット（最大3枚まで）
         </label>
-
-        <div class="mt-1 space-y-6">
-            @if(isset($app->screenshots) && is_array($app->screenshots))
-                @foreach($app->screenshots as $index => $screenshot)
-                    <div class="screenshot-item">
-                        <div class="text-center mb-2">
-                            <p class="text-sm text-gray-600">スクリーンショット {{ $index + 1 }}</p>
+        
+        @if($viewOnly ?? false)
+            <!-- 表示モード -->
+            <div id="preview-container" class="mt-4 space-y-4">
+                @if(isset($app) && isset($app->screenshots) && is_array($app->screenshots))
+                    @foreach($app->screenshots as $screenshot)
+                        <div class="relative block">
+                            <img 
+                                src="{{ $screenshot['url'] }}" 
+                                style="min-height: 80vh; max-height: 70vh; width: auto; object-fit: contain;"
+                                class="mx-auto block cursor-pointer rounded-lg"
+                                onclick="window.dispatchEvent(new CustomEvent('open-app-screenshot-modal', {detail: {src: this.src}}))"
+                                alt="アプリのスクリーンショット"
+                            >
                         </div>
-                        
-                        <div class="flex justify-center">
-                            <img src="{{ $screenshot['url'] }}" 
-                                 alt="Screenshot {{ $index + 1 }}"
-                                 style="height: 80vh; width: auto;"
-                                 class="max-w-4xl object-contain rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 cursor-pointer"
-                                 onclick="openImageModal(this.src)">
-                        </div>
+                    @endforeach
+                @endif
+            </div>
+        @else
+            <!-- アップロードフォーム -->
+            <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                <div class="space-y-1 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4-4m4-4l4-4m-4-4l4-4m-4 4l4 4m-4 4l4 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <div class="flex text-sm text-gray-600">
+                        <label for="screenshots" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+                            <span>ファイルを選択</span>
+                            <input 
+                                type="file"
+                                id="screenshots"
+                                name="screenshots[]"
+                                accept="image/*"
+                                multiple
+                                class="sr-only"
+                            >
+                        </label>
+                        <p class="pl-1">またはドラッグ＆ドロップ</p>
                     </div>
-                @endforeach
-            @else
-                <div class="text-center text-gray-500 py-2">
-                    スクリーンショットはまだ登録されていません
+                    <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
                 </div>
-            @endif
-        </div>
+            </div>
+
+            <!-- プレビュー表示 -->
+            <div id="preview-container" class="mt-4 space-y-4">
+                @if(isset($app) && isset($app->screenshots) && is_array($app->screenshots))
+                    @foreach($app->screenshots as $screenshot)
+                        <div class="relative block">
+                            <img 
+                                src="{{ $screenshot['url'] }}" 
+                                style="min-height: 80vh; max-height: 70vh; width: auto; object-fit: contain;"
+                                class="mx-auto block cursor-pointer rounded-lg"
+                                onclick="window.dispatchEvent(new CustomEvent('open-app-screenshot-modal', {detail: {src: this.src}}))"
+                                alt="アプリのスクリーンショット"
+                            >
+                            <button 
+                                type="button"
+                                onclick="this.parentElement.remove()"
+                                class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                            >×</button>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+        @endif
+
+        @error('screenshots')
+            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 
     <!-- 公開状態 -->
@@ -388,24 +433,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewContainer = document.getElementById('preview-container');
     const maxFiles = 3;
     const maxSize = 5 * 1024 * 1024; // 5MB
-    let currentFiles = new DataTransfer(); // グローバルに保持
 
-    // 既存の画像の削除処理を追加
-    window.removeScreenshot = function(button) {
-        const container = button.parentElement;
-        container.remove();
-    };
-
-    input.addEventListener('change', function(e) {
-        const files = Array.from(e.target.files);
-        const existingPreviews = previewContainer.querySelectorAll('.relative').length;
-        
-        if (files.length + existingPreviews > maxFiles) {
+    function handleFiles(files) {
+        // 3枚以上はダメ
+        if (files.length > maxFiles) {
             alert(`スクリーンショットは最大${maxFiles}枚までです`);
             return;
         }
 
-        files.forEach(file => {
+        // 既存のプレビューを全部クリア
+        previewContainer.innerHTML = '';
+
+        // 選択した新しい画像を表示
+        Array.from(files).forEach(file => {
             if (file.size > maxSize) {
                 alert(`${file.name}は5MB以上です`);
                 return;
@@ -416,32 +456,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // 有効なファイルをDataTransferに追加
-            currentFiles.items.add(file);
-            
             const reader = new FileReader();
             reader.onload = function(e) {
                 const imageContainer = document.createElement('div');
                 imageContainer.className = 'relative block mb-4';
-                imageContainer.dataset.fileName = file.name; // ファイル名を保存
 
                 const previewImg = document.createElement('img');
                 previewImg.src = e.target.result;
-                previewImg.className = 'max-w-full h-auto rounded-lg mx-auto block';
+                previewImg.style = 'min-height: 80vh; max-height: 70vh; width: auto; object-fit: contain;';
+                previewImg.className = 'mx-auto block cursor-pointer rounded-lg';
 
                 const deleteButton = document.createElement('button');
                 deleteButton.innerHTML = '×';
-                deleteButton.className = 'absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center';
+                deleteButton.className = 'absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center';
                 deleteButton.onclick = function() {
-                    // DataTransferから該当ファイルを削除
-                    const newDataTransfer = new DataTransfer();
-                    Array.from(currentFiles.files).forEach(f => {
-                        if (f.name !== file.name) {
-                            newDataTransfer.items.add(f);
-                        }
-                    });
-                    currentFiles = newDataTransfer;
-                    input.files = currentFiles.files;
                     imageContainer.remove();
                 };
 
@@ -451,9 +479,45 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             reader.readAsDataURL(file);
         });
+    }
 
-        // input要素のfilesを更新
-        input.files = currentFiles.files;
+    // ドラッグ&ドロップの処理
+    const dropArea = input.closest('div.mt-2');
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        dropArea.classList.add('border-blue-500', 'bg-blue-50');
+    }
+
+    function unhighlight(e) {
+        dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+    }
+
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles(files);
+    }
+
+    input.addEventListener('change', function(e) {
+        handleFiles(e.target.files);
     });
 });
 </script> 

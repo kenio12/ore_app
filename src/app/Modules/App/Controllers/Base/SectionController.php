@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Log;
 
 abstract class SectionController extends Controller
 {
-    protected AppProgressManager $progressManager;
+    protected ?AppProgressManager $progressManager;
 
-    public function __construct(AppProgressManager $progressManager)
+    public function __construct()
     {
-        $this->progressManager = $progressManager;
+        // コンストラクタでProgressManagerを初期化
+        $this->progressManager = app(AppProgressManager::class);
     }
 
     abstract public function edit(string $appId);
@@ -58,6 +59,11 @@ abstract class SectionController extends Controller
     protected function getCurrentSection(): string
     {
         try {
+            if (!$this->progressManager) {
+                // もし何らかの理由でnullになってたら再初期化
+                $this->progressManager = app(AppProgressManager::class);
+            }
+
             $sections = $this->progressManager->getSections();
             $currentSection = $this->progressManager->getCurrentSection();
             
@@ -67,17 +73,13 @@ abstract class SectionController extends Controller
                     'sections' => array_keys($sections)
                 ]);
                 
-                $this->progressManager = null; // インスタンスを解放
+                $this->progressManager = null;
                 throw new \Exception('Invalid section');
             }
 
             return $currentSection;
         } catch (\Exception $e) {
-            // エラー時にも確実に解放
-            $this->progressManager = null;
-            Log::error('Get current section error:', [
-                'message' => $e->getMessage()
-            ]);
+            Log::error('Get current section error:', ['error' => $e->getMessage()]);
             throw $e;
         }
     }
@@ -86,14 +88,14 @@ abstract class SectionController extends Controller
     {
         try {
             $this->progressManager->markSectionComplete($appId, $section);
-            $this->progressManager = null; // 使い終わったら解放
+            $this->progressManager = null; // これでエラーにならへん
         } catch (\Exception $e) {
             Log::error('Complete section error:', [
                 'error' => $e->getMessage(),
                 'appId' => $appId,
                 'section' => $section
             ]);
-            $this->progressManager = null; // エラー時にも解放
+            $this->progressManager = null;
             throw $e;
         }
     }

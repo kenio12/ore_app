@@ -94,32 +94,28 @@
         {{-- 他のセクションも同様に追加 --}}
     @endswitch
     
-    {{-- ナビゲーションボタンのコンテナ --}}
-    <div class="flex justify-between items-center mt-8 space-x-4">
-        {{-- 「前へ」ボタン --}}
-        @if($previousSection)
-            <a href="{{ route('apps.create', ['section' => $previousSection]) }}" 
-               class="flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 ease-in-out">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                </svg>
-                前のセクションへ
-            </a>
-        @else
-            <div></div>
-        @endif
-
-        {{-- 「次へ/保存」ボタン --}}
-        <button type="submit" 
-                class="flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 ease-in-out">
-            {{ $nextSection ? '次のセクションへ' : '保存する' }}
-            @if($nextSection)
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
+    {{-- ナビゲーションボタン --}}
+    @unless($viewOnly ?? false)
+        <div class="flex justify-between mt-8">
+            @if($currentSection !== array_key_first($sections))
+                <a href="{{ route('app.sections.' . array_keys($sections)[array_search($currentSection, array_keys($sections)) - 1] . '.edit', ['app' => $app->id]) }}" 
+                    class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                    前のセクションへ
+                </a>
+            @else
+                <div></div>
             @endif
-        </button>
-    </div>
+
+            <button type="submit" 
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                @if($currentSection === array_key_last($sections))
+                    保存する
+                @else
+                    次のセクションへ
+                @endif
+            </button>
+        </div>
+    @endunless
 
     {{-- 保存状態の表示 --}}
     @if(session('success'))
