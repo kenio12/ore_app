@@ -104,6 +104,8 @@
                                 onclick="window.dispatchEvent(new CustomEvent('open-app-screenshot-modal', {detail: {src: this.src}}))"
                                 alt="アプリのスクリーンショット"
                             >
+                            <!-- 既存画像のURL情報を保持 -->
+                            <input type="hidden" name="existing_screenshots[]" value="{{ json_encode($screenshot) }}">
                             <button 
                                 type="button"
                                 onclick="this.parentElement.remove()"
@@ -435,16 +437,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const maxSize = 5 * 1024 * 1024; // 5MB
 
     function handleFiles(files) {
-        // 3枚以上はダメ
-        if (files.length > maxFiles) {
-            alert(`スクリーンショットは最大${maxFiles}枚までです`);
+        // 現在の画像数を取得（既存＋新規の合計）
+        const currentImages = previewContainer.querySelectorAll('.relative').length;
+
+        // すでに3枚ある場合は追加不可
+        if (currentImages >= maxFiles) {
+            alert('スクリーンショットは最大3枚までです。新しい画像を追加するには、既存の画像を削除してください。');
             return;
         }
 
-        // 既存のプレビューを全部クリア
-        previewContainer.innerHTML = '';
+        // 追加可能な枚数をチェック
+        const remainingSlots = maxFiles - currentImages;
+        if (files.length > remainingSlots) {
+            alert(`あと${remainingSlots}枚まで追加できます`);
+            return;
+        }
 
-        // 選択した新しい画像を表示
+        // ファイルの追加
         Array.from(files).forEach(file => {
             if (file.size > maxSize) {
                 alert(`${file.name}は5MB以上です`);
@@ -456,28 +465,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const imageContainer = document.createElement('div');
-                imageContainer.className = 'relative block mb-4';
+            const imageContainer = document.createElement('div');
+            imageContainer.className = 'relative block mb-4';
 
-                const previewImg = document.createElement('img');
-                previewImg.src = e.target.result;
-                previewImg.style = 'min-height: 80vh; max-height: 70vh; width: auto; object-fit: contain;';
-                previewImg.className = 'mx-auto block cursor-pointer rounded-lg';
-
-                const deleteButton = document.createElement('button');
-                deleteButton.innerHTML = '×';
-                deleteButton.className = 'absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center';
-                deleteButton.onclick = function() {
-                    imageContainer.remove();
-                };
-
-                imageContainer.appendChild(previewImg);
-                imageContainer.appendChild(deleteButton);
-                previewContainer.appendChild(imageContainer);
+            // プレビュー用のURL生成
+            const previewUrl = URL.createObjectURL(file);
+            
+            const previewImg = document.createElement('img');
+            previewImg.src = previewUrl;
+            previewImg.style = 'min-height: 80vh; max-height: 70vh; width: auto; object-fit: contain;';
+            previewImg.className = 'mx-auto block cursor-pointer rounded-lg';
+            previewImg.onclick = function() {
+                window.dispatchEvent(new CustomEvent('open-app-screenshot-modal', {detail: {src: this.src}}));
             };
-            reader.readAsDataURL(file);
+
+            // 新規画像用のファイルinput
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.name = 'new_screenshots[]';
+            fileInput.style.display = 'none';
+            
+            // FileListをFileに変換してセット
+            const container = new DataTransfer();
+            container.items.add(file);
+            fileInput.files = container.files;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.innerHTML = '×';
+            deleteButton.className = 'absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center';
+            deleteButton.onclick = function() {
+                URL.revokeObjectURL(previewUrl);  // URLを解放
+                imageContainer.remove();
+            };
+
+            imageContainer.appendChild(previewImg);
+            imageContainer.appendChild(fileInput);
+            imageContainer.appendChild(deleteButton);
+            previewContainer.appendChild(imageContainer);
         });
     }
 
