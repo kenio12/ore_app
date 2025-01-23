@@ -24,6 +24,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('databases', $app->databases ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -38,6 +39,7 @@
                 value="{{ old('other_database', $app->other_database ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のデータベースを入力"
+                readonly
             >
         </div>
         @error('databases')
@@ -67,6 +69,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('orms', $app->orms ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -81,6 +84,7 @@
                 value="{{ old('other_orm', $app->other_orm ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のORMを入力"
+                readonly
             >
         </div>
         @error('orms')
@@ -107,6 +111,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('caches', $app->caches ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -121,6 +126,7 @@
                 value="{{ old('other_cache', $app->other_cache ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のキャッシュシステムを入力"
+                readonly
             >
         </div>
         @error('caches')
@@ -144,6 +150,7 @@
 - インデックスの活用
 - キャッシュ戦略
 - シャーディング/レプリケーション"
+            readonly
         >{{ old('database_description', $app->database_description ?? '') }}</textarea>
         @error('database_description')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -163,6 +170,7 @@
             placeholder="例：
 MySQL 8.0
 Redis 7.0"
+            readonly
         >{{ old('database_versions', $app->database_versions ?? '') }}</textarea>
         @error('database_versions')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -193,6 +201,7 @@ Redis 7.0"
                         value="{{ $value }}"
                         {{ in_array($value, old('db_hosting_services', $app->db_hosting_services ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -207,6 +216,7 @@ Redis 7.0"
                 value="{{ old('other_db_hosting', $app->other_db_hosting ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のデータベースホスティングサービスを入力"
+                readonly
             >
         </div>
         @error('db_hosting_services')

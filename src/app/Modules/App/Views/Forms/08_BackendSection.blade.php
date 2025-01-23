@@ -24,6 +24,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('backend_languages', $app->backend_languages ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -38,6 +39,7 @@
                 value="{{ old('other_backend_language', $app->other_backend_language ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他の言語を入力"
+                readonly
             >
         </div>
         @error('backend_languages')
@@ -69,6 +71,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('backend_frameworks', $app->backend_frameworks ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -83,6 +86,7 @@
                 value="{{ old('other_backend_framework', $app->other_backend_framework ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のフレームワークを入力"
+                readonly
             >
         </div>
         @error('backend_frameworks')
@@ -106,6 +110,7 @@
 - キャッシュ
 - メール送信
 - 画像処理"
+            readonly
         >{{ old('backend_packages', $app->backend_packages ?? '') }}</textarea>
         @error('backend_packages')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -122,10 +127,7 @@
             id="backend_versions"
             rows="8"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="例：
-PHP 8.1
-Laravel 10.0
-Composer 2.5.5"
+            readonly
         >{{ old('backend_versions', $app->backend_versions ?? '') }}</textarea>
         @error('backend_versions')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

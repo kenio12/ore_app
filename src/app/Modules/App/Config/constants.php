@@ -173,27 +173,34 @@ return [
             '4k' => '4K (3840x2160)',
             '5k' => '5K以上',
             'other' => 'その他'
+        ],
+        'communication' => [
+            'slack' => 'Slack',
+            'discord' => 'Discord',
+            'teams' => 'Microsoft Teams',
+            'zoom' => 'Zoom',
+            'meet' => 'Google Meet',
+            'chatwork' => 'Chatwork',
+            'skype' => 'Skype',
+            'other' => 'その他'
         ]
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | 5. 開発ツール環境 (05_DevToolsEnvironment)
+    | 5. 開発ツール環境 (05_DevTools)
     |--------------------------------------------------------------------------
     */
     'dev_tools' => [
         'infrastructure' => [
             'aws' => 'AWS',
             'gcp' => 'Google Cloud',
-            'azure' => 'Azure',
+            'azure' => 'Microsoft Azure',
             'heroku' => 'Heroku',
             'vercel' => 'Vercel',
-            'render' => 'Render',
+            'digitalocean' => 'DigitalOcean',
             'firebase' => 'Firebase',
             'cloudflare' => 'Cloudflare',
-            'digitalocean' => 'DigitalOcean',
-            'linode' => 'Linode',
-            'vultr' => 'Vultr',
             'other' => 'その他'
         ],
         'ci_cd' => [
@@ -207,29 +214,30 @@ return [
         ],
         'api_tools' => [
             'postman' => 'Postman',
+            'swagger' => 'Swagger/OpenAPI',
             'insomnia' => 'Insomnia',
-            'thunder_client' => 'Thunder Client',
-            'swagger' => 'Swagger',
+            'curl' => 'cURL',
+            'graphql' => 'GraphQL',
             'other' => 'その他'
         ],
         'communication' => [
             'slack' => 'Slack',
             'discord' => 'Discord',
             'teams' => 'Microsoft Teams',
-            'other' => 'その他'
-        ],
-        'mail_services' => [
-            'sendgrid' => 'SendGrid',
-            'mailgun' => 'Mailgun',
-            'ses' => 'Amazon SES',
-            'mailtrap' => 'Mailtrap',
+            'zoom' => 'Zoom',
+            'meet' => 'Google Meet',
+            'chatwork' => 'Chatwork',
+            'skype' => 'Skype',
             'other' => 'その他'
         ],
         'monitoring' => [
-            'sentry' => 'Sentry',
-            'new_relic' => 'New Relic',
             'datadog' => 'Datadog',
-            'ga' => 'Google Analytics',
+            'newrelic' => 'New Relic',
+            'grafana' => 'Grafana',
+            'prometheus' => 'Prometheus',
+            'sentry' => 'Sentry',
+            'cloudwatch' => 'AWS CloudWatch',
+            'stackdriver' => 'Google Cloud Monitoring',
             'other' => 'その他'
         ]
     ],

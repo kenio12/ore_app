@@ -28,6 +28,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('security_measures', $app->security_measures ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -41,6 +42,7 @@
                 value="{{ old('other_security', $app->other_security ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のセキュリティ対策を入力"
+                readonly
             >
         </div>
     </div>
@@ -68,6 +70,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('performance_optimizations', $app->performance_optimizations ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -81,6 +84,7 @@
                 value="{{ old('other_performance', $app->other_performance ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のパフォーマンス最適化を入力"
+                readonly
             >
         </div>
     </div>
@@ -108,6 +112,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('testing_tools', $app->testing_tools ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -121,6 +126,7 @@
                 value="{{ old('other_testing', $app->other_testing ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のテストツールを入力"
+                readonly
             >
         </div>
     </div>
@@ -148,6 +154,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('monitoring_tools', $app->monitoring_tools ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -177,6 +184,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('code_quality_tools', $app->code_quality_tools ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -190,6 +198,7 @@
                 value="{{ old('other_code_quality', $app->other_code_quality ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のコード品質管理ツールを入力"
+                readonly
             >
         </div>
     </div>
@@ -205,6 +214,7 @@
             rows="8"
             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="セキュリティ対策、パフォーマンス最適化、テスト戦略、監視体制、コード品質管理などについての補足情報があれば入力してください"
+            readonly
         >{{ old('security_notes', $app->security_notes ?? '') }}</textarea>
     </div>
 </div> 

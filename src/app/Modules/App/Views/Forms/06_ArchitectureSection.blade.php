@@ -24,6 +24,7 @@
                         value="{{ $value }}"
                         {{ old('architecture_pattern', $app->architecture_pattern ?? '') == $value ? 'checked' : '' }}
                         class="rounded-full border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -38,6 +39,7 @@
                 value="{{ old('other_architecture', $app->other_architecture ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のアーキテクチャパターンを入力"
+                readonly
             >
         </div>
         @error('architecture_pattern')
@@ -68,6 +70,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('design_patterns', $app->design_patterns ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -77,11 +80,12 @@
         <div class="mt-2">
             <input 
                 type="text" 
-                name="other_patterns" 
-                id="other_patterns"
-                value="{{ old('other_patterns', $app->other_patterns ?? '') }}"
+                name="other_design_pattern" 
+                id="other_design_pattern"
+                value="{{ old('other_design_pattern', $app->other_design_pattern ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他の設計パターンを入力"
+                readonly
             >
         </div>
         @error('design_patterns')

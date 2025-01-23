@@ -21,6 +21,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('frontend_languages', $app->frontend_languages ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -35,6 +36,7 @@
                 value="{{ old('other_frontend_language', $app->other_frontend_language ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他の言語を入力"
+                readonly
             >
         </div>
         @error('frontend_languages')
@@ -65,6 +67,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('frontend_frameworks', $app->frontend_frameworks ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -79,6 +82,7 @@
                 value="{{ old('other_frontend_framework', $app->other_frontend_framework ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のフレームワークを入力"
+                readonly
             >
         </div>
         @error('frontend_frameworks')
@@ -108,6 +112,7 @@
                         value="{{ $value }}"
                         {{ in_array($value, old('css_frameworks', $app->css_frameworks ?? [])) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        disabled
                     >
                     <span class="text-gray-700">{{ $label }}</span>
                 </label>
@@ -122,6 +127,7 @@
                 value="{{ old('other_css_framework', $app->other_css_framework ?? '') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 placeholder="その他のCSSフレームワークを入力"
+                readonly
             >
         </div>
         @error('css_frameworks')

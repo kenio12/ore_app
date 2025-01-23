@@ -58,23 +58,26 @@
             OS
         </label>
         @if(isset($isShow) && $isShow)
-            <!-- 表示モード：選択されたOSのみ表示 -->
-            <div class="mt-2 text-gray-700">
-                @php
-                    $osTypes = [
-                        'windows' => 'Windows',
-                        'macos' => 'macOS',
-                        'linux' => 'Linux',
-                        'other' => 'その他'
-                    ];
-                @endphp
-                {{ $osTypes[$app->os_type ?? ''] ?? '' }}
-                @if($app->os_version)
-                    （バージョン: {{ $app->os_version }}）
-                @endif
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
+                @foreach([
+                    'windows' => 'Windows',
+                    'macos' => 'macOS',
+                    'linux' => 'Linux',
+                    'other' => 'その他'
+                ] as $value => $label)
+                    <div class="{{ ($app->os_type ?? '') == $value 
+                        ? 'text-blue-600 font-medium bg-blue-50 py-1 px-2 rounded' 
+                        : 'text-gray-400' }}">
+                        {{ $label }}
+                    </div>
+                @endforeach
             </div>
+            @if($app->os_version)
+                <div class="mt-2 text-gray-700">
+                    バージョン: {{ $app->os_version }}
+                </div>
+            @endif
         @else
-            <!-- 編集モード：ラジオボタンで選択可能 -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-gray-50 p-4 rounded-lg">
                 @foreach([
                     'windows' => 'Windows',

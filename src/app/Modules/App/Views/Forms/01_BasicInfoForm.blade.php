@@ -50,87 +50,29 @@
             スクリーンショット（1〜3枚） <span class="text-red-500">*</span>
         </label>
 
-        @if($viewOnly ?? false)
-            <div class="mt-1 space-y-6">
-                @if(isset($app->screenshots) && is_array($app->screenshots))
-                    @foreach($app->screenshots as $index => $screenshot)
-                        <div class="screenshot-item">
-                            <div class="text-center mb-2">
-                                <p class="text-sm text-gray-600">スクリーンショット {{ $index + 1 }}</p>
-                            </div>
-                            
-                            <div class="flex justify-center">
-                                <img src="{{ $screenshot['url'] }}" 
-                                     alt="Screenshot {{ $index + 1 }}"
-                                     style="height: 80vh; width: auto;"
-                                     class="max-w-4xl object-contain rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 cursor-pointer"
-                                     onclick="openImageModal(this.src)">
-                            </div>
+        <div class="mt-1 space-y-6">
+            @if(isset($app->screenshots) && is_array($app->screenshots))
+                @foreach($app->screenshots as $index => $screenshot)
+                    <div class="screenshot-item">
+                        <div class="text-center mb-2">
+                            <p class="text-sm text-gray-600">スクリーンショット {{ $index + 1 }}</p>
                         </div>
-                    @endforeach
-                @else
-                    <div class="text-center text-gray-500 py-2">
-                        スクリーンショットはまだ登録されていません
-                    </div>
-                @endif
-            </div>
-        @else
-            <div class="mt-2" x-data="{ isDragging: false }">
-                <div id="preview-container" class="mb-4">
-                    @if(isset($app->screenshots) && is_array($app->screenshots))
-                        @foreach($app->screenshots as $index => $screenshot)
-                            @if(isset($screenshot['url']))
-                                <div class="relative block mb-4">
-                                    <img src="{{ $screenshot['url'] }}" 
-                                         class="max-w-full h-auto rounded-lg mx-auto block">
-                                    <button type="button"
-                                            class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                                            onclick="removeScreenshot(this)">×</button>
-                                    <input type="hidden" name="existing_screenshots[]" value="{{ $index }}">
-                                </div>
-                            @endif
-                        @endforeach
-                    @endif
-                </div>
-
-                <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md"
-                    x-bind:class="{ 
-                        'border-gray-300': !isDragging,
-                        'border-blue-500 bg-blue-50': isDragging 
-                    }"
-                    x-on:dragover.prevent="handleDragOver($event)"
-                    x-on:dragleave.prevent="handleDragLeave"
-                    x-on:drop.prevent="handleDrop($event)"
-                >
-                    <div class="space-y-1 text-center">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <div class="flex text-sm text-gray-600">
-                            <label for="screenshots" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                <span>ファイルを選択</span>
-                                <input 
-                                    type="file" 
-                                    name="screenshots[]"
-                                    id="screenshots"
-                                    multiple
-                                    accept="image/*"
-                                    class="sr-only"
-                                    @change="handleFileSelect($event)"
-                                >
-                            </label>
-                            <p class="pl-1">またはドラッグ＆ドロップ</p>
+                        
+                        <div class="flex justify-center">
+                            <img src="{{ $screenshot['url'] }}" 
+                                 alt="Screenshot {{ $index + 1 }}"
+                                 style="height: 80vh; width: auto;"
+                                 class="max-w-4xl object-contain rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 cursor-pointer"
+                                 onclick="openImageModal(this.src)">
                         </div>
-                        <p class="text-xs text-gray-500">
-                            PNG, JPG, GIF up to 10MB
-                        </p>
                     </div>
+                @endforeach
+            @else
+                <div class="text-center text-gray-500 py-2">
+                    スクリーンショットはまだ登録されていません
                 </div>
-            </div>
-            @error('screenshots')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
-        @endif
+            @endif
+        </div>
     </div>
 
     <!-- 公開状態 -->
@@ -156,15 +98,21 @@
         <label for="demo_url" class="block text-sm font-medium text-gray-700">
             アプリへのアクセス <span class="text-red-500">*</span>
         </label>
-        <input 
-            type="url" 
-            name="demo_url" 
-            id="demo_url"
-            value="{{ old('demo_url', $app->demo_url ?? '') }}"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="https://your-demo-site.com"
-            required
-        >
+        @if($viewOnly)
+            <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-300">
+                {{ $app->demo_url ?? '未設定' }}
+            </div>
+        @else
+            <input 
+                type="url" 
+                name="demo_url" 
+                id="demo_url"
+                value="{{ old('demo_url', $app->demo_url ?? '') }}"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="https://your-demo-site.com"
+                required
+            >
+        @endif
         @error('demo_url')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
@@ -175,15 +123,21 @@
         <label for="github_url" class="block text-sm font-medium text-gray-700">
             GitHubリポジトリURL <span class="text-red-500">*</span>
         </label>
-        <input 
-            type="url" 
-            name="github_url" 
-            id="github_url"
-            value="{{ old('github_url', $app->github_url ?? '') }}"
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="https://github.com/username/repo"
-            required
-        >
+        @if($viewOnly)
+            <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-300">
+                {{ $app->github_url ?? '未設定' }}
+            </div>
+        @else
+            <input 
+                type="url" 
+                name="github_url" 
+                id="github_url"
+                value="{{ old('github_url', $app->github_url ?? '') }}"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                placeholder="https://github.com/username/repo"
+                required
+            >
+        @endif
         @error('github_url')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
@@ -225,62 +179,75 @@
                 <label for="development_start_date" class="block text-sm text-gray-600 mb-1">
                     開発開始日
                 </label>
-                <input 
-                    type="date" 
-                    name="development_start_date" 
-                    id="development_start_date"
-                    value="{{ old('development_start_date', $app->development_start_date?->format('Y-m-d') ?? '') }}"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                @error('development_start_date')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                @if($viewOnly)
+                    <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-300">
+                        {{ $app->development_start_date?->format('Y-m-d') ?? '未設定' }}
+                    </div>
+                @else
+                    <input 
+                        type="date" 
+                        name="development_start_date" 
+                        id="development_start_date"
+                        value="{{ old('development_start_date', $app->development_start_date?->format('Y-m-d') ?? '') }}"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                @endif
             </div>
 
             <div>
                 <label for="development_end_date" class="block text-sm text-gray-600 mb-1">
                     開発終了日
                 </label>
-                <input 
-                    type="date" 
-                    name="development_end_date" 
-                    id="development_end_date"
-                    value="{{ old('development_end_date', $app->development_end_date?->format('Y-m-d') ?? '') }}"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                @error('development_end_date')
-                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                @enderror
+                @if($viewOnly)
+                    <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-300">
+                        {{ $app->development_end_date?->format('Y-m-d') ?? '未設定' }}
+                    </div>
+                @else
+                    <input 
+                        type="date" 
+                        name="development_end_date" 
+                        id="development_end_date"
+                        value="{{ old('development_end_date', $app->development_end_date?->format('Y-m-d') ?? '') }}"
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    >
+                @endif
             </div>
         </div>
 
         <!-- 開発期間（年月） -->
         <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2">
-                <input 
-                    type="number" 
-                    name="development_period_years" 
-                    id="development_period_years"
-                    value="{{ old('development_period_years', $app->development_period_years ?? 0) }}"
-                    class="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    min="0"
-                    required
-                >
-                <span class="text-gray-700">年</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <input 
-                    type="number" 
-                    name="development_period_months" 
-                    id="development_period_months"
-                    value="{{ old('development_period_months', $app->development_period_months ?? 0) }}"
-                    class="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    min="0"
-                    max="11"
-                    required
-                >
-                <span class="text-gray-700">ヶ月</span>
-            </div>
+            @if($viewOnly)
+                <div class="mt-1 p-2 bg-gray-50 rounded-md border border-gray-300">
+                    {{ $app->development_period_years ?? 0 }}年
+                    {{ $app->development_period_months ?? 0 }}ヶ月
+                </div>
+            @else
+                <div class="flex items-center gap-2">
+                    <input 
+                        type="number" 
+                        name="development_period_years" 
+                        id="development_period_years"
+                        value="{{ old('development_period_years', $app->development_period_years ?? 0) }}"
+                        class="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        min="0"
+                        required
+                    >
+                    <span class="text-gray-700">年</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input 
+                        type="number" 
+                        name="development_period_months" 
+                        id="development_period_months"
+                        value="{{ old('development_period_months', $app->development_period_months ?? 0) }}"
+                        class="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        min="0"
+                        max="11"
+                        required
+                    >
+                    <span class="text-gray-700">ヶ月</span>
+                </div>
+            @endif
         </div>
         @error('development_period_years')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
