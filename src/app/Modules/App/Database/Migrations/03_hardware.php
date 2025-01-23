@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->json('storage_types')->nullable();
             $table->text('storage')->nullable();
             $table->text('other_hardware')->nullable();
+            $table->text('pc_details')->nullable();
             $table->timestamps();
         });
     }

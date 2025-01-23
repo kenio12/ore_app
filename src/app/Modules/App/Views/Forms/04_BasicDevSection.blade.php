@@ -126,6 +126,8 @@
         @enderror
     </div>
 
+ 
+
     <!-- エディタ/IDE -->
     <div class="mb-6">
         <label class="block text-sm font-medium text-gray-700 mb-2">
