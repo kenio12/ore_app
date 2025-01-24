@@ -54,6 +54,39 @@ abstract class SectionController extends Controller
     }
 
     /**
+     * 前のセクションへ遷移
+     */
+    public function previous(string $appId)
+    {
+        try {
+            $currentSection = $this->getCurrentSection();
+            $previousSection = $this->progressManager->getPreviousSection($currentSection);
+            
+            if (!$previousSection) {
+                $this->progressManager = null;
+                return redirect()->route('apps.index')
+                    ->with('info', '最初のセクションです');
+            }
+
+            $route = "app.sections.{$previousSection}.edit";
+            
+            // 使い終わったら解放
+            $this->progressManager = null;
+            
+            return redirect()->route($route, $appId);
+        } catch (\Exception $e) {
+            Log::error('Previous section error:', [
+                'message' => $e->getMessage(),
+                'section' => $currentSection ?? 'unknown'
+            ]);
+            
+            // エラー時にも確実に解放
+            $this->progressManager = null;
+            throw $e;
+        }
+    }
+
+    /**
      * 現在のセクション名を取得
      */
     protected function getCurrentSection(): string
@@ -98,5 +131,16 @@ abstract class SectionController extends Controller
             $this->progressManager = null;
             throw $e;
         }
+    }
+
+    /**
+     * セクションの移動処理
+     */
+    protected function handleNavigation(string $appId, string $direction)
+    {
+        if ($direction === 'prev') {
+            return $this->previous($appId);
+        }
+        return $this->next($appId);
     }
 } 
