@@ -182,6 +182,8 @@ return [
         App\Modules\Profile\Providers\ProfileServiceProvider::class,
 
         App\Providers\Filament\AdminPanelProvider::class,
+
+        App\Modules\AppV2\AppV2ServiceProvider::class,
     ],
 
     'aliases' => [

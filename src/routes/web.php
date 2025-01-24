@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Home\Controllers\HomeController;
 use App\Modules\App\Controllers\AppController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Modules\AppV2\Controllers\AppController as AppV2Controller;
 
 // メインページのルート
 Route::get('/', [HomeController::class, 'index']);
@@ -27,4 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/apps/create', [AppController::class, 'create'])->name('apps.create');
 });
+
+// AppV2のルート（追加）
+require __DIR__.'/../app/Modules/AppV2/Routes/web.php';
 
