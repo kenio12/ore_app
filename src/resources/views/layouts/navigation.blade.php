@@ -15,7 +15,7 @@
                 <div class="space-x-4 px-2">
                     @auth
                         <!-- ログイン済みの場合 -->
-                        <a href="{{ route('apps.create') }}" class="text-sm text-gray-700 hover:text-gray-900">
+                        <a href="{{ route('apps-v2.create') }}" class="text-sm text-gray-700 hover:text-gray-900">
                             アプリを投稿
                         </a>
                         <a href="{{ route('dashboard') }}" class="text-sm text-gray-700 hover:text-gray-900">

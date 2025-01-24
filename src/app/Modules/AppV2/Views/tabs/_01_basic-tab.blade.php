@@ -57,17 +57,21 @@
             </label>
             <div class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach(config('appv2.constants.app_types') as $key => $value)
-                    <label class="relative">
+                    <label class="relative cursor-pointer">
                         <input 
                             type="checkbox"
                             x-model="formData.basic.types"
                             @change="autoSave"
                             value="{{ $key }}"
                             class="peer sr-only">
-                        <div class="rounded-lg border-2 border-gray-200 p-4 cursor-pointer
-                                  peer-checked:border-blue-500 peer-checked:bg-blue-50
-                                  hover:border-blue-300 transition-all duration-300">
-                            {{ $value }}
+                        <div x-bind:class="{
+                                'border-blue-500 bg-blue-50': formData.basic.types.includes('{{ $key }}'),
+                                'border-gray-200': !formData.basic.types.includes('{{ $key }}')
+                            }"
+                            class="rounded-lg border-2 p-4
+                                  hover:border-blue-300 transition-all duration-300
+                                  flex items-center justify-center">
+                            <span class="block text-center">{{ $value }}</span>
                         </div>
                     </label>
                 @endforeach
@@ -83,17 +87,21 @@
             </label>
             <div class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach(config('appv2.constants.genres') as $key => $value)
-                    <label class="relative">
+                    <label class="relative cursor-pointer">
                         <input 
                             type="checkbox"
                             x-model="formData.basic.genres"
                             @change="autoSave"
                             value="{{ $key }}"
                             class="peer sr-only">
-                        <div class="rounded-lg border-2 border-gray-200 p-4 cursor-pointer
-                                  peer-checked:border-indigo-500 peer-checked:bg-indigo-50
-                                  hover:border-indigo-300 transition-all duration-300">
-                            {{ $value }}
+                        <div x-bind:class="{
+                                'border-indigo-500 bg-indigo-50': formData.basic.genres.includes('{{ $key }}'),
+                                'border-gray-200': !formData.basic.genres.includes('{{ $key }}')
+                            }"
+                            class="rounded-lg border-2 p-4
+                                  hover:border-indigo-300 transition-all duration-300
+                                  flex items-center justify-center">
+                            <span class="block text-center">{{ $value }}</span>
                         </div>
                     </label>
                 @endforeach
@@ -115,6 +123,27 @@
                                hover:border-violet-300 transition-all duration-300">
                     <option value="">選択してください</option>
                     @foreach(config('appv2.constants.app_status') as $key => $value)
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
+
+    {{-- 公開状態 --}}
+    <div class="transform hover:scale-[1.02] transition-all duration-500">
+        <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
+            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-pink-600">
+                このサイト自体の公開状態
+            </label>
+            <div class="mt-4">
+                <select x-model="formData.basic.status"
+                        @change="autoSave"
+                        class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                               focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20
+                               hover:border-violet-300 transition-all duration-300">
+                    <option value="">選択してください</option>
+                    @foreach(config('appv2.constants.status_options') as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
                     @endforeach
                 </select>
