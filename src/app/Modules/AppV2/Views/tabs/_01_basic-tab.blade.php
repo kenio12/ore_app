@@ -41,11 +41,11 @@
         </div>
     </div>
 
-    {{-- アプリの説明 --}}
+    {{-- アプリの概要 --}}
     <div class="transform hover:scale-[1.02] transition-all duration-500">
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
             <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
-                アプリの説明
+                アプリの概要
             </label>
             <textarea
                 x-model="formData.basic.description"
@@ -55,6 +55,40 @@
                        focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20
                        hover:border-purple-300 transition-all duration-300"
                 placeholder="あなたのアプリの特徴や魅力を説明してください..."></textarea>
+        </div>
+    </div>
+
+    {{-- このアプリを作るきっかけ --}}
+    <div class="transform hover:scale-[1.02] transition-all duration-500">
+        <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
+            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-blue-600">
+                このアプリを作るきっかけ
+            </label>
+            <textarea
+                x-model="formData.basic.motivation"
+                @input="handleInput"
+                rows="4"
+                class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                       focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20
+                       hover:border-pink-300 transition-all duration-300"
+                placeholder="このアプリを作るきっかけを教えてください..."></textarea>
+        </div>
+    </div>
+
+    {{-- このアプリの目指すところ --}}
+    <div class="transform hover:scale-[1.02] transition-all duration-500">
+        <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
+            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-pink-600">
+                このアプリの目指すところ
+            </label>
+            <textarea
+                x-model="formData.basic.purpose"
+                @input="handleInput"
+                rows="4"
+                class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                       focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20
+                       hover:border-blue-300 transition-all duration-300"
+                placeholder="このアプリの目指すところを教えてください..."></textarea>
         </div>
     </div>
 

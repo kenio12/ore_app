@@ -127,6 +127,8 @@ class AppController extends Controller
                     'development_end_date' => $basicData['development_end_date'] ?? null,
                     'development_period_years' => $basicData['development_period_years'] ?? 0,
                     'development_period_months' => $basicData['development_period_months'] ?? 0,
+                    'motivation' => $basicData['motivation'] ?? '',
+                    'purpose' => $basicData['purpose'] ?? '',
                 ]);
 
                 // スクリーンショットの保存

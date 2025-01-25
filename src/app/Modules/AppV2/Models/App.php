@@ -40,6 +40,8 @@ class App extends Model
         'frontend_info',
         'backend_info',
         'database_info',
+        'motivation',
+        'purpose',
     ];
 
     protected $casts = [
@@ -162,5 +164,24 @@ class App extends Model
     public function scopeDraft($query)
     {
         return $query->where('status', 'draft');
+    }
+
+    // データ取得用のアクセサ
+    public function getBasicDataAttribute()
+    {
+        return [
+            'title' => $this->title,
+            'description' => $this->description,
+            'status' => $this->status,
+            'app_types' => $this->app_types,
+            'genres' => $this->genres,
+            'app_status' => $this->app_status,
+            'demo_url' => $this->demo_url,
+            'github_url' => $this->github_url,
+            'development_start_date' => $this->development_start_date,
+            'development_end_date' => $this->development_end_date,
+            'development_period_years' => $this->development_period_years,
+            'development_period_months' => $this->development_period_months,
+        ];
     }
 } 
