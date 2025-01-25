@@ -21,7 +21,14 @@ class AppController extends Controller
 
     public function create()
     {
-        return view('AppV2::app-form');
+        // セッションから一時データを削除
+        session()->forget('app_form_data');
+        
+        return view('AppV2::app-form', [
+            'sections' => $this->getSections(),
+            // 初期状態を明示的に設定
+            'app' => null
+        ]);
     }
 
     public function store(Request $request)
@@ -75,49 +82,53 @@ class AppController extends Controller
         ]);
     }
 
-    public function autosave(Request $request, $app = null)
+    public function autosave(Request $request, $appId = null)
     {
         try {
-            Log::info('Autosave request received', [
-                'app_id' => $app,
-                'data' => $request->all()
-            ]);
+            $formData = $request->input('formData');
+            $userId = auth()->id();
 
-            // バリデーションを緩めに設定
-            $validated = $request->validate([
-                'basic' => 'array|nullable',
-                'basic.title' => 'string|nullable',
-                'basic.description' => 'string|nullable',
-                'basic.types' => 'array|nullable',
-                'basic.genres' => 'array|nullable',
-                'screenshots' => 'array|nullable',
-                'story' => 'array|nullable',
-                'hardware' => 'array|nullable',
-                'dev_env' => 'array|nullable',
-                'architecture' => 'array|nullable',
-                'frontend' => 'array|nullable',
-                'backend' => 'array|nullable',
-                'database' => 'array|nullable',
-                'security' => 'array|nullable',
-            ]);
+            // 基本データの準備
+            $basicData = [
+                'user_id' => $userId,
+                'title' => $formData['basic']['title'] ?? '無題のアプリ',
+                'description' => $formData['basic']['description'] ?? '',
+                'status' => $formData['basic']['status'] ?? 'draft',
+                'data' => json_encode($formData)
+            ];
 
-            // セッションに保存
-            $request->session()->put('app_form_data', $request->all());
+            DB::beginTransaction();
+
+            if (!$appId || $appId === 'create') {
+                // 新規作成
+                $app = App::create($basicData);
+            } else {
+                // 既存のアプリを更新
+                $app = App::where('id', $appId)
+                         ->where('user_id', $userId)
+                         ->firstOrFail();
+                
+                $app->update($basicData);
+            }
+
+            DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => '自動保存しました'
+                'message' => '保存しました',
+                'app_id' => $app->id
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Autosave error', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+            DB::rollBack();
+            Log::error('自動保存エラー: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
             ]);
-
+            
             return response()->json([
                 'success' => false,
-                'message' => 'エラーが発生しました: ' . $e->getMessage()
+                'message' => '保存に失敗しました: ' . $e->getMessage()
             ], 500);
         }
     }

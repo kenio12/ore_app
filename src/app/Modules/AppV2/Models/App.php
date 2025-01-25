@@ -33,6 +33,7 @@ class App extends Model
         'development_start_date',
         'development_end_date',
         'appeal_points',
+        'data',
     ];
 
     protected $casts = [

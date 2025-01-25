@@ -433,8 +433,8 @@ return [
     ],
 
     'status_options' => [
-        'draft' => '下書き（公開しない）',
-        'published' => '公開する'
+        'draft' => '非公開',
+        'public' => '公開'
     ],
 
     /*
