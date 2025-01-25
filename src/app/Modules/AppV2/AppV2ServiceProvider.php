@@ -3,6 +3,7 @@
 namespace App\Modules\AppV2;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Blade;
 use App\Modules\AppV2\Services\CloudinaryService;
 
 class AppV2ServiceProvider extends ServiceProvider
@@ -26,5 +27,8 @@ class AppV2ServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__ . '/Routes/api.php');
         $this->loadViewsFrom(__DIR__ . '/Views', 'AppV2');
         $this->loadMigrationsFrom(__DIR__ . '/Database/Migrations');
+
+        // コンポーネントの登録を追加
+        Blade::componentNamespace('App\\Modules\\AppV2\\Views\\Components', 'appv2');
     }
 } 

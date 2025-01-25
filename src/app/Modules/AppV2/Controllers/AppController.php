@@ -21,10 +21,7 @@ class AppController extends Controller
 
     public function create()
     {
-        return view('AppV2::app-form', [
-            'app' => new App(),
-            'sections' => $this->getSections(),
-        ]);
+        return view('AppV2::app-form');
     }
 
     public function store(Request $request)
@@ -69,17 +66,50 @@ class AppController extends Controller
         ]);
     }
 
-    public function autosave(Request $request, App $app)
+    public function autosave(Request $request, $app = null)
     {
         try {
-            $this->saveRelatedData($app, $request);
-            return response()->json(['success' => true]);
+            Log::info('Autosave request received', [
+                'app_id' => $app,
+                'data' => $request->all()
+            ]);
+
+            // バリデーションを緩めに設定
+            $validated = $request->validate([
+                'basic' => 'array|nullable',
+                'basic.title' => 'string|nullable',
+                'basic.description' => 'string|nullable',
+                'basic.types' => 'array|nullable',
+                'basic.genres' => 'array|nullable',
+                'screenshots' => 'array|nullable',
+                'story' => 'array|nullable',
+                'hardware' => 'array|nullable',
+                'dev_env' => 'array|nullable',
+                'architecture' => 'array|nullable',
+                'frontend' => 'array|nullable',
+                'backend' => 'array|nullable',
+                'database' => 'array|nullable',
+                'security' => 'array|nullable',
+            ]);
+
+            // セッションに保存
+            $request->session()->put('app_form_data', $request->all());
+
+            return response()->json([
+                'success' => true,
+                'message' => '自動保存しました'
+            ]);
+
         } catch (\Exception $e) {
-            Log::error('自動保存エラー', [
-                'error' => $e->getMessage(),
+            Log::error('Autosave error', [
+                'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            return response()->json(['error' => $e->getMessage()], 422);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'エラーが発生しました: ' . $e->getMessage()
+            ], 500);
         }
     }
 

@@ -55,57 +55,25 @@
             <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-pink-600">
                 アプリの種類
             </label>
-            <div class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                @foreach(config('appv2.constants.app_types') as $key => $value)
-                    <label class="relative cursor-pointer">
-                        <input 
-                            type="checkbox"
-                            x-model="formData.basic.types"
-                            @change="autoSave"
-                            value="{{ $key }}"
-                            class="peer sr-only">
-                        <div x-bind:class="{
-                                'border-blue-500 bg-blue-50': formData.basic.types.includes('{{ $key }}'),
-                                'border-gray-200': !formData.basic.types.includes('{{ $key }}')
-                            }"
-                            class="rounded-lg border-2 p-4
-                                  hover:border-blue-300 transition-all duration-300
-                                  flex items-center justify-center">
-                            <span class="block text-center">{{ $value }}</span>
-                        </div>
-                    </label>
-                @endforeach
-            </div>
+            <x-appv2::checkbox-group 
+                :items="config('appv2.constants.app_types')"
+                model="basic.types"
+                :colorScheme="1"
+            />
         </div>
     </div>
 
     {{-- ジャンル --}}
     <div class="transform hover:scale-[1.02] transition-all duration-500">
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
-            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
+            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-violet-600">
                 ジャンル
             </label>
-            <div class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                @foreach(config('appv2.constants.genres') as $key => $value)
-                    <label class="relative cursor-pointer">
-                        <input 
-                            type="checkbox"
-                            x-model="formData.basic.genres"
-                            @change="autoSave"
-                            value="{{ $key }}"
-                            class="peer sr-only">
-                        <div x-bind:class="{
-                                'border-indigo-500 bg-indigo-50': formData.basic.genres.includes('{{ $key }}'),
-                                'border-gray-200': !formData.basic.genres.includes('{{ $key }}')
-                            }"
-                            class="rounded-lg border-2 p-4
-                                  hover:border-indigo-300 transition-all duration-300
-                                  flex items-center justify-center">
-                            <span class="block text-center">{{ $value }}</span>
-                        </div>
-                    </label>
-                @endforeach
-            </div>
+            <x-appv2::checkbox-group 
+                :items="config('appv2.constants.genres')"
+                model="basic.genres"
+                :colorScheme="2"
+            />
         </div>
     </div>
 

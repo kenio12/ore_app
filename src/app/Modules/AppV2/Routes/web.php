@@ -12,4 +12,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/apps-v2/{app}', [AppV2Controller::class, 'update'])->name('apps-v2.update');
     Route::delete('/apps-v2/{app}', [AppV2Controller::class, 'destroy'])->name('apps-v2.destroy');
     Route::post('/apps-v2/{app}/autosave', [AppV2Controller::class, 'autosave'])->name('apps-v2.autosave');
+});
+
+Route::prefix('apps-v2')->group(function () {
+    // 新規作成用の自動保存ルート
+    Route::post('/create/autosave', [AppV2Controller::class, 'autosave'])
+        ->name('apps-v2.create.autosave');
+
+    // 更新用の自動保存ルート
+    Route::post('/{app}/autosave', [AppV2Controller::class, 'autosave'])
+        ->name('apps-v2.autosave');
 }); 
