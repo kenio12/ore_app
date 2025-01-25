@@ -13,9 +13,9 @@ Route::middleware(['auth'])->prefix('apps-v2')->group(function () {
     Route::put('/{app}', [AppV2Controller::class, 'update'])->name('apps-v2.update');
     Route::delete('/{app}', [AppV2Controller::class, 'destroy'])->name('apps-v2.destroy');
 
-    // 自動保存用のルート
-    Route::post('/apps-v2/create/autosave', [AppV2Controller::class, 'autosave'])
+    // 自動保存用のルート（prefixを削除）
+    Route::post('/create/autosave', [AppV2Controller::class, 'autosave'])
         ->name('apps-v2.autosave.create');
-    Route::post('/apps-v2/{app}/autosave', [AppV2Controller::class, 'autosave'])
+    Route::post('/{app}/autosave', [AppV2Controller::class, 'autosave'])
         ->name('apps-v2.autosave.update');
 }); 

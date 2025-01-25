@@ -4,9 +4,12 @@ namespace App\Modules\AppV2;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use App\Modules\AppV2\Services\CloudinaryService;
 use Filament\Facades\Filament;
 use App\Modules\AppV2\Filament\Resources\AppV2Resource;
+use App\Modules\AppV2\Models\App;
+use App\Modules\AppV2\Policies\AppPolicy;
 
 class AppV2ServiceProvider extends ServiceProvider
 {
@@ -25,6 +28,9 @@ class AppV2ServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // ポリシーの登録方法を修正
+        Gate::policy(App::class, AppPolicy::class);
+
         $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
         $this->loadRoutesFrom(__DIR__ . '/Routes/api.php');
         $this->loadViewsFrom(__DIR__ . '/Views', 'AppV2');

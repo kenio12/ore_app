@@ -27,13 +27,13 @@
                                            font-bold text-lg bg-white select-none"
                                     x-init="formData.basic.status = formData.basic.status || 'draft'"
                                 >
-                                    <option value="draft" class="font-bold text-gray-600 select-none">✏️ 下書き</option>
+                                    <option value="draft" class="font-bold text-gray-600 select-none">✏️ 非公開</option>
                                     <option value="public" class="font-bold text-green-600 select-none">🌐 公開</option>
                                 </select>
                             </div>
                         </div>
                         <p class="mt-3 text-xl text-gray-600">
-                            下のタブの項目を入力し終え、上の下書きボタンを押せば、あなたのアプリを公開できます。
+                            下のタブを入力し終え、上の非公開ボタンを押せば、あなたのアプリを公開できます。
                         </p>
                     </div>
                     {{-- 公開時の注意事項 --}}

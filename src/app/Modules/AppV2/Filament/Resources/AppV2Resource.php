@@ -64,13 +64,23 @@ class AppV2Resource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('status')->sortable(),
-                Tables\Columns\TextColumn::make('app_status')->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->label('アプリ名')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('公開状態')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('更新日時')
+                    ->dateTime()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('作成日時')
+                    ->dateTime()
+                    ->sortable(),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('updated_at', 'desc')
             ->modifyQueryUsing(fn ($query) => $query->where('user_id', auth()->id()));
     }
 

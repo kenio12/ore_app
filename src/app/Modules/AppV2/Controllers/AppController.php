@@ -7,9 +7,12 @@ use App\Modules\AppV2\Models\App;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AppController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
         $apps = App::where('user_id', auth()->id())
@@ -76,59 +79,53 @@ class AppController extends Controller
     public function edit(App $app)
     {
         $this->authorize('update', $app);
+
+        // デバッグ用のログを追加
+        Log::info('Edit app data:', ['app' => $app->toArray()]);
+
         return view('AppV2::app-form', [
             'app' => $app,
             'sections' => $this->getSections(),
+            'initialData' => json_encode([  // 初期データをJSON形式で渡す
+                'basic' => [
+                    'title' => $app->title,
+                    'description' => $app->description,
+                    'status' => $app->status,
+                    // 他の必要なデータ
+                ],
+                // 他のセクションのデータ
+            ])
         ]);
     }
 
     public function autosave(Request $request, $appId = null)
     {
         try {
+            Log::info('Autosave request:', [
+                'appId' => $appId,
+                'formData' => $request->input('formData')
+            ]);
+
             $formData = $request->input('formData');
             $userId = auth()->id();
 
-            // 基本データの準備
-            $basicData = [
-                'user_id' => $userId,
-                'title' => $formData['basic']['title'] ?? '無題のアプリ',
-                'description' => $formData['basic']['description'] ?? '',
-                'status' => $formData['basic']['status'] ?? 'draft',
-                'data' => json_encode($formData)
-            ];
-
-            DB::beginTransaction();
-
-            if (!$appId || $appId === 'create') {
-                // 新規作成
-                $app = App::create($basicData);
-            } else {
-                // 既存のアプリを更新
-                $app = App::where('id', $appId)
-                         ->where('user_id', $userId)
-                         ->firstOrFail();
-                
-                $app->update($basicData);
+            if ($appId) {
+                $app = App::findOrFail($appId);
+                // 更新処理
+                $app->update([
+                    'title' => $formData['basic']['title'] ?? $app->title,
+                    'description' => $formData['basic']['description'] ?? $app->description,
+                    'status' => $formData['basic']['status'] ?? $app->status,
+                    // 他の必要なフィールド
+                ]);
             }
 
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => '保存しました',
-                'app_id' => $app->id
-            ]);
-
+            return response()->json(['success' => true]);
         } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('自動保存エラー: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-                'request' => $request->all()
-            ]);
-            
+            Log::error('Autosave error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => '保存に失敗しました: ' . $e->getMessage()
+                'message' => '保存に失敗しました'
             ], 500);
         }
     }
