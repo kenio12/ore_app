@@ -117,20 +117,21 @@ document.addEventListener('alpine:init', () => {
                 const result = await response.json();
                 console.log('Save result:', result);
                 
-                if (result.success) {
-                    if (this.shouldShowMessage) {
-                        window.dispatchEvent(new CustomEvent('autosave-success', {
-                            detail: '保存しました'
-                        }));
-                    }
-                } else {
-                    throw new Error(result.message || '保存に失敗しました');
+                if (result.success && this.shouldShowMessage) {
+                    console.log('Dispatching autosave-success event');
+                    const event = new CustomEvent('autosave-success', {
+                        detail: '保存しました'
+                    });
+                    window.dispatchEvent(event);
                 }
             } catch (error) {
                 console.error('Autosave error:', error);
-                window.dispatchEvent(new CustomEvent('autosave-error', {
-                    detail: '保存に失敗しました'
-                }));
+                if (this.shouldShowMessage) {
+                    const event = new CustomEvent('autosave-error', {
+                        detail: '保存に失敗しました: ' + error.message
+                    });
+                    window.dispatchEvent(event);
+                }
             }
         },
 
@@ -205,50 +206,32 @@ document.addEventListener('alpine:init', () => {
 
             console.log('Initialized form data:', this.formData);
 
-            // 自動保存の設定を修正
-            this.$watch('formData', (value, oldValue) => {
-                // 入力欄にフォーカスがある場合は常にメッセージを抑制
-                if (document.activeElement && 
-                    (document.activeElement.tagName.toLowerCase() === 'input' || 
-                     document.activeElement.tagName.toLowerCase() === 'textarea')) {
-                    this.shouldShowMessage = false;
-                    return;
-                }
-
-                if (JSON.stringify(value) !== JSON.stringify(oldValue)) {
-                    if (elementType === 'checkbox' || elementTag === 'select') {
-                        this.shouldShowMessage = true;
-                        this.autoSave();
-                    } else {
-                        // 入力中は自動保存のみ
-                        if (this.inputTimer) {
-                            clearTimeout(this.inputTimer);
-                        }
-                        
-                        this.inputTimer = setTimeout(() => {
-                            this.autoSave();
-                        }, 2000);
-                    }
-                }
-            }, { deep: true });
-
             // フォーカスイベントの処理を修正
-            document.querySelectorAll('input, textarea').forEach(element => {
-                // フォーカス時はメッセージを抑制
-                element.addEventListener('focus', () => {
-                    this.shouldShowMessage = false;
-                });
+            const handleFocusEvents = () => {
+                document.querySelectorAll('input, textarea, select').forEach(element => {
+                    element.addEventListener('focus', () => {
+                        console.log('Focus in - disabling messages');
+                        this.shouldShowMessage = false;
+                    });
 
-                // フォーカスが外れて500ms後にメッセージを有効化
-                element.addEventListener('blur', () => {
-                    setTimeout(() => {
-                        this.shouldShowMessage = true;
-                        if (this.inputTimer) {
-                            clearTimeout(this.inputTimer);
+                    element.addEventListener('blur', () => {
+                        console.log('Focus out - enabling messages');
+                        setTimeout(() => {
+                            this.shouldShowMessage = true;
+                            // フォーカスが外れた時に保存を実行
                             this.autoSave();
-                        }
-                    }, 500);
+                        }, 500);
+                    });
                 });
+            };
+
+            // 初期設定とDOMの変更監視
+            handleFocusEvents();
+            // DOMの変更を監視して新しい要素にもイベントリスナーを追加
+            const observer = new MutationObserver(handleFocusEvents);
+            observer.observe(document.body, { 
+                childList: true, 
+                subtree: true 
             });
 
             // セクション監視の設定

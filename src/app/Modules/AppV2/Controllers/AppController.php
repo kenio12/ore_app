@@ -109,15 +109,14 @@ class AppController extends Controller
             $formData = $request->input('formData');
             $userId = auth()->id();
 
-            if ($appId) {
-                $app = App::findOrFail($appId);
-                
-                // 基本情報の更新
+            // 新規作成時の処理を追加
+            if ($appId === 'create' || !$appId) {
                 $basicData = $formData['basic'] ?? [];
-                $app->update([
-                    'title' => $basicData['title'] ?? $app->title,
-                    'description' => $basicData['description'] ?? $app->description,
-                    'status' => $basicData['status'] ?? $app->status,
+                $app = App::create([
+                    'user_id' => $userId,
+                    'title' => $basicData['title'] ?? '無題のアプリ',
+                    'description' => $basicData['description'] ?? '',
+                    'status' => $basicData['status'] ?? 'draft',
                     'app_types' => $basicData['types'] ?? [],
                     'genres' => $basicData['genres'] ?? [],
                     'app_status' => $basicData['app_status'] ?? '',
@@ -127,30 +126,56 @@ class AppController extends Controller
                     'development_end_date' => $basicData['development_end_date'] ?? null,
                     'development_period_years' => $basicData['development_period_years'] ?? 0,
                     'development_period_months' => $basicData['development_period_months'] ?? 0,
-                    'motivation' => $basicData['motivation'] ?? '',
-                    'purpose' => $basicData['purpose'] ?? '',
                 ]);
 
-                // スクリーンショットの保存
-                if (isset($formData['screenshots'])) {
-                    $this->saveScreenshots($app, $formData['screenshots']);
-                }
-
-                // その他のセクションデータをJSON形式で保存
-                $app->update([
-                    'hardware_info' => json_encode($formData['hardware'] ?? []),
-                    'dev_env_info' => json_encode($formData['dev_env'] ?? []),
-                    'architecture_info' => json_encode($formData['architecture'] ?? []),
-                    'security_info' => json_encode($formData['security'] ?? []),
-                    'frontend_info' => json_encode($formData['frontend'] ?? []),
-                    'backend_info' => json_encode($formData['backend'] ?? []),
-                    'database_info' => json_encode($formData['database'] ?? []),
-                    'data' => json_encode([
-                        'story' => $formData['story'] ?? [],
-                        // その他の追加データ
-                    ])
+                return response()->json([
+                    'success' => true,
+                    'message' => '保存しました',
+                    'app_id' => $app->id  // 新規作成時はapp_idを返す
                 ]);
             }
+
+            // 既存のアプリの更新処理（変更なし）
+            $app = App::findOrFail($appId);
+            
+            // 基本情報の更新
+            $basicData = $formData['basic'] ?? [];
+            $app->update([
+                'title' => $basicData['title'] ?? $app->title,
+                'description' => $basicData['description'] ?? $app->description,
+                'status' => $basicData['status'] ?? $app->status,
+                'app_types' => $basicData['types'] ?? [],
+                'genres' => $basicData['genres'] ?? [],
+                'app_status' => $basicData['app_status'] ?? '',
+                'demo_url' => $basicData['demo_url'] ?? '',
+                'github_url' => $basicData['github_url'] ?? '',
+                'development_start_date' => $basicData['development_start_date'] ?? null,
+                'development_end_date' => $basicData['development_end_date'] ?? null,
+                'development_period_years' => $basicData['development_period_years'] ?? 0,
+                'development_period_months' => $basicData['development_period_months'] ?? 0,
+                'motivation' => $basicData['motivation'] ?? '',
+                'purpose' => $basicData['purpose'] ?? '',
+            ]);
+
+            // スクリーンショットの保存
+            if (isset($formData['screenshots'])) {
+                $this->saveScreenshots($app, $formData['screenshots']);
+            }
+
+            // その他のセクションデータをJSON形式で保存
+            $app->update([
+                'hardware_info' => json_encode($formData['hardware'] ?? []),
+                'dev_env_info' => json_encode($formData['dev_env'] ?? []),
+                'architecture_info' => json_encode($formData['architecture'] ?? []),
+                'security_info' => json_encode($formData['security'] ?? []),
+                'frontend_info' => json_encode($formData['frontend'] ?? []),
+                'backend_info' => json_encode($formData['backend'] ?? []),
+                'database_info' => json_encode($formData['database'] ?? []),
+                'data' => json_encode([
+                    'story' => $formData['story'] ?? [],
+                    // その他の追加データ
+                ])
+            ]);
 
             return response()->json([
                 'success' => true,
