@@ -444,54 +444,44 @@ return [
     */
     'tabs' => [
         'basic' => [
-            'id' => 'basic',
-            'name' => '基本情報',
-            'view' => '_01_basic-tab'
+            'label' => '基本情報',
+            'icon' => 'information-circle'
         ],
         'screenshots' => [
-            'id' => 'screenshots',
-            'name' => 'スクリーンショット',
-            'view' => '_02_screenshots-tab'
+            'label' => 'スクリーンショット',
+            'icon' => 'photograph'
         ],
         'story' => [
-            'id' => 'story',
-            'name' => '開発ストーリー',
-            'view' => '_03_story-tab'
+            'label' => '開発ストーリー',
+            'icon' => 'book-open'
         ],
         'hardware' => [
-            'id' => 'hardware',
-            'name' => 'ハードウェア',
-            'view' => '_04_hardware-tab'
+            'label' => 'ハードウェア',
+            'icon' => 'chip'
         ],
         'dev_env' => [
-            'id' => 'dev_env',
-            'name' => '開発環境',
-            'view' => '_05_dev-env-tab'
+            'label' => '開発環境',
+            'icon' => 'code'
         ],
         'architecture' => [
-            'id' => 'architecture',
-            'name' => 'アーキテクチャ',
-            'view' => '_06_architecture-tab'
+            'label' => 'アーキテクチャ',
+            'icon' => 'template'
         ],
         'frontend' => [
-            'id' => 'frontend',
-            'name' => 'フロントエンド',
-            'view' => '_07_frontend-tab'
+            'label' => 'フロントエンド',
+            'icon' => 'desktop-computer'
         ],
         'backend' => [
-            'id' => 'backend',
-            'name' => 'バックエンド',
-            'view' => '_08_backend-tab'
+            'label' => 'バックエンド',
+            'icon' => 'server'
         ],
         'database' => [
-            'id' => 'database',
-            'name' => 'データベース',
-            'view' => '_09_database-tab'
+            'label' => 'データベース',
+            'icon' => 'database'
         ],
         'security' => [
-            'id' => 'security',
-            'name' => 'セキュリティ',
-            'view' => '_10_security-tab'
+            'label' => 'セキュリティ',
+            'icon' => 'shield-check'
         ]
     ]
 ]; 
