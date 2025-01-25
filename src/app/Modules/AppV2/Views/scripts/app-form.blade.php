@@ -1,20 +1,18 @@
 <script>
 document.addEventListener('alpine:init', () => {
     Alpine.data('appForm', () => ({
-        appId: null,  // appIdをプロパティとして追加
-        
-        // タブ管理
+        appId: null,
         activeTab: 'basic',
-        tabs: @json(config('appv2.constants.tabs')),
-
-        // フォームデータ
+        
+        // formDataの初期化を確実に
         formData: {
             basic: {
                 title: '',
                 description: '',
-                types: [],
-                genres: [],
+                types: [],      // 配列として初期化
+                genres: [],     // 配列として初期化
                 app_status: '',
+                status: '',
                 demo_url: '',
                 github_url: '',
                 development_start_date: '',
@@ -78,13 +76,13 @@ document.addEventListener('alpine:init', () => {
             this.activeTab = tabId;
         },
 
-        // 自動保存（デバウンス付き）
+        // 自動保存
         autoSave: Alpine.debounce(function() {
+            console.log('Saving data:', this.formData);
+
             let url = this.appId === 'create' 
-                ? '/apps-v2/create/autosave'  // 新規作成用
-                : `/apps-v2/${this.appId}/autosave`;  // 更新用
-            
-            console.log('Saving to:', url, this.formData);
+                ? '/apps-v2/create/autosave' 
+                : `/apps-v2/${this.appId}/autosave`;
 
             fetch(url, {
                 method: 'POST',
@@ -94,47 +92,71 @@ document.addEventListener('alpine:init', () => {
                 },
                 body: JSON.stringify(this.formData)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    this.$dispatch('autosave-success', '自動保存しました');
+                    // イベント名を統一
+                    window.dispatchEvent(new CustomEvent('autosave-success', {
+                        detail: '変更を自動保存しました！'
+                    }));
                 }
             })
             .catch(error => {
-                console.error('自動保存エラー:', error);
-                this.$dispatch('autosave-error', error.message);
+                console.error('Auto save error:', error);
+                window.dispatchEvent(new CustomEvent('autosave-error', {
+                    detail: '自動保存に失敗しました'
+                }));
             });
-        }, 2000),
+        }, 1000),
 
         // 初期化
         init() {
-            // appIdの取得を最優先
+            console.log('Initial formData:', this.formData);
+            // デバッグ用
+            console.log('Initial formData structure:', this.formData);
+
+            // appIdの取得
             const appIdInput = document.querySelector('input[name="app_id"]');
             if (appIdInput) {
                 this.appId = appIdInput.value;
-                console.log('Found appId:', this.appId);
-            } else {
-                console.error('app_id input not found');
-                // 新規作成モードとして扱う
-                this.appId = 'create';
             }
 
-            // 配列の初期化を確実に
-            this.formData.basic.types = this.formData.basic.types || [];
-            this.formData.basic.genres = this.formData.basic.genres || [];
-
-            // 初期データのロード
-            if (window.initialData) {
+            // 既存データのロード
+            const savedData = {!! isset($app) ? json_encode($app) : 'null' !!};
+            if (savedData) {
+                // 配列の初期化を保持したままマージ
                 this.formData = {
                     ...this.formData,
-                    ...window.initialData
+                    basic: {
+                        ...this.formData.basic,
+                        ...savedData.basic
+                    }
                 };
             }
+
+            // セッションデータの復元
+            const sessionData = {!! session('app_form_data') ? json_encode(session('app_form_data')) : 'null' !!};
+            if (sessionData) {
+                // 配列の初期化を保持したままマージ
+                this.formData = {
+                    ...this.formData,
+                    basic: {
+                        ...this.formData.basic,
+                        ...sessionData.basic
+                    }
+                };
+            }
+
+            // デバッグ用
+            console.log('After initialization:', this.formData);
+
+            // デバッグ用のウォッチャーを追加
+            this.$watch('formData.basic.types', (value) => {
+                console.log('Types changed:', value);
+            });
+            this.$watch('formData.basic.genres', (value) => {
+                console.log('Genres changed:', value);
+            });
         }
     }));
 });
