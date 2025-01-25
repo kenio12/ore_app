@@ -207,42 +207,47 @@ document.addEventListener('alpine:init', () => {
 
             // 自動保存の設定を修正
             this.$watch('formData', (value, oldValue) => {
-                if (document.activeElement) {
-                    const elementType = document.activeElement.type;
-                    const elementTag = document.activeElement.tagName.toLowerCase();
-                    
-                    // 値が実際に変更された場合のみ保存を実行
-                    if (JSON.stringify(value) !== JSON.stringify(oldValue)) {
-                        if (elementType === 'checkbox' || elementTag === 'select') {
-                            // チェックボックスとセレクトは即時保存でメッセージ表示
-                            this.shouldShowMessage = true;
-                            this.autoSave();
-                        } else if (elementType === 'text' || elementType === 'url' || elementTag === 'textarea') {
-                            // テキスト入力は遅延保存でメッセージ非表示
-                            this.shouldShowMessage = false;
-                            
-                            if (this.inputTimer) {
-                                clearTimeout(this.inputTimer);
-                            }
-                            
-                            this.inputTimer = setTimeout(() => {
-                                // フォーカスが外れた時だけメッセージを表示
-                                this.shouldShowMessage = document.activeElement !== document.querySelector(':focus');
-                                this.autoSave();
-                            }, 2000);  // 遅延時間を2秒に延長
+                // 入力欄にフォーカスがある場合は常にメッセージを抑制
+                if (document.activeElement && 
+                    (document.activeElement.tagName.toLowerCase() === 'input' || 
+                     document.activeElement.tagName.toLowerCase() === 'textarea')) {
+                    this.shouldShowMessage = false;
+                    return;
+                }
+
+                if (JSON.stringify(value) !== JSON.stringify(oldValue)) {
+                    if (elementType === 'checkbox' || elementTag === 'select') {
+                        this.shouldShowMessage = true;
+                        this.autoSave();
+                    } else {
+                        // 入力中は自動保存のみ
+                        if (this.inputTimer) {
+                            clearTimeout(this.inputTimer);
                         }
+                        
+                        this.inputTimer = setTimeout(() => {
+                            this.autoSave();
+                        }, 2000);
                     }
                 }
             }, { deep: true });
 
-            // フォーカスが外れた時の処理を追加
+            // フォーカスイベントの処理を修正
             document.querySelectorAll('input, textarea').forEach(element => {
+                // フォーカス時はメッセージを抑制
+                element.addEventListener('focus', () => {
+                    this.shouldShowMessage = false;
+                });
+
+                // フォーカスが外れて500ms後にメッセージを有効化
                 element.addEventListener('blur', () => {
-                    this.shouldShowMessage = true;
-                    if (this.inputTimer) {
-                        clearTimeout(this.inputTimer);
-                        this.autoSave();
-                    }
+                    setTimeout(() => {
+                        this.shouldShowMessage = true;
+                        if (this.inputTimer) {
+                            clearTimeout(this.inputTimer);
+                            this.autoSave();
+                        }
+                    }, 500);
                 });
             });
 

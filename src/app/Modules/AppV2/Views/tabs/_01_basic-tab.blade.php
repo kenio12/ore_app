@@ -1,4 +1,13 @@
-<div class="space-y-8">
+<div class="space-y-8"
+    x-data="{
+        debouncedAutoSave: Alpine.debounce(function() {
+            this.autoSave();
+        }, 1000),
+        handleInput() {
+            this.debouncedAutoSave();
+        }
+    }"
+>
     {{-- 超豪華ヘッダー --}}
     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 p-[2px]">
         <div class="relative bg-white/90 backdrop-blur-xl rounded-2xl p-8">
@@ -23,7 +32,7 @@
             <input 
                 type="text"
                 x-model="formData.basic.title"
-                @input="autoSave"
+                @input="handleInput"
                 class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                        focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20
                        hover:border-pink-300 transition-all duration-300"
@@ -40,7 +49,7 @@
             </label>
             <textarea
                 x-model="formData.basic.description"
-                @input="autoSave"
+                @input="handleInput"
                 rows="4"
                 class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                        focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20
@@ -55,25 +64,59 @@
             <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-pink-600">
                 アプリの種類
             </label>
-            <x-appv2::checkbox-group 
-                :items="config('appv2.constants.app_types')"
-                model="basic.types"
-                :colorScheme="1"
-            />
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                @foreach(config('appv2.constants.app_types') as $key => $value)
+                    <label class="relative cursor-pointer">
+                        <input 
+                            type="checkbox"
+                            x-model="formData.basic.types"
+                            value="{{ $key }}"
+                            class="peer sr-only"
+                            @change="$nextTick(() => handleInput())"
+                        >
+                        <div 
+                            :class="{
+                                'border-blue-500 bg-blue-50 text-blue-700': formData.basic.types.includes('{{ $key }}'),
+                                'border-gray-200 hover:border-blue-300': !formData.basic.types.includes('{{ $key }}')
+                            }"
+                            class="rounded-lg border-2 p-4 transition-all duration-300 flex items-center justify-center"
+                        >
+                            <span class="block text-center">{{ $value }}</span>
+                        </div>
+                    </label>
+                @endforeach
+            </div>
         </div>
     </div>
 
     {{-- ジャンル --}}
     <div class="transform hover:scale-[1.02] transition-all duration-500">
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
-            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-violet-600">
+            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">
                 ジャンル
             </label>
-            <x-appv2::checkbox-group 
-                :items="config('appv2.constants.genres')"
-                model="basic.genres"
-                :colorScheme="2"
-            />
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                @foreach(config('appv2.constants.genres') as $key => $value)
+                    <label class="relative cursor-pointer">
+                        <input 
+                            type="checkbox"
+                            x-model="formData.basic.genres"
+                            value="{{ $key }}"
+                            class="peer sr-only"
+                            @change="$nextTick(() => handleInput())"
+                        >
+                        <div 
+                            :class="{
+                                'border-indigo-500 bg-indigo-50 text-indigo-700': formData.basic.genres.includes('{{ $key }}'),
+                                'border-gray-200 hover:border-indigo-300': !formData.basic.genres.includes('{{ $key }}')
+                            }"
+                            class="rounded-lg border-2 p-4 transition-all duration-300 flex items-center justify-center"
+                        >
+                            <span class="block text-center">{{ $value }}</span>
+                        </div>
+                    </label>
+                @endforeach
+            </div>
         </div>
     </div>
 
@@ -85,33 +128,12 @@
             </label>
             <div class="mt-4">
                 <select x-model="formData.basic.app_status"
-                        @change="autoSave"
+                        @change="handleInput"
                         class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                                focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20
                                hover:border-violet-300 transition-all duration-300">
                     <option value="">選択してください</option>
                     @foreach(config('appv2.constants.app_status') as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-    </div>
-
-    {{-- 公開状態 --}}
-    <div class="transform hover:scale-[1.02] transition-all duration-500">
-        <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
-            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-pink-600">
-                このサイト自体の公開状態
-            </label>
-            <div class="mt-4">
-                <select x-model="formData.basic.status"
-                        @change="autoSave"
-                        class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
-                               focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20
-                               hover:border-violet-300 transition-all duration-300">
-                    <option value="">選択してください</option>
-                    @foreach(config('appv2.constants.status_options') as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
                     @endforeach
                 </select>
@@ -128,7 +150,7 @@
             <input 
                 type="url" 
                 x-model="formData.basic.demo_url"
-                @input="autoSave"
+                @input="handleInput"
                 class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                        focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20
                        hover:border-pink-300 transition-all duration-300"
@@ -146,7 +168,7 @@
             <input 
                 type="url" 
                 x-model="formData.basic.github_url"
-                @input="autoSave"
+                @input="handleInput"
                 class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                        focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20
                        hover:border-pink-300 transition-all duration-300"
@@ -167,7 +189,7 @@
                     <input 
                         type="date" 
                         x-model="formData.basic.development_start_date"
-                        @input="autoSave"
+                        @input="handleInput"
                         class="w-full rounded-lg border-2 border-gray-200 p-4
                                focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20"
                     >
@@ -177,7 +199,7 @@
                     <input 
                         type="date" 
                         x-model="formData.basic.development_end_date"
-                        @input="autoSave"
+                        @input="handleInput"
                         class="w-full rounded-lg border-2 border-gray-200 p-4
                                focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20"
                     >
@@ -188,7 +210,7 @@
                     <input 
                         type="number" 
                         x-model="formData.basic.development_period_years"
-                        @input="autoSave"
+                        @input="handleInput"
                         class="w-20 rounded-lg border-2 border-gray-200 p-4
                                focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20"
                         min="0"
@@ -199,7 +221,7 @@
                     <input 
                         type="number" 
                         x-model="formData.basic.development_period_months"
-                        @input="autoSave"
+                        @input="handleInput"
                         class="w-20 rounded-lg border-2 border-gray-200 p-4
                                focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20"
                         min="0"

@@ -26,6 +26,14 @@ return new class extends Migration
             $table->integer('development_period_months')->default(0);
             $table->date('development_start_date')->nullable();
             $table->date('development_end_date')->nullable();
+            $table->json('data')->nullable();
+            $table->json('hardware_info')->nullable();
+            $table->json('dev_env_info')->nullable();
+            $table->json('architecture_info')->nullable();
+            $table->json('security_info')->nullable();
+            $table->json('frontend_info')->nullable();
+            $table->json('backend_info')->nullable();
+            $table->json('database_info')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

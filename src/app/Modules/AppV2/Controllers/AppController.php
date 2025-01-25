@@ -111,22 +111,70 @@ class AppController extends Controller
 
             if ($appId) {
                 $app = App::findOrFail($appId);
-                // 更新処理
+                
+                // 基本情報の更新
+                $basicData = $formData['basic'] ?? [];
                 $app->update([
-                    'title' => $formData['basic']['title'] ?? $app->title,
-                    'description' => $formData['basic']['description'] ?? $app->description,
-                    'status' => $formData['basic']['status'] ?? $app->status,
-                    // 他の必要なフィールド
+                    'title' => $basicData['title'] ?? $app->title,
+                    'description' => $basicData['description'] ?? $app->description,
+                    'status' => $basicData['status'] ?? $app->status,
+                    'app_types' => $basicData['types'] ?? [],
+                    'genres' => $basicData['genres'] ?? [],
+                    'app_status' => $basicData['app_status'] ?? '',
+                    'demo_url' => $basicData['demo_url'] ?? '',
+                    'github_url' => $basicData['github_url'] ?? '',
+                    'development_start_date' => $basicData['development_start_date'] ?? null,
+                    'development_end_date' => $basicData['development_end_date'] ?? null,
+                    'development_period_years' => $basicData['development_period_years'] ?? 0,
+                    'development_period_months' => $basicData['development_period_months'] ?? 0,
+                ]);
+
+                // スクリーンショットの保存
+                if (isset($formData['screenshots'])) {
+                    $this->saveScreenshots($app, $formData['screenshots']);
+                }
+
+                // その他のセクションデータをJSON形式で保存
+                $app->update([
+                    'hardware_info' => json_encode($formData['hardware'] ?? []),
+                    'dev_env_info' => json_encode($formData['dev_env'] ?? []),
+                    'architecture_info' => json_encode($formData['architecture'] ?? []),
+                    'security_info' => json_encode($formData['security'] ?? []),
+                    'frontend_info' => json_encode($formData['frontend'] ?? []),
+                    'backend_info' => json_encode($formData['backend'] ?? []),
+                    'database_info' => json_encode($formData['database'] ?? []),
+                    'data' => json_encode([
+                        'story' => $formData['story'] ?? [],
+                        // その他の追加データ
+                    ])
                 ]);
             }
 
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'message' => '保存しました'
+            ]);
         } catch (\Exception $e) {
             Log::error('Autosave error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => '保存に失敗しました'
+                'message' => '保存に失敗しました: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    private function saveScreenshots($app, $screenshots)
+    {
+        // 既存のスクリーンショットを一旦削除
+        $app->screenshots()->delete();
+        
+        // 新しいスクリーンショットを保存
+        foreach ($screenshots as $index => $screenshot) {
+            $app->screenshots()->create([
+                'cloudinary_public_id' => $screenshot['public_id'],
+                'url' => $screenshot['url'],
+                'order' => $index
+            ]);
         }
     }
 

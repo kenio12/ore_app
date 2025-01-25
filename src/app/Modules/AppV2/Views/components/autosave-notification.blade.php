@@ -2,10 +2,29 @@
     x-data="{ 
         show: false, 
         message: '',
+        lastMessage: '',
+        lastShown: 0,
         showNotification(msg) {
+            const now = Date.now();
+            
+            // 入力欄にフォーカスがある場合は表示しない
+            if (document.activeElement && 
+                (document.activeElement.tagName.toLowerCase() === 'input' || 
+                 document.activeElement.tagName.toLowerCase() === 'textarea')) {
+                return;
+            }
+
+            // 同じメッセージは5秒以内は表示しない
+            if (this.lastMessage === msg && now - this.lastShown < 5000) {
+                return;
+            }
+            
             this.show = true;
             this.message = msg;
-            setTimeout(() => this.show = false, 3000);
+            this.lastMessage = msg;
+            this.lastShown = now;
+            
+            setTimeout(() => this.show = false, 2000);
         }
     }"
     @autosave-success.window="showNotification($event.detail)"
