@@ -124,28 +124,37 @@ document.addEventListener('alpine:init', () => {
             // 既存データのロード
             const savedData = {!! isset($app) ? json_encode($app) : 'null' !!};
             if (savedData) {
-                // 配列の初期化を保持したままマージ
                 this.formData = {
                     ...this.formData,
                     basic: {
                         ...this.formData.basic,
                         ...savedData.basic
-                    }
+                    },
+                    screenshots: savedData.screenshots || []
                 };
             }
 
             // セッションデータの復元
             const sessionData = {!! session('app_form_data') ? json_encode(session('app_form_data')) : 'null' !!};
             if (sessionData) {
-                // 配列の初期化を保持したままマージ
                 this.formData = {
                     ...this.formData,
                     basic: {
                         ...this.formData.basic,
                         ...sessionData.basic
-                    }
+                    },
+                    screenshots: sessionData.screenshots || []
                 };
             }
+
+            // グローバルformDataの初期化
+            window.formData = this.formData;
+
+            // フォームデータの変更を監視
+            this.$watch('formData', (value) => {
+                window.formData = value;
+                window.dispatchEvent(new CustomEvent('formDataUpdated'));
+            }, { deep: true });
 
             // デバッグ用
             console.log('After initialization:', this.formData);

@@ -5,8 +5,8 @@
     $viewOnly = $viewOnly ?? false;
 @endphp
 
+{{-- ヘッダー部分 --}}
 <div class="space-y-8">
-    {{-- ヘッダー --}}
     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 p-[2px]">
         <div class="relative bg-white/90 backdrop-blur-xl rounded-2xl p-8">
             <div class="absolute inset-0 bg-gradient-to-r from-amber-50/50 to-yellow-50/50 animate-pulse"></div>
@@ -20,78 +20,57 @@
     </div>
 
     {{-- アップロードエリア --}}
-    <div class="bg-white p-8 rounded-lg shadow mb-8">
-        <div class="mb-6">
-            @if($viewOnly ?? false)
-                {{-- 表示モード --}}
-                <div id="preview-container" class="mt-4 space-y-4">
-                    @if(isset($app) && isset($app->screenshots) && is_array($app->screenshots))
-                        @foreach($app->screenshots as $screenshot)
-                            <div class="relative block">
-                                <img 
-                                    src="{{ $screenshot['url'] }}" 
-                                    style="min-height: 80vh; max-height: 70vh; width: auto; object-fit: contain;"
-                                    class="mx-auto block cursor-pointer rounded-lg"
-                                    onclick="window.dispatchEvent(new CustomEvent('open-app-screenshot-modal', {detail: {src: this.src}}))"
-                                    alt="アプリのスクリーンショット"
-                                >
-                            </div>
-                        @endforeach
-                    @endif
-                </div>
-            @else
-                {{-- アップロードフォーム --}}
-                <div class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                    <div class="space-y-1 text-center">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4-4m4-4l4-4m-4-4l4-4m-4 4l4 4m-4 4l4 4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <div class="flex text-sm text-gray-600">
-                            <label for="screenshots" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                <span>ファイルを選択</span>
-                                <input 
-                                    type="file"
-                                    id="screenshots"
-                                    name="screenshots[]"
-                                    accept="image/*"
-                                    multiple
-                                    class="sr-only"
-                                >
-                            </label>
-                            <p class="pl-1">またはドラッグ＆ドロップ</p>
-                        </div>
-                        <p class="text-xs text-gray-500">PNG, JPG, GIF up to 5MB</p>
-                    </div>
-                </div>
-
-                {{-- プレビュー表示 --}}
-                <div id="preview-container" class="mt-4 space-y-4">
-                    @if(isset($app) && !empty($app->screenshots) && is_array($app->screenshots))
-                        @foreach($app->screenshots as $screenshot)
-                            <div class="relative block">
-                                <img 
-                                    src="{{ $screenshot['url'] ?? '' }}" 
-                                    style="min-height: 80vh; max-height: 70vh; width: auto; object-fit: contain;"
-                                    class="mx-auto block cursor-pointer rounded-lg"
-                                    onclick="window.dispatchEvent(new CustomEvent('open-app-screenshot-modal', {detail: {src: this.src}}))"
-                                    alt="アプリのスクリーンショット"
-                                >
-                                {{-- 既存画像のURL情報を保持 --}}
-                                <input type="hidden" name="existing_screenshots[]" value="{{ json_encode($screenshot) }}">
-                                <button 
-                                    type="button"
-                                    onclick="this.parentElement.remove()"
-                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                                >×</button>
-                            </div>
-                        @endforeach
-                    @endif
+    <div x-data="screenshotTab">
+        <div class="space-y-8">
+            @if(!$viewOnly)
+                {{-- ドラッグ&ドロップエリア追加 --}}
+                <div 
+                    class="mt-4 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center"
+                    @dragover.prevent
+                    @drop.prevent="handleFiles($event.dataTransfer.files)"
+                >
+                    <p class="text-gray-600">
+                        ここにファイルをドラッグ&ドロップするか、
+                    </p>
+                    <input 
+                        type="file" 
+                        id="screenshot-upload"
+                        class="hidden" 
+                        accept="image/*" 
+                        multiple
+                        @change="handleFiles($event.target.files)"
+                    >
+                    <label 
+                        for="screenshot-upload"
+                        class="inline-block px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600 mt-2"
+                    >
+                        スクリーンショットを追加
+                    </label>
                 </div>
             @endif
 
-            @error('screenshots')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-            @enderror
+            {{-- プレビュー表示 --}}
+            <div class="mt-4 space-y-4">
+                <template x-for="screenshot in screenshots" :key="screenshot.url">
+                    <div class="relative">
+                        <img 
+                            :src="screenshot.url" 
+                            class="max-w-full h-auto rounded-lg"
+                            alt="アプリのスクリーンショット"
+                        >
+                        @if(!$viewOnly)
+                            <button 
+                                @click="removeScreenshot(screenshot)"
+                                class="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        @endif
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
 </div>
@@ -133,144 +112,133 @@
     </div>
 </div>
 
+{{-- Alpine.js スクリプト --}}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const input = document.getElementById('screenshots');
-    if (!input) return;
-
-    const previewContainer = document.getElementById('preview-container');
-    const maxFiles = 3;
-    const maxSize = 5 * 1024 * 1024; // 5MB
-
-    async function handleFiles(files) {
-        const currentImages = previewContainer.querySelectorAll('.relative').length;
+document.addEventListener('alpine:init', () => {
+    Alpine.data('screenshotTab', () => ({
+        screenshots: [],
         
-        if (currentImages >= maxFiles) {
-            alert('スクリーンショットは最大3枚までです。');
-            return;
-        }
+        init() {
+            // 初期データの読み込み
+            if (window.formData && window.formData.screenshots) {
+                this.screenshots = [...window.formData.screenshots];
+            }
 
-        for (const file of Array.from(files)) {
-            let loadingDiv = null;  // ここで定義
-            try {
-                // バリデーション
-                if (file.size > maxSize) {
-                    alert(`${file.name}は5MB以上です`);
-                    continue;
+            // フォームデータの更新を監視
+            window.addEventListener('formDataUpdated', () => {
+                if (window.formData && window.formData.screenshots) {
+                    this.screenshots = [...window.formData.screenshots];
                 }
+            });
+        },
 
-                if (!file.type.startsWith('image/')) {
-                    alert(`${file.name}は画像ファイルではありません`);
-                    continue;
-                }
+        async handleFiles(files) {
+            const maxFiles = 3;
+            const maxSize = 5 * 1024 * 1024; // 5MB
 
-                // FormData作成
-                const formData = new FormData();
-                formData.append('screenshot', file);
+            if (this.screenshots.length >= maxFiles) {
+                this.showToast('スクリーンショットは最大3枚までです。', 'error');
+                return;
+            }
 
-                // ローディング表示
-                loadingDiv = document.createElement('div');
-                loadingDiv.className = 'relative block mb-4';
-                loadingDiv.innerHTML = `
-                    <div class="flex items-center justify-center h-[80vh] bg-gray-100 rounded-lg">
-                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-                    </div>
-                `;
-                previewContainer.appendChild(loadingDiv);
-
-                // アップロード
-                const response = await fetch('/api/v2/screenshots/upload', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            for (const file of Array.from(files)) {
+                try {
+                    // バリデーション
+                    if (file.size > maxSize) {
+                        throw new Error(`${file.name}は5MB以上です`);
                     }
-                });
 
-                const result = await response.json();
+                    // FormData作成とアップロード処理
+                    const formData = new FormData();
+                    formData.append('screenshot', file);
 
-                if (!result.success) {
-                    throw new Error(result.message || 'アップロードに失敗しました');
-                }
+                    const response = await fetch('/api/v2/screenshots/upload', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    });
 
-                // プレビュー作成
-                const imageContainer = document.createElement('div');
-                imageContainer.className = 'relative block mb-4';
-                imageContainer.innerHTML = `
-                    <img 
-                        src="${result.url}" 
-                        style="min-height: 80vh; max-height: 70vh; width: auto; object-fit: contain;"
-                        class="mx-auto block cursor-pointer rounded-lg"
-                        onclick="window.dispatchEvent(new CustomEvent('open-app-screenshot-modal', {detail: {src: '${result.url}'}}))"
-                        alt="アプリのスクリーンショット"
-                    >
-                    <input type="hidden" name="screenshots[]" value='${JSON.stringify({
+                    const result = await response.json();
+
+                    if (!result.success) {
+                        throw new Error(result.message || 'アップロードに失敗しました');
+                    }
+
+                    // window.formDataの初期化確認
+                    if (!window.formData) {
+                        window.formData = { screenshots: [] };
+                    }
+
+                    // スクリーンショット配列に追加
+                    this.screenshots.push({
                         public_id: result.public_id,
                         url: result.url
-                    })}'>
-                    <button 
-                        type="button"
-                        onclick="removeScreenshot(this.parentElement)"
-                        class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                    >×</button>
-                `;
-                previewContainer.appendChild(imageContainer);
+                    });
 
-            } catch (error) {
-                console.error('Upload error:', error);
-                alert('アップロードに失敗しました: ' + error.message);
-            } finally {
-                if (loadingDiv) {
-                    loadingDiv.remove();
+                    // フォームデータの更新
+                    window.formData.screenshots = [...this.screenshots];
+                    window.dispatchEvent(new CustomEvent('formDataUpdated'));
+
+                    this.showToast('スクリーンショットを保存しました');
+                    
+                    if (typeof window.autoSave === 'function') {
+                        await window.autoSave();
+                    }
+
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    this.showToast(error.message, 'error');
                 }
             }
+        },
+
+        async removeScreenshot(screenshot) {
+            if (confirm('この画像を削除してもよろしいですか？')) {
+                try {
+                    const response = await fetch('/api/v2/screenshots/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ public_id: screenshot.public_id })
+                    });
+
+                    if (!response.ok) throw new Error('削除に失敗しました');
+
+                    const index = this.screenshots.findIndex(s => s.url === screenshot.url);
+                    if (index > -1) {
+                        this.screenshots.splice(index, 1);
+                        window.formData.screenshots = [...this.screenshots];
+                        
+                        // フォームデータの更新後にイベント発火
+                        window.dispatchEvent(new CustomEvent('formDataUpdated'));
+
+                        this.showToast('スクリーンショットを削除しました');
+                        if (typeof window.autoSave === 'function') {
+                            await window.autoSave();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Delete error:', error);
+                    this.showToast(error.message, 'error');
+                }
+            }
+        },
+
+        showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-500`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
         }
-    }
-
-    // スクリーンショットの削除
-    window.removeScreenshot = function(element) {
-        if (confirm('この画像を削除してもよろしいですか？')) {
-            element.remove();
-        }
-    };
-
-    // ドラッグ&ドロップの処理
-    const dropArea = input.closest('div.mt-2');
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, preventDefaults, false);
-    });
-
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropArea.addEventListener(eventName, highlight, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropArea.addEventListener(eventName, unhighlight, false);
-    });
-
-    function highlight(e) {
-        dropArea.classList.add('border-blue-500', 'bg-blue-50');
-    }
-
-    function unhighlight(e) {
-        dropArea.classList.remove('border-blue-500', 'bg-blue-50');
-    }
-
-    dropArea.addEventListener('drop', handleDrop, false);
-
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        handleFiles(files);
-    }
-
-    input.addEventListener('change', function(e) {
-        handleFiles(e.target.files);
-    });
+    }));
 });
 </script> 

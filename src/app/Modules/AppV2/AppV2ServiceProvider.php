@@ -5,6 +5,8 @@ namespace App\Modules\AppV2;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use App\Modules\AppV2\Services\CloudinaryService;
+use Filament\Facades\Filament;
+use App\Modules\AppV2\Filament\Resources\AppV2Resource;
 
 class AppV2ServiceProvider extends ServiceProvider
 {
@@ -21,7 +23,7 @@ class AppV2ServiceProvider extends ServiceProvider
         });
     }
 
-    public function boot()
+    public function boot(): void
     {
         $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
         $this->loadRoutesFrom(__DIR__ . '/Routes/api.php');
@@ -30,5 +32,10 @@ class AppV2ServiceProvider extends ServiceProvider
 
         // コンポーネントの登録を追加
         Blade::componentNamespace('App\\Modules\\AppV2\\Views\\Components', 'appv2');
+
+        // Filamentリソースの登録
+        Filament::registerResources([
+            AppV2Resource::class,
+        ]);
     }
 } 

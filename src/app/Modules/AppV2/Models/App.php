@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
+use App\Modules\AppV2\Models\Screenshot;
+use App\Modules\AppV2\Models\Hardware;
 
 class App extends Model
 {
@@ -92,6 +94,11 @@ class App extends Model
     public function database()
     {
         return $this->hasOne(Database::class);
+    }
+
+    public function screenshots()
+    {
+        return $this->hasMany(Screenshot::class);
     }
 
     // ヘルパーメソッド

@@ -51,10 +51,19 @@ class AppController extends Controller
         }
     }
 
-    public function show(App $app)
+    public function show($id)
     {
-        $this->authorize('view', $app);
-        return view('AppV2::show', compact('app'));
+        $app = App::with(['screenshots'])->findOrFail($id);
+        
+        // スクリーンショットデータの整形
+        $app->screenshots = $app->screenshots->map(function($screenshot) {
+            return [
+                'public_id' => $screenshot->cloudinary_public_id,
+                'url' => $screenshot->url
+            ];
+        });
+
+        return view('app-v2.show', compact('app'));
     }
 
     public function edit(App $app)
