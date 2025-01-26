@@ -19,7 +19,6 @@ class App extends Model
         'user_id',
         'title',
         'description',
-        'screenshots',
         'demo_url',
         'github_url',
         'status',
@@ -45,7 +44,6 @@ class App extends Model
     ];
 
     protected $casts = [
-        'screenshots' => 'array',
         'completed_sections' => 'array',
         'app_types' => 'array',
         'genres' => 'array',

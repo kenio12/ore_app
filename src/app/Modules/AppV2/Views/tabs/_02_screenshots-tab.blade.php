@@ -31,7 +31,8 @@
                 if (result.success) {
                     this.screenshots.push({
                         public_id: result.public_id,
-                        url: result.url
+                        url: result.url,
+                        order: this.screenshots.length
                     });
                     this.$dispatch('screenshots-updated', this.screenshots);
                 }

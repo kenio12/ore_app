@@ -117,21 +117,33 @@ document.addEventListener('alpine:init', () => {
                 const result = await response.json();
                 console.log('Save result:', result);
                 
-                if (result.success && this.shouldShowMessage) {
-                    console.log('Dispatching autosave-success event');
-                    const event = new CustomEvent('autosave-success', {
-                        detail: '保存しました'
+                // 新規作成時はapp_idを更新
+                if (result.app_id) {
+                    this.appId = result.app_id;
+                    // hidden inputのvalueも更新
+                    const appIdInput = document.querySelector('input[name="app_id"]');
+                    if (appIdInput) {
+                        appIdInput.value = result.app_id;
+                    }
+                }
+
+                // メッセージ表示の処理を修正
+                if (result.success) {
+                    // イベントをdispatchする代わりに直接Alpine.jsのグローバルストアを使用
+                    Alpine.store('notification', {
+                        show: true,
+                        message: result.message || '保存しました',
+                        type: 'success'
                     });
-                    window.dispatchEvent(event);
                 }
             } catch (error) {
                 console.error('Autosave error:', error);
-                if (this.shouldShowMessage) {
-                    const event = new CustomEvent('autosave-error', {
-                        detail: '保存に失敗しました: ' + error.message
-                    });
-                    window.dispatchEvent(event);
-                }
+                // エラー時も同様にグローバルストアを使用
+                Alpine.store('notification', {
+                    show: true,
+                    message: '保存に失敗しました: ' + error.message,
+                    type: 'error'
+                });
             }
         },
 

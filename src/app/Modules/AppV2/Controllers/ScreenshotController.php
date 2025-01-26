@@ -33,7 +33,7 @@ class ScreenshotController extends Controller
             return response()->json([
                 'success' => true,
                 'public_id' => $result['public_id'],
-                'url' => $result['secure_url']
+                'url' => $result['url']
             ]);
 
         } catch (\Exception $e) {

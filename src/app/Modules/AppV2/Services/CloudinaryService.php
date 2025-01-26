@@ -79,7 +79,7 @@ class CloudinaryService
             
             return [
                 'public_id' => $result->getPublicId(),
-                'secure_url' => $result->getSecurePath()
+                'url' => $result->getSecurePath()
             ];
         } catch (\Exception $e) {
             Log::error('Cloudinary upload failed:', [
