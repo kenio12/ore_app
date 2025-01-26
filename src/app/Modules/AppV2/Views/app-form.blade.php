@@ -187,7 +187,14 @@
                         development_period_years: 0,
                         development_period_months: 0,
                         motivation: '',
-                        purpose: ''
+                        purpose: '',
+                        development_trigger: '',
+                        development_hardship: '',
+                        development_tearful: '',
+                        development_enjoyable: '',
+                        development_funny: '',
+                        development_impression: '',
+                        development_oneword: ''
                     },
                     screenshots: [],
                     story: {
@@ -353,7 +360,14 @@
                             development_period_years: savedData.development_period_years || 0,
                             development_period_months: savedData.development_period_months || 0,
                             motivation: savedData.motivation || '',
-                            purpose: savedData.purpose || ''
+                            purpose: savedData.purpose || '',
+                            development_trigger: savedData.development_trigger || '',
+                            development_hardship: savedData.development_hardship || '',
+                            development_tearful: savedData.development_tearful || '',
+                            development_enjoyable: savedData.development_enjoyable || '',
+                            development_funny: savedData.development_funny || '',
+                            development_impression: savedData.development_impression || '',
+                            development_oneword: savedData.development_oneword || ''
                         };
 
                         // その他のセクションの復元

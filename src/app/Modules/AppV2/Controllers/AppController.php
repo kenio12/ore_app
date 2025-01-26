@@ -267,18 +267,22 @@ class AppController extends Controller
 
             // ==================== ⚠️危険！上のコードは絶対に消すな！！！！ ====================
 
-            // ストーリー情報の保存（既存コードの後に追加）
-            if ($request->has('story')) {
+            // ストーリー情報の保存（修正版）
+            if ($request->has('formData.basic')) {
                 $app->update([
-                    'development_trigger' => $request->input('story.development_trigger'),
-                    'development_hardship' => $request->input('story.development_hardship'),
-                    'development_tearful' => $request->input('story.development_tearful'),
-                    'development_enjoyable' => $request->input('story.development_enjoyable'),
-                    'development_funny' => $request->input('story.development_funny'),
-                    'development_impression' => $request->input('story.development_impression'),
-                    'development_oneword' => $request->input('story.development_oneword')
+                    'development_trigger' => $request->input('formData.basic.development_trigger'),
+                    'development_hardship' => $request->input('formData.basic.development_hardship'),
+                    'development_tearful' => $request->input('formData.basic.development_tearful'),
+                    'development_enjoyable' => $request->input('formData.basic.development_enjoyable'),
+                    'development_funny' => $request->input('formData.basic.development_funny'),
+                    'development_impression' => $request->input('formData.basic.development_impression'),
+                    'development_oneword' => $request->input('formData.basic.development_oneword')
                 ]);
             }
+
+            Log::debug('Story data received:', [
+                'data' => $request->input('formData.basic')
+            ]);
 
             DB::commit();
             return response()->json(['success' => true]);
