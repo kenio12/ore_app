@@ -1,6 +1,7 @@
 <?php
 
 use App\Modules\AppV2\Controllers\AppController as AppV2Controller;
+use App\Modules\AppV2\Controllers\ScreenshotController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['web', 'auth']], function () {
@@ -16,5 +17,12 @@ Route::group(['middleware' => ['web', 'auth']], function () {
         Route::post('/{app}/autosave', [AppV2Controller::class, 'autosave'])
             ->where('app', '[0-9]+')
             ->name('apps-v2.autosave');
+
+        Route::prefix('screenshots')->group(function () {
+            Route::post('/upload', [ScreenshotController::class, 'upload'])
+                ->name('apps-v2.screenshots.upload');
+            Route::post('/delete', [ScreenshotController::class, 'delete'])
+                ->name('apps-v2.screenshots.delete');
+        });
     });
 }); 

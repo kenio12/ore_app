@@ -3,13 +3,12 @@
     
     // データの初期化
     $formData = $initialData ?? [];
-    // コレクションを配列に変換して、必要なプロパティだけ抽出
     $screenshots = collect($formData['screenshots'] ?? [])->map(function($screenshot) {
         return [
-            'id' => $screenshot->id ?? null,
-            'public_id' => $screenshot->public_id ?? null,
-            'url' => $screenshot->url ?? null,
-            'order' => $screenshot->order ?? 0
+            'id' => $screenshot['id'] ?? null,
+            'public_id' => $screenshot['public_id'] ?? null,
+            'url' => $screenshot['url'] ?? null,
+            'order' => $screenshot['order'] ?? 0
         ];
     })->toArray();
     
@@ -21,102 +20,132 @@
         'processed_screenshots' => $screenshots  // 処理後のデータを確認
     ]);
 
-    // Alpine.jsのデータを別変数として定義
+    // Alpine.jsのデータを定義
     $alpineData = [
-        'screenshots' => $screenshots,
-        'getAppId' => 'function() { return document.querySelector("#app_id_input").value; }',
-        'init' => 'function() { console.log("Initialized screenshots:", this.screenshots); }',
-        'handleFiles' => 'function(files) {
-            const app_id = this.getAppId();
-            Array.from(files).forEach(file => {
-                if (!file.type.startsWith("image/")) {
-                    alert("画像ファイルのみアップロード可能です");
-                    return;
-                }
-                const formData = new FormData();
-                formData.append("screenshot", file);
-                formData.append("app_id", app_id);
-                
-                fetch("/api/v2/screenshots/upload", {
-                    method: "POST",
-                    headers: {
-                        "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]").content
-                    },
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        if (this.screenshots.length > 0) {
-                            const oldScreenshot = this.screenshots[0];
-                            fetch("/api/v2/screenshots/delete", {
-                                method: "POST",
-                                headers: {
-                                    "Content-Type": "application/json",
-                                    "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]").content
-                                },
-                                body: JSON.stringify({ 
-                                    public_id: oldScreenshot.public_id,
-                                    screenshot_id: oldScreenshot.id,
-                                    app_id: app_id
-                                })
-                            });
-                        }
-                        this.screenshots = [{
-                            public_id: result.public_id,
-                            url: result.url,
-                            order: 0
-                        }];
-                        this.$dispatch("screenshots-updated", this.screenshots);
-                        this.$dispatch("auto-save");
-                        this.$dispatch("autosave-success", "画像を更新しました");
-                    }
-                })
-                .catch(error => {
-                    console.error("Upload error:", error);
-                    alert("アップロードに失敗しました");
-                });
-            });
+        'screenshots' => $screenshots ?? [],
+        'getAppId' => $app->id,  // 直接IDを渡す
+        'init' => 'function() { 
+            this.screenshots = this.screenshots || [];
+            console.log("Initialized screenshots:", this.screenshots); 
         }',
-        'removeScreenshot' => 'function(index) {
-            const screenshot = this.screenshots[index];
-            const app_id = this.getAppId();
-            
-            if (screenshot && screenshot.public_id) {
-                fetch("/api/v2/screenshots/delete", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]").content
-                    },
-                    body: JSON.stringify({ 
-                        public_id: screenshot.public_id,
-                        screenshot_id: screenshot.id,
-                        app_id: app_id
-                    })
-                })
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        this.screenshots.splice(index, 1);
-                        this.$dispatch("screenshots-updated", this.screenshots);
-                        this.$dispatch("auto-save");
-                        this.$dispatch("autosave-success", "よっしゃ！スクショ削除したで！");
-                    }
-                })
-                .catch(error => {
-                    console.error("Delete failed:", error);
-                    this.$dispatch("autosave-error", "あかん...スクショ消されへんかったわ...");
-                });
-            }
-        }'
     ];
 @endphp
 
 {{-- モーダルコンポーネントをインクルード --}}
 @include('AppV2::components.screenshot-modal')
 
-<div class="space-y-8" x-data='@json($alpineData)'>
+<div class="space-y-8" 
+    x-data="{
+        screenshots: {{ Js::from($screenshots) }},
+        getAppId() { 
+            return {{ $app->id }}; 
+        },
+        async handleFiles(files) {
+            const app_id = this.getAppId();
+            
+            // 3枚制限のチェック
+            if (this.screenshots.length >= 3) {
+                alert('スクリーンショットは最大3枚までです！');
+                return;
+            }
+
+            // 追加可能な残り枚数を計算
+            const remainingSlots = 3 - this.screenshots.length;
+            const filesToUpload = Array.from(files).slice(0, remainingSlots);
+
+            for (const file of filesToUpload) {
+                if (!file.type.startsWith('image/')) {
+                    alert('画像ファイルのみアップロード可能です');
+                    continue;
+                }
+                
+                const formData = new FormData();
+                formData.append('screenshot', file);
+                formData.append('app_id', app_id);
+                
+                try {
+                    const response = await fetch('/apps-v2/screenshots/upload', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                        },
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        this.screenshots.push({
+                            id: result.id,
+                            public_id: result.public_id,
+                            url: result.url,
+                            order: this.screenshots.length
+                        });
+                        
+                        this.$dispatch('screenshots-updated', this.screenshots);
+                        this.$dispatch('auto-save');
+                        
+                        // 3枚目をアップロードした時のメッセージを変更
+                        if (this.screenshots.length === 3) {
+                            this.$dispatch('autosave-success', '3枚目の画像を追加しました。これで上限です！');
+                        } else {
+                            this.$dispatch('autosave-success', '画像を追加しました');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    alert('アップロードに失敗しました');
+                }
+            }
+        },
+        async removeScreenshot(index) {
+            if (!confirm('このスクリーンショットを削除してもええんか？')) {
+                return;
+            }
+
+            const screenshot = this.screenshots[index];
+            const app_id = this.getAppId();
+            
+            if (screenshot && screenshot.public_id) {
+                try {
+                    const response = await fetch('/apps-v2/screenshots/delete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                        },
+                        body: JSON.stringify({ 
+                            public_id: screenshot.public_id,
+                            screenshot_id: screenshot.id,
+                            app_id: app_id
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // 指定されたインデックスの画像を削除
+                        this.screenshots.splice(index, 1);
+                        
+                        // orderを振り直し
+                        this.screenshots = this.screenshots.map((screenshot, idx) => ({
+                            ...screenshot,
+                            order: idx
+                        }));
+
+                        this.$dispatch('screenshots-updated', this.screenshots);
+                        this.$dispatch('auto-save');
+                        this.$dispatch('autosave-success', 'よっしゃ！スクショ削除したで！');
+                    }
+                } catch (error) {
+                    console.error('Delete failed:', error);
+                    this.$dispatch('autosave-error', 'あかん...スクショ消されへんかったわ...');
+                }
+            }
+        }
+    }"
+    x-init="init"
+>
     {{-- ヘッダー部分 --}}
     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 p-[2px]">
         <div class="relative bg-white/90 backdrop-blur-xl rounded-2xl p-8">
