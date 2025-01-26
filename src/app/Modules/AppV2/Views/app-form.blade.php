@@ -2,8 +2,8 @@
     {{-- 超最先端のグラデーションヘッダー --}}
     <div x-data="appForm">
         <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 py-12">
-            {{-- app_idをここに追加 --}}
-            <input type="hidden" name="app_id" value="{{ isset($app->id) ? $app->id : 'create' }}">
+            {{-- app_idをここに追加（常に$app->idが存在する前提） --}}
+            <input type="hidden" name="app_id" value="{{ $app->id }}">
 
             {{-- 自動保存通知 --}}
             @include('AppV2::components.autosave-notification')
@@ -164,17 +164,18 @@
 
     {{-- ここから下にすべてのJavaScriptをまとめる --}}
     <script>
-        // メインのAlpine.js初期化
         document.addEventListener('alpine:init', () => {
             Alpine.data('appForm', () => ({
                 appId: null,
                 activeTab: 'basic',
+                
+                // formDataの初期化を確実に
                 formData: {
                     basic: {
                         title: '',
                         description: '',
-                        types: [],
-                        genres: [],
+                        types: [],      // 配列として初期化
+                        genres: [],     // 配列として初期化
                         app_status: '',
                         status: '',
                         demo_url: '',
@@ -237,7 +238,6 @@
                     }
                 },
 
-                // 自動保存関連の変数
                 autoSaveTimer: null,
                 inputTimer: null,
                 lastSavedSections: {},
@@ -245,18 +245,23 @@
                 saveMessage: null,
                 shouldShowMessage: true,
 
-                // メソッド群
+                // タブ切り替え
                 switchTab(tabId) {
                     this.activeTab = tabId;
+                    console.log('Tab switched to:', tabId);
                 },
 
+                // 自動保存
                 async autoSave() {
-                    console.log('Starting autoSave with data:', this.formData);
                     try {
-                        const isCreate = !this.appId || this.appId === 'create';
-                        const saveUrl = isCreate 
-                            ? '/apps-v2/create/autosave'
-                            : `/apps-v2/${this.appId}/autosave`;
+                        // IDの存在チェックだけにシンプル化
+                        if (!this.appId) {
+                            console.error('No appId available for autosave');
+                            return;
+                        }
+
+                        const saveUrl = `/apps-v2/${this.appId}/autosave`;
+                        console.log('Saving to URL:', saveUrl);
 
                         const response = await fetch(saveUrl, {
                             method: 'POST',
@@ -266,66 +271,67 @@
                                 'Accept': 'application/json'
                             },
                             body: JSON.stringify({
-                                formData: {
-                                    ...this.formData,
-                                    basic: {
-                                        ...this.formData.basic,
-                                        updated_at: new Date().toISOString()
-                                    }
-                                }
+                                formData: this.formData
                             })
                         });
 
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-
+                        // レスポンスの詳細をログ
+                        console.log('Response status:', response.status);
                         const result = await response.json();
-                        console.log('Save result:', result);
-                        
-                        if (result.app_id) {
-                            this.appId = result.app_id;
-                            const appIdInput = document.querySelector('input[name="app_id"]');
-                            if (appIdInput) {
-                                appIdInput.value = result.app_id;
-                            }
-                        }
+                        console.log('Response data:', result);
 
                         if (result.success) {
-                            Alpine.store('notification', {
-                                show: true,
-                                message: result.message || '保存しました',
-                                type: 'success'
-                            });
+                            this.showSaveMessage('保存しました');
+                            this.dirtySections.clear();
                         }
                     } catch (error) {
-                        console.error('Autosave error:', error);
-                        Alpine.store('notification', {
-                            show: true,
-                            message: '保存に失敗しました: ' + error.message,
-                            type: 'error'
-                        });
+                        console.error('Autosave error details:', error);
+                        this.showSaveMessage('保存に失敗しました');
                     }
                 },
 
+                // 保存メッセージ表示
+                showSaveMessage(message) {
+                    if (!this.shouldShowMessage) return;
+                    
+                    this.saveMessage = message;
+                    console.log('Showing message:', message);
+                    
+                    setTimeout(() => {
+                        this.saveMessage = null;
+                    }, 3000);
+                },
+
+                // 初期化
                 init() {
+                    // appIdを固定値として保持
                     const appIdInput = document.querySelector('input[name="app_id"]');
                     this.appId = appIdInput ? appIdInput.value : null;
                     
-                    console.log('Initializing with appId:', this.appId);
+                    // 固定値のappIdをログ
+                    console.log('Fixed appId initialized as:', this.appId);
 
+                    // 自動保存タイマーの設定（appIdを使用）
+                    this.autoSaveTimer = setInterval(() => {
+                        if (this.dirtySections.size > 0 && this.appId) {
+                            console.log('Timer triggered autosave for appId:', this.appId);
+                            this.autoSave();
+                        }
+                    }, 60000);
+
+                    // グローバルformDataの初期化
+                    window.formData = this.formData;
                     const savedData = {!! isset($app) ? json_encode($app) : 'null' !!};
                     console.log('Saved data:', savedData);
 
                     if (savedData) {
-                        // デバッグ用
                         console.log('Raw saved data:', savedData);
 
+                        // 基本データの復元
                         this.formData.basic = {
                             ...this.formData.basic,
                             title: savedData.title || '',
                             description: savedData.description || '',
-                            // 配列データの処理を修正
                             types: Array.isArray(savedData.app_types) 
                                 ? savedData.app_types 
                                 : (savedData.app_types ? JSON.parse(savedData.app_types) : []),
@@ -348,31 +354,43 @@
                             purpose: savedData.purpose || ''
                         };
 
-                        // デバッグ用
-                        console.log('Types after processing:', this.formData.basic.types);
-                        console.log('Genres after processing:', this.formData.basic.genres);
-
-                        // その他のセクションも復元
+                        // その他のセクションの復元
                         ['screenshots', 'story', 'hardware', 'dev_env', 
                          'architecture', 'frontend', 'backend', 'database', 'security']
                         .forEach(section => {
                             if (savedData[section]) {
                                 this.formData[section] = {
-                                    ...this.formData[section],  // デフォルト値を保持
-                                    ...savedData[section]       // 保存データで上書き
+                                    ...this.formData[section],
+                                    ...savedData[section]
                                 };
                             }
                         });
 
-                        console.log('Restored formData:', this.formData);
-                    }
+                        // スクリーンショット更新イベントのハンドリング
+                        this.$el.addEventListener('screenshots-updated', (event) => {
+                            this.formData.screenshots = event.detail;
+                            console.log('Screenshots updated:', event.detail);
+                        });
 
-                    // 自動保存タイマーの設定（60秒）
-                    this.autoSaveTimer = setInterval(() => {
-                        if (this.dirtySections.size > 0) {
-                            this.autoSave();
-                        }
-                    }, 60000);
+                        // 各種ウォッチャーを設定
+                        this.$watch('formData.basic', (value) => {
+                            console.log('Basic data changed:', value);
+                            this.dirtySections.add('basic');
+                        }, { deep: true });
+
+                        this.$watch('formData.basic.types', (value) => {
+                            console.log('Types changed:', value);
+                            this.dirtySections.add('basic');
+                        });
+
+                        this.$watch('formData.basic.genres', (value) => {
+                            console.log('Genres changed:', value);
+                            this.dirtySections.add('basic');
+                        });
+
+                        // 初期状態を保存
+                        this.saveInitialState();
+                    }
 
                     // イベントリスナー設定
                     window.addEventListener('beforeunload', (event) => {
@@ -381,6 +399,23 @@
                             event.returnValue = '';
                         }
                     });
+
+                    console.log('Initialization complete');
+                },
+
+                // 初期状態保存
+                saveInitialState() {
+                    const sections = Object.keys(this.formData);
+                    sections.forEach(section => {
+                        this.lastSavedSections[section] = JSON.stringify(this.formData[section]);
+                    });
+                    console.log('Initial state saved');
+                },
+
+                // フォーム初期化
+                initializeForm(initialData) {
+                    this.formData = initialData;
+                    console.log('Form initialized with:', initialData);
                 },
 
                 // クリーンアップ
@@ -391,6 +426,7 @@
                     if (this.inputTimer) {
                         clearTimeout(this.inputTimer);
                     }
+                    console.log('Resources cleaned up');
                 }
             }));
         });

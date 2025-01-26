@@ -153,11 +153,11 @@ class AppController extends Controller
         }
     }
 
-    public function autosave(Request $request, $id = null)
+    public function autosave(Request $request, $id)
     {
         try {
             $formData = $request->input('formData');
-            $app = $id ? App::findOrFail($id) : App::create(['user_id' => auth()->id()]);
+            $app = App::findOrFail($id);
 
             // デバッグログ追加
             Log::debug('Autosave dates:', [
