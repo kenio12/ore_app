@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    {{-- 開発動機 --}}
+    {{-- 開発のきっかけ --}}
     <div class="transform hover:scale-[1.02] transition-all duration-500">
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
             <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-rose-600">
@@ -20,7 +20,7 @@
             </label>
             <div class="mt-4">
                 <textarea
-                    x-model="formData.story.motivation"
+                    x-model="formData.story.development_trigger"
                     @input="autoSave"
                     rows="4"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
@@ -31,40 +31,76 @@
         </div>
     </div>
 
-    {{-- 開発の課題 --}}
+    {{-- 開発エピソード --}}
     <div class="transform hover:scale-[1.02] transition-all duration-500">
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
             <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-red-600">
-                乗り越えた課題
+                開発エピソード
             </label>
-            <div class="mt-4">
+            <div class="mt-4 space-y-4">
                 <textarea
-                    x-model="formData.story.challenges"
+                    x-model="formData.story.development_hardship"
                     @input="autoSave"
-                    rows="4"
+                    rows="3"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                            focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20
                            hover:border-rose-300 transition-all duration-300"
-                    placeholder="開発中に直面した課題とその解決方法を教えてください"></textarea>
+                    placeholder="開発の苦しい話を教えてください"></textarea>
+
+                <textarea
+                    x-model="formData.story.development_tearful"
+                    @input="autoSave"
+                    rows="3"
+                    class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                           focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20
+                           hover:border-rose-300 transition-all duration-300"
+                    placeholder="開発の泣ける話を教えてください"></textarea>
+
+                <textarea
+                    x-model="formData.story.development_enjoyable"
+                    @input="autoSave"
+                    rows="3"
+                    class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                           focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20
+                           hover:border-rose-300 transition-all duration-300"
+                    placeholder="開発の楽しい話を教えてください"></textarea>
+
+                <textarea
+                    x-model="formData.story.development_funny"
+                    @input="autoSave"
+                    rows="3"
+                    class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                           focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20
+                           hover:border-rose-300 transition-all duration-300"
+                    placeholder="開発の笑える話を教えてください"></textarea>
             </div>
         </div>
     </div>
 
-    {{-- 今後の展望 --}}
+    {{-- 開発を通しての気づき --}}
     <div class="transform hover:scale-[1.02] transition-all duration-500">
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
             <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-rose-600">
-                今後の展望
+                開発を通しての気づき
             </label>
-            <div class="mt-4">
+            <div class="mt-4 space-y-4">
                 <textarea
-                    x-model="formData.story.future"
+                    x-model="formData.story.development_impression"
                     @input="autoSave"
-                    rows="4"
+                    rows="3"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                            focus:border-red-500 focus:ring-4 focus:ring-red-500/20
                            hover:border-red-300 transition-all duration-300"
-                    placeholder="このアプリケーションの将来のビジョンを教えてください"></textarea>
+                    placeholder="開発を通して感じたことを教えてください"></textarea>
+
+                <textarea
+                    x-model="formData.story.development_oneword"
+                    @input="autoSave"
+                    rows="3"
+                    class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                           focus:border-red-500 focus:ring-4 focus:ring-red-500/20
+                           hover:border-red-300 transition-all duration-300"
+                    placeholder="開発を終えての一言をお願いします"></textarea>
             </div>
         </div>
     </div>

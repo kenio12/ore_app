@@ -103,21 +103,22 @@ class AppController extends Controller
                 'bindings' => $bindings
             ]);
 
-            // 実際のDBクエリを実行して結果を確認
+            // ==================== データベースチェック関連 ====================
             $screenshotsCount = DB::table('screenshots')
                 ->where('app_id', $app->id)
                 ->count();
+
             Log::debug('Direct DB Check:', [
                 'screenshots_count' => $screenshotsCount,
                 'app_id' => $app->id
             ]);
 
+            // ==================== スクリーンショット関連 ====================
             // スクリーンショットの取得と整形
             $screenshots = $app->screenshots()
                 ->orderBy('order')
                 ->get();
 
-            // 取得直後のデータを確認
             Log::debug('Raw Screenshots:', [
                 'count' => $screenshots->count(),
                 'data' => $screenshots->toArray()
@@ -125,57 +126,89 @@ class AppController extends Controller
 
             $screenshots = $screenshots->map(function($screenshot) {
                 return [
-                    'id' => $screenshot->id,  // IDも追加
+                    'id' => $screenshot->id,
                     'public_id' => $screenshot->cloudinary_public_id,
                     'url' => $screenshot->url
                 ];
             });
 
-            // 整形後のデータを確認
             Log::debug('Processed Screenshots:', [
                 'data' => $screenshots->toArray()
             ]);
 
-            // デバッグログを追加
+            // ==================== ユーザー情報関連 ====================
             Log::debug('App and User info:', [
                 'app_id' => $app->id,
                 'user_id' => $app->user_id,
-                'user_name' => $app->user->name  // 直接nameプロパティにアクセス
+                'user_name' => $app->user->name
             ]);
 
-            // デバッグログを追加して、値を確認
+            // ==================== 日付関連 ====================
             Log::debug('Date values:', [
                 'raw_start' => $app->development_start_date,
                 'raw_end' => $app->development_end_date
             ]);
 
-            // 初期データの準備
+            // ==================== 初期データ準備（タブごと） ====================
             $initialData = [
+                // ==================== 01_basic-tab ====================
                 'basic' => [
+                    // 基本情報
                     'title' => $app->title,
                     'description' => $app->description,
-                    'user_name' => $app->user->name,  // 直接nameプロパティにアクセス
+                    'user_name' => $app->user->name,
+                    
+                    // アプリ分類
                     'types' => $app->app_types ?? [],
                     'genres' => $app->genres ?? [],
                     'app_status' => $app->app_status,
-                    'status' => $app->status,
+                    
+                    // URL情報
                     'demo_url' => $app->demo_url,
                     'github_url' => $app->github_url,
-                    'development_start_date' => $app->development_start_date ? $app->development_start_date->format('Y-m-d') : null,
-                    'development_end_date' => $app->development_end_date ? $app->development_end_date->format('Y-m-d') : null,
-                    'development_period_years' => $app->development_period_years ?? 0,
-                    'development_period_months' => $app->development_period_months ?? 0,
+                    
+                    // 開発期間
+                    'development_start_date' => $app->development_start_date,
+                    'development_end_date' => $app->development_end_date,
+                    'development_period_years' => $app->development_period_years,
+                    'development_period_months' => $app->development_period_months,
+                    
+                    // 目的・動機
                     'motivation' => $app->motivation,
                     'purpose' => $app->purpose
                 ],
+
+                // ==================== 02_screenshots-tab ====================
                 'screenshots' => $screenshots,
-                'story' => json_decode($app->data, true)['story'] ?? [],
+
+                // ==================== 03_story-tab ====================
+                'story' => [
+                    'development_success' => $app->development_success,
+                    'development_challenge' => $app->development_challenge,
+                    'development_fun' => $app->development_fun,
+                    'development_learning' => $app->development_learning,
+                    'development_message' => $app->development_message
+                ],
+
+                // ==================== 04_hardware-tab ====================
                 'hardware' => json_decode($app->hardware_info, true) ?? [],
+
+                // ==================== 05_dev-env-tab ====================
                 'dev_env' => json_decode($app->dev_env_info, true) ?? [],
+
+                // ==================== 06_architecture-tab ====================
                 'architecture' => json_decode($app->architecture_info, true) ?? [],
+
+                // ==================== 07_frontend-tab ====================
                 'frontend' => json_decode($app->frontend_info, true) ?? [],
+
+                // ==================== 08_backend-tab ====================
                 'backend' => json_decode($app->backend_info, true) ?? [],
+
+                // ==================== 09_database-tab ====================
                 'database' => json_decode($app->database_info, true) ?? [],
+
+                // ==================== 10_security-tab ====================
                 'security' => json_decode($app->security_info, true) ?? []
             ];
 
@@ -207,6 +240,23 @@ class AppController extends Controller
         try {
             DB::beginTransaction();
 
+            // ストーリー情報の保存
+            if ($request->has('story')) {
+                $app->update([
+                    'development_trigger' => $request->input('story.development_trigger'),
+                    'development_hardship' => $request->input('story.development_hardship'),
+                    'development_tearful' => $request->input('story.development_tearful'),
+                    'development_enjoyable' => $request->input('story.development_enjoyable'),
+                    'development_funny' => $request->input('story.development_funny'),
+                    'development_impression' => $request->input('story.development_impression'),
+                    'development_oneword' => $request->input('story.development_oneword')
+                ]);
+            }
+
+            // ==================== ⚠️危険！以下のコードは絶対に消すな！！！！ ====================
+            // 消したら殺す！！！！
+            // スクリーンショット機能が完全に壊れる！！！！
+
             // スクリーンショットの保存処理
             if ($request->has('screenshots')) {
                 Log::debug('Processing screenshots:', [
@@ -227,6 +277,8 @@ class AppController extends Controller
                     );
                 }
             }
+
+            // ==================== ⚠️危険！上のコードは絶対に消すな！！！！ ====================
 
             DB::commit();
             return response()->json(['success' => true]);
