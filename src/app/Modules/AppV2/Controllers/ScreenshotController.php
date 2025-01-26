@@ -22,6 +22,12 @@ class ScreenshotController extends Controller
     public function upload(Request $request)
     {
         try {
+            Log::debug('Screenshot upload started:', [
+                'app_id' => $request->app_id,
+                'file_exists' => $request->hasFile('screenshot'),
+                'request_data' => $request->all()  // リクエストの全データを確認
+            ]);
+
             $request->validate([
                 'screenshot' => 'required|image|max:5120', // 5MB
                 'app_id' => 'required|integer'  // app_idを必須に
@@ -36,13 +42,26 @@ class ScreenshotController extends Controller
             try {
                 // Cloudinaryにアップロード
                 $result = $this->cloudinaryService->uploadToTemp($file);
+                Log::debug('Cloudinary upload result:', [
+                    'result' => $result
+                ]);
 
                 // データベースに保存
                 $app = App::findOrFail($request->app_id);
+                Log::debug('Found app:', [
+                    'app_id' => $app->id,
+                    'app_title' => $app->title
+                ]);
+
                 $screenshot = $app->screenshots()->create([
                     'cloudinary_public_id' => $result['public_id'],
                     'url' => $result['url'],
                     'order' => 0  // とりあえず0で
+                ]);
+
+                Log::debug('Screenshot saved:', [
+                    'screenshot_id' => $screenshot->id,
+                    'app_id' => $screenshot->app_id
                 ]);
 
                 DB::commit();

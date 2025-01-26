@@ -86,30 +86,61 @@ class AppController extends Controller
         $this->authorize('update', $app);
 
         try {
-            // デバッグログを追加
-            Log::debug('App and User info:', [
+            // より詳細なデバッグ情報を追加
+            Log::debug('App Model Details:', [
                 'app_id' => $app->id,
                 'user_id' => $app->user_id,
-                'user_name' => $app->user->name  // 直接nameプロパティにアクセス
+                'table_name' => $app->getTable(),
+                'connection' => DB::connection()->getDatabaseName()
             ]);
 
-            // スクリーンショットデータの取得と整形
+            // スクリーンショットのクエリを実行前に確認
+            $query = $app->screenshots()->toSql();
+            $bindings = $app->screenshots()->getBindings();
+            Log::debug('Screenshot Query:', [
+                'sql' => $query,
+                'bindings' => $bindings
+            ]);
+
+            // 実際のDBクエリを実行して結果を確認
+            $screenshotsCount = DB::table('screenshots')
+                ->where('app_id', $app->id)
+                ->count();
+            Log::debug('Direct DB Check:', [
+                'screenshots_count' => $screenshotsCount,
+                'app_id' => $app->id
+            ]);
+
+            // スクリーンショットの取得と整形
             $screenshots = $app->screenshots()
                 ->orderBy('order')
                 ->get();
 
-            // スクリーンショットのデバッグログを追加
-            Log::debug('Screenshots data:', [
+            // 取得直後のデータを確認
+            Log::debug('Raw Screenshots:', [
                 'count' => $screenshots->count(),
                 'data' => $screenshots->toArray()
             ]);
 
             $screenshots = $screenshots->map(function($screenshot) {
                 return [
+                    'id' => $screenshot->id,  // IDも追加
                     'public_id' => $screenshot->cloudinary_public_id,
                     'url' => $screenshot->url
                 ];
             });
+
+            // 整形後のデータを確認
+            Log::debug('Processed Screenshots:', [
+                'data' => $screenshots->toArray()
+            ]);
+
+            // デバッグログを追加
+            Log::debug('App and User info:', [
+                'app_id' => $app->id,
+                'user_id' => $app->user_id,
+                'user_name' => $app->user->name  // 直接nameプロパティにアクセス
+            ]);
 
             // デバッグログを追加して、値を確認
             Log::debug('Date values:', [
@@ -233,14 +264,26 @@ class AppController extends Controller
 
     private function saveScreenshots($app, $screenshots)
     {
+        Log::debug('Saving screenshots:', [
+            'app_id' => $app->id,
+            'screenshots_count' => count($screenshots)
+        ]);
+
         // 既存のスクリーンショットを一旦削除
-        $app->screenshots()->delete();
+        $deleted = $app->screenshots()->delete();
+        Log::debug('Deleted existing screenshots:', [
+            'deleted_count' => $deleted
+        ]);
         
         // 新しいスクリーンショットを保存
         foreach ($screenshots as $index => $screenshot) {
-            $app->screenshots()->create([
+            $new = $app->screenshots()->create([
                 'cloudinary_public_id' => $screenshot['public_id'],
                 'url' => $screenshot['url'],
+                'order' => $index
+            ]);
+            Log::debug('Created new screenshot:', [
+                'screenshot_id' => $new->id,
                 'order' => $index
             ]);
         }
