@@ -86,16 +86,30 @@ class AppController extends Controller
         $this->authorize('update', $app);
 
         try {
+            // デバッグログを追加
+            Log::debug('App and User info:', [
+                'app_id' => $app->id,
+                'user_id' => $app->user_id,
+                'user_name' => $app->user->name  // 直接nameプロパティにアクセス
+            ]);
+
             // スクリーンショットデータの取得と整形
             $screenshots = $app->screenshots()
                 ->orderBy('order')
-                ->get()
-                ->map(function($screenshot) {
-                    return [
-                        'public_id' => $screenshot->cloudinary_public_id,
-                        'url' => $screenshot->url
-                    ];
-                });
+                ->get();
+
+            // スクリーンショットのデバッグログを追加
+            Log::debug('Screenshots data:', [
+                'count' => $screenshots->count(),
+                'data' => $screenshots->toArray()
+            ]);
+
+            $screenshots = $screenshots->map(function($screenshot) {
+                return [
+                    'public_id' => $screenshot->cloudinary_public_id,
+                    'url' => $screenshot->url
+                ];
+            });
 
             // デバッグログを追加して、値を確認
             Log::debug('Date values:', [
@@ -108,6 +122,7 @@ class AppController extends Controller
                 'basic' => [
                     'title' => $app->title,
                     'description' => $app->description,
+                    'user_name' => $app->user->name,  // 直接nameプロパティにアクセス
                     'types' => $app->app_types ?? [],
                     'genres' => $app->genres ?? [],
                     'app_status' => $app->app_status,
@@ -156,32 +171,16 @@ class AppController extends Controller
     public function autosave(Request $request, $id)
     {
         try {
-            // リクエストの詳細をログ
-            Log::debug('Autosave request details:', [
-                'id' => $id,
-                'route' => $request->route()->getName(),
-                'parameters' => $request->route()->parameters(),
-                'formData' => $request->input('formData')
-            ]);
+            $app = App::findOrFail($id);
+            
+            // 所有者チェックだけ行う
+            if ($app->user_id !== auth()->id()) {
+                throw new \Exception('このアプリの編集権限がありません');
+            }
 
             $formData = $request->input('formData');
-            $app = App::findOrFail($id);
-
-            // デバッグログ追加
-            Log::debug('Autosave dates:', [
-                'start' => $formData['basic']['development_start_date'],
-                'end' => $formData['basic']['development_end_date']
-            ]);
-
-            // 日付データの処理を明示的に行う
-            $startDate = !empty($formData['basic']['development_start_date']) 
-                ? Carbon::parse($formData['basic']['development_start_date']) 
-                : null;
-            $endDate = !empty($formData['basic']['development_end_date']) 
-                ? Carbon::parse($formData['basic']['development_end_date']) 
-                : null;
-
-            // 基本データの更新
+            
+            // 基本データの更新（user_idは更新対象から外す）
             $app->update([
                 'title' => $formData['basic']['title'] ?? null,
                 'description' => $formData['basic']['description'] ?? null,
@@ -189,8 +188,8 @@ class AppController extends Controller
                 'app_status' => $formData['basic']['app_status'] ?? null,
                 'demo_url' => $formData['basic']['demo_url'] ?? null,
                 'github_url' => $formData['basic']['github_url'] ?? null,
-                'development_start_date' => $startDate,
-                'development_end_date' => $endDate,
+                'development_start_date' => $formData['basic']['development_start_date'] ? Carbon::parse($formData['basic']['development_start_date']) : null,
+                'development_end_date' => $formData['basic']['development_end_date'] ? Carbon::parse($formData['basic']['development_end_date']) : null,
                 'development_period_years' => $formData['basic']['development_period_years'] ?? 0,
                 'development_period_months' => $formData['basic']['development_period_months'] ?? 0,
                 'motivation' => $formData['basic']['motivation'] ?? null,

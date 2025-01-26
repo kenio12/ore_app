@@ -8,6 +8,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use App\Modules\AppV2\Filament\Resources\AppV2Resource\Pages;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class AppV2Resource extends Resource
 {
@@ -29,10 +30,23 @@ class AppV2Resource extends Resource
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form->schema([
+            Forms\Components\TextInput::make('id')
+                ->label('ID')
+                ->disabled(),
+            Forms\Components\TextInput::make('user.name')
+                ->label('作成者')
+                ->disabled()
+                ->dehydrated(false)
+                ->formatStateUsing(fn ($record) => $record?->user?->name ?? '不明'),
             Forms\Components\Hidden::make('user_id')
-                ->default(fn () => auth()->id()),
+                ->default(fn () => auth()->id())
+                ->required(),
             Forms\Components\TextInput::make('title')->required(),
             Forms\Components\Textarea::make('description'),
+            Forms\Components\Textarea::make('motivation')
+                ->label('開発動機'),
+            Forms\Components\Textarea::make('purpose')
+                ->label('目的'),
             Forms\Components\TextInput::make('demo_url'),
             Forms\Components\TextInput::make('github_url'),
             Forms\Components\Select::make('status')
@@ -67,6 +81,9 @@ class AppV2Resource extends Resource
                 Tables\Columns\TextColumn::make('id')
                     ->label('ID')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('作成者')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label('アプリ名')
                     ->searchable()
@@ -90,5 +107,33 @@ class AppV2Resource extends Resource
     public static function beforeCreate(Model $record): void
     {
         $record->user_id = auth()->id();
+        Log::debug('New app record:', [
+            'app_id' => $record->id,
+            'user_id' => $record->user_id,
+            'user_name' => auth()->user()->name
+        ]);
+    }
+
+    // デバッグ用のログを追加
+    public static function beforeFill($record): void
+    {
+        Log::debug('Loading app record:', [
+            'app_id' => $record->id,
+            'user_id' => $record->user_id,
+            'user' => $record->user,
+            'user_name' => $record->user->name ?? 'null'
+        ]);
+    }
+
+    // リレーションを明示的に読み込む
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::with('user')->count();
+    }
+
+    // モデルに関連するユーザーを必ず読み込む
+    public static function getNavigationGroup(): ?string
+    {
+        return 'アプリ管理';
     }
 } 

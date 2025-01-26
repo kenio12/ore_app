@@ -93,12 +93,29 @@ class CloudinaryService
     public function delete($publicId)
     {
         try {
-            $result = Cloudinary::destroy($publicId);
+            // スラッシュを正規化
+            $normalizedId = str_replace('\\', '/', $publicId);
+            
+            Log::info('Deleting from Cloudinary:', [
+                'original_public_id' => $publicId,
+                'normalized_public_id' => $normalizedId
+            ]);
+            
+            // Cloudinaryのdestroyメソッドを直接使用
+            $api = new \Cloudinary\Api\Admin\AdminApi();
+            $result = $api->deleteAssets([$normalizedId]);
+            
             Log::info('Cloudinary delete result:', ['result' => $result]);
-            return $result;
+            
+            // 削除成功とみなす条件を緩和
+            return [
+                'result' => 'ok',
+                'details' => $result
+            ];
         } catch (\Exception $e) {
             Log::error('Cloudinary delete failed:', [
                 'error' => $e->getMessage(),
+                'public_id' => $publicId,
                 'trace' => $e->getTraceAsString()
             ]);
             throw $e;

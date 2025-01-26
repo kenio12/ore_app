@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\User;
 use App\Modules\AppV2\Models\Screenshot;
 use App\Modules\AppV2\Models\Hardware;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 class App extends Model
 {
@@ -59,10 +61,15 @@ class App extends Model
         'database_info' => 'array',
     ];
 
-    // リレーション
-    public function user()
+    // Eagerローディングを設定
+    protected $with = ['user'];
+
+    /**
+     * ユーザーとのリレーション
+     */
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function hardware()
@@ -181,5 +188,17 @@ class App extends Model
             'development_period_years' => $this->development_period_years,
             'development_period_months' => $this->development_period_months,
         ];
+    }
+
+    // デバッグ用のアクセサ
+    public function getUserNameAttribute()
+    {
+        Log::debug('Getting user name:', [
+            'app_id' => $this->id,
+            'user_id' => $this->user_id,
+            'user' => $this->user,
+            'user_name' => $this->user->name ?? 'null'
+        ]);
+        return $this->user->name ?? null;
     }
 } 

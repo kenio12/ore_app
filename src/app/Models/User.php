@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\Auth\VerifyEmail;
-use App\Modules\App\Models\App;
+use App\Modules\AppV2\Models\App;
 
 class User extends Authenticatable implements MustVerifyEmail
 {

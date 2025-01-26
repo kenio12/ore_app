@@ -1,6 +1,9 @@
 @php
+    use Illuminate\Support\Js;  // 追加：Jsクラスのインポート
+    
     // データの初期化
-    $formData = $data ?? [];
+    $formData = $initialData ?? [];
+    $screenshots = $formData['screenshots'] ?? [];
     $app = $app ?? null;
     $viewOnly = $viewOnly ?? false;
 @endphp
@@ -9,7 +12,7 @@
 @include('AppV2::components.screenshot-modal')
 
 <div class="space-y-8" x-data="{ 
-    screenshots: @json($formData['screenshots'] ?? []),
+    screenshots: {{ Js::from($screenshots) }},
     handleFiles(files) {
         Array.from(files).forEach(file => {
             if (!file.type.startsWith('image/')) {
@@ -29,12 +32,32 @@
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    this.screenshots.push({
+                    // 既存の画像を削除
+                    if (this.screenshots.length > 0) {
+                        const oldScreenshot = this.screenshots[0];
+                        fetch('/api/v2/screenshots/delete', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                            },
+                            body: JSON.stringify({ 
+                                public_id: oldScreenshot.public_id,
+                                screenshot_id: oldScreenshot.id  // DB上のIDも送信
+                            })
+                        });
+                    }
+
+                    // 新しい画像を追加
+                    this.screenshots = [{
                         public_id: result.public_id,
                         url: result.url,
-                        order: this.screenshots.length
-                    });
+                        order: 0
+                    }];
+
                     this.$dispatch('screenshots-updated', this.screenshots);
+                    this.$dispatch('auto-save');
+                    this.$dispatch('autosave-success', '画像を更新しました');
                 }
             })
             .catch(error => {
@@ -59,11 +82,13 @@
                 if (result.success) {
                     this.screenshots.splice(index, 1);
                     this.$dispatch('screenshots-updated', this.screenshots);
+                    this.$dispatch('auto-save');
+                    this.$dispatch('autosave-success', 'よっしゃ！スクショ削除したで！');
                 }
             })
             .catch(error => {
-                console.error('Delete error:', error);
-                alert('削除に失敗しました');
+                console.error('Delete failed:', error);
+                this.$dispatch('autosave-error', 'あかん...スクショ消されへんかったわ...');
             });
         }
     }

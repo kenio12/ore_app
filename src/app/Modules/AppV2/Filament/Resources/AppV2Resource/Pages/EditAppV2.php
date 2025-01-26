@@ -5,6 +5,8 @@ namespace App\Modules\AppV2\Filament\Resources\AppV2Resource\Pages;
 use App\Modules\AppV2\Filament\Resources\AppV2Resource;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Forms;
+use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class EditAppV2 extends EditRecord
 {
@@ -12,14 +14,29 @@ class EditAppV2 extends EditRecord
 
     protected function getFormSchema(): array
     {
+        $record = $this->getRecord();
+        
+        // ユーザー情報を直接取得
+        $userName = $record->user?->name ?? '不明';
+        
+        Log::debug('Edit Form Record:', [
+            'app_id' => $record->id,
+            'user_id' => $record->user_id,
+            'user_name' => $userName,
+            'raw_user' => $record->user
+        ]);
+
         return [
             Forms\Components\Tabs::make('アプリ情報')
                 ->tabs([
                     Forms\Components\Tabs\Tab::make('基本情報')
                         ->schema([
-                            Forms\Components\TextInput::make('id')
-                                ->label('ID')
-                                ->disabled(),
+                            // 直接値を設定
+                            Forms\Components\TextInput::make('creator')
+                                ->label('作成者')
+                                ->default($userName)
+                                ->disabled()
+                                ->dehydrated(false),
                             Forms\Components\TextInput::make('title')
                                 ->label('タイトル')
                                 ->required(),

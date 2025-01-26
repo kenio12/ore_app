@@ -41,6 +41,23 @@
         </div>
     </div>
 
+    {{-- 作者名（シンプルに） --}}
+    <div class="transform hover:scale-[1.02] transition-all duration-500">
+        <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
+            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-purple-600">
+                アプリの作者名
+            </label>
+            <input 
+                type="text"
+                value="{{ $app->user->name }}"  {{-- 直接Bladeで表示 --}}
+                class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                       bg-gray-50 text-gray-700"
+                disabled
+                placeholder="作者名が自動的に表示されます"
+            >
+        </div>
+    </div>
+
     {{-- アプリの概要 --}}
     <div class="transform hover:scale-[1.02] transition-all duration-500">
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
