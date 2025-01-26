@@ -1,9 +1,11 @@
 <x-app-layout>
     {{-- 超最先端のグラデーションヘッダー --}}
-    <div x-data="appForm">
+    <div x-data="appForm" 
+         x-init="$watch('saveMessage', value => console.log('saveMessage changed:', value))"
+    >
         <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 py-12">
             {{-- app_idをここに追加（常に$app->idが存在する前提） --}}
-            <input type="hidden" name="app_id" value="{{ $app->id }}">
+            <input type="hidden" name="app_id" value="{{ $app->id }}" id="app_id_input">
 
             {{-- 自動保存通知 --}}
             @include('AppV2::components.autosave-notification')
@@ -254,14 +256,9 @@
                 // 自動保存
                 async autoSave() {
                     try {
-                        // IDの存在チェックだけにシンプル化
-                        if (!this.appId) {
-                            console.error('No appId available for autosave');
-                            return;
-                        }
-
+                        console.log('Starting autosave with appId:', this.appId);
                         const saveUrl = `/apps-v2/${this.appId}/autosave`;
-                        console.log('Saving to URL:', saveUrl);
+                        console.log('Using URL:', saveUrl);
 
                         const response = await fetch(saveUrl, {
                             method: 'POST',
@@ -285,7 +282,7 @@
                             this.dirtySections.clear();
                         }
                     } catch (error) {
-                        console.error('Autosave error details:', error);
+                        console.error('Detailed autosave error:', error);
                         this.showSaveMessage('保存に失敗しました');
                     }
                 },
@@ -308,13 +305,18 @@
                     const appIdInput = document.querySelector('input[name="app_id"]');
                     this.appId = appIdInput ? appIdInput.value : null;
                     
-                    // 固定値のappIdをログ
+                    // デバッグログを追加
                     console.log('Fixed appId initialized as:', this.appId);
 
-                    // 自動保存タイマーの設定（appIdを使用）
+                    // 自動保存タイマーの設定（appIdのチェックを強化）
                     this.autoSaveTimer = setInterval(() => {
-                        if (this.dirtySections.size > 0 && this.appId) {
-                            console.log('Timer triggered autosave for appId:', this.appId);
+                        // 現在のappIdを再取得して確認
+                        const currentAppId = document.querySelector('input[name="app_id"]').value;
+                        console.log('Timer check - Current appId:', currentAppId);
+                        
+                        if (this.dirtySections.size > 0 && currentAppId && !isNaN(currentAppId)) {
+                            this.appId = currentAppId;  // 最新のIDで更新
+                            console.log('Timer triggered autosave with appId:', this.appId);
                             this.autoSave();
                         }
                     }, 60000);
@@ -441,11 +443,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div 
-                    class="p-6 text-gray-900" 
-                    x-data="appForm"
-                    x-init="$watch('saveMessage', value => console.log('saveMessage changed:', value))"
-                >
+                <div class="p-6 text-gray-900">
                     {{-- タブナビゲーション --}}
                     <div class="mb-4 border-b border-gray-200">
                         {{-- ... 既存のタブナビゲーション ... --}}

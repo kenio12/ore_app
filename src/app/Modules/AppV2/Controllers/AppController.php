@@ -156,6 +156,14 @@ class AppController extends Controller
     public function autosave(Request $request, $id)
     {
         try {
+            // リクエストの詳細をログ
+            Log::debug('Autosave request details:', [
+                'id' => $id,
+                'route' => $request->route()->getName(),
+                'parameters' => $request->route()->parameters(),
+                'formData' => $request->input('formData')
+            ]);
+
             $formData = $request->input('formData');
             $app = App::findOrFail($id);
 
