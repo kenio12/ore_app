@@ -113,24 +113,51 @@
     @endif
 
     {{-- 画像グリッド --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="flex flex-col space-y-4">
         <template x-for="(screenshot, index) in screenshots" :key="index">
-            <div class="relative group">
-                <img 
-                    :src="screenshot.url" 
-                    class="w-full h-48 object-cover rounded-lg cursor-pointer"
-                    @click="$dispatch('open-app-screenshot-modal', { src: screenshot.url })"
-                >
+            <div class="relative group bg-white rounded-lg shadow-md p-4">
                 @if(!$viewOnly)
                     <button 
                         @click="removeScreenshot(index)"
-                        class="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100"
+                        class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg"
                     >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 @endif
+                <div class="flex flex-col space-y-4">
+                    <div class="flex justify-center">
+                        <img 
+                            :src="screenshot.url" 
+                            class="max-h-[90vh] max-w-[90vw] md:max-h-[70vh] md:max-w-[80vw] object-contain rounded-lg cursor-pointer"
+                            @click="$dispatch('open-app-screenshot-modal', { src: screenshot.url })"
+                            style="max-height: 90vh; max-width: 90vw; @media (min-width: 768px) { max-height: 70vh; max-width: 80vw; }"
+                        >
+                    </div>
+                    <div class="flex justify-center items-center space-x-2">
+                        <button 
+                            @click="if(index > 0) { 
+                                [screenshots[index-1], screenshots[index]] = [screenshots[index], screenshots[index-1]];
+                                $dispatch('screenshots-updated', screenshots);
+                            }"
+                            class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
+                            :disabled="index === 0"
+                        >
+                            ↑
+                        </button>
+                        <button 
+                            @click="if(index < screenshots.length-1) { 
+                                [screenshots[index], screenshots[index+1]] = [screenshots[index+1], screenshots[index]];
+                                $dispatch('screenshots-updated', screenshots);
+                            }"
+                            class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
+                            :disabled="index === screenshots.length-1"
+                        >
+                            ↓
+                        </button>
+                    </div>
+                </div>
             </div>
         </template>
     </div>

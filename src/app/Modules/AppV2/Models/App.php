@@ -31,6 +31,8 @@ class App extends Model
         'development_period_months',
         'development_start_date',
         'development_end_date',
+        'motivation',
+        'purpose',
         'data',
         'hardware_info',
         'dev_env_info',
@@ -39,8 +41,6 @@ class App extends Model
         'frontend_info',
         'backend_info',
         'database_info',
-        'motivation',
-        'purpose',
     ];
 
     protected $casts = [
@@ -49,6 +49,7 @@ class App extends Model
         'genres' => 'array',
         'development_start_date' => 'date',
         'development_end_date' => 'date',
+        'data' => 'array',
         'hardware_info' => 'array',
         'dev_env_info' => 'array',
         'architecture_info' => 'array',
@@ -56,7 +57,6 @@ class App extends Model
         'frontend_info' => 'array',
         'backend_info' => 'array',
         'database_info' => 'array',
-        'data' => 'array',
     ];
 
     // リレーション

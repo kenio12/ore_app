@@ -75,7 +75,7 @@ document.addEventListener('alpine:init', () => {
         inputTimer: null,  // 追加：入力用のタイマー
         lastSavedSections: {},
         dirtySections: new Set(), // 変更のあったセクション
-        saveMessage: '',  // 初期値を空文字列に
+        saveMessage: null,
         shouldShowMessage: true,  // メッセージ表示制御用フラグ
 
         // タブ切り替え
@@ -313,6 +313,11 @@ document.addEventListener('alpine:init', () => {
             if (this.inputTimer) {
                 clearTimeout(this.inputTimer);
             }
+        },
+
+        initializeForm(initialData) {
+            this.formData = initialData;
+            console.log('Form initialized with:', initialData);
         }
     }));
 });

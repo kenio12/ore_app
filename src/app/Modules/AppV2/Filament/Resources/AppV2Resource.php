@@ -64,20 +64,22 @@ class AppV2Resource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label('アプリ名')
                     ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->label('公開状態')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('更新日時')
-                    ->dateTime()
+                    ->dateTime('Y-m-d H:i:s')
+                    ->timezone('Asia/Tokyo')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('作成日時')
-                    ->dateTime()
+                    ->dateTime('Y-m-d H:i:s')
+                    ->timezone('Asia/Tokyo')
                     ->sortable(),
             ])
             ->defaultSort('updated_at', 'desc')

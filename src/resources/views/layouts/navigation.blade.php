@@ -1,3 +1,7 @@
+@php
+use App\Modules\AppV2\Models\App;
+@endphp
+
 <nav class="bg-white border-b border-gray-100">
     <div class="w-full px-6 sm:px-8 lg:px-10">
         <div class="flex justify-between h-16">
@@ -15,7 +19,11 @@
                 <div class="space-x-4 px-2">
                     @auth
                         <!-- ログイン済みの場合 -->
-                        <a href="{{ route('apps-v2.create') }}" 
+                        <a href="{{ route('apps-v2.edit', ['app' => App::create([
+                            'user_id' => auth()->id(),
+                            'title' => 'ここを書き換えてください',
+                            'status' => 'draft'
+                        ])->id]) }}" 
                            onclick="clearAppFormData()"
                            class="text-sm text-gray-700 hover:text-gray-900">
                             アプリの新規投稿
