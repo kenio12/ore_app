@@ -4,8 +4,11 @@ namespace App\Modules\AppV2\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\AppV2\Services\CloudinaryService;
+use App\Modules\AppV2\Models\App;
+use App\Modules\AppV2\Models\Screenshot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class ScreenshotController extends Controller
 {
@@ -20,7 +23,8 @@ class ScreenshotController extends Controller
     {
         try {
             $request->validate([
-                'screenshot' => 'required|image|max:5120' // 5MB
+                'screenshot' => 'required|image|max:5120', // 5MB
+                'app_id' => 'required|integer'  // app_idを必須に
             ]);
 
             $file = $request->file('screenshot');
@@ -28,13 +32,32 @@ class ScreenshotController extends Controller
                 throw new \Exception('ファイルが見つかりません');
             }
 
-            $result = $this->cloudinaryService->uploadToTemp($file);
+            DB::beginTransaction();
+            try {
+                // Cloudinaryにアップロード
+                $result = $this->cloudinaryService->uploadToTemp($file);
 
-            return response()->json([
-                'success' => true,
-                'public_id' => $result['public_id'],
-                'url' => $result['url']
-            ]);
+                // データベースに保存
+                $app = App::findOrFail($request->app_id);
+                $screenshot = $app->screenshots()->create([
+                    'cloudinary_public_id' => $result['public_id'],
+                    'url' => $result['url'],
+                    'order' => 0  // とりあえず0で
+                ]);
+
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'public_id' => $result['public_id'],
+                    'url' => $result['url'],
+                    'id' => $screenshot->id  // スクリーンショットのIDも返す
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
 
         } catch (\Exception $e) {
             Log::error('Screenshot upload failed:', [
@@ -54,48 +77,39 @@ class ScreenshotController extends Controller
         try {
             $request->validate([
                 'public_id' => 'required|string',
-                'app_id' => 'required|integer'  // app_idを必須に
+                'app_id' => 'required|integer',
+                'screenshot_id' => 'required|integer'  // screenshot_idも必須に
             ]);
 
-            // 削除前の状態をログ
-            Log::info('スクショ削除開始:', [
-                'timestamp' => now()->format('Y-m-d H:i:s'),
-                'app_id' => $request->app_id,
-                'deleting_public_id' => $request->public_id,
-                'current_screenshots_count' => \App\Modules\AppV2\Models\Screenshot::where('app_id', $request->app_id)->count(),
-                'all_screenshots' => \App\Modules\AppV2\Models\Screenshot::where('app_id', $request->app_id)
-                    ->select('id', 'cloudinary_public_id', 'created_at')
-                    ->get()
-            ]);
+            DB::beginTransaction();
+            try {
+                // データベースから削除
+                $screenshot = Screenshot::where('app_id', $request->app_id)
+                    ->where('id', $request->screenshot_id)
+                    ->firstOrFail();
 
-            $result = $this->cloudinaryService->delete($request->public_id);
-            
-            // 削除後の状態もログ
-            Log::info('スクショ削除完了:', [
-                'timestamp' => now()->format('Y-m-d H:i:s'),
-                'app_id' => $request->app_id,
-                'deleted_public_id' => $request->public_id,
-                'cloudinary_result' => $result,
-                'remaining_screenshots_count' => \App\Modules\AppV2\Models\Screenshot::where('app_id', $request->app_id)->count(),
-                'remaining_screenshots' => \App\Modules\AppV2\Models\Screenshot::where('app_id', $request->app_id)
-                    ->select('id', 'cloudinary_public_id', 'created_at')
-                    ->get()
-            ]);
+                // Cloudinaryから削除
+                $result = $this->cloudinaryService->delete($request->public_id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'よっしゃ！スクショ削除したで！',
-                'deleted_at' => now()->format('Y-m-d H:i:s'),
-                'app_id' => $request->app_id,
-                'deleted_public_id' => $request->public_id
-            ]);
+                // データベースから削除
+                $screenshot->delete();
+
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'よっしゃ！スクショ削除したで！'
+                ]);
+
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
 
         } catch (\Exception $e) {
             Log::error('スクショ削除失敗:', [
-                'timestamp' => now()->format('Y-m-d H:i:s'),
-                'app_id' => $request->app_id,
                 'error' => $e->getMessage(),
-                'public_id' => $request->public_id
+                'trace' => $e->getTraceAsString()
             ]);
             
             return response()->json([

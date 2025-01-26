@@ -3,96 +3,120 @@
     
     // データの初期化
     $formData = $initialData ?? [];
-    $screenshots = $formData['screenshots'] ?? [];
+    // コレクションを配列に変換して、必要なプロパティだけ抽出
+    $screenshots = collect($formData['screenshots'] ?? [])->map(function($screenshot) {
+        return [
+            'id' => $screenshot->id ?? null,
+            'public_id' => $screenshot->public_id ?? null,
+            'url' => $screenshot->url ?? null,
+            'order' => $screenshot->order ?? 0
+        ];
+    })->toArray();
+    
     $app = $app ?? null;
     $viewOnly = $viewOnly ?? false;
+
+    // デバッグ表示
+    dump([
+        'processed_screenshots' => $screenshots  // 処理後のデータを確認
+    ]);
+
+    // Alpine.jsのデータを別変数として定義
+    $alpineData = [
+        'screenshots' => $screenshots,
+        'getAppId' => 'function() { return document.querySelector("#app_id_input").value; }',
+        'init' => 'function() { console.log("Initialized screenshots:", this.screenshots); }',
+        'handleFiles' => 'function(files) {
+            const app_id = this.getAppId();
+            Array.from(files).forEach(file => {
+                if (!file.type.startsWith("image/")) {
+                    alert("画像ファイルのみアップロード可能です");
+                    return;
+                }
+                const formData = new FormData();
+                formData.append("screenshot", file);
+                formData.append("app_id", app_id);
+                
+                fetch("/api/v2/screenshots/upload", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]").content
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        if (this.screenshots.length > 0) {
+                            const oldScreenshot = this.screenshots[0];
+                            fetch("/api/v2/screenshots/delete", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]").content
+                                },
+                                body: JSON.stringify({ 
+                                    public_id: oldScreenshot.public_id,
+                                    screenshot_id: oldScreenshot.id,
+                                    app_id: app_id
+                                })
+                            });
+                        }
+                        this.screenshots = [{
+                            public_id: result.public_id,
+                            url: result.url,
+                            order: 0
+                        }];
+                        this.$dispatch("screenshots-updated", this.screenshots);
+                        this.$dispatch("auto-save");
+                        this.$dispatch("autosave-success", "画像を更新しました");
+                    }
+                })
+                .catch(error => {
+                    console.error("Upload error:", error);
+                    alert("アップロードに失敗しました");
+                });
+            });
+        }',
+        'removeScreenshot' => 'function(index) {
+            const screenshot = this.screenshots[index];
+            const app_id = this.getAppId();
+            
+            if (screenshot && screenshot.public_id) {
+                fetch("/api/v2/screenshots/delete", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector("meta[name=csrf-token]").content
+                    },
+                    body: JSON.stringify({ 
+                        public_id: screenshot.public_id,
+                        screenshot_id: screenshot.id,
+                        app_id: app_id
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        this.screenshots.splice(index, 1);
+                        this.$dispatch("screenshots-updated", this.screenshots);
+                        this.$dispatch("auto-save");
+                        this.$dispatch("autosave-success", "よっしゃ！スクショ削除したで！");
+                    }
+                })
+                .catch(error => {
+                    console.error("Delete failed:", error);
+                    this.$dispatch("autosave-error", "あかん...スクショ消されへんかったわ...");
+                });
+            }
+        }'
+    ];
 @endphp
 
 {{-- モーダルコンポーネントをインクルード --}}
 @include('AppV2::components.screenshot-modal')
 
-<div class="space-y-8" x-data="{ 
-    screenshots: {{ Js::from($screenshots) }},
-    handleFiles(files) {
-        Array.from(files).forEach(file => {
-            if (!file.type.startsWith('image/')) {
-                alert('画像ファイルのみアップロード可能です');
-                return;
-            }
-            const formData = new FormData();
-            formData.append('screenshot', file);
-            
-            fetch('/api/v2/screenshots/upload', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    // 既存の画像を削除
-                    if (this.screenshots.length > 0) {
-                        const oldScreenshot = this.screenshots[0];
-                        fetch('/api/v2/screenshots/delete', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                            },
-                            body: JSON.stringify({ 
-                                public_id: oldScreenshot.public_id,
-                                screenshot_id: oldScreenshot.id  // DB上のIDも送信
-                            })
-                        });
-                    }
-
-                    // 新しい画像を追加
-                    this.screenshots = [{
-                        public_id: result.public_id,
-                        url: result.url,
-                        order: 0
-                    }];
-
-                    this.$dispatch('screenshots-updated', this.screenshots);
-                    this.$dispatch('auto-save');
-                    this.$dispatch('autosave-success', '画像を更新しました');
-                }
-            })
-            .catch(error => {
-                console.error('Upload error:', error);
-                alert('アップロードに失敗しました');
-            });
-        });
-    },
-    removeScreenshot(index) {
-        const screenshot = this.screenshots[index];
-        if (screenshot && screenshot.public_id) {
-            fetch('/api/v2/screenshots/delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
-                },
-                body: JSON.stringify({ public_id: screenshot.public_id })
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    this.screenshots.splice(index, 1);
-                    this.$dispatch('screenshots-updated', this.screenshots);
-                    this.$dispatch('auto-save');
-                    this.$dispatch('autosave-success', 'よっしゃ！スクショ削除したで！');
-                }
-            })
-            .catch(error => {
-                console.error('Delete failed:', error);
-                this.$dispatch('autosave-error', 'あかん...スクショ消されへんかったわ...');
-            });
-        }
-    }
-}">
+<div class="space-y-8" x-data='@json($alpineData)'>
     {{-- ヘッダー部分 --}}
     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-orange-600 to-yellow-600 p-[2px]">
         <div class="relative bg-white/90 backdrop-blur-xl rounded-2xl p-8">
