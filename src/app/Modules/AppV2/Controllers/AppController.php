@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Carbon\Carbon;
+use App\Modules\AppV2\Models\Screenshot;
 
 class AppController extends Controller
 {
@@ -199,93 +200,47 @@ class AppController extends Controller
         }
     }
 
-    public function autosave(Request $request, $id)
+    public function autosave(Request $request, App $app)
     {
+        Log::debug('Autosave request data:', $request->all());
+
         try {
-            $app = App::findOrFail($id);
-            
-            // 所有者チェックだけ行う
-            if ($app->user_id !== auth()->id()) {
-                throw new \Exception('このアプリの編集権限がありません');
+            DB::beginTransaction();
+
+            // スクリーンショットの保存処理
+            if ($request->has('screenshots')) {
+                Log::debug('Processing screenshots:', [
+                    'screenshots' => $request->input('screenshots'),
+                    'app_id' => $app->id
+                ]);
+                
+                // 既存のスクリーンショットを更新
+                foreach ($request->input('screenshots') as $screenshot) {
+                    Screenshot::updateOrCreate(
+                        ['id' => $screenshot['id']],
+                        [
+                            'app_id' => $app->id,
+                            'public_id' => $screenshot['public_id'],
+                            'url' => $screenshot['url'],
+                            'order' => $screenshot['order']
+                        ]
+                    );
+                }
             }
 
-            $formData = $request->input('formData');
-            
-            // 基本データの更新（user_idは更新対象から外す）
-            $app->update([
-                'title' => $formData['basic']['title'] ?? null,
-                'description' => $formData['basic']['description'] ?? null,
-                'status' => $formData['basic']['status'] ?? 'draft',
-                'app_status' => $formData['basic']['app_status'] ?? null,
-                'demo_url' => $formData['basic']['demo_url'] ?? null,
-                'github_url' => $formData['basic']['github_url'] ?? null,
-                'development_start_date' => $formData['basic']['development_start_date'] ? Carbon::parse($formData['basic']['development_start_date']) : null,
-                'development_end_date' => $formData['basic']['development_end_date'] ? Carbon::parse($formData['basic']['development_end_date']) : null,
-                'development_period_years' => $formData['basic']['development_period_years'] ?? 0,
-                'development_period_months' => $formData['basic']['development_period_months'] ?? 0,
-                'motivation' => $formData['basic']['motivation'] ?? null,
-                'purpose' => $formData['basic']['purpose'] ?? null,
-                'app_types' => $formData['basic']['types'] ?? [],
-                'genres' => $formData['basic']['genres'] ?? [],
-            ]);
+            DB::commit();
+            return response()->json(['success' => true]);
 
-            // スクリーンショットの保存
-            if (isset($formData['screenshots'])) {
-                $this->saveScreenshots($app, $formData['screenshots']);
-            }
-
-            // その他のセクションデータをJSON形式で保存
-            $app->update([
-                'hardware_info' => json_encode($formData['hardware'] ?? []),
-                'dev_env_info' => json_encode($formData['dev_env'] ?? []),
-                'architecture_info' => json_encode($formData['architecture'] ?? []),
-                'security_info' => json_encode($formData['security'] ?? []),
-                'frontend_info' => json_encode($formData['frontend'] ?? []),
-                'backend_info' => json_encode($formData['backend'] ?? []),
-                'database_info' => json_encode($formData['database'] ?? []),
-                'data' => json_encode([
-                    'story' => $formData['story'] ?? [],
-                    // その他の追加データ
-                ])
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => '保存しました'
-            ]);
         } catch (\Exception $e) {
-            Log::error('Autosave error: ' . $e->getMessage());
+            DB::rollBack();
+            Log::error('Autosave error:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return response()->json([
                 'success' => false,
-                'message' => '保存に失敗しました: ' . $e->getMessage()
+                'message' => 'オートセーブに失敗しました'
             ], 500);
-        }
-    }
-
-    private function saveScreenshots($app, $screenshots)
-    {
-        Log::debug('Saving screenshots:', [
-            'app_id' => $app->id,
-            'screenshots_count' => count($screenshots)
-        ]);
-
-        // 既存のスクリーンショットを一旦削除
-        $deleted = $app->screenshots()->delete();
-        Log::debug('Deleted existing screenshots:', [
-            'deleted_count' => $deleted
-        ]);
-        
-        // 新しいスクリーンショットを保存
-        foreach ($screenshots as $index => $screenshot) {
-            $new = $app->screenshots()->create([
-                'cloudinary_public_id' => $screenshot['public_id'],
-                'url' => $screenshot['url'],
-                'order' => $index
-            ]);
-            Log::debug('Created new screenshot:', [
-                'screenshot_id' => $new->id,
-                'order' => $index
-            ]);
         }
     }
 

@@ -16,9 +16,9 @@
     $viewOnly = $viewOnly ?? false;
 
     // デバッグ表示
-    dump([
-        'processed_screenshots' => $screenshots  // 処理後のデータを確認
-    ]);
+    // dump([
+    //     'processed_screenshots' => $screenshots  // 処理後のデータを確認
+    // ]);
 
     // Alpine.jsのデータを定義
     $alpineData = [
@@ -26,7 +26,6 @@
         'getAppId' => $app->id,  // 直接IDを渡す
         'init' => 'function() { 
             this.screenshots = this.screenshots || [];
-            console.log("Initialized screenshots:", this.screenshots); 
         }',
     ];
 @endphp
@@ -75,14 +74,36 @@
                     const result = await response.json();
                     
                     if (result.success) {
-                        this.screenshots.push({
+                        // 既存の画像のorderを1つずつ後ろにずらす
+                        this.screenshots = this.screenshots.map(s => ({
+                            ...s,
+                            order: s.order + 1
+                        }));
+
+                        // 新しい画像を先頭（order: 0）に追加
+                        this.screenshots.unshift({
                             id: result.id,
                             public_id: result.public_id,
                             url: result.url,
-                            order: this.screenshots.length
+                            order: 0
                         });
                         
-                        this.$dispatch('screenshots-updated', this.screenshots);
+                        // orderでソートは維持
+                        this.screenshots.sort((a, b) => a.order - b.order);
+                        
+                        // screenshots-updatedイベントで送信するデータを整形
+                        const updatedScreenshots = this.screenshots.map(s => ({
+                            id: s.id,
+                            public_id: s.public_id,
+                            url: s.url,
+                            order: s.order
+                        }));
+                        
+                        this.$dispatch('screenshots-updated', {
+                            screenshots: updatedScreenshots,
+                            app_id: app_id
+                        });
+                        
                         this.$dispatch('auto-save');
                         
                         // 3枚目をアップロードした時のメッセージを変更
@@ -97,6 +118,34 @@
                     alert('アップロードに失敗しました');
                 }
             }
+        },
+        async updateOrder(index, direction) {
+            if (direction === 'up' && index > 0) {
+                // 上に移動
+                const temp = this.screenshots[index].order;
+                this.screenshots[index].order = this.screenshots[index - 1].order;
+                this.screenshots[index - 1].order = temp;
+                
+                // 配列内の要素を入れ替え
+                [this.screenshots[index], this.screenshots[index - 1]] = 
+                [this.screenshots[index - 1], this.screenshots[index]];
+            } else if (direction === 'down' && index < this.screenshots.length - 1) {
+                // 下に移動
+                const temp = this.screenshots[index].order;
+                this.screenshots[index].order = this.screenshots[index + 1].order;
+                this.screenshots[index + 1].order = temp;
+                
+                // 配列内の要素を入れ替え
+                [this.screenshots[index], this.screenshots[index + 1]] = 
+                [this.screenshots[index + 1], this.screenshots[index]];
+            }
+
+            // orderでソート
+            this.screenshots.sort((a, b) => a.order - b.order);
+            
+            // 変更を保存
+            this.$dispatch('screenshots-updated', this.screenshots);
+            this.$dispatch('auto-save');
         },
         async removeScreenshot(index) {
             if (!confirm('このスクリーンショットを削除してもええんか？')) {
@@ -124,15 +173,20 @@
                     const result = await response.json();
                     
                     if (result.success) {
-                        // 指定されたインデックスの画像を削除
-                        this.screenshots.splice(index, 1);
+                        // 削除された要素より後ろのorderを詰める
+                        const deletedOrder = this.screenshots[index].order;
+                        this.screenshots = this.screenshots
+                            .filter((_, i) => i !== index)
+                            .map(screenshot => ({
+                                ...screenshot,
+                                order: screenshot.order > deletedOrder 
+                                    ? screenshot.order - 1 
+                                    : screenshot.order
+                            }));
                         
-                        // orderを振り直し
-                        this.screenshots = this.screenshots.map((screenshot, idx) => ({
-                            ...screenshot,
-                            order: idx
-                        }));
-
+                        // orderでソート
+                        this.screenshots.sort((a, b) => a.order - b.order);
+                        
                         this.$dispatch('screenshots-updated', this.screenshots);
                         this.$dispatch('auto-save');
                         this.$dispatch('autosave-success', 'よっしゃ！スクショ削除したで！');
@@ -191,44 +245,72 @@
     @endif
 
     {{-- 画像グリッド --}}
-    <div class="flex flex-col space-y-4">
+    <div class="flex flex-col space-y-8">
         <template x-for="(screenshot, index) in screenshots" :key="index">
-            <div class="relative group bg-white rounded-lg shadow-md p-4">
+            <div class="relative group bg-white rounded-lg shadow-md p-4"
+                 :class="{ 'bg-gradient-to-br from-amber-50 to-yellow-50': index === 0 }">
+                
+                {{-- サムネイル表示バッジ（index=0の時のみ表示） --}}
+                <div x-show="index === 0" 
+                     class="mb-6"> 
+                    <div class="bg-gradient-to-r from-amber-500 to-yellow-500 rounded-lg p-3">
+                        <div style="background-color: #fef9c3 !important;" class="rounded-lg px-4 py-2 shadow-md">
+                            <div class="flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <span class="text-lg font-bold !bg-yellow-200 !text-amber-800 px-3 py-1.5 rounded-md">
+                                    このスクショがカードのサムネイルになります
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 @if(!$viewOnly)
                     <button 
                         @click="removeScreenshot(index)"
-                        class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg"
+                        class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg z-20"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 @endif
+
+                {{-- 画像コンテナ --}}
                 <div class="flex flex-col space-y-4">
                     <div class="flex justify-center">
                         <img 
                             :src="screenshot.url" 
-                            class="max-h-[90vh] max-w-[90vw] md:max-h-[70vh] md:max-w-[80vw] object-contain rounded-lg cursor-pointer"
+                            class="object-contain rounded-lg cursor-pointer"
+                            style="max-height: 70vh; max-width: 80vw;"
+                            :style="window.innerWidth < 768 ? 'max-height: 90vh; max-width: 90vw;' : 'max-height: 70vh; max-width: 80vw;'"
+                            :class="{ 'ring-4 ring-amber-400 ring-offset-4 shadow-xl': index === 0 }"
+                            x-init="
+                                window.addEventListener('resize', () => {
+                                    if (window.innerWidth < 768) {
+                                        $el.style.maxHeight = '90vh';
+                                        $el.style.maxWidth = '90vw';
+                                    } else {
+                                        $el.style.maxHeight = '70vh';
+                                        $el.style.maxWidth = '80vw';
+                                    }
+                                })
+                            "
                             @click="$dispatch('open-app-screenshot-modal', { src: screenshot.url })"
-                            style="max-height: 90vh; max-width: 90vw; @media (min-width: 768px) { max-height: 70vh; max-width: 80vw; }"
                         >
                     </div>
                     <div class="flex justify-center items-center space-x-2">
                         <button 
-                            @click="if(index > 0) { 
-                                [screenshots[index-1], screenshots[index]] = [screenshots[index], screenshots[index-1]];
-                                $dispatch('screenshots-updated', screenshots);
-                            }"
+                            @click="updateOrder(index, 'up')"
                             class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
                             :disabled="index === 0"
                         >
                             ↑
                         </button>
                         <button 
-                            @click="if(index < screenshots.length-1) { 
-                                [screenshots[index], screenshots[index+1]] = [screenshots[index+1], screenshots[index]];
-                                $dispatch('screenshots-updated', screenshots);
-                            }"
+                            @click="updateOrder(index, 'down')"
                             class="bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
                             :disabled="index === screenshots.length-1"
                         >
