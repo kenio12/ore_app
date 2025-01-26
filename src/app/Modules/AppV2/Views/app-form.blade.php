@@ -101,9 +101,6 @@
         {{-- モダンなモーダル --}}
         @include('AppV2::components.screenshot-modal')
 
-        {{-- Alpine.js初期化スクリプト --}}
-        @include('AppV2::tabs.scripts.app-form-scripts')
-
         {{-- 保存メッセージ（position: fixedを使用） --}}
         <template x-if="saveMessage">
             <div 
@@ -165,8 +162,240 @@
         }
     </style>
 
-    {{-- Alpine.jsのデバッグモードを有効化 --}}
+    {{-- ここから下にすべてのJavaScriptをまとめる --}}
     <script>
+        // メインのAlpine.js初期化
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('appForm', () => ({
+                appId: null,
+                activeTab: 'basic',
+                formData: {
+                    basic: {
+                        title: '',
+                        description: '',
+                        types: [],
+                        genres: [],
+                        app_status: '',
+                        status: '',
+                        demo_url: '',
+                        github_url: '',
+                        development_start_date: '',
+                        development_end_date: '',
+                        development_period_years: 0,
+                        development_period_months: 0,
+                        motivation: '',
+                        purpose: ''
+                    },
+                    screenshots: [],
+                    story: {
+                        motivation: '',
+                        challenges: '',
+                        future: ''
+                    },
+                    hardware: {
+                        device_types: [],
+                        os_types: [],
+                        cpu_types: [],
+                        memory_sizes: [],
+                        storage_types: []
+                    },
+                    dev_env: {
+                        team_sizes: '',
+                        virtualization_tools: [],
+                        editors: [],
+                        version_control: [],
+                        monitor_counts: '',
+                        monitor_sizes: [],
+                        monitor_resolutions: [],
+                        communication: []
+                    },
+                    architecture: {
+                        patterns: [],
+                        design_patterns: [],
+                        hints: []
+                    },
+                    frontend: {
+                        languages: [],
+                        frameworks: [],
+                        css_frameworks: []
+                    },
+                    backend: {
+                        languages: [],
+                        frameworks: [],
+                        package_hints: []
+                    },
+                    database: {
+                        types: [],
+                        orms: [],
+                        caches: [],
+                        hosting_services: []
+                    },
+                    security: {
+                        security_measures: [],
+                        testing_tools: [],
+                        code_quality_tools: []
+                    }
+                },
+
+                // 自動保存関連の変数
+                autoSaveTimer: null,
+                inputTimer: null,
+                lastSavedSections: {},
+                dirtySections: new Set(),
+                saveMessage: null,
+                shouldShowMessage: true,
+
+                // メソッド群
+                switchTab(tabId) {
+                    this.activeTab = tabId;
+                },
+
+                async autoSave() {
+                    console.log('Starting autoSave with data:', this.formData);
+                    try {
+                        const isCreate = !this.appId || this.appId === 'create';
+                        const saveUrl = isCreate 
+                            ? '/apps-v2/create/autosave'
+                            : `/apps-v2/${this.appId}/autosave`;
+
+                        const response = await fetch(saveUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                formData: {
+                                    ...this.formData,
+                                    basic: {
+                                        ...this.formData.basic,
+                                        updated_at: new Date().toISOString()
+                                    }
+                                }
+                            })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        console.log('Save result:', result);
+                        
+                        if (result.app_id) {
+                            this.appId = result.app_id;
+                            const appIdInput = document.querySelector('input[name="app_id"]');
+                            if (appIdInput) {
+                                appIdInput.value = result.app_id;
+                            }
+                        }
+
+                        if (result.success) {
+                            Alpine.store('notification', {
+                                show: true,
+                                message: result.message || '保存しました',
+                                type: 'success'
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Autosave error:', error);
+                        Alpine.store('notification', {
+                            show: true,
+                            message: '保存に失敗しました: ' + error.message,
+                            type: 'error'
+                        });
+                    }
+                },
+
+                init() {
+                    const appIdInput = document.querySelector('input[name="app_id"]');
+                    this.appId = appIdInput ? appIdInput.value : null;
+                    
+                    console.log('Initializing with appId:', this.appId);
+
+                    const savedData = {!! isset($app) ? json_encode($app) : 'null' !!};
+                    console.log('Saved data:', savedData);
+
+                    if (savedData) {
+                        // デバッグ用
+                        console.log('Raw saved data:', savedData);
+
+                        this.formData.basic = {
+                            ...this.formData.basic,
+                            title: savedData.title || '',
+                            description: savedData.description || '',
+                            // 配列データの処理を修正
+                            types: Array.isArray(savedData.app_types) 
+                                ? savedData.app_types 
+                                : (savedData.app_types ? JSON.parse(savedData.app_types) : []),
+                            genres: Array.isArray(savedData.genres) 
+                                ? savedData.genres 
+                                : (savedData.genres ? JSON.parse(savedData.genres) : []),
+                            app_status: savedData.app_status || '',
+                            status: savedData.status || 'draft',
+                            demo_url: savedData.demo_url || '',
+                            github_url: savedData.github_url || '',
+                            development_start_date: savedData.development_start_date 
+                                ? new Date(savedData.development_start_date).toISOString().split('T')[0]
+                                : '',
+                            development_end_date: savedData.development_end_date 
+                                ? new Date(savedData.development_end_date).toISOString().split('T')[0]
+                                : '',
+                            development_period_years: savedData.development_period_years || 0,
+                            development_period_months: savedData.development_period_months || 0,
+                            motivation: savedData.motivation || '',
+                            purpose: savedData.purpose || ''
+                        };
+
+                        // デバッグ用
+                        console.log('Types after processing:', this.formData.basic.types);
+                        console.log('Genres after processing:', this.formData.basic.genres);
+
+                        // その他のセクションも復元
+                        ['screenshots', 'story', 'hardware', 'dev_env', 
+                         'architecture', 'frontend', 'backend', 'database', 'security']
+                        .forEach(section => {
+                            if (savedData[section]) {
+                                this.formData[section] = {
+                                    ...this.formData[section],  // デフォルト値を保持
+                                    ...savedData[section]       // 保存データで上書き
+                                };
+                            }
+                        });
+
+                        console.log('Restored formData:', this.formData);
+                    }
+
+                    // 自動保存タイマーの設定（60秒）
+                    this.autoSaveTimer = setInterval(() => {
+                        if (this.dirtySections.size > 0) {
+                            this.autoSave();
+                        }
+                    }, 60000);
+
+                    // イベントリスナー設定
+                    window.addEventListener('beforeunload', (event) => {
+                        if (this.dirtySections.size > 0) {
+                            event.preventDefault();
+                            event.returnValue = '';
+                        }
+                    });
+                },
+
+                // クリーンアップ
+                destroy() {
+                    if (this.autoSaveTimer) {
+                        clearInterval(this.autoSaveTimer);
+                    }
+                    if (this.inputTimer) {
+                        clearTimeout(this.inputTimer);
+                    }
+                }
+            }));
+        });
+
+        // デバッグ用
         window.addEventListener('load', () => {
             console.log('Alpine.js version:', Alpine.version);
             console.log('Alpine.js data:', Alpine.$data(document.querySelector('[x-data]')));

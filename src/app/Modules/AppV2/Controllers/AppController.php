@@ -97,6 +97,12 @@ class AppController extends Controller
                     ];
                 });
 
+            // デバッグログを追加して、値を確認
+            Log::debug('Date values:', [
+                'raw_start' => $app->development_start_date,
+                'raw_end' => $app->development_end_date
+            ]);
+
             // 初期データの準備
             $initialData = [
                 'basic' => [
@@ -108,8 +114,8 @@ class AppController extends Controller
                     'status' => $app->status,
                     'demo_url' => $app->demo_url,
                     'github_url' => $app->github_url,
-                    'development_start_date' => $app->development_start_date ? $app->development_start_date->format('Y-m-d') : '',
-                    'development_end_date' => $app->development_end_date ? $app->development_end_date->format('Y-m-d') : '',
+                    'development_start_date' => $app->development_start_date ? $app->development_start_date->format('Y-m-d') : null,
+                    'development_end_date' => $app->development_end_date ? $app->development_end_date->format('Y-m-d') : null,
                     'development_period_years' => $app->development_period_years ?? 0,
                     'development_period_months' => $app->development_period_months ?? 0,
                     'motivation' => $app->motivation,
@@ -126,12 +132,10 @@ class AppController extends Controller
                 'security' => json_decode($app->security_info, true) ?? []
             ];
 
-            // デバッグログ追加
-            Log::debug('Initial data dates:', [
-                'start' => $app->development_start_date,
-                'end' => $app->development_end_date,
-                'formatted_start' => $initialData['basic']['development_start_date'],
-                'formatted_end' => $initialData['basic']['development_end_date'],
+            // 初期データの日付をログで確認
+            Log::debug('Formatted dates:', [
+                'start' => $initialData['basic']['development_start_date'],
+                'end' => $initialData['basic']['development_end_date']
             ]);
 
             return view('AppV2::app-form', [

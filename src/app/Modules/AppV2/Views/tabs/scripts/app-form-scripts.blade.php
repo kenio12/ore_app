@@ -1,4 +1,4 @@
-<script>
+{{-- <script>
 document.addEventListener('alpine:init', () => {
     Alpine.data('appForm', () => ({
         appId: null,
@@ -162,7 +162,7 @@ document.addEventListener('alpine:init', () => {
             console.log('Saved data:', savedData);
 
             if (savedData) {
-                // 基本データの復元（日付データの処理を追加）
+                // 基本データの復元（日付データの処理を修正）
                 this.formData.basic = {
                     title: savedData.title || '',
                     description: savedData.description || '',
@@ -173,10 +173,10 @@ document.addEventListener('alpine:init', () => {
                     demo_url: savedData.demo_url || '',
                     github_url: savedData.github_url || '',
                     development_start_date: savedData.development_start_date 
-                        ? savedData.development_start_date.split(' ')[0]  // 時間部分を除去
+                        ? new Date(savedData.development_start_date).toISOString().split('T')[0]
                         : '',
                     development_end_date: savedData.development_end_date 
-                        ? savedData.development_end_date.split(' ')[0]    // 時間部分を除去
+                        ? new Date(savedData.development_end_date).toISOString().split('T')[0]
                         : '',
                     development_period_years: savedData.development_period_years || 0,
                     development_period_months: savedData.development_period_months || 0,
@@ -185,7 +185,7 @@ document.addEventListener('alpine:init', () => {
                 };
 
                 // デバッグログ追加
-                console.log('Date fields initialized:', {
+                console.log('Date fields after format:', {
                     start: this.formData.basic.development_start_date,
                     end: this.formData.basic.development_end_date
                 });
@@ -348,4 +348,4 @@ document.addEventListener('alpine:init', () => {
         }
     }));
 });
-</script> 
+</script>  --}}

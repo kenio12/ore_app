@@ -218,7 +218,7 @@
                 開発期間
             </label>
             <div class="mt-4 space-y-6">
-                {{-- 開始日と終了日 --}}
+                {{-- 開発開始日と終了日 --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {{-- 開発開始日 --}}
                     <div>
@@ -226,11 +226,17 @@
                         <input 
                             type="date"
                             x-model="formData.basic.development_start_date"
-                            @input="handleInput"
+                            x-init="$watch('formData.basic.development_start_date', value => {
+                                if (value && value.includes('T')) {
+                                    formData.basic.development_start_date = value.split('T')[0];
+                                }
+                            })"
                             class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                                    focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20
                                    hover:border-violet-300 transition-all duration-300"
                         >
+                        {{-- デバッグ用に値を表示 --}}
+                        <div x-text="formData.basic.development_start_date" class="mt-2 text-sm text-gray-500"></div>
                     </div>
                     {{-- 開発終了日 --}}
                     <div>
@@ -238,11 +244,17 @@
                         <input 
                             type="date"
                             x-model="formData.basic.development_end_date"
-                            @input="handleInput"
+                            x-init="$watch('formData.basic.development_end_date', value => {
+                                if (value && value.includes('T')) {
+                                    formData.basic.development_end_date = value.split('T')[0];
+                                }
+                            })"
                             class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                                    focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20
                                    hover:border-violet-300 transition-all duration-300"
                         >
+                        {{-- デバッグ用に値を表示 --}}
+                        <div x-text="formData.basic.development_end_date" class="mt-2 text-sm text-gray-500"></div>
                     </div>
                 </div>
 
