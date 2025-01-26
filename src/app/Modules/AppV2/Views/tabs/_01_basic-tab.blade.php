@@ -211,57 +211,36 @@
         </div>
     </div>
 
-    {{-- 開発期間追加 --}}
+    {{-- 開発期間 --}}
     <div class="transform hover:scale-[1.02] transition-all duration-500">
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
-            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-blue-600">
+            <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-pink-600">
                 開発期間
             </label>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {{-- 開発開始日 --}}
                 <div>
-                    <label class="block text-sm text-gray-600 mb-1">開発開始日</label>
+                    <label class="block text-gray-700 mb-2">開発開始日</label>
                     <input 
-                        type="date" 
+                        type="date"
                         x-model="formData.basic.development_start_date"
                         @input="handleInput"
-                        class="w-full rounded-lg border-2 border-gray-200 p-4
-                               focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20"
+                        class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                               focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20
+                               hover:border-violet-300 transition-all duration-300"
                     >
                 </div>
+                {{-- 開発終了日 --}}
                 <div>
-                    <label class="block text-sm text-gray-600 mb-1">開発終了日</label>
+                    <label class="block text-gray-700 mb-2">開発終了日</label>
                     <input 
-                        type="date" 
+                        type="date"
                         x-model="formData.basic.development_end_date"
                         @input="handleInput"
-                        class="w-full rounded-lg border-2 border-gray-200 p-4
-                               focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20"
+                        class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
+                               focus:border-violet-500 focus:ring-4 focus:ring-violet-500/20
+                               hover:border-violet-300 transition-all duration-300"
                     >
-                </div>
-            </div>
-            <div class="flex items-center gap-4 mt-4">
-                <div class="flex items-center gap-2">
-                    <input 
-                        type="number" 
-                        x-model="formData.basic.development_period_years"
-                        @input="handleInput"
-                        class="w-20 rounded-lg border-2 border-gray-200 p-4
-                               focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20"
-                        min="0"
-                    >
-                    <span class="text-gray-700">年</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <input 
-                        type="number" 
-                        x-model="formData.basic.development_period_months"
-                        @input="handleInput"
-                        class="w-20 rounded-lg border-2 border-gray-200 p-4
-                               focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20"
-                        min="0"
-                        max="11"
-                    >
-                    <span class="text-gray-700">ヶ月</span>
                 </div>
             </div>
         </div>

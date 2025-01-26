@@ -18,7 +18,9 @@ document.addEventListener('alpine:init', () => {
                 development_start_date: '',
                 development_end_date: '',
                 development_period_years: 0,
-                development_period_months: 0
+                development_period_months: 0,
+                motivation: '',
+                purpose: ''
             },
             screenshots: [],
             story: {
@@ -173,7 +175,9 @@ document.addEventListener('alpine:init', () => {
                     development_start_date: savedData.development_start_date || '',
                     development_end_date: savedData.development_end_date || '',
                     development_period_years: savedData.development_period_years || 0,
-                    development_period_months: savedData.development_period_months || 0
+                    development_period_months: savedData.development_period_months || 0,
+                    motivation: savedData.motivation || '',
+                    purpose: savedData.purpose || ''
                 };
 
                 // その他のデータの復元
@@ -277,6 +281,11 @@ document.addEventListener('alpine:init', () => {
 
             // デバッグ用
             console.log('After initialization:', this.formData);
+
+            // デバッグ用のウォッチャーを追加
+            this.$watch('formData.basic', (value) => {
+                console.log('Basic data changed:', value);
+            }, { deep: true });
 
             // デバッグ用のウォッチャーを追加
             this.$watch('formData.basic.types', (value) => {
