@@ -240,19 +240,6 @@ class AppController extends Controller
         try {
             DB::beginTransaction();
 
-            // ストーリー情報の保存
-            if ($request->has('story')) {
-                $app->update([
-                    'development_trigger' => $request->input('story.development_trigger'),
-                    'development_hardship' => $request->input('story.development_hardship'),
-                    'development_tearful' => $request->input('story.development_tearful'),
-                    'development_enjoyable' => $request->input('story.development_enjoyable'),
-                    'development_funny' => $request->input('story.development_funny'),
-                    'development_impression' => $request->input('story.development_impression'),
-                    'development_oneword' => $request->input('story.development_oneword')
-                ]);
-            }
-
             // ==================== ⚠️危険！以下のコードは絶対に消すな！！！！ ====================
             // 消したら殺す！！！！
             // スクリーンショット機能が完全に壊れる！！！！
@@ -279,6 +266,19 @@ class AppController extends Controller
             }
 
             // ==================== ⚠️危険！上のコードは絶対に消すな！！！！ ====================
+
+            // ストーリー情報の保存（既存コードの後に追加）
+            if ($request->has('story')) {
+                $app->update([
+                    'development_trigger' => $request->input('story.development_trigger'),
+                    'development_hardship' => $request->input('story.development_hardship'),
+                    'development_tearful' => $request->input('story.development_tearful'),
+                    'development_enjoyable' => $request->input('story.development_enjoyable'),
+                    'development_funny' => $request->input('story.development_funny'),
+                    'development_impression' => $request->input('story.development_impression'),
+                    'development_oneword' => $request->input('story.development_oneword')
+                ]);
+            }
 
             DB::commit();
             return response()->json(['success' => true]);

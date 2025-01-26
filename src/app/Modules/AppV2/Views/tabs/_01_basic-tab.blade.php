@@ -67,7 +67,7 @@
             <textarea
                 x-model="formData.basic.description"
                 @input="handleInput"
-                rows="4"
+                rows="8"
                 class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                        focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20
                        hover:border-purple-300 transition-all duration-300"
@@ -84,7 +84,7 @@
             <textarea
                 x-model="formData.basic.motivation"
                 @input="handleInput"
-                rows="4"
+                rows="8"
                 class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                        focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20
                        hover:border-pink-300 transition-all duration-300"
@@ -101,7 +101,7 @@
             <textarea
                 x-model="formData.basic.purpose"
                 @input="handleInput"
-                rows="4"
+                rows="8"
                 class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                        focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20
                        hover:border-blue-300 transition-all duration-300"

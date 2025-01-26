@@ -22,7 +22,7 @@
                 <textarea
                     x-model="formData.story.development_trigger"
                     @input="autoSave"
-                    rows="4"
+                    rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                            focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20
                            hover:border-pink-300 transition-all duration-300"
@@ -41,7 +41,7 @@
                 <textarea
                     x-model="formData.story.development_hardship"
                     @input="autoSave"
-                    rows="3"
+                    rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                            focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20
                            hover:border-rose-300 transition-all duration-300"
@@ -50,7 +50,7 @@
                 <textarea
                     x-model="formData.story.development_tearful"
                     @input="autoSave"
-                    rows="3"
+                    rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                            focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20
                            hover:border-rose-300 transition-all duration-300"
@@ -59,7 +59,7 @@
                 <textarea
                     x-model="formData.story.development_enjoyable"
                     @input="autoSave"
-                    rows="3"
+                    rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                            focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20
                            hover:border-rose-300 transition-all duration-300"
@@ -68,7 +68,7 @@
                 <textarea
                     x-model="formData.story.development_funny"
                     @input="autoSave"
-                    rows="3"
+                    rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                            focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20
                            hover:border-rose-300 transition-all duration-300"
@@ -87,7 +87,7 @@
                 <textarea
                     x-model="formData.story.development_impression"
                     @input="autoSave"
-                    rows="3"
+                    rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                            focus:border-red-500 focus:ring-4 focus:ring-red-500/20
                            hover:border-red-300 transition-all duration-300"
@@ -96,7 +96,7 @@
                 <textarea
                     x-model="formData.story.development_oneword"
                     @input="autoSave"
-                    rows="3"
+                    rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                            focus:border-red-500 focus:ring-4 focus:ring-red-500/20
                            hover:border-red-300 transition-all duration-300"
