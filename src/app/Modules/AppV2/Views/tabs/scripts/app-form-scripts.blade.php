@@ -162,7 +162,7 @@ document.addEventListener('alpine:init', () => {
             console.log('Saved data:', savedData);
 
             if (savedData) {
-                // 基本データの復元（nullチェックを追加）
+                // 基本データの復元（日付データの処理を追加）
                 this.formData.basic = {
                     title: savedData.title || '',
                     description: savedData.description || '',
@@ -172,13 +172,23 @@ document.addEventListener('alpine:init', () => {
                     status: savedData.status || 'draft',
                     demo_url: savedData.demo_url || '',
                     github_url: savedData.github_url || '',
-                    development_start_date: savedData.development_start_date || '',
-                    development_end_date: savedData.development_end_date || '',
+                    development_start_date: savedData.development_start_date 
+                        ? savedData.development_start_date.split(' ')[0]  // 時間部分を除去
+                        : '',
+                    development_end_date: savedData.development_end_date 
+                        ? savedData.development_end_date.split(' ')[0]    // 時間部分を除去
+                        : '',
                     development_period_years: savedData.development_period_years || 0,
                     development_period_months: savedData.development_period_months || 0,
                     motivation: savedData.motivation || '',
                     purpose: savedData.purpose || ''
                 };
+
+                // デバッグログ追加
+                console.log('Date fields initialized:', {
+                    start: this.formData.basic.development_start_date,
+                    end: this.formData.basic.development_end_date
+                });
 
                 // その他のデータの復元
                 if (savedData.data) {
@@ -304,6 +314,14 @@ document.addEventListener('alpine:init', () => {
             // スクリーンショット更新イベントのハンドリング
             this.$el.addEventListener('screenshots-updated', (event) => {
                 this.formData.screenshots = event.detail;
+            });
+
+            // 日付フィールドの変更を監視
+            this.$watch('formData.basic.development_start_date', (value) => {
+                console.log('Start date changed:', value);
+            });
+            this.$watch('formData.basic.development_end_date', (value) => {
+                console.log('End date changed:', value);
             });
         },
 
