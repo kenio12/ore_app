@@ -3,7 +3,7 @@
     <nav class="relative mb-8">
         {{-- タブコンテナ --}}
         <div class="relative bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-xl border border-white/20">
-            <div class="flex flex-wrap gap-2 justify-center">
+            <div class="flex flex-wrap gap-2 justify-start">
                 @foreach ($sections as $id => $section)
                     <button
                         @click="switchTab('{{ $id }}')"
