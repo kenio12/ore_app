@@ -19,8 +19,10 @@ class Screenshot extends Model
     public function getModalDataAttribute()
     {
         return [
-            'src' => $this->url,  // screenshot-modal.blade.phpのimageSrcと対応
-            'public_id' => $this->cloudinary_public_id
+            'id' => $this->id,
+            'src' => $this->url,
+            'public_id' => $this->cloudinary_public_id,
+            'order' => $this->order
         ];
     }
 

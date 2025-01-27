@@ -89,52 +89,51 @@ class App extends Model
 
     // ==================== 基本プロパティ ====================
     protected $fillable = [
-        'user_id',
-        'title',
-        'description',
-        'motivation',
-        'purpose',
-        'demo_url',
-        'github_url',
-        'status',
-        'color',
-        'completed_sections',
-        'app_types',
-        'genres',
-        'app_status',
-        'development_period_years',
-        'development_period_months',
-        'development_start_date',
-        'development_end_date',
-        'data',
-        'hardware_info',
-        'dev_env_info',
-        'architecture_info',
-        'security_info',
-        'frontend_info',
-        'backend_info',
-        'database_info',
-        'development_trigger',
-        'development_hardship',
-        'development_tearful',
-        'development_enjoyable',
-        'development_funny',
-        'development_impression',
-        'development_oneword',
+        // 01 基本情報フィールド
+        'user_id',          // 作者のID
+        'title',            // アプリ名
+        'description',      // アプリの概要
+        'motivation',       // このアプリを作るきっかけ
+        'purpose',          // このアプリの目指すところ
+        'demo_url',         // デモURL
+        'github_url',       // GitHubリポジトリURL
+        'status',          // 公開状態
+        'color',           // カラーテーマ
+        'completed_sections', // 完了セクション
+        'app_types',       // アプリの種類
+        'genres',          // ジャンル
+        'app_status',      // 開発状況
+
+        // 02 スクリーンショット関連
+        'data',            // スクリーンショットデータ
+
+        // 03 開発ストーリー関連
+        'development_trigger',      // 開発のきっかけ
+        'development_hardship',     // 開発の苦労話
+        'development_tearful',      // 開発の泣ける話
+        'development_enjoyable',    // 開発の楽しかった話
+        'development_funny',        // 開発の笑える話
+        'development_impression',   // 開発を通しての気づき
+        'development_oneword',      // 開発を終えての一言
+
+        // 04 開発期間関連
+        'development_period_years',    // 開発期間（年）
+        'development_period_months',   // 開発期間（月）
+        'development_start_date',      // 開発開始日
+        'development_end_date',        // 開発終了日
+
+        // 05 技術スタック関連
+        'hardware_info',     // ハードウェア要件情報
+        'dev_env_info',      // 開発環境情報
+        'architecture_info', // アーキテクチャ情報
+        'frontend_info',     // フロントエンド情報
+        'backend_info',      // バックエンド情報
+        'database_info',     // データベース情報
+        'security_info',     // セキュリティ情報
     ];
 
-    // ==================== 開発ストーリー関連 ====================
-    protected $development_story_fields = [
-        'development_trigger',
-        'development_hardship',
-        'development_tearful',
-        'development_enjoyable',
-        'development_funny',
-        'development_impression',
-        'development_oneword'
-    ];
-
-    // ==================== 開発環境関連 ====================
+    // ==================== 基本の開発環境関連 ====================
+    
     protected $development_env_fields = [
         'development_period_years',
         'development_period_months',

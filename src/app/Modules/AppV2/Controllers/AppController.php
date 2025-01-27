@@ -69,21 +69,30 @@ class AppController extends Controller
 
     public function show($id)
     {
-        $app = App::with(['screenshots'])->findOrFail($id);
+        $app = App::with(['screenshots' => function($query) {
+            $query->orderBy('created_at', 'desc');  // 新しい順に並べ替え
+        }])->findOrFail($id);
         
         // スクリーンショットデータの整形
         $app->screenshots = $app->screenshots->map(function($screenshot) {
             return [
+                'id' => $screenshot->id,
                 'public_id' => $screenshot->cloudinary_public_id,
-                'url' => $screenshot->url
+                'url' => $screenshot->url,
+                'order' => $screenshot->order
             ];
         });
 
-        return view('app-v2.show', compact('app'));
+        return view('AppV2::show', compact('app'));
     }
 
     public function edit(App $app)
     {
+        // スクリーンショットデータを新しい順で取得
+        $app->load(['screenshots' => function($query) {
+            $query->orderBy('created_at', 'desc');
+        }]);
+        
         $sections = [
             'basic' => ['title' => '基本情報'],
             'screenshots' => ['title' => 'スクリーンショット'],
@@ -134,20 +143,30 @@ class AppController extends Controller
 
             // ストーリー情報の保存（story セクションから取得）
             if ($request->has('formData.story')) {
-                $app->update([
-                    'development_trigger' => $request->input('formData.story.development_trigger'),
-                    'development_hardship' => $request->input('formData.story.development_hardship'),
-                    'development_tearful' => $request->input('formData.story.development_tearful'),
-                    'development_enjoyable' => $request->input('formData.story.development_enjoyable'),
-                    'development_funny' => $request->input('formData.story.development_funny'),
-                    'development_impression' => $request->input('formData.story.development_impression'),
-                    'development_oneword' => $request->input('formData.story.development_oneword')
-                ]);
-            }
+                $storyData = $request->input('formData.story');
+                
+                // 意味のあるデータが1つでもあるかチェック
+                $hasValidData = collect($storyData)->some(function ($value) {
+                    return !empty($value);
+                });
 
-            Log::debug('Story data received:', [
-                'data' => $request->input('formData.story')
-            ]);
+                // 意味のあるデータがある場合だけ保存
+                if ($hasValidData) {
+                    Log::debug('Saving story data:', ['data' => $storyData]);
+                    
+                    $app->update([
+                        'development_trigger' => $storyData['development_trigger'],
+                        'development_hardship' => $storyData['development_hardship'],
+                        'development_tearful' => $storyData['development_tearful'],
+                        'development_enjoyable' => $storyData['development_enjoyable'],
+                        'development_funny' => $storyData['development_funny'],
+                        'development_impression' => $storyData['development_impression'],
+                        'development_oneword' => $storyData['development_oneword']
+                    ]);
+                } else {
+                    Log::debug('Skipping story data save - no valid data');
+                }
+            }
 
             DB::commit();
             return response()->json(['success' => true]);

@@ -347,7 +347,6 @@
 
                         // 基本データの復元
                         this.formData.basic = {
-                            ...this.formData.basic,
                             title: savedData.title || '',
                             description: savedData.description || '',
                             types: Array.isArray(savedData.app_types) 
@@ -370,6 +369,10 @@
                             development_period_months: savedData.development_period_months || 0,
                             motivation: savedData.motivation || '',
                             purpose: savedData.purpose || '',
+                        };
+
+                        // ストーリーデータの初期化
+                        this.formData.story = {
                             development_trigger: savedData.development_trigger || '',
                             development_hardship: savedData.development_hardship || '',
                             development_tearful: savedData.development_tearful || '',
@@ -380,7 +383,7 @@
                         };
 
                         // その他のセクションの復元
-                        ['screenshots', 'story', 'hardware', 'dev_env', 
+                        ['screenshots', 'hardware', 'dev_env', 
                          'architecture', 'frontend', 'backend', 'database', 'security']
                         .forEach(section => {
                             if (savedData[section]) {

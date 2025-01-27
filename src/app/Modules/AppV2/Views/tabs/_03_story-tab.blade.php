@@ -29,7 +29,7 @@
             </label>
             <div class="mt-4">
                 <textarea
-                    x-model="formData.basic.development_trigger"
+                    x-model="formData.story.development_trigger"
                     @input="handleInput"
                     rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
@@ -48,7 +48,7 @@
             </label>
             <div class="mt-4 space-y-4">
                 <textarea
-                    x-model="formData.basic.development_hardship"
+                    x-model="formData.story.development_hardship"
                     @input="handleInput"
                     rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
@@ -57,7 +57,7 @@
                     placeholder="開発の苦しい話を教えてください"></textarea>
 
                 <textarea
-                    x-model="formData.basic.development_tearful"
+                    x-model="formData.story.development_tearful"
                     @input="handleInput"
                     rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
@@ -66,7 +66,7 @@
                     placeholder="開発の泣ける話を教えてください"></textarea>
 
                 <textarea
-                    x-model="formData.basic.development_enjoyable"
+                    x-model="formData.story.development_enjoyable"
                     @input="handleInput"
                     rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
@@ -75,7 +75,7 @@
                     placeholder="開発の楽しい話を教えてください"></textarea>
 
                 <textarea
-                    x-model="formData.basic.development_funny"
+                    x-model="formData.story.development_funny"
                     @input="handleInput"
                     rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
@@ -94,7 +94,7 @@
             </label>
             <div class="mt-4 space-y-4">
                 <textarea
-                    x-model="formData.basic.development_impression"
+                    x-model="formData.story.development_impression"
                     @input="handleInput"
                     rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
@@ -103,7 +103,7 @@
                     placeholder="開発を通して感じたことを教えてください"></textarea>
 
                 <textarea
-                    x-model="formData.basic.development_oneword"
+                    x-model="formData.story.development_oneword"
                     @input="handleInput"
                     rows="8"
                     class="w-full rounded-lg border-2 border-gray-200 p-4 text-lg
