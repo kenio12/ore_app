@@ -70,7 +70,7 @@ class AppController extends Controller
     public function show($id)
     {
         $app = App::with(['screenshots' => function($query) {
-            $query->orderBy('created_at', 'desc');  // 新しい順に並べ替え
+            $query->orderBy('order', 'asc');  // orderで昇順に並べ替え
         }])->findOrFail($id);
         
         // スクリーンショットデータの整形
@@ -88,10 +88,28 @@ class AppController extends Controller
 
     public function edit(App $app)
     {
-        // スクリーンショットデータを新しい順で取得
+        // スクリーンショットを含めて取得
         $app->load(['screenshots' => function($query) {
-            $query->orderBy('created_at', 'desc');
+            $query->orderBy('order', 'asc');
         }]);
+        
+        // 初期データを正しい形式で準備
+        $initialData = [
+            'screenshots' => $app->screenshots->map(function($screenshot) {
+                return [
+                    'id' => $screenshot->id,
+                    'public_id' => $screenshot->cloudinary_public_id,
+                    'url' => $screenshot->url,
+                    'order' => $screenshot->order
+                ];
+            })->toArray()
+        ];
+        
+        // デバッグ用
+        Log::debug('Edit画面初期データ準備:', [
+            'app_id' => $app->id,
+            'screenshots' => $initialData['screenshots']
+        ]);
         
         $sections = [
             'basic' => ['title' => '基本情報'],
@@ -106,7 +124,11 @@ class AppController extends Controller
             'security' => ['title' => 'セキュリティ']
         ];
 
-        return view('AppV2::app-form', compact('app', 'sections'));
+        return view('AppV2::app-form', [
+            'app' => $app,
+            'initialData' => $initialData,
+            'sections' => $sections
+        ]);
     }
 
     public function autosave(Request $request, App $app)
@@ -141,14 +163,43 @@ class AppController extends Controller
 
             // ==================== ⚠️危険！上のコードは絶対に消すな！！！！ ====================
 
+            // 基本情報の保存処理を追加
+            if ($request->has('formData.basic')) {
+                $basicData = $request->input('formData.basic');
+                
+                // 配列データはJSONに変換
+                $app->update([
+                    'title' => $basicData['title'],
+                    'description' => $basicData['description'],
+                    'app_types' => json_encode($basicData['types']),
+                    'genres' => json_encode($basicData['genres']),
+                    'app_status' => $basicData['app_status'],
+                    'status' => $basicData['status'],
+                    'demo_url' => $basicData['demo_url'],
+                    'github_url' => $basicData['github_url'],
+                    'development_start_date' => $basicData['development_start_date'],
+                    'development_end_date' => $basicData['development_end_date'],
+                    'development_period_years' => $basicData['development_period_years'],
+                    'development_period_months' => $basicData['development_period_months'],
+                    'motivation' => $basicData['motivation'],
+                    'purpose' => $basicData['purpose']
+                ]);
+
+                Log::debug('Basic data saved:', [
+                    'app_id' => $app->id,
+                    'basic_data' => $basicData
+                ]);
+            }
+
             // ストーリー情報の保存（story セクションから取得）
             if ($request->has('formData.story')) {
                 $storyData = $request->input('formData.story');
-                
+
                 // 意味のあるデータが1つでもあるかチェック
-                $hasValidData = collect($storyData)->some(function ($value) {
-                    return !empty($value);
-                });
+                $hasValidData = collect($storyData)
+                    ->some(function ($value) {
+                        return !empty($value);
+                    });
 
                 // 意味のあるデータがある場合だけ保存
                 if ($hasValidData) {
@@ -166,6 +217,22 @@ class AppController extends Controller
                 } else {
                     Log::debug('Skipping story data save - no valid data');
                 }
+            }
+
+            // 3枚制限の実装（既存のコードの後に追加）
+            $screenshotCount = Screenshot::where('app_id', $app->id)->count();
+            if ($screenshotCount > 3) {
+                // 3枚を超える古い画像を削除
+                Screenshot::where('app_id', $app->id)
+                    ->orderByDesc('order')
+                    ->skip(3)
+                    ->take($screenshotCount - 3)
+                    ->delete();
+                
+                Log::info('超過した画像を削除:', [
+                    'app_id' => $app->id,
+                    'deleted_count' => $screenshotCount - 3
+                ]);
             }
 
             DB::commit();

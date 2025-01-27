@@ -1,17 +1,27 @@
 @php
-    use Illuminate\Support\Js;  // 追加：Jsクラスのインポート
+    use Illuminate\Support\Js;  
+    use Illuminate\Support\Facades\Log;  // 追加：Logクラスのインポート
     
-    // データの初期化
+    // データの初期化を確実に
     $formData = $initialData ?? [];
     $screenshots = collect($formData['screenshots'] ?? [])->map(function($screenshot) {
+        // nullチェックを追加
+        if (!$screenshot) return null;
+        
         return [
             'id' => $screenshot['id'] ?? null,
             'public_id' => $screenshot['public_id'] ?? null,
             'url' => $screenshot['url'] ?? null,
             'order' => $screenshot['order'] ?? 0
         ];
-    })->toArray();
+    })->filter()->values()->toArray();  // nullを除去して配列を再インデックス
     
+    // デバッグ表示
+    Log::debug('Screenshots初期化:', [
+        'raw_data' => $formData['screenshots'] ?? [],
+        'processed' => $screenshots
+    ]);
+
     $app = $app ?? null;
     $viewOnly = $viewOnly ?? false;
 
@@ -36,6 +46,9 @@
 <div class="space-y-8" 
     x-data="{
         screenshots: {{ Js::from($screenshots) }},
+        init() {
+            console.log('Initial screenshots:', this.screenshots);
+        },
         getAppId() { 
             return {{ $app->id }}; 
         },
@@ -74,39 +87,21 @@
                     const result = await response.json();
                     
                     if (result.success) {
-                        // 既存の画像のorderを1つずつ後ろにずらす
-                        this.screenshots = this.screenshots.map(s => ({
-                            ...s,
-                            order: s.order + 1
-                        }));
-
-                        // 新しい画像を先頭（order: 0）に追加
-                        this.screenshots.unshift({
+                        // 新しい画像を配列に追加
+                        this.screenshots.push({
                             id: result.id,
                             public_id: result.public_id,
                             url: result.url,
-                            order: 0
+                            order: this.screenshots.length
                         });
+
+                        // イベントをディスパッチ（形式を修正）
+                        this.$dispatch('screenshots-updated', this.screenshots);  // オブジェクトではなく配列を直接渡す
                         
-                        // orderでソートは維持
-                        this.screenshots.sort((a, b) => a.order - b.order);
-                        
-                        // screenshots-updatedイベントで送信するデータを整形
-                        const updatedScreenshots = this.screenshots.map(s => ({
-                            id: s.id,
-                            public_id: s.public_id,
-                            url: s.url,
-                            order: s.order
-                        }));
-                        
-                        this.$dispatch('screenshots-updated', {
-                            screenshots: updatedScreenshots,
-                            app_id: app_id
-                        });
-                        
+                        // 自動保存をトリガー
                         this.$dispatch('auto-save');
                         
-                        // 3枚目をアップロードした時のメッセージを変更
+                        // メッセージ表示
                         if (this.screenshots.length === 3) {
                             this.$dispatch('autosave-success', '3枚目の画像を追加しました。これで上限です！');
                         } else {

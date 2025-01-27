@@ -6,7 +6,7 @@
             <div class="flex flex-wrap gap-2 justify-start">
                 @foreach ($sections as $id => $section)
                     <button
-                        @click="switchTab('{{ $id }}')"
+                        @click="switchTab('{{ $id }}'); window.scrollTo({ top: 0, behavior: 'smooth' })"
                         :class="{
                             'relative px-6 py-3 rounded-xl font-bold text-sm transition-all duration-300': true,
                             'bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 shadow-xl scale-105': activeTab === '{{ $id }}',

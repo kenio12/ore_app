@@ -176,7 +176,7 @@
                 appId: null,
                 activeTab: 'basic',
                 
-                // formDataの初期化を確実に
+                // formDataの初期化を修正
                 formData: {
                     basic: {
                         title: '',
@@ -192,16 +192,9 @@
                         development_period_years: 0,
                         development_period_months: 0,
                         motivation: '',
-                        purpose: '',
-                        // development_trigger: '',
-                        // development_hardship: '',
-                        // development_tearful: '',
-                        // development_enjoyable: '',
-                        // development_funny: '',
-                        // development_impression: '',
-                        // development_oneword: ''
+                        purpose: ''
                     },
-                    screenshots: [],
+                    screenshots: [], // ここが重要！
                     story: {
                         development_trigger: '',
                         development_hardship: '',
@@ -269,14 +262,10 @@
                     console.log('Tab switched to:', tabId);
                 },
 
-                // 自動保存
+                // 自動保存の改善
                 async autoSave() {
                     try {
-                        console.log('Starting autosave with appId:', this.appId);
-                        const saveUrl = `/apps-v2/${this.appId}/autosave`;
-                        console.log('Using URL:', saveUrl);
-
-                        const response = await fetch(saveUrl, {
+                        const response = await fetch(`/apps-v2/${this.appId}/autosave`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -284,21 +273,17 @@
                                 'Accept': 'application/json'
                             },
                             body: JSON.stringify({
-                                formData: this.formData
+                                formData: this.formData,
+                                screenshots: this.formData.screenshots // スクリーンショットデータを明示的に含める
                             })
                         });
 
-                        // レスポンスの詳細をログ
-                        console.log('Response status:', response.status);
                         const result = await response.json();
-                        console.log('Response data:', result);
-
                         if (result.success) {
                             this.showSaveMessage('保存しました');
-                            this.dirtySections.clear();
                         }
                     } catch (error) {
-                        console.error('Detailed autosave error:', error);
+                        console.error('Autosave error:', error);
                         this.showSaveMessage('保存に失敗しました');
                     }
                 },
@@ -324,28 +309,22 @@
                     // デバッグログを追加
                     console.log('Fixed appId initialized as:', this.appId);
 
-                    // 自動保存タイマーの設定（appIdのチェックを強化）
-                    this.autoSaveTimer = setInterval(() => {
-                        // 現在のappIdを再取得して確認
-                        const currentAppId = document.querySelector('input[name="app_id"]').value;
-                        console.log('Timer check - Current appId:', currentAppId);
-                        
-                        if (this.dirtySections.size > 0 && currentAppId && !isNaN(currentAppId)) {
-                            this.appId = currentAppId;  // 最新のIDで更新
-                            console.log('Timer triggered autosave with appId:', this.appId);
-                            this.autoSave();
-                        }
-                    }, 60000);
-
-                    // グローバルformDataの初期化
-                    window.formData = this.formData;
+                    // 既存データの読み込みを改善
                     const savedData = {!! isset($app) ? json_encode($app) : 'null' !!};
-                    console.log('Saved data:', savedData);
-
                     if (savedData) {
-                        console.log('Raw saved data:', savedData);
+                        console.log('Loading saved data:', savedData);
 
-                        // 基本データの復元
+                        // スクリーンショットデータの保持を改善
+                        if (savedData.screenshots) {
+                            this.formData.screenshots = savedData.screenshots.map(screenshot => ({
+                                id: screenshot.id,
+                                public_id: screenshot.cloudinary_public_id,
+                                url: screenshot.url,
+                                order: screenshot.order
+                            }));
+                        }
+
+                        // 基本データの復元（既存のまま）
                         this.formData.basic = {
                             title: savedData.title || '',
                             description: savedData.description || '',
@@ -371,7 +350,7 @@
                             purpose: savedData.purpose || '',
                         };
 
-                        // ストーリーデータの初期化
+                        // ストーリーデータの復元
                         this.formData.story = {
                             development_trigger: savedData.development_trigger || '',
                             development_hardship: savedData.development_hardship || '',
@@ -383,8 +362,7 @@
                         };
 
                         // その他のセクションの復元
-                        ['screenshots', 'hardware', 'dev_env', 
-                         'architecture', 'frontend', 'backend', 'database', 'security']
+                        ['hardware', 'dev_env', 'architecture', 'frontend', 'backend', 'database', 'security']
                         .forEach(section => {
                             if (savedData[section]) {
                                 this.formData[section] = {
@@ -393,42 +371,36 @@
                                 };
                             }
                         });
-
-                        // スクリーンショット更新イベントのハンドリング
-                        this.$el.addEventListener('screenshots-updated', (event) => {
-                            this.formData.screenshots = event.detail;
-                            console.log('Screenshots updated:', event.detail);
-                        });
-
-                        // 各種ウォッチャーを設定
-                        this.$watch('formData.basic', (value) => {
-                            console.log('Basic data changed:', value);
-                            this.dirtySections.add('basic');
-                        }, { deep: true });
-
-                        this.$watch('formData.basic.types', (value) => {
-                            console.log('Types changed:', value);
-                            this.dirtySections.add('basic');
-                        });
-
-                        this.$watch('formData.basic.genres', (value) => {
-                            console.log('Genres changed:', value);
-                            this.dirtySections.add('basic');
-                        });
-
-                        // 初期状態を保存
-                        this.saveInitialState();
                     }
 
-                    // イベントリスナー設定
-                    window.addEventListener('beforeunload', (event) => {
-                        if (this.dirtySections.size > 0) {
-                            event.preventDefault();
-                            event.returnValue = '';
-                        }
+                    // スクリーンショット更新イベントのハンドリングを改善
+                    this.$el.addEventListener('screenshots-updated', (event) => {
+                        console.log('Screenshots update event received:', event.detail);
+                        // 完全に置き換える（重複を避ける）
+                        this.formData.screenshots = event.detail;
+                        
+                        // 自動保存をトリガー
+                        this.autoSave();
                     });
 
-                    console.log('Initialization complete');
+                    // 各種ウォッチャーを設定
+                    this.$watch('formData.basic', (value) => {
+                        console.log('Basic data changed:', value);
+                        this.dirtySections.add('basic');
+                    }, { deep: true });
+
+                    this.$watch('formData.basic.types', (value) => {
+                        console.log('Types changed:', value);
+                        this.dirtySections.add('basic');
+                    });
+
+                    this.$watch('formData.basic.genres', (value) => {
+                        console.log('Genres changed:', value);
+                        this.dirtySections.add('basic');
+                    });
+
+                    // 初期状態を保存
+                    this.saveInitialState();
                 },
 
                 // 初期状態保存
