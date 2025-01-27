@@ -57,8 +57,8 @@
                     </div>
                 </div>
 
-                {{-- タブナビゲーション --}}
-                @include('AppV2::components.tab-navigation')
+                {{-- 上部タブナビゲーション --}}
+                @include('AppV2::components.tab-navigation', ['sections' => $sections])
 
                 {{-- タブコンテンツ --}}
                 <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl">
@@ -96,6 +96,11 @@
                             </div>
                         </div>
                     </template>
+                </div>
+
+                {{-- 下部タブナビゲーション（上部と同じものを再利用） --}}
+                <div class="mt-8">
+                    @include('AppV2::components.tab-navigation', ['sections' => $sections])
                 </div>
             </div>
         </div>
@@ -176,8 +181,8 @@
                     basic: {
                         title: '',
                         description: '',
-                        types: [],      // 配列として初期化
-                        genres: [],     // 配列として初期化
+                        types: [],
+                        genres: [],
                         app_status: '',
                         status: '',
                         demo_url: '',
@@ -188,6 +193,16 @@
                         development_period_months: 0,
                         motivation: '',
                         purpose: '',
+                        // development_trigger: '',
+                        // development_hardship: '',
+                        // development_tearful: '',
+                        // development_enjoyable: '',
+                        // development_funny: '',
+                        // development_impression: '',
+                        // development_oneword: ''
+                    },
+                    screenshots: [],
+                    story: {
                         development_trigger: '',
                         development_hardship: '',
                         development_tearful: '',
@@ -195,12 +210,6 @@
                         development_funny: '',
                         development_impression: '',
                         development_oneword: ''
-                    },
-                    screenshots: [],
-                    story: {
-                        motivation: '',
-                        challenges: '',
-                        future: ''
                     },
                     hardware: {
                         device_types: [],

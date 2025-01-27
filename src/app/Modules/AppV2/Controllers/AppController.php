@@ -84,159 +84,24 @@ class AppController extends Controller
 
     public function edit(App $app)
     {
-        $this->authorize('update', $app);
+        $sections = [
+            'basic' => ['title' => '基本情報'],
+            'screenshots' => ['title' => 'スクリーンショット'],
+            'story' => ['title' => '開発ストーリー'],
+            'hardware' => ['title' => 'ハードウェア'],
+            'dev_env' => ['title' => '開発環境'],
+            'architecture' => ['title' => 'アーキテクチャ'],
+            'frontend' => ['title' => 'フロントエンド'],
+            'backend' => ['title' => 'バックエンド'],
+            'database' => ['title' => 'データベース'],
+            'security' => ['title' => 'セキュリティ']
+        ];
 
-        try {
-            // より詳細なデバッグ情報を追加
-            Log::debug('App Model Details:', [
-                'app_id' => $app->id,
-                'user_id' => $app->user_id,
-                'table_name' => $app->getTable(),
-                'connection' => DB::connection()->getDatabaseName()
-            ]);
-
-            // スクリーンショットのクエリを実行前に確認
-            $query = $app->screenshots()->toSql();
-            $bindings = $app->screenshots()->getBindings();
-            Log::debug('Screenshot Query:', [
-                'sql' => $query,
-                'bindings' => $bindings
-            ]);
-
-            // ==================== データベースチェック関連 ====================
-            $screenshotsCount = DB::table('screenshots')
-                ->where('app_id', $app->id)
-                ->count();
-
-            Log::debug('Direct DB Check:', [
-                'screenshots_count' => $screenshotsCount,
-                'app_id' => $app->id
-            ]);
-
-            // ==================== スクリーンショット関連 ====================
-            // スクリーンショットの取得と整形
-            $screenshots = $app->screenshots()
-                ->orderBy('order')
-                ->get();
-
-            Log::debug('Raw Screenshots:', [
-                'count' => $screenshots->count(),
-                'data' => $screenshots->toArray()
-            ]);
-
-            $screenshots = $screenshots->map(function($screenshot) {
-                return [
-                    'id' => $screenshot->id,
-                    'public_id' => $screenshot->cloudinary_public_id,
-                    'url' => $screenshot->url
-                ];
-            });
-
-            Log::debug('Processed Screenshots:', [
-                'data' => $screenshots->toArray()
-            ]);
-
-            // ==================== ユーザー情報関連 ====================
-            Log::debug('App and User info:', [
-                'app_id' => $app->id,
-                'user_id' => $app->user_id,
-                'user_name' => $app->user->name
-            ]);
-
-            // ==================== 日付関連 ====================
-            Log::debug('Date values:', [
-                'raw_start' => $app->development_start_date,
-                'raw_end' => $app->development_end_date
-            ]);
-
-            // ==================== 初期データ準備（タブごと） ====================
-            $initialData = [
-                // ==================== 01_basic-tab ====================
-                'basic' => [
-                    // 基本情報
-                    'title' => $app->title,
-                    'description' => $app->description,
-                    'user_name' => $app->user->name,
-                    
-                    // アプリ分類
-                    'types' => $app->app_types ?? [],
-                    'genres' => $app->genres ?? [],
-                    'app_status' => $app->app_status,
-                    
-                    // URL情報
-                    'demo_url' => $app->demo_url,
-                    'github_url' => $app->github_url,
-                    
-                    // 開発期間
-                    'development_start_date' => $app->development_start_date,
-                    'development_end_date' => $app->development_end_date,
-                    'development_period_years' => $app->development_period_years,
-                    'development_period_months' => $app->development_period_months,
-                    
-                    // 目的・動機
-                    'motivation' => $app->motivation,
-                    'purpose' => $app->purpose
-                ],
-
-                // ==================== 02_screenshots-tab ====================
-                'screenshots' => $screenshots,
-
-                // ==================== 03_story-tab ====================
-                'story' => [
-                    'development_success' => $app->development_success,
-                    'development_challenge' => $app->development_challenge,
-                    'development_fun' => $app->development_fun,
-                    'development_learning' => $app->development_learning,
-                    'development_message' => $app->development_message
-                ],
-
-                // ==================== 04_hardware-tab ====================
-                'hardware' => json_decode($app->hardware_info, true) ?? [],
-
-                // ==================== 05_dev-env-tab ====================
-                'dev_env' => json_decode($app->dev_env_info, true) ?? [],
-
-                // ==================== 06_architecture-tab ====================
-                'architecture' => json_decode($app->architecture_info, true) ?? [],
-
-                // ==================== 07_frontend-tab ====================
-                'frontend' => json_decode($app->frontend_info, true) ?? [],
-
-                // ==================== 08_backend-tab ====================
-                'backend' => json_decode($app->backend_info, true) ?? [],
-
-                // ==================== 09_database-tab ====================
-                'database' => json_decode($app->database_info, true) ?? [],
-
-                // ==================== 10_security-tab ====================
-                'security' => json_decode($app->security_info, true) ?? []
-            ];
-
-            // 初期データの日付をログで確認
-            Log::debug('Formatted dates:', [
-                'start' => $initialData['basic']['development_start_date'],
-                'end' => $initialData['basic']['development_end_date']
-            ]);
-
-            return view('AppV2::app-form', [
-                'app' => $app,
-                'sections' => $this->getSections(),
-                'initialData' => $initialData
-            ]);
-
-        } catch (\Exception $e) {
-            Log::error('Edit page error:', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return back()->withErrors(['error' => '編集ページの読み込み中にエラーが発生しました']);
-        }
+        return view('AppV2::app-form', compact('app', 'sections'));
     }
 
     public function autosave(Request $request, App $app)
     {
-        Log::debug('Autosave request data:', $request->all());
-
         try {
             DB::beginTransaction();
 
@@ -267,21 +132,21 @@ class AppController extends Controller
 
             // ==================== ⚠️危険！上のコードは絶対に消すな！！！！ ====================
 
-            // ストーリー情報の保存（修正版）
-            if ($request->has('formData.basic')) {
+            // ストーリー情報の保存（story セクションから取得）
+            if ($request->has('formData.story')) {
                 $app->update([
-                    'development_trigger' => $request->input('formData.basic.development_trigger'),
-                    'development_hardship' => $request->input('formData.basic.development_hardship'),
-                    'development_tearful' => $request->input('formData.basic.development_tearful'),
-                    'development_enjoyable' => $request->input('formData.basic.development_enjoyable'),
-                    'development_funny' => $request->input('formData.basic.development_funny'),
-                    'development_impression' => $request->input('formData.basic.development_impression'),
-                    'development_oneword' => $request->input('formData.basic.development_oneword')
+                    'development_trigger' => $request->input('formData.story.development_trigger'),
+                    'development_hardship' => $request->input('formData.story.development_hardship'),
+                    'development_tearful' => $request->input('formData.story.development_tearful'),
+                    'development_enjoyable' => $request->input('formData.story.development_enjoyable'),
+                    'development_funny' => $request->input('formData.story.development_funny'),
+                    'development_impression' => $request->input('formData.story.development_impression'),
+                    'development_oneword' => $request->input('formData.story.development_oneword')
                 ]);
             }
 
             Log::debug('Story data received:', [
-                'data' => $request->input('formData.basic')
+                'data' => $request->input('formData.story')
             ]);
 
             DB::commit();
