@@ -1,7 +1,32 @@
 <x-app-layout>
     {{-- 超最先端のグラデーションヘッダー --}}
     <div x-data="appForm" 
-         x-init="$watch('saveMessage', value => console.log('saveMessage changed:', value))"
+         x-init="
+            $watch('saveMessage', value => console.log('saveMessage changed:', value));
+            
+            // グローバルなイベントリスナーを追加
+            window.onbeforeunload = function(e) {
+                const defaultTitle = '{{ config('appv2.constants.default_app_title') }}';
+                if (formData.basic.title === defaultTitle) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                    
+                    // 非同期処理を同期的に実行
+                    const confirmed = confirm('アプリ名を変えないと削除されますよ？削除していいですか？');
+                    if (confirmed) {
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('DELETE', `/apps-v2/${document.getElementById('app_id_input').value}`, false); // 同期リクエスト
+                        xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('meta[name=csrf-token]').content);
+                        xhr.send();
+                        
+                        if (xhr.status === 200) {
+                            window.location.href = '/apps-v2';
+                        }
+                    }
+                    return false;
+                }
+            };
+         "
     >
         <div class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-pink-50 py-12">
             {{-- app_idをここに追加（常に$app->idが存在する前提） --}}
@@ -437,30 +462,4 @@
             console.log('Alpine.js data:', Alpine.$data(document.querySelector('[x-data]')));
         });
     </script>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{-- タブナビゲーション --}}
-                    <div class="mb-4 border-b border-gray-200">
-                        {{-- ... 既存のタブナビゲーション ... --}}
-                    </div>
-
-                    {{-- タブコンテンツ --}}
-                    <div class="mt-4">
-                        {{-- ... 既存のタブコンテンツ ... --}}
-                    </div>
-
-                    {{-- デバッグ用ボタン --}}
-                    <button
-                        @click="showSaveMessage('テストメッセージ')"
-                        class="fixed top-4 right-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
-                    >
-                        テストメッセージ表示
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 </x-app-layout> 

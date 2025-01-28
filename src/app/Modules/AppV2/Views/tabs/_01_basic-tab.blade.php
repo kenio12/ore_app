@@ -1,13 +1,5 @@
-<div class="space-y-8"
-    x-data="{
-        debouncedAutoSave: Alpine.debounce(function() {
-            this.autoSave();
-        }, 1000),
-        handleInput() {
-            this.debouncedAutoSave();
-        }
-    }"
->
+{{-- 基本情報タブ全体のコンテナ --}}
+<div class="space-y-8">
     {{-- 超豪華ヘッダー --}}
     <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 p-[2px]">
         <div class="relative bg-white/90 backdrop-blur-xl rounded-2xl p-8">
@@ -23,7 +15,7 @@
         </div>
     </div>
 
-    {{-- アプリ名 --}}
+    {{-- アプリ名入力部分 --}}
     <div class="transform hover:scale-[1.02] transition-all duration-500">
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
             <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-purple-600">
@@ -35,6 +27,7 @@
                     type="text"
                     x-model="formData.basic.title"
                     @input="handleInput"
+                    @blur="checkDefaultTitle()"
                     class="w-full rounded-lg p-4 text-lg
                            border-4 border-yellow-300
                            bg-yellow-50
@@ -43,7 +36,7 @@
                            focus:shadow-[0_0_50px_rgba(255,200,0,0.9)]
                            focus:outline-none
                            animate-pulse"
-                    placeholder="あなたのアプリの名前を入力してください（必須）..."
+                    placeholder="まずはアプリ名を入力してください！"
                     autofocus
                 >
             </div>

@@ -493,5 +493,8 @@ return [
     'app_defaults' => [
         'title' => 'まず、ここを書き換えてください',
         'status' => 'draft'
-    ]
+    ],
+
+    // 追加：デフォルトタイトルの定数
+    'default_app_title' => 'まず、ここを書き換えてください'
 ]; 

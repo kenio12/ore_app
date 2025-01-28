@@ -252,6 +252,37 @@ class AppController extends Controller
         }
     }
 
+    public function destroy(App $app)
+    {
+        try {
+            DB::beginTransaction();
+            
+            // アプリに関連するスクリーンショットを削除
+            $app->screenshots()->delete();
+            
+            // アプリを削除
+            $app->delete();
+            
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'アプリを削除しました'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('App削除エラー:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => '削除中にエラーが発生しました'
+            ], 500);
+        }
+    }
+
     private function getSections()
     {
         return [
