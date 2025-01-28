@@ -28,16 +28,28 @@
         <div class="bg-white/50 backdrop-blur-lg rounded-xl p-6 shadow-xl hover:shadow-2xl border border-white/20">
             <label class="block text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-purple-600">
                 アプリ名
+                <span class="ml-2 text-sm text-red-600 animate-pulse">※ 必須</span>
             </label>
-            <input 
-                type="text"
-                x-model="formData.basic.title"
-                @input="handleInput"
-                class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
-                       focus:border-pink-500 focus:ring-4 focus:ring-pink-500/20
-                       hover:border-pink-300 transition-all duration-300"
-                placeholder="あなたのアプリの名前を入力してください..."
-            >
+            <div class="relative mt-4">
+                <input 
+                    type="text"
+                    x-model="formData.basic.title"
+                    @input="handleInput"
+                    class="w-full rounded-lg p-4 text-lg
+                           border-4 border-yellow-300
+                           bg-yellow-50
+                           shadow-[0_0_30px_rgba(255,200,0,0.7)]
+                           focus:border-yellow-400
+                           focus:shadow-[0_0_50px_rgba(255,200,0,0.9)]
+                           focus:outline-none
+                           animate-pulse"
+                    placeholder="あなたのアプリの名前を入力してください（必須）..."
+                    autofocus
+                >
+            </div>
+            <p class="mt-2 text-red-500 text-sm font-bold">
+                ※ アプリ名を書き換えないと保存できませんよ！！
+            </p>
         </div>
     </div>
 
