@@ -5,6 +5,7 @@ use App\Modules\Home\Controllers\HomeController;
 use App\Modules\App\Controllers\AppController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Modules\AppV2\Controllers\AppController as AppV2Controller;
+use App\Http\Controllers\DashboardController;
 
 // メインページのルート
 Route::get('/', [HomeController::class, 'index']);
@@ -14,12 +15,10 @@ require __DIR__.'/auth.php';
 
 // ダッシュボードルート
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        $apps = auth()->user()->apps;
-        return view('dashboard', compact('apps'));
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
-    // パスワード変更ルート（追加）
+    // パスワード変更ルート（既存）
     Route::get('/password', [PasswordController::class, 'edit'])
         ->name('password.edit');
 });
