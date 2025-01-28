@@ -21,8 +21,8 @@ use App\Modules\AppV2\Models\App;
                         <!-- ログイン済みの場合 -->
                         <a href="{{ route('apps-v2.edit', ['app' => App::create([
                             'user_id' => auth()->id(),
-                            'title' => 'ここを書き換えてください',
-                            'status' => 'draft'
+                            'title' => config('appv2.constants.app_defaults.title'),
+                            'status' => config('appv2.constants.app_defaults.status')
                         ])->id]) }}" 
                            onclick="clearAppFormData()"
                            class="text-sm text-gray-700 hover:text-gray-900">

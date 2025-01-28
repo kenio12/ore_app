@@ -27,8 +27,8 @@ use App\Modules\AppV2\Models\App as AppModel;
                         <div class="p-4 border rounded-lg hover:bg-gray-50">
                             <a href="{{ route('apps-v2.edit', ['app' => AppModel::create([
                                 'user_id' => auth()->id(),
-                                'title' => '無題のアプリ',
-                                'status' => 'draft'
+                                'title' => config('appv2.constants.app_defaults.title'),
+                                'status' => config('appv2.constants.app_defaults.status')
                             ])->id]) }}" 
                                onclick="clearAppFormData()"
                                class="block">
