@@ -191,32 +191,28 @@ class AppController extends Controller
                 ]);
             }
 
-            // ストーリー情報の保存（story セクションから取得）
+            // ストーリー情報の保存処理を改善
             if ($request->has('formData.story')) {
                 $storyData = $request->input('formData.story');
+                
+                // nullチェックと空文字変換を追加
+                $sanitizedStoryData = array_map(function ($value) {
+                    return $value === null ? '' : $value;
+                }, $storyData);
 
-                // 意味のあるデータが1つでもあるかチェック
-                $hasValidData = collect($storyData)
-                    ->some(function ($value) {
-                        return !empty($value);
-                    });
+                Log::debug('Sanitized story data:', ['data' => $sanitizedStoryData]);
+                
+                $app->update([
+                    'development_trigger' => $sanitizedStoryData['development_trigger'],
+                    'development_hardship' => $sanitizedStoryData['development_hardship'],
+                    'development_tearful' => $sanitizedStoryData['development_tearful'],
+                    'development_enjoyable' => $sanitizedStoryData['development_enjoyable'],
+                    'development_funny' => $sanitizedStoryData['development_funny'],
+                    'development_impression' => $sanitizedStoryData['development_impression'],
+                    'development_oneword' => $sanitizedStoryData['development_oneword']
+                ]);
 
-                // 意味のあるデータがある場合だけ保存
-                if ($hasValidData) {
-                    Log::debug('Saving story data:', ['data' => $storyData]);
-                    
-                    $app->update([
-                        'development_trigger' => $storyData['development_trigger'],
-                        'development_hardship' => $storyData['development_hardship'],
-                        'development_tearful' => $storyData['development_tearful'],
-                        'development_enjoyable' => $storyData['development_enjoyable'],
-                        'development_funny' => $storyData['development_funny'],
-                        'development_impression' => $storyData['development_impression'],
-                        'development_oneword' => $storyData['development_oneword']
-                    ]);
-                } else {
-                    Log::debug('Skipping story data save - no valid data');
-                }
+                Log::debug('Story data saved successfully');
             }
 
             // 3枚制限の実装（既存のコードの後に追加）
@@ -236,17 +232,22 @@ class AppController extends Controller
             }
 
             DB::commit();
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'message' => '保存しました'
+            ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Autosave error:', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
+                'request_data' => $request->all()
             ]);
+            
             return response()->json([
                 'success' => false,
-                'message' => 'オートセーブに失敗しました'
+                'message' => 'エラーが発生しました: ' . $e->getMessage()
             ], 500);
         }
     }

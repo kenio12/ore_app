@@ -2,22 +2,139 @@
     <!-- メインコンテナ -->
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
         <!-- ヒーローセクション -->
-        <div 
-            x-data="{ show: true }"
-            x-init="setTimeout(() => show = false, 10000)"
-            x-show="show"
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0 transform -translate-y-4"
-            x-transition:enter-end="opacity-100 transform translate-y-0"
-            x-transition:leave="transition ease-in duration-500"
-            x-transition:leave-start="opacity-100 transform translate-y-0"
-            x-transition:leave-end="opacity-0 transform -translate-y-4"
-            class="relative text-center py-12 md:py-16 bg-gradient-to-r from-indigo-500 to-purple-600 mb-6 shadow-lg"
-        >
-            <div class="absolute inset-0 bg-black/20"></div>
-            <div class="relative z-10">
-                <h1 class="text-4xl md:text-6xl font-extrabold mb-4 text-white drop-shadow-lg">🗡️ 俺は 🏴‍☠️</h1>
-                <p class="text-xl md:text-2xl text-white drop-shadow-md">アプリになる！</p>
+        <div x-data="{ showHero: true, showAppman: false }"
+             x-init="setTimeout(() => {
+                 showHero = false;
+                 setTimeout(() => showAppman = true, 500);
+             }, 10000)"
+             class="relative">
+            
+            <!-- テキストヒーローセクション -->
+            <div x-show="showHero"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 transform -translate-y-4"
+                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                 x-transition:leave="transition ease-in duration-500"
+                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                 x-transition:leave-end="opacity-0 transform -translate-y-4"
+                 class="relative text-center py-12 md:py-16 bg-gradient-to-r from-indigo-500 to-purple-600 mb-6 shadow-lg">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <div class="relative z-10">
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-4 text-white drop-shadow-lg">🗡️ 俺は 🏴‍☠️</h1>
+                    <p class="text-xl md:text-2xl text-white drop-shadow-md">アプリになる！</p>
+                </div>
+            </div>
+
+            <!-- アプリマンヒーローセクション -->
+            <div x-show="showAppman"
+                 x-transition:enter="transition ease-out duration-700"
+                 x-transition:enter-start="opacity-0 transform scale-95"
+                 x-transition:enter-end="opacity-100 transform scale-100"
+                 x-transition:leave="transition ease-in duration-500"
+                 x-transition:leave-start="opacity-100 transform scale-100"
+                 x-transition:leave-end="opacity-0 transform scale-95"
+                 class="relative text-center py-12 md:py-16 mb-6 shadow-lg overflow-hidden"
+                 style="background: radial-gradient(circle at center, #000B27 0%, #000000 100%);">
+
+                <style>
+                    .star {
+                        position: absolute;
+                        border-radius: 50%;
+                        animation: twinkle 2s infinite;
+                    }
+                    @keyframes twinkle {
+                        0% { opacity: 0.2; transform: scale(0.8); }
+                        50% { opacity: 1; transform: scale(1.2); }
+                        100% { opacity: 0.2; transform: scale(0.8); }
+                    }
+                    .star1 { width: 4px; height: 4px; left: 10%; top: 20%; background: #60A5FA; box-shadow: 0 0 10px #60A5FA; animation-delay: 0s; }
+                    .star2 { width: 6px; height: 6px; right: 15%; top: 30%; background: #F472B6; box-shadow: 0 0 15px #F472B6; animation-delay: 0.3s; }
+                    .star3 { width: 3px; height: 3px; left: 20%; bottom: 40%; background: #34D399; box-shadow: 0 0 8px #34D399; animation-delay: 0.6s; }
+                    .star4 { width: 5px; height: 5px; right: 25%; bottom: 25%; background: #A78BFA; box-shadow: 0 0 12px #A78BFA; animation-delay: 0.9s; }
+                    .star5 { width: 4px; height: 4px; left: 30%; top: 40%; background: #F472B6; box-shadow: 0 0 10px #F472B6; animation-delay: 1.2s; }
+                    .star6 { width: 3px; height: 3px; right: 35%; top: 60%; background: #60A5FA; box-shadow: 0 0 8px #60A5FA; animation-delay: 1.5s; }
+                    .star7 { width: 2px; height: 2px; left: 45%; top: 15%; background: #FCD34D; box-shadow: 0 0 10px #FCD34D; animation-delay: 1.8s; }
+                    .star8 { width: 4px; height: 4px; right: 40%; bottom: 35%; background: #F87171; box-shadow: 0 0 12px #F87171; animation-delay: 2.1s; }
+                    .star9 { width: 3px; height: 3px; left: 15%; top: 70%; background: #818CF8; box-shadow: 0 0 8px #818CF8; animation-delay: 2.4s; }
+                    .star10 { width: 5px; height: 5px; right: 20%; top: 10%; background: #6EE7B7; box-shadow: 0 0 15px #6EE7B7; animation-delay: 2.7s; }
+                    /* 新しい星を追加 */
+                    .star11 { width: 3px; height: 3px; left: 8%; top: 45%; background: #F59E0B; box-shadow: 0 0 10px #F59E0B; animation-delay: 3.0s; }
+                    .star12 { width: 4px; height: 4px; right: 12%; top: 55%; background: #EC4899; box-shadow: 0 0 12px #EC4899; animation-delay: 3.3s; }
+                    .star13 { width: 2px; height: 2px; left: 25%; top: 8%; background: #10B981; box-shadow: 0 0 8px #10B981; animation-delay: 3.6s; }
+                    .star14 { width: 5px; height: 5px; right: 28%; top: 75%; background: #8B5CF6; box-shadow: 0 0 15px #8B5CF6; animation-delay: 3.9s; }
+                    .star15 { width: 3px; height: 3px; left: 38%; bottom: 15%; background: #3B82F6; box-shadow: 0 0 10px #3B82F6; animation-delay: 4.2s; }
+                    .star16 { width: 4px; height: 4px; right: 33%; top: 5%; background: #EF4444; box-shadow: 0 0 12px #EF4444; animation-delay: 4.5s; }
+                    .star17 { width: 2px; height: 2px; left: 42%; bottom: 8%; background: #14B8A6; box-shadow: 0 0 8px #14B8A6; animation-delay: 4.8s; }
+                    .star18 { width: 3px; height: 3px; right: 45%; top: 82%; background: #6366F1; box-shadow: 0 0 10px #6366F1; animation-delay: 5.1s; }
+                    .star19 { width: 4px; height: 4px; left: 18%; bottom: 22%; background: #F472B6; box-shadow: 0 0 12px #F472B6; animation-delay: 5.4s; }
+                    .star20 { width: 3px; height: 3px; right: 22%; bottom: 18%; background: #2DD4BF; box-shadow: 0 0 10px #2DD4BF; animation-delay: 5.7s; }
+
+                    /* 放射状の光のアニメーション */
+                    @keyframes radiate {
+                        0% { transform: scale(1); opacity: 0.5; }
+                        100% { transform: scale(1.5); opacity: 0; }
+                    }
+                    .radiation {
+                        position: absolute;
+                        inset: -50%;
+                        background: radial-gradient(circle at center, 
+                            rgba(0,255,255,0.2) 0%,
+                            rgba(0,149,255,0.1) 30%,
+                            rgba(255,0,255,0.05) 50%,
+                            transparent 70%);
+                        animation: radiate 3s infinite;
+                    }
+                    .radiation2 {
+                        animation-delay: 1.5s;
+                    }
+                </style>
+
+                <!-- 星々 -->
+                <div class="star star1"></div>
+                <div class="star star2"></div>
+                <div class="star star3"></div>
+                <div class="star star4"></div>
+                <div class="star star5"></div>
+                <div class="star star6"></div>
+                <div class="star star7"></div>
+                <div class="star star8"></div>
+                <div class="star star9"></div>
+                <div class="star star10"></div>
+                <!-- 新しい星を追加 -->
+                <div class="star star11"></div>
+                <div class="star star12"></div>
+                <div class="star star13"></div>
+                <div class="star star14"></div>
+                <div class="star star15"></div>
+                <div class="star star16"></div>
+                <div class="star star17"></div>
+                <div class="star star18"></div>
+                <div class="star star19"></div>
+                <div class="star star20"></div>
+
+                <!-- サイバーな光の効果 -->
+                <div class="absolute inset-0" 
+                     style="background: radial-gradient(circle at center, rgba(0,149,255,0.15) 0%, rgba(0,149,255,0) 70%);"></div>
+                <div class="absolute inset-0" 
+                     style="background: radial-gradient(circle at center, rgba(255,0,255,0.1) 0%, rgba(255,0,255,0) 60%);"></div>
+
+                <!-- コンテンツ -->
+                <div class="relative z-10 flex flex-col justify-center items-center">
+                    <div class="w-[30vw] md:w-[18vw] mx-auto relative">
+                        <!-- 放射状の光のエフェクト -->
+                        <div class="radiation"></div>
+                        <div class="radiation radiation2"></div>
+                        <!-- サイバーな光の輪 -->
+                        <div class="absolute inset-0"
+                             style="background: radial-gradient(circle at center, rgba(0,255,255,0.2) 0%, transparent 70%);"></div>
+                        <img src="{{ asset('images/appman.png') }}" 
+                             alt="アプリマン" 
+                             class="w-full h-auto object-contain drop-shadow-lg hover:scale-110 transition-transform duration-300 origin-top relative z-10"
+                             style="max-width: 300px; filter: drop-shadow(0 0 10px rgba(0,255,255,0.3));">
+                    </div>
+                    <p class="mt-4 text-xl font-bold text-white" 
+                       style="text-shadow: 0 0 10px rgba(0,255,255,0.5);">オレ、アプリマンだ！</p>
+                </div>
             </div>
         </div>
 
