@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Carbon\Carbon;
 use App\Modules\AppV2\Models\Screenshot;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AppController extends Controller
 {
@@ -26,22 +27,44 @@ class AppController extends Controller
 
     public function create()
     {
-        // セッションから一時データを削除
-        session()->forget('app_form_data');
-        
-        // 一時的なアプリレコードを作成
         $app = App::create([
             'user_id' => auth()->id(),
-            'title' => '無題のアプリ',
-            'status' => 'draft'
+            'title' => config('appv2.constants.app_defaults.title'),
+            'status' => config('appv2.constants.app_defaults.status')
         ]);
 
-        // 編集画面にリダイレクト
-        return redirect()->route('apps-v2.edit', ['app' => $app->id]);
+        return redirect()->route('apps-v2.edit', ['app' => $app]);
     }
 
     public function store(Request $request)
     {
+        Log::debug('Store called', [
+            'method' => request()->method(),
+            'path' => request()->path(),
+            'referer' => request()->headers->get('referer'),
+            'app_id' => $request->app_id
+        ]);
+
+        // IDが既に存在する場合は新規作成しない
+        if ($request->has('app_id')) {
+            $app = App::where('id', $request->app_id)
+                     ->where('user_id', auth()->id())
+                     ->first();
+                     
+            if ($app) {
+                // 既存のアプリを更新
+                $app->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'status' => 'draft',
+                ]);
+                
+                return redirect()->route('apps-v2.show', $app)
+                               ->with('success', 'アプリ情報を更新しました');
+            }
+        }
+
+        // 新規作成は初回のみ
         DB::beginTransaction();
         try {
             $app = App::create([
@@ -88,47 +111,36 @@ class AppController extends Controller
 
     public function edit(App $app)
     {
-        // スクリーンショットを含めて取得
-        $app->load(['screenshots' => function($query) {
-            $query->orderBy('order', 'asc');
-        }]);
-        
-        // 初期データを正しい形式で準備
-        $initialData = [
-            'screenshots' => $app->screenshots->map(function($screenshot) {
-                return [
-                    'id' => $screenshot->id,
-                    'public_id' => $screenshot->cloudinary_public_id,
-                    'url' => $screenshot->url,
-                    'order' => $screenshot->order
-                ];
-            })->toArray()
-        ];
-        
-        // デバッグ用
-        Log::debug('Edit画面初期データ準備:', [
+        // stackチャンネルを使用して両方に出力
+        Log::stack(['single', 'daily'])->debug('Edit Controller Called', [
+            'method' => request()->method(),
+            'path' => request()->path(),
+            'referer' => request()->headers->get('referer'),
             'app_id' => $app->id,
-            'screenshots' => $initialData['screenshots']
+            'timestamp' => now()->format('Y-m-d H:i:s.u')
         ]);
-        
-        $sections = [
-            'basic' => ['title' => '基本情報'],
-            'screenshots' => ['title' => 'スクリーンショット'],
-            'story' => ['title' => '開発ストーリー'],
-            'hardware' => ['title' => 'ハードウェア'],
-            'dev_env' => ['title' => '開発環境'],
-            'architecture' => ['title' => 'アーキテクチャ'],
-            'frontend' => ['title' => 'フロントエンド'],
-            'backend' => ['title' => 'バックエンド'],
-            'database' => ['title' => 'データベース'],
-            'security' => ['title' => 'セキュリティ']
-        ];
 
-        return view('AppV2::app-form', [
-            'app' => $app,
-            'initialData' => $initialData,
-            'sections' => $sections
-        ]);
+        try {
+            // 権限チェック
+            if ($app->user_id !== auth()->id()) {
+                return redirect()->route('apps-v2.index')
+                               ->with('error', 'アクセス権限がありません。');
+            }
+
+            // セクション情報を取得
+            $sections = $this->getSections();
+            
+            Log::debug('Edit画面表示', [
+                'app_id' => $app->id,
+                'user_id' => auth()->id()
+            ]);
+
+            return view('AppV2::app-form', compact('app', 'sections'));
+            
+        } catch (\Exception $e) {
+            Log::error('Edit画面エラー:', ['error' => $e->getMessage()]);
+            return back()->with('error', '画面の表示に失敗しました。');
+        }
     }
 
     public function autosave(Request $request, App $app)

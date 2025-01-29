@@ -120,7 +120,7 @@
 
                 <!-- コンテンツ -->
                 <div class="relative z-10 flex flex-col justify-center items-center">
-                    <div class="w-[30vw] md:w-[18vw] mx-auto relative">
+                    <div class="w-[40vw] md:w-[25vw] mx-auto relative">
                         <!-- 放射状の光のエフェクト -->
                         <div class="radiation"></div>
                         <div class="radiation radiation2"></div>
@@ -130,10 +130,10 @@
                         <img src="{{ asset('images/appman.png') }}" 
                              alt="アプリマン" 
                              class="w-full h-auto object-contain drop-shadow-lg hover:scale-110 transition-transform duration-300 origin-top relative z-10"
-                             style="max-width: 300px; filter: drop-shadow(0 0 10px rgba(0,255,255,0.3));">
+                             style="max-width: 400px; filter: drop-shadow(0 0 10px rgba(0,255,255,0.3));">
                     </div>
                     <p class="mt-4 text-xl font-bold text-white" 
-                       style="text-shadow: 0 0 10px rgba(0,255,255,0.5);">オレ、アプリマンだ！</p>
+                       style="text-shadow: 0 0 10px rgba(0,255,255,0.5);">俺、アプリになった！</p>
                 </div>
             </div>
         </div>
@@ -188,13 +188,13 @@
                                 @if(is_array($app->screenshots) && !empty($app->screenshots) && isset($app->screenshots[0]['url']))
                                     <img 
                                         class="object-contain w-auto cursor-zoom-in hover:opacity-90 transition-opacity"
-                                        style="max-height: 330px;"
+                                        style="max-height: 450px;"
                                         src="{{ $app->screenshots[0]['url'] }}"
                                         alt="{{ $app->title }}"
                                         @click="$dispatch('open-app-screenshot-modal', { src: '{{ $app->screenshots[0]['url'] }}' })"
                                     >
                                 @else
-                                    <div class="bg-gray-100 p-4 rounded-lg text-gray-500 flex items-center justify-center" style="height: 330px;">
+                                    <div class="bg-gray-100 p-4 rounded-lg text-gray-500 flex items-center justify-center" style="height: 450px;">
                                         <span>画像なし</span>
                                     </div>
                                 @endif

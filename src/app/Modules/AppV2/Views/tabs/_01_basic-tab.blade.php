@@ -26,6 +26,7 @@
                 <input 
                     type="text"
                     x-model="formData.basic.title"
+                    x-ref="titleInput"
                     @input="handleInput"
                     @blur="checkDefaultTitle()"
                     class="w-full rounded-lg p-4 text-lg

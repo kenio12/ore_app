@@ -2,33 +2,16 @@
     use Illuminate\Support\Js;  
     use Illuminate\Support\Facades\Log;  // 追加：Logクラスのインポート
     
-    // データの初期化を確実に
-    $formData = $initialData ?? [];
-    $screenshots = collect($formData['screenshots'] ?? [])->map(function($screenshot) {
-        // nullチェックを追加
-        if (!$screenshot) return null;
-        
-        return [
-            'id' => $screenshot['id'] ?? null,
-            'public_id' => $screenshot['public_id'] ?? null,
-            'url' => $screenshot['url'] ?? null,
-            'order' => $screenshot['order'] ?? 0
-        ];
-    })->filter()->values()->toArray();  // nullを除去して配列を再インデックス
+    // 既存のデータを優先使用
+    $screenshots = $app->screenshots ?? collect([]);
     
-    // デバッグ表示
-    Log::debug('Screenshots初期化:', [
-        'raw_data' => $formData['screenshots'] ?? [],
-        'processed' => $screenshots
+    // デバッグ表示（初期化ではなく、データ取得として）
+    Log::debug('Screenshots取得:', [
+        'app_id' => $app->id,
+        'screenshots_count' => $screenshots->count()
     ]);
 
-    $app = $app ?? null;
     $viewOnly = $viewOnly ?? false;
-
-    // デバッグ表示
-    // dump([
-    //     'processed_screenshots' => $screenshots  // 処理後のデータを確認
-    // ]);
 
     // Alpine.jsのデータを定義
     $alpineData = [

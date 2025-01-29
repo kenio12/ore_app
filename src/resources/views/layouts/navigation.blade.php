@@ -19,12 +19,7 @@ use App\Modules\AppV2\Models\App;
                 <div class="space-x-4 px-2">
                     @auth
                         <!-- ログイン済みの場合 -->
-                        <a href="{{ route('apps-v2.edit', ['app' => App::create([
-                            'user_id' => auth()->id(),
-                            'title' => config('appv2.constants.app_defaults.title'),
-                            'status' => config('appv2.constants.app_defaults.status')
-                        ])->id]) }}" 
-                           onclick="clearAppFormData()"
+                        <a href="{{ route('apps-v2.create') }}" 
                            class="text-sm text-gray-700 hover:text-gray-900">
                             アプリの新規投稿
                         </a>
