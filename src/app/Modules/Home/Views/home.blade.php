@@ -120,7 +120,7 @@
 
                 <!-- コンテンツ -->
                 <div class="relative z-10 flex flex-col justify-center items-center">
-                    <div class="w-[40vw] md:w-[25vw] mx-auto relative">
+                    <div class="w-[40vw] md:w-[25vw] mx-auto relative group">
                         <!-- 放射状の光のエフェクト -->
                         <div class="radiation"></div>
                         <div class="radiation radiation2"></div>
@@ -129,11 +129,11 @@
                              style="background: radial-gradient(circle at center, rgba(0,255,255,0.2) 0%, transparent 70%);"></div>
                         <img src="{{ asset('images/appman.png') }}" 
                              alt="アプリマン" 
-                             class="w-full h-auto object-contain drop-shadow-lg hover:scale-110 transition-transform duration-300 origin-top relative z-10"
+                             class="w-full h-auto object-contain drop-shadow-lg transition-transform duration-300 origin-top relative z-10"
                              style="max-width: 400px; filter: drop-shadow(0 0 10px rgba(0,255,255,0.3));">
+                        <p class="mt-4 text-xl font-bold text-white text-center" 
+                           style="text-shadow: 0 0 10px rgba(0,255,255,0.5);">俺、アプリになった！</p>
                     </div>
-                    <p class="mt-4 text-xl font-bold text-white" 
-                       style="text-shadow: 0 0 10px rgba(0,255,255,0.5);">俺、アプリになった！</p>
                 </div>
             </div>
         </div>
