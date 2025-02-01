@@ -7,6 +7,26 @@
                 window.appFormInitialized = true;
                 init();
                 
+                // 新規作成時の初期化
+                if (!formData.basic.title) {
+                    formData.basic = {
+                        title: '{{ config('appv2.constants.app_defaults.title') }}',
+                        description: '',
+                        motivation: '',
+                        purpose: '',
+                        types: [],
+                        genres: [],
+                        app_status: 'draft',
+                        status: 'draft',
+                        demo_url: '',
+                        github_url: '',
+                        development_start_date: '',
+                        development_end_date: '',
+                        development_period_years: 0,
+                        development_period_months: 0
+                    };
+                }
+                
                 // 一度だけ実行されるべき処理
                 $watch('saveMessage', value => {
                     if (value) console.log('saveMessage changed:', value);
@@ -14,7 +34,7 @@
                 
                 // 最初に一度だけIDを取得
                 @php
-                    $currentAppId = $app->id;
+                    $currentAppId = $app->id ?? null;
                 @endphp
             }
          "
@@ -192,7 +212,7 @@
                 window.alpineInitialized = true;
                 
                 Alpine.data('appForm', () => ({
-                    appId: {{ $currentAppId }},
+                    appId: null,
                     isInitialized: false,
                     isInitializing: false,
                     activeTab: 'basic',
@@ -202,18 +222,18 @@
                         basic: {
                             title: '',
                             description: '',
+                            motivation: '',
+                            purpose: '',
                             types: [],
                             genres: [],
-                            app_status: '',
-                            status: '',
+                            app_status: 'draft',
+                            status: 'draft',
                             demo_url: '',
                             github_url: '',
                             development_start_date: '',
                             development_end_date: '',
                             development_period_years: 0,
-                            development_period_months: 0,
-                            motivation: '',
-                            purpose: ''
+                            development_period_months: 0
                         },
                         screenshots: [], // ここが重要！
                         story: {
@@ -277,6 +297,10 @@
                     saveMessage: null,
                     shouldShowMessage: true,
                     lastAutoSave: null,
+
+                    // タイトル入力用の新しい変数
+                    titleInputTimer: null,
+                    isNewApp: {{ $currentAppId ? 'false' : 'true' }},  // 新規作成かどうか
 
                     // タブ切り替え
                     switchTab(tabId) {
@@ -349,21 +373,13 @@
 
                     // 初期化
                     init() {
-                        console.log('Form initialization started');
-                        // 初期化中フラグを立てる
-                        this.isInitializing = true;
-                        
-                        try {
-                            // 既存の処理
-                            if (this.isInitialized) return;
-                            this.isInitialized = true;
-                            console.log('Form initialized with ID:', this.appId);
-                            this.checkDefaultTitle();
-                        } finally {
-                            // 初期化完了
-                            this.isInitializing = false;
-                            console.log('Form initialization completed');
-                        }
+                        console.log('Form initialized with:', this.formData);
+                        this.$watch('formData.basic.title', (value) => {
+                            console.log('Title changed to:', value);
+                            if (value && value.trim()) {
+                                this.handleTitleInput();
+                            }
+                        });
                     },
 
                     // 初期状態保存
@@ -410,6 +426,113 @@
                             if (titleInput) {
                                 titleInput.classList.remove('border-red-500');
                             }
+                        }
+                    },
+
+                    // タイトル入力時の処理を一本化
+                    async handleTitleInput() {
+                        // すでにIDがある場合は更新処理のみ
+                        if (this.appId) {
+                            await this.handleInput();
+                            return;
+                        }
+
+                        // タイトルが空の場合は何もしない
+                        if (!this.formData.basic.title.trim()) {
+                            return;
+                        }
+
+                        // 新規作成処理（初回のみ）
+                        try {
+                            const response = await fetch('/apps-v2', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    title: this.formData.basic.title,
+                                    type: 'initial'
+                                })
+                            });
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            const data = await response.json();
+                            if (data.success) {
+                                this.appId = data.appId;
+                                window.history.pushState({}, '', `/apps-v2/${data.appId}/edit`);
+                                this.showSaveMessage('アプリを作成しました！');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            this.showSaveMessage('エラーが発生しました');
+                        }
+                    },
+
+                    // 自動保存処理を修正
+                    async triggerAutoSave() {
+                        if (!this.appId) {
+                            console.log('先にタイトルを入力してください');
+                            return;
+                        }
+
+                        try {
+                            const response = await fetch(`/apps-v2/${this.appId}/autosave`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                },
+                                body: JSON.stringify({
+                                    formData: this.formData
+                                })
+                            });
+
+                            const result = await response.json();
+                            if (result.success) {
+                                this.showSaveMessage('保存しました');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            this.showSaveMessage('保存に失敗しました');
+                        }
+                    },
+
+                    // 自動保存の初期化
+                    initAutoSave() {
+                        if (this.autoSaveTimer) return;
+                        // ... 既存の自動保存コード ...
+                    },
+
+                    // その他のフィールド入力時の処理
+                    async handleInput() {
+                        if (!this.appId) return;
+                        
+                        try {
+                            const response = await fetch(`/apps-v2/${this.appId}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                },
+                                body: JSON.stringify(this.formData)
+                            });
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                // IDを取得したら、URLを編集画面に切り替え
+                                if (data.id) {
+                                    window.history.pushState({}, '', `/apps-v2/${data.id}/edit`);
+                                    this.appId = data.id;  // appIdを保存
+                                    this.showSaveMessage('保存しました');
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
                         }
                     }
                 }));

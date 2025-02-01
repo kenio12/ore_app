@@ -55,7 +55,7 @@
             </label>
             <input 
                 type="text"
-                value="{{ $app->user->name }}"  {{-- 直接Bladeで表示 --}}
+                value="{{ auth()->user()->name ?? '未設定' }}"
                 class="mt-4 w-full rounded-lg border-2 border-gray-200 p-4 text-lg
                        bg-gray-50 text-gray-700"
                 disabled

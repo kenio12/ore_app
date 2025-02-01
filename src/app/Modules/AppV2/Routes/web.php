@@ -32,5 +32,10 @@ Route::group(['middleware' => ['web', 'auth']], function () {
             Route::post('/delete', [ScreenshotController::class, 'delete'])
                 ->name('apps-v2.screenshots.delete');
         });
+
+        Route::post('/create-with-title', [AppV2Controller::class, 'createWithTitle'])
+            ->name('apps-v2.create-with-title');
+
+        Route::put('/{app}', [AppV2Controller::class, 'update'])->name('apps-v2.update');
     });
 }); 

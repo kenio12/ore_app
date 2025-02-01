@@ -27,67 +27,28 @@ class AppController extends Controller
 
     public function create()
     {
-        $app = App::create([
-            'user_id' => auth()->id(),
-            'title' => config('appv2.constants.app_defaults.title'),
-            'status' => config('appv2.constants.app_defaults.status')
+        // 空のAppインスタンスを作成
+        $app = new App();
+        $sections = $this->getSections();
+        
+        return view('AppV2::app-form', [
+            'app' => $app,
+            'sections' => $sections
         ]);
-
-        return redirect()->route('apps-v2.edit', ['app' => $app]);
     }
 
     public function store(Request $request)
     {
-        Log::debug('Store called', [
-            'method' => request()->method(),
-            'path' => request()->path(),
-            'referer' => request()->headers->get('referer'),
-            'app_id' => $request->app_id
+        $app = App::create([
+            'user_id' => auth()->id(),
+            'title' => $request->title,
+            'status' => 'draft'
         ]);
 
-        // IDが既に存在する場合は新規作成しない
-        if ($request->has('app_id')) {
-            $app = App::where('id', $request->app_id)
-                     ->where('user_id', auth()->id())
-                     ->first();
-                     
-            if ($app) {
-                // 既存のアプリを更新
-                $app->update([
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'status' => 'draft',
-                ]);
-                
-                return redirect()->route('apps-v2.show', $app)
-                               ->with('success', 'アプリ情報を更新しました');
-            }
-        }
-
-        // 新規作成は初回のみ
-        DB::beginTransaction();
-        try {
-            $app = App::create([
-                'user_id' => auth()->id(),
-                'title' => $request->title,
-                'description' => $request->description,
-                'status' => 'draft',
-            ]);
-
-            $this->saveRelatedData($app, $request);
-
-            DB::commit();
-            return redirect()->route('apps-v2.show', $app)
-                           ->with('success', 'アプリ情報を保存しました');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('App保存エラー', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return back()->withInput()
-                        ->withErrors(['error' => '保存中にエラーが発生しました']);
-        }
+        return response()->json([
+            'id' => $app->id,
+            'message' => '保存しました'
+        ]);
     }
 
     public function show($id)
@@ -179,7 +140,16 @@ class AppController extends Controller
             if ($request->has('formData.basic')) {
                 $basicData = $request->input('formData.basic');
                 
-                // 配列データはJSONに変換
+                // タイトルが空の場合は何もせずに正常終了
+                if (empty($basicData['title'])) {
+                    DB::rollBack();
+                    return response()->json([
+                        'success' => true,  // エラーではないので true
+                        'message' => null   // メッセージも表示しない
+                    ]);
+                }
+                
+                // タイトルがある場合のみ保存処理を実行
                 $app->update([
                     'title' => $basicData['title'],
                     'description' => $basicData['description'],
@@ -315,5 +285,51 @@ class AppController extends Controller
     {
         // 各セクションのデータを保存
         // 実装は後ほど詳細を詰めます
+    }
+
+    // タイトル入力時の処理を追加
+    public function createWithTitle(Request $request)
+    {
+        try {
+            // バリデーション
+            $request->validate([
+                'title' => 'required|string|max:255'
+            ]);
+
+            // レコード作成
+            $app = App::create([
+                'user_id' => auth()->id(),
+                'title' => $request->title,
+                'status' => 'draft',
+                'app_status' => 'draft',
+                'app_types' => json_encode([]),
+                'genres' => json_encode([])
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'appId' => $app->id
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('App creation failed:', [
+                'error' => $e->getMessage(),
+                'user_id' => auth()->id()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'アプリの作成に失敗しました'
+            ], 500);
+        }
+    }
+
+    public function update(Request $request, App $app)
+    {
+        $app->update($request->all());
+        
+        return response()->json([
+            'message' => '更新しました'
+        ]);
     }
 } 
