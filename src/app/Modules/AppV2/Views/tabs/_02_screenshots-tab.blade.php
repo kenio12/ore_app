@@ -1,26 +1,17 @@
 @php
-    use Illuminate\Support\Js;  
-    use Illuminate\Support\Facades\Log;  // 追加：Logクラスのインポート
+    use App\Modules\AppV2\Models\App;
+    use App\Modules\AppV2\Models\Screenshot;
+    use Illuminate\Support\Facades\Log;
+    use Illuminate\Support\Js;
     
-    // 既存のデータを優先使用
-    $screenshots = $app->screenshots ?? collect([]);
-    
-    // デバッグ表示（初期化ではなく、データ取得として）
-    Log::debug('Screenshots取得:', [
-        'app_id' => $app->id,
-        'screenshots_count' => $screenshots->count()
-    ]);
-
+    // 基本的な変数の初期化
     $viewOnly = $viewOnly ?? false;
-
-    // Alpine.jsのデータを定義
-    $alpineData = [
-        'screenshots' => $screenshots ?? [],
-        'getAppId' => $app->id,  // 直接IDを渡す
-        'init' => 'function() { 
-            this.screenshots = this.screenshots || [];
-        }',
-    ];
+    $screenshots = [];
+    
+    // アプリが存在する場合のみスクリーンショットを取得
+    if (isset($app) && $app instanceof App) {
+        $screenshots = $app->screenshots()->orderBy('order')->get();
+    }
 @endphp
 
 {{-- モーダルコンポーネントをインクルード --}}
@@ -33,7 +24,7 @@
             console.log('Initial screenshots:', this.screenshots);
         },
         getAppId() { 
-            return {{ $app->id }}; 
+            return {!! isset($app) && $app instanceof App ? $app->id : 'null' !!}; 
         },
         async handleFiles(files) {
             const app_id = this.getAppId();

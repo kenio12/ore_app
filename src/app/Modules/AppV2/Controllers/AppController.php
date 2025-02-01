@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Carbon\Carbon;
 use App\Modules\AppV2\Models\Screenshot;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class AppController extends Controller
 {
@@ -27,14 +28,68 @@ class AppController extends Controller
 
     public function create()
     {
-        // 空のAppインスタンスを作成
-        $app = new App();
-        $sections = $this->getSections();
-        
-        return view('AppV2::app-form', [
-            'app' => $app,
-            'sections' => $sections
-        ]);
+        $initialFormData = [
+            'basic' => [
+                'title' => '',
+                'description' => '',
+                'app_types' => [],
+                'genres' => [],
+                'app_status' => 'draft',
+                'status' => 'draft',
+                'demo_url' => '',
+                'github_url' => '',
+                'development_start_date' => '',
+                'development_end_date' => '',
+                'development_period_years' => 0,
+                'development_period_months' => 0,
+                'motivation' => '',
+                'purpose' => ''
+            ],
+            'screenshots' => [],
+            'story' => [
+                'development_trigger' => '',
+                'development_hardship' => '',
+                'development_tearful' => '',
+                'development_enjoyable' => '',
+                'development_funny' => '',
+                'development_impression' => '',
+                'development_oneword' => ''
+            ],
+            'hardware' => [
+                'cpu' => '',
+                'memory' => '',
+                'storage' => ''
+            ],
+            'dev_env' => [
+                'editor' => '',
+                'version_control' => '',
+                'ci_cd' => ''
+            ],
+            'architecture' => [
+                'description' => '',
+                'patterns' => [],
+                'design_patterns' => []
+            ],
+            'frontend' => [
+                'framework' => '',
+                'ui_library' => ''
+            ],
+            'backend' => [
+                'languages' => [],
+                'frameworks' => [],
+                'packages' => ''
+            ],
+            'database' => [
+                'type' => '',
+                'design' => ''
+            ],
+            'security' => [
+                'auth' => '',
+                'measures' => ''
+            ]
+        ];
+
+        return view('AppV2::app-form', ['formData' => $initialFormData]);
     }
 
     public function store(Request $request)
@@ -70,38 +125,31 @@ class AppController extends Controller
         return view('AppV2::show', compact('app'));
     }
 
-    public function edit(App $app)
+    public function edit($id)
     {
-        // stackチャンネルを使用して両方に出力
-        Log::stack(['single', 'daily'])->debug('Edit Controller Called', [
-            'method' => request()->method(),
-            'path' => request()->path(),
-            'referer' => request()->headers->get('referer'),
-            'app_id' => $app->id,
-            'timestamp' => now()->format('Y-m-d H:i:s.u')
-        ]);
+        $sections = [
+            'basic' => [
+                'title' => 'アプリの基本情報',
+                'icon' => 'information-circle'
+            ],
+            'screenshots' => [
+                'title' => 'スクリーンショット',
+                'icon' => 'photograph'
+            ]
+            // 他のセクションも必要に応じて追加
+        ];
 
-        try {
-            // 権限チェック
-            if ($app->user_id !== auth()->id()) {
-                return redirect()->route('apps-v2.index')
-                               ->with('error', 'アクセス権限がありません。');
-            }
+        $app = App::findOrFail($id);
+        $formData = [
+            'basic' => [
+                'title' => $app->title,
+                // 他の基本情報フィールド
+            ],
+            // 他のセクション
+        ];
+        $appId = $app->id;
 
-            // セクション情報を取得
-            $sections = $this->getSections();
-            
-            Log::debug('Edit画面表示', [
-                'app_id' => $app->id,
-                'user_id' => auth()->id()
-            ]);
-
-            return view('AppV2::app-form', compact('app', 'sections'));
-            
-        } catch (\Exception $e) {
-            Log::error('Edit画面エラー:', ['error' => $e->getMessage()]);
-            return back()->with('error', '画面の表示に失敗しました。');
-        }
+        return view('AppV2::app-form', compact('formData', 'appId', 'app', 'sections'));
     }
 
     public function autosave(Request $request, App $app)
@@ -268,16 +316,46 @@ class AppController extends Controller
     private function getSections()
     {
         return [
-            'basic' => ['title' => '基本情報', 'view' => '_01_basic-tab'],
-            'screenshots' => ['title' => 'スクリーンショット', 'view' => '_02_screenshots-tab'],
-            'story' => ['title' => '開発ストーリー', 'view' => '_03_story-tab'],
-            'hardware' => ['title' => 'ハードウェア', 'view' => '_04_hardware-tab'],
-            'dev_env' => ['title' => '開発環境', 'view' => '_05_dev-env-tab'],
-            'architecture' => ['title' => 'アーキテクチャ', 'view' => '_06_architecture-tab'],
-            'frontend' => ['title' => 'フロントエンド', 'view' => '_07_frontend-tab'],
-            'backend' => ['title' => 'バックエンド', 'view' => '_08_backend-tab'],
-            'database' => ['title' => 'データベース', 'view' => '_09_database-tab'],
-            'security' => ['title' => 'セキュリティ', 'view' => '_10_security-tab'],
+            'basic' => [
+                'title' => 'アプリの基本情報',
+                'icon' => 'information-circle'
+            ],
+            'screenshots' => [
+                'title' => 'スクリーンショット',
+                'icon' => 'photograph'
+            ],
+            'story' => [
+                'title' => '開発ストーリー',
+                'icon' => 'book-open'
+            ],
+            'hardware' => [
+                'title' => 'ハードウェア要件',
+                'icon' => 'chip'
+            ],
+            'dev_env' => [
+                'title' => '開発環境',
+                'icon' => 'code'
+            ],
+            'architecture' => [
+                'title' => 'アーキテクチャ',
+                'icon' => 'template'
+            ],
+            'frontend' => [
+                'title' => 'フロントエンド',
+                'icon' => 'desktop-computer'
+            ],
+            'backend' => [
+                'title' => 'バックエンド',
+                'icon' => 'server'
+            ],
+            'database' => [
+                'title' => 'データベース',
+                'icon' => 'database'
+            ],
+            'security' => [
+                'title' => 'セキュリティ',
+                'icon' => 'shield-check'
+            ]
         ];
     }
 
@@ -291,35 +369,91 @@ class AppController extends Controller
     public function createWithTitle(Request $request)
     {
         try {
-            // バリデーション
-            $request->validate([
-                'title' => 'required|string|max:255'
-            ]);
-
-            // レコード作成
+            $title = $request->input('title');
+            
+            // 初期データ構造を定義
+            $initialData = [
+                'basic' => [
+                    'title' => $title,
+                    'description' => '',
+                    'app_types' => [],
+                    'genres' => [],
+                    'app_status' => 'draft',
+                    'status' => 'draft',
+                    'demo_url' => '',
+                    'github_url' => '',
+                    'development_start_date' => '',
+                    'development_end_date' => '',
+                    'development_period_years' => 0,
+                    'development_period_months' => 0
+                ],
+                'screenshots' => [],
+                'story' => [
+                    'development_trigger' => '',
+                    'development_hardship' => '',
+                    'development_tearful' => '',
+                    'development_enjoyable' => '',
+                    'development_funny' => '',
+                    'development_impression' => '',
+                    'development_oneword' => ''
+                ],
+                'hardware' => [
+                    'cpu' => '',
+                    'memory' => '',
+                    'storage' => ''
+                ],
+                'dev_env' => [
+                    'editor' => '',
+                    'version_control' => '',
+                    'ci_cd' => ''
+                ],
+                'architecture' => [
+                    'description' => '',
+                    'patterns' => [],
+                    'design_patterns' => []
+                ],
+                'frontend' => [
+                    'framework' => '',
+                    'ui_library' => ''
+                ],
+                'backend' => [
+                    'languages' => [],
+                    'frameworks' => [],
+                    'packages' => ''
+                ],
+                'database' => [
+                    'type' => '',
+                    'design' => ''
+                ],
+                'security' => [
+                    'auth' => '',
+                    'measures' => ''
+                ]
+            ];
+            
+            // アプリを作成
             $app = App::create([
-                'user_id' => auth()->id(),
-                'title' => $request->title,
+                'user_id' => Auth::id(),
+                'title' => $title,
                 'status' => 'draft',
-                'app_status' => 'draft',
-                'app_types' => json_encode([]),
-                'genres' => json_encode([])
+                'completed_sections' => [],
+                'data' => $initialData
             ]);
-
+            
+            Log::info('App created:', ['id' => $app->id, 'title' => $title]);
+            
             return response()->json([
-                'success' => true,
-                'appId' => $app->id
+                'id' => $app->id,
+                'message' => 'App created successfully'
             ]);
-
         } catch (\Exception $e) {
             Log::error('App creation failed:', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'trace' => $e->getTraceAsString()
             ]);
-
+            
             return response()->json([
-                'success' => false,
-                'message' => 'アプリの作成に失敗しました'
+                'error' => $e->getMessage()
             ], 500);
         }
     }

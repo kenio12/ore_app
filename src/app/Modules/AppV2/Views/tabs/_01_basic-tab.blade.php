@@ -27,8 +27,7 @@
                     type="text"
                     x-model="formData.basic.title"
                     x-ref="titleInput"
-                    @input="handleInput"
-                    @blur="checkDefaultTitle()"
+                    @blur="handleTitleBlur()"
                     class="w-full rounded-lg p-4 text-lg
                            border-4 border-yellow-300
                            bg-yellow-50

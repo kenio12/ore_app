@@ -25,8 +25,6 @@ return new class extends Migration
             $table->integer('development_period_months')->default(0);
             $table->date('development_start_date')->nullable();
             $table->date('development_end_date')->nullable();
-            $table->text('motivation')->nullable();
-            $table->text('purpose')->nullable();
             $table->json('data')->nullable();
             $table->json('hardware_info')->nullable();
             $table->json('dev_env_info')->nullable();
