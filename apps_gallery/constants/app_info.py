@@ -49,50 +49,22 @@ GENRES = {
     'cms': 'CMS',
     'blog': 'ブログ/メディア',
     'portfolio': 'ポートフォリオ',
-    'other': 'その他'
+    'other': 'その他'  # その他を選んだ場合、カスタムジャンルを入力できるように
 }
 
-# タブ定義
+# タブ定義を変更
 TABS = {
     'basic': {
         'label': '基本情報',
         'icon': 'information-circle'
     },
+    'appeal': {
+        'label': 'アプリの魅力',
+        'icon': 'sparkles'
+    },
     'screenshots': {
         'label': 'スクリーンショット',
         'icon': 'photograph'
-    },
-    'story': {
-        'label': '開発ストーリー',
-        'icon': 'book-open'
-    },
-    'hardware': {
-        'label': 'ハードウェア',
-        'icon': 'chip'
-    },
-    'dev_env': {
-        'label': '開発環境',
-        'icon': 'code'
-    },
-    'architecture': {
-        'label': 'アーキテクチャ',
-        'icon': 'template'
-    },
-    'frontend': {
-        'label': 'フロントエンド',
-        'icon': 'desktop-computer'
-    },
-    'backend': {
-        'label': 'バックエンド',
-        'icon': 'server'
-    },
-    'database': {
-        'label': 'データベース',
-        'icon': 'database'
-    },
-    'security': {
-        'label': 'セキュリティ',
-        'icon': 'shield-check'
     }
 }
 
