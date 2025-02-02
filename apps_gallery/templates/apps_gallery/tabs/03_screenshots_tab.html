@@ -2,26 +2,26 @@
     <div class="card border-0">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
-                <i class="bi bi-image-fill text-success"></i> スクリーンショット
+                <i class="bi bi-image-fill text-cyber-green"></i> スクリーンショット
             </h2>
             
             <!-- アップロードエリア -->
             <div class="mb-4">
-                <div class="border border-2 border-dashed rounded-3 p-5 text-center bg-light" id="dropzone">
+                <div class="border border-2 border-dashed rounded-3 p-5 text-center cyber-upload-area" id="dropzone">
                     <input type="file" 
                            id="screenshot-upload" 
                            class="d-none" 
                            accept="image/*" 
                            multiple>
-                    <div class="text-muted">
+                    <div class="text-cyber-purple">
                         <i class="bi bi-cloud-arrow-up display-4"></i>
                         <p class="h5 mt-3">ドラッグ&ドロップ</p>
                         <p class="mb-3">または</p>
                         <label for="screenshot-upload" 
-                               class="btn btn-primary">
+                               class="btn btn-cyber-purple">
                             <i class="bi bi-folder"></i> ファイルを選択
                         </label>
-                        <p class="small mt-3 text-muted">※ 最大3枚まで登録できます</p>
+                        <p class="small mt-3 text-cyber-purple-light">※ 最大3枚まで登録できます</p>
                     </div>
                 </div>
             </div>
@@ -97,4 +97,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-</script> 
+</script>
+
+<style>
+:root {
+    --tab-color: var(--cyber-green);  /* 緑に変更 */
+}
+
+.text-cyber-green {  /* クラス名も変更 */
+    color: var(--tab-color) !important;
+    text-shadow: 0 0 5px var(--tab-color);
+}
+
+.cyber-upload-area {
+    background: rgba(191,95,255,0.1) !important;
+    border-color: var(--cyber-purple) !important;
+}
+
+.cyber-upload-area:hover {
+    box-shadow: 0 0 15px var(--cyber-purple);
+}
+
+.text-cyber-purple-light {
+    color: rgba(191,95,255,0.7);
+}
+
+.btn-cyber-purple {
+    background: linear-gradient(45deg, var(--cyber-purple), #9932cc);
+    border: none;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0,0,0,0.3);
+    box-shadow: 0 0 10px rgba(191,95,255,0.3);
+}
+
+.btn-cyber-purple:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.2);
+    color: #fff;
+}
+
+.form-text {
+    color: var(--cyber-purple) !important;
+}
+</style> 

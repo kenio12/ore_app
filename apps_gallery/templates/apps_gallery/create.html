@@ -220,10 +220,17 @@ function initializeForm() {
     text-shadow: 0 0 5px #ff4500, 0 0 10px #ff4500, 0 0 15px #ff4500;
 }
 
-/* 見出しのネオンテキスト */
-.card-title {
+/* 見出しのネオンテキストを削除（これが邪魔していた） */
+/* .card-title {
     color: #ffd700 !important;
     text-shadow: 0 0 5px #ff8c00, 0 0 10px #ff8c00;
+    letter-spacing: 1px;
+} */
+
+/* 代わりに、基本情報タブの見出しだけ黄色に */
+#basic .card-title {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow), 0 0 10px var(--cyber-yellow);
     letter-spacing: 1px;
 }
 
@@ -249,7 +256,7 @@ function initializeForm() {
     --cyber-purple: #bf5fff;
 }
 
-/* タブのネオンバリエーション */
+/* タブのネオンテキスト */
 .nav-link.text-neon:nth-child(1) {
     color: var(--cyber-yellow) !important;
     text-shadow: 0 0 5px var(--cyber-orange), 0 0 10px var(--cyber-orange);
@@ -353,6 +360,36 @@ function initializeForm() {
 .nav-link.active:nth-child(3) {
     background-color: rgba(191,95,255,0.2) !important;
     box-shadow: 0 0 15px rgba(191,95,255,0.3);
+}
+
+/* アイコンの色用のクラス */
+.text-cyber-green {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green);
+}
+
+.text-cyber-purple {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple);
+}
+
+/* 各タブの見出しの色を明確に指定 */
+#basic .card-title {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow), 0 0 10px var(--cyber-yellow);
+    letter-spacing: 1px;
+}
+
+#appeal .card-title {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green), 0 0 10px var(--cyber-green);
+    letter-spacing: 1px;
+}
+
+#screenshots .card-title {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple), 0 0 10px var(--cyber-purple);
+    letter-spacing: 1px;
 }
 </style>
 

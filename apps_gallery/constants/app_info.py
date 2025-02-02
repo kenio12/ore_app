@@ -60,11 +60,13 @@ TABS = {
     },
     'appeal': {
         'label': 'アプリの魅力',
-        'icon': 'bi-stars'
+        'icon': 'bi-stars',
+        'color': 'var(--cyber-green)'  # 緑色を定義
     },
     'screenshots': {
         'label': 'スクリーンショット',
-        'icon': 'bi-image-fill'
+        'icon': 'bi-image-fill',
+        'color': 'var(--cyber-purple)'  # 紫色を定義
     },
     'story': {
         'label': '開発ストーリー',

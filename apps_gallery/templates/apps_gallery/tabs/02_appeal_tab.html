@@ -2,60 +2,62 @@
     <div class="card border-0">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
-                <i class="bi bi-stars text-warning"></i> アプリの魅力
+                <i class="bi bi-stars text-cyber-yellow"></i> アプリの魅力
             </h2>
             
             <!-- アプリの説明 -->
             <div class="mb-4">
-                <label class="form-label fw-bold" for="overview">
+                <label class="form-label fw-bold text-cyber-green" for="overview">
                     このアプリの説明
                 </label>
                 <textarea id="overview"
                          name="overview"
-                         class="form-control"
+                         class="form-control cyber-green-focus"
                          rows="8"
                          placeholder="あなたのアプリについて簡潔に説明してください">{{ app.overview|default:'' }}</textarea>
-                <div class="form-text">
-                    <i class="bi bi-info-circle text-primary"></i>
+                <div class="form-text text-cyber-green">
+                    <i class="bi bi-info-circle"></i>
                     アプリの主な機能や特徴を簡潔に説明してください
                 </div>
             </div>
 
             <!-- 開発のきっかけ -->
             <div class="mb-4">
-                <label class="form-label fw-bold" for="motivation">
+                <label class="form-label fw-bold text-cyber-green" for="motivation">
                     このアプリを作ったきっかけ
                 </label>
                 <textarea id="motivation"
                          name="motivation"
-                         class="form-control"
+                         class="form-control cyber-green-focus"
                          rows="8"
                          placeholder="このアプリを開発しようと思ったきっかけを教えてください">{{ app.motivation|default:'' }}</textarea>
-                <div class="form-text">
-                    <i class="bi bi-lightbulb text-warning"></i>
+                <div class="form-text text-cyber-green">
+                    <i class="bi bi-lightbulb"></i>
                     開発のモチベーションや背景を説明してください
                 </div>
             </div>
 
             <!-- キャッチコピー -->
             <div class="mb-4">
-                <label class="form-label fw-bold">
+                <label class="form-label fw-bold text-cyber-green">
                     このアプリの売り（キャッチコピー）
                 </label>
                 <div class="catchphrase-container">
                     {% for i in '123'|make_list %}
                     <div class="mb-3">
                         <div class="input-group">
-                            <span class="input-group-text">{{ forloop.counter }}</span>
+                            <span class="input-group-text bg-cyber-green">
+                                <span class="text-cyber-green">{{ forloop.counter }}</span>
+                            </span>
                             <input type="text" 
                                    name="catchphrases[]" 
-                                   class="form-control form-control-lg"
+                                   class="form-control form-control-lg cyber-green-focus"
                                    placeholder="このアプリの売りを一言で！"
                                    value="{{ catchphrases.0|default:'' }}">
                         </div>
                         {% if forloop.first %}
-                        <div class="form-text">
-                            <i class="bi bi-stars text-warning"></i>
+                        <div class="form-text text-cyber-green">
+                            <i class="bi bi-stars"></i>
                             アプリの魅力を端的に表現してください（最大3つまで）
                         </div>
                         {% endif %}
@@ -66,51 +68,94 @@
 
             <!-- ターゲットユーザー -->
             <div class="mb-4">
-                <label class="form-label fw-bold" for="target_users">
+                <label class="form-label fw-bold text-cyber-green" for="target_users">
                     ターゲットユーザー
                 </label>
                 <textarea id="target_users"
                          name="target_users"
-                         class="form-control"
+                         class="form-control cyber-green-focus"
                          rows="6"
                          placeholder="このアプリは誰のために作りましたか？">{{ app.target_users|default:'' }}</textarea>
-                <div class="form-text">
-                    <i class="bi bi-people text-primary"></i>
+                <div class="form-text text-cyber-green">
+                    <i class="bi bi-people"></i>
                     想定しているユーザー層を具体的に説明してください
                 </div>
             </div>
 
             <!-- 問題点 -->
             <div class="mb-4">
-                <label class="form-label fw-bold" for="problems">
+                <label class="form-label fw-bold text-cyber-green" for="problems">
                     このアプリの問題点
                 </label>
                 <textarea id="problems"
                          name="problems"
                          rows="6"
-                         class="form-control"
+                         class="form-control cyber-green-focus"
                          placeholder="現状の課題や改善点があれば教えてください">{{ app.problems|default:'' }}</textarea>
-                <div class="form-text">
-                    <i class="bi bi-exclamation-triangle text-warning"></i>
+                <div class="form-text text-cyber-green">
+                    <i class="bi bi-exclamation-triangle"></i>
                     今後改善したい点や現在の制限事項を共有してください
                 </div>
             </div>
 
             <!-- 皆様へのアピール -->
             <div class="mb-4">
-                <label class="form-label fw-bold" for="final_appeal">
+                <label class="form-label fw-bold text-cyber-green" for="final_appeal">
                     皆様へ（アピールタイム）
                 </label>
                 <textarea id="final_appeal"
                          name="final_appeal"
                          rows="8"
-                         class="form-control"
+                         class="form-control cyber-green-focus"
                          placeholder="最後に、このアプリの魅力を思う存分アピールしてください！">{{ app.final_appeal|default:'' }}</textarea>
-                <div class="form-text">
-                    <i class="bi bi-megaphone text-success"></i>
+                <div class="form-text text-cyber-green">
+                    <i class="bi bi-megaphone"></i>
                     開発への思いや、アプリの可能性について自由に語ってください
                 </div>
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<style>
+/* アピールタブ専用のスタイル */
+#appeal .form-control {
+    border-color: var(--cyber-green) !important;
+    color: #fff;
+}
+
+#appeal .cyber-green-focus:focus {
+    border-color: var(--cyber-green) !important;
+    box-shadow: 0 0 10px var(--cyber-green) !important;
+}
+
+#appeal .input-group-text {
+    background: rgba(0,255,159,0.1) !important;
+    border-color: var(--cyber-green) !important;
+    color: var(--cyber-green) !important;
+}
+
+#appeal .bg-cyber-green {
+    background: rgba(0,255,159,0.1) !important;
+    border-color: var(--cyber-green) !important;
+}
+
+#appeal .form-text {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green) !important;
+}
+
+#appeal .form-text i {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green) !important;
+}
+
+#appeal ::placeholder {
+    color: rgba(0,255,159,0.5) !important;
+}
+
+#appeal .text-cyber-green {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green);
+}
+</style> 

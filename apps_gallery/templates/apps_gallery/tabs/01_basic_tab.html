@@ -2,26 +2,29 @@
     <div class="card border-0">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
-                <i class="bi bi-info-circle-fill text-primary"></i> 基本情報
+                <i class="bi bi-info-circle-fill text-cyber-yellow"></i> 基本情報
             </h2>
             
             <!-- アプリ名 -->
             <div class="mb-4">
-                <label class="form-label fw-bold" for="title">
+                <label class="form-label fw-bold text-cyber-yellow" for="title">
                     アプリ名 <span class="text-danger">*</span>
                 </label>
                 <input type="text" 
                        id="title" 
                        name="title" 
-                       class="form-control form-control-lg"
+                       class="form-control form-control-lg cyber-yellow-focus"
                        value="{{ app.title|default:'' }}"
                        required>
-                <div class="invalid-feedback">アプリ名を入力してください</div>
+                <div class="form-text text-cyber-yellow" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 5px var(--cyber-yellow);">
+                    <i class="bi bi-info-circle text-cyber-yellow"></i>
+                    アプリ名を入力してください
+                </div>
             </div>
 
             <!-- アプリの種類 -->
             <div class="mb-4">
-                <label class="form-label fw-bold">アプリの種類</label>
+                <label class="form-label fw-bold text-cyber-yellow">アプリの種類</label>
                 <div class="row g-3">
                     {% for key, value in app_types.items %}
                     <div class="col-md-4">
@@ -30,9 +33,9 @@
                                    id="type_{{ key }}" 
                                    name="types" 
                                    value="{{ key }}"
-                                   class="form-check-input"
+                                   class="form-check-input cyber-yellow-check"
                                    {% if app and key in app.app_types %}checked{% endif %}>
-                            <label class="form-check-label" for="type_{{ key }}">
+                            <label class="form-check-label text-cyber-yellow" for="type_{{ key }}">
                                 {{ value }}
                             </label>
                         </div>
@@ -43,7 +46,7 @@
 
             <!-- ジャンル -->
             <div class="mb-4">
-                <label class="form-label fw-bold">ジャンル</label>
+                <label class="form-label fw-bold text-cyber-yellow">ジャンル</label>
                 <div class="row g-3">
                     {% for key, value in genres.items %}
                     <div class="col-md-4">
@@ -54,7 +57,7 @@
                                    value="{{ key }}"
                                    class="form-check-input"
                                    {% if key == 'other' %}onclick="toggleOtherGenreInput(this)"{% endif %}>
-                            <label class="form-check-label" for="genre_{{ key }}">
+                            <label class="form-check-label text-cyber-yellow" for="genre_{{ key }}">
                                 {{ value }}
                             </label>
                         </div>
@@ -72,40 +75,40 @@
 
             <!-- 開発状況 -->
             <div class="mb-4">
-                <label class="form-label fw-bold">開発状況</label>
-                <select name="status" class="form-select">
+                <label class="form-label fw-bold text-cyber-yellow">開発状況</label>
+                <select name="status" class="form-select cyber-yellow-focus">
                     {% for key, value in app_status.items %}
-                        <option value="{{ key }}">{{ value }}</option>
+                        <option value="{{ key }}" class="text-cyber-yellow">{{ value }}</option>
                     {% endfor %}
                 </select>
             </div>
 
             <!-- アプリのURL -->
             <div class="mb-4">
-                <label class="form-label fw-bold" for="app_url">アプリのURL</label>
+                <label class="form-label fw-bold text-cyber-yellow" for="app_url">アプリのURL</label>
                 <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="bi bi-link-45deg"></i>
+                    <span class="input-group-text bg-cyber-yellow">
+                        <i class="bi bi-link-45deg text-cyber-yellow"></i>
                     </span>
                     <input type="url" 
                            id="app_url" 
                            name="app_url" 
-                           class="form-control"
+                           class="form-control cyber-yellow-focus"
                            placeholder="https://example.com">
                 </div>
             </div>
 
             <!-- GitHubリポジトリURL -->
             <div class="mb-4">
-                <label class="form-label fw-bold" for="github_url">GitHubリポジトリURL</label>
+                <label class="form-label fw-bold text-cyber-yellow" for="github_url">GitHubリポジトリURL</label>
                 <div class="input-group">
-                    <span class="input-group-text">
+                    <span class="input-group-text text-cyber-yellow">
                         <i class="bi bi-github"></i>
                     </span>
                     <input type="url" 
                            id="github_url" 
                            name="github_url" 
-                           class="form-control"
+                           class="form-control cyber-yellow-focus"
                            placeholder="https://github.com/username/repository">
                 </div>
             </div>
@@ -124,4 +127,63 @@ function toggleOtherGenreInput(checkbox) {
         otherInput.querySelector('input').value = ''; // チェックを外したら入力をクリア
     }
 }
-</script> 
+</script>
+
+<style>
+/* 基本情報タブ専用のスタイル */
+#basic .text-cyber-yellow {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow);
+}
+
+#basic .form-control {
+    border-color: var(--cyber-yellow) !important;
+    color: #fff;
+}
+
+#basic .cyber-yellow-focus:focus {
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 10px var(--cyber-yellow) !important;
+}
+
+#basic .cyber-yellow-check:checked {
+    background-color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 10px var(--cyber-yellow) !important;
+}
+
+#basic .input-group-text {
+    background: rgba(255,215,0,0.1) !important;
+    border-color: var(--cyber-yellow) !important;
+    color: var(--cyber-yellow) !important;
+}
+
+#basic .form-text {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow) !important;
+}
+
+#basic .form-text i {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow) !important;
+}
+
+#basic .form-select {
+    border-color: var(--cyber-yellow) !important;
+    color: #fff;
+}
+
+#basic .form-select:focus {
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 10px var(--cyber-yellow) !important;
+}
+
+#basic ::placeholder {
+    color: rgba(255, 215, 0, 0.5) !important;
+}
+
+#basic .bg-cyber-yellow {
+    background: rgba(255,215,0,0.1) !important;
+    border-color: var(--cyber-yellow) !important;
+}
+</style> 
