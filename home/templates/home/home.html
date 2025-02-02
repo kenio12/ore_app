@@ -2,18 +2,23 @@
 {% load static %}
 
 {% block content %}
-<!-- メインコンテナ -->
+<!-- サイバーパンク風の背景 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
 <div class="min-vh-100">
     <!-- ヒーローセクション -->
-    <div class="position-relative text-center py-3 mb-3" style="background: linear-gradient(45deg, #000428, #004e92); box-shadow: inset 0 0 50px rgba(0, 123, 255, 0.3);">
+    <div class="position-relative text-center py-5 mb-4 cyber-hero">
+        <div class="cyber-lines"></div>
         <div class="d-flex flex-column align-items-center justify-content-center">
             <div class="mx-auto text-center" style="max-width: 400px;">
                 <img src="{% static 'home/images/appman.png' %}" 
                      alt="アプリマン" 
-                     class="img-fluid mb-2" 
-                     style="max-width: 300px; filter: drop-shadow(0 0 10px rgba(0, 123, 255, 0.5));">
+                     class="img-fluid mb-2 cyber-glow" 
+                     style="max-width: 300px;">
                 <!-- <h1 class="display-4 fw-bold text-white mb-3" style="text-shadow: 0 0 15px rgba(0, 123, 255, 0.5);">🗡️ 俺は 🏴‍☠️</h1> -->
-                <p class="fs-3 text-white mb-0" style="text-shadow: 0 0 10px rgba(0, 123, 255, 0.5);">
+                <p class="cyber-text-hero mb-0">
                     俺もアプリになった
                 </p>
             </div>
@@ -24,7 +29,7 @@
     {% if messages %}
         <div class="container mb-4">
             {% for message in messages %}
-                <div class="alert alert-success">
+                <div class="alert alert-cyber-success">
                     {{ message }}
                 </div>
             {% endfor %}
@@ -36,18 +41,21 @@
         <div class="row g-4">
             {% for app in apps %}
                 <div class="col-md-6">
-                    <div class="card h-100 shadow">
+                    <div class="card h-100 cyber-card">
                         <!-- アプリカードヘッダー -->
                         <div class="position-relative">
                             {% if app.image %}
-                                <img src="{{ app.image.url }}" alt="{{ app.title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                <img src="{{ app.image.url }}" 
+                                     alt="{{ app.title }}" 
+                                     class="card-img-top cyber-image" 
+                                     style="height: 200px; object-fit: cover;">
                             {% else %}
-                                <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                                    <span class="display-4">🚀</span>
+                                <div class="cyber-placeholder d-flex align-items-center justify-content-center">
+                                    <span class="display-4 cyber-emoji">🚀</span>
                                 </div>
                             {% endif %}
                             {% if app.status %}
-                                <span class="position-absolute top-0 end-0 m-3 badge bg-dark">
+                                <span class="position-absolute top-0 end-0 m-3 badge cyber-badge">
                                     {{ app.status }}
                                 </span>
                             {% endif %}
@@ -55,14 +63,14 @@
                         
                         <!-- アプリ詳細 -->
                         <div class="card-body">
-                            <h3 class="card-title h4 fw-bold">{{ app.title }}</h3>
-                            <p class="card-text text-muted">{{ app.description }}</p>
+                            <h3 class="card-title h4 fw-bold cyber-title">{{ app.title }}</h3>
+                            <p class="card-text cyber-description">{{ app.description }}</p>
                             
                             <!-- テクノロジータグ -->
                             {% if app.technologies %}
                             <div class="mb-3">
                                 {% for tech in app.technologies %}
-                                    <span class="badge bg-light text-dark me-2">
+                                    <span class="badge cyber-tag me-2">
                                         {{ tech }}
                                     </span>
                                 {% endfor %}
@@ -72,12 +80,12 @@
                             <!-- アクションボタン -->
                             <div class="d-flex justify-content-end gap-2">
                                 {% if app.app_url %}
-                                    <a href="{{ app.app_url }}" class="btn btn-primary">
+                                    <a href="{{ app.app_url }}" class="btn btn-cyber-primary">
                                         アプリを見る
                                     </a>
                                 {% endif %}
                                 {% if app.github_url %}
-                                    <a href="{{ app.github_url }}" class="btn btn-dark">
+                                    <a href="{{ app.github_url }}" class="btn btn-cyber-purple">
                                         GitHub
                                     </a>
                                 {% endif %}
@@ -87,11 +95,130 @@
                 </div>
             {% empty %}
                 <div class="col-12 text-center py-5">
-                    <p class="fs-4 text-muted">まだアプリがありません。</p>
-                    <p class="text-muted">開発中のアプリが追加されるのをお待ちください！</p>
+                    <p class="fs-4 cyber-empty-text">まだアプリがありません。</p>
+                    <p class="cyber-empty-subtext">開発中のアプリが追加されるのをお待ちください！</p>
                 </div>
             {% endfor %}
         </div>
     </div>
 </div>
+
+<style>
+/* サイバーパンク風の背景 */
+.cyber-background {
+    background: linear-gradient(45deg, #001e54, #0066cc);
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+/* ヒーローセクション */
+.cyber-hero {
+    background: rgba(0, 30, 60, 0.8);
+    border-bottom: 2px solid rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 30px rgba(0, 123, 255, 0.3);
+}
+
+.cyber-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 50px,
+        rgba(0, 255, 255, 0.1) 50px,
+        rgba(0, 255, 255, 0.1) 51px
+    );
+    pointer-events: none;
+}
+
+.cyber-text-hero {
+    font-size: 1.5rem;
+    color: #e0e0e0; /* シルバー */
+    background: linear-gradient(45deg, #ffffff, #a0a0a0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
+                 0 0 20px rgba(200, 200, 200, 0.3);
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.cyber-glow {
+    filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.5));
+}
+
+/* カードデザイン */
+.cyber-card {
+    background: rgba(13, 25, 45, 0.8);
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.cyber-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+}
+
+.cyber-image {
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.cyber-placeholder {
+    height: 200px;
+    background: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,123,255,0.1));
+}
+
+.cyber-title {
+    color: #ffd700;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.cyber-description {
+    color: #fff;
+    opacity: 0.8;
+}
+
+.cyber-badge {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: #0ff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.cyber-tag {
+    background: rgba(0, 255, 255, 0.1);
+    color: #0ff;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+.cyber-empty-text {
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.cyber-empty-subtext {
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+/* アニメーション */
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+</style>
 {% endblock %} 

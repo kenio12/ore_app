@@ -1,39 +1,39 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
+<nav class="navbar navbar-expand-lg navbar-dark cyber-nav">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="/">
-            <span class="fs-4 me-2">🤖</span>
-            <span class="fw-bold">俺のアプリ</span>
-            <span class="fs-4 me-2">🤖</span>
+        <a class="navbar-brand d-flex align-items-center cyber-brand" href="/">
+            <span class="fs-4 me-2 cyber-emoji">🤖</span>
+            <span class="cyber-text">俺のアプリ</span>
+            <span class="fs-4 me-2 cyber-emoji">🤖</span>
         </a>
 
         <div class="ms-auto">
             {% if user.is_authenticated %}
                 <div class="d-flex align-items-center">
-                    <a href="{% url 'apps:create' %}" class="btn btn-success me-3 d-flex align-items-center">
-                        <span class="fs-5 me-1">📱</span>
+                    <a href="{% url 'apps:create' %}" class="btn btn-cyber-success me-3 d-flex align-items-center">
+                        <span class="fs-5 me-1 cyber-emoji">📱</span>
                         <span>アプリを投稿</span>
                     </a>
                     
-                    <a href="#" class="btn btn-outline-secondary me-2 d-flex align-items-center">
-                        <span class="fs-5 me-1">👤</span>
+                    <a href="#" class="btn btn-cyber-secondary me-2 d-flex align-items-center">
+                        <span class="fs-5 me-1 cyber-emoji">👤</span>
                         <span>{{ user.username }}</span>
                     </a>
                     <form action="{% url 'logout' %}" method="post" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-danger">
-                            <span class="fs-5 me-1">🚪</span>
+                        <button type="submit" class="btn btn-cyber-danger">
+                            <span class="fs-5 me-1 cyber-emoji">🚪</span>
                             ログアウト
                         </button>
                     </form>
                 </div>
             {% else %}
                 <div>
-                    <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">
-                        <span class="fs-5 me-1">🔑</span>
+                    <a href="{% url 'login' %}" class="btn btn-cyber-primary me-2">
+                        <span class="fs-5 me-1 cyber-emoji">🔑</span>
                         ログイン
                     </a>
-                    <a href="{% url 'accounts:signup' %}" class="btn btn-primary">
-                        <span class="fs-5 me-1">✨</span>
+                    <a href="{% url 'accounts:signup' %}" class="btn btn-cyber-purple">
+                        <span class="fs-5 me-1 cyber-emoji">✨</span>
                         新規登録
                     </a>
                 </div>
@@ -41,3 +41,93 @@
         </div>
     </div>
 </nav>
+
+<style>
+/* サイバーパンクナビゲーション */
+.cyber-nav {
+    background: rgba(13, 25, 45, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.1);
+}
+
+/* ブランドロゴ */
+.cyber-brand {
+    position: relative;
+    color: #ffd700 !important;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.cyber-brand:hover {
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+/* サイバーテキスト */
+.cyber-text {
+    background: linear-gradient(45deg, #ffd700, #ff8c00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
+
+/* 絵文字のグロー効果 */
+.cyber-emoji {
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+/* サイバーボタン */
+.btn-cyber-primary {
+    background: linear-gradient(45deg, #00f2fe, #4facfe);
+    border: none;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-success {
+    background: linear-gradient(45deg, #00ff9f, #00ff66);
+    border: none;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+}
+
+.btn-cyber-danger {
+    background: linear-gradient(45deg, #ff2d55, #ff0044);
+    border: none;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(255, 45, 85, 0.3);
+}
+
+.btn-cyber-secondary {
+    background: linear-gradient(45deg, #a0a0a0, #808080);
+    border: none;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(160, 160, 160, 0.3);
+}
+
+.btn-cyber-purple {
+    background: linear-gradient(45deg, #bf5fff, #9932cc);
+    border: none;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(191, 95, 255, 0.3);
+}
+
+/* ホバーエフェクト */
+[class*="btn-cyber-"]:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.2);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* アクティブエフェクト */
+[class*="btn-cyber-"]:active {
+    transform: translateY(1px);
+}
+</style>
