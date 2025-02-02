@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load app_filters %}
 
 {% block content %}
 <!-- サイバーパンク風の背景 -->
@@ -39,54 +40,38 @@
 
     <!-- アプリ一覧 -->
     <div class="container mb-5">
-        <div class="row g-4">
+        <div class="row">
             {% for app in apps %}
-                <div class="col-md-6">
-                    <div class="card h-100 cyber-card">
-                        <!-- アプリカードヘッダー -->
-                        <div class="position-relative">
-                            {% if app.image %}
-                                <img src="{{ app.image.url }}" 
-                                     alt="{{ app.title }}" 
-                                     class="card-img-top cyber-image" 
-                                     style="height: 200px; object-fit: cover;">
-                            {% else %}
-                                <div class="cyber-placeholder d-flex align-items-center justify-content-center">
-                                    <span class="display-4 cyber-emoji">🚀</span>
-                                </div>
-                            {% endif %}
-                            {% if app.status %}
-                                <span class="position-absolute top-0 end-0 m-3 badge cyber-badge">
-                                    {{ app.status }}
-                                </span>
-                            {% endif %}
-                        </div>
-                        
-                        <!-- アプリ詳細 -->
+                <div class="col-12 mb-4">
+                    <div class="card cyber-card">
                         <div class="card-body">
-                            <h3 class="card-title h4 fw-bold cyber-title">{{ app.title }}</h3>
-                            <p class="card-text cyber-description">{{ app.description }}</p>
+                            <h3 class="card-title cyber-title">{{ app.title }}</h3>
+                            <p class="card-text cyber-description">{{ app.overview }}</p>
                             
-                            <!-- テクノロジータグ -->
-                            {% if app.technologies %}
+                            <!-- 開発状況 -->
                             <div class="mb-3">
-                                {% for tech in app.technologies %}
-                                    <span class="badge cyber-tag me-2">
-                                        {{ tech }}
-                                    </span>
+                                <span class="badge cyber-badge">{{ app.status }}</span>
+                            </div>
+                            
+                            <!-- アプリの種類とジャンル -->
+                            <div class="mb-3">
+                                {% for type in app.app_types %}
+                                    <span class="badge cyber-tag me-2">{{ APP_TYPES|get_dict_value:type }}</span>
+                                {% endfor %}
+                                {% for genre in app.genres %}
+                                    <span class="badge cyber-tag me-2">{{ GENRES|get_dict_value:genre }}</span>
                                 {% endfor %}
                             </div>
-                            {% endif %}
                             
                             <!-- アクションボタン -->
                             <div class="d-flex justify-content-end gap-2">
                                 {% if app.app_url %}
-                                    <a href="{{ app.app_url }}" class="btn btn-cyber-primary">
+                                    <a href="{{ app.app_url }}" class="btn btn-cyber-primary" target="_blank">
                                         アプリを見る
                                     </a>
                                 {% endif %}
                                 {% if app.github_url %}
-                                    <a href="{{ app.github_url }}" class="btn btn-cyber-purple">
+                                    <a href="{{ app.github_url }}" class="btn btn-cyber-purple" target="_blank">
                                         GitHub
                                     </a>
                                 {% endif %}
