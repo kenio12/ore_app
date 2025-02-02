@@ -1,0 +1,12 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "terminal.integrated.cwd": "${workspaceFolder}",
+        "window.title": "🐘 Ore App - ${activeEditorShort}",
+        "php.validate.enable": false
+    }
+}

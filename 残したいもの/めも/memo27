@@ -1,0 +1,55 @@
+俺は、今回のアプリは、
+１　開発したアプリを世の中に宣伝、広告したい
+
+２　開発の選択肢やコードをみせて、特に初学者プログラマーに参考にしてもらう
+
+３　開発の苦しみをブログにつづり、共感をえることで、頑張れるようにしたい
+
+が主眼なのだ
+
+# Linuxのtailコマンドを直接使う
+tail -f src/storage/logs/laravel.log
+
+# データベースのリセット
+docker compose exec app php artisan migrate:fresh
+
+# キャッシュのクリア
+# キャッシュクリアとか
+docker compose exec app php artisan cache:clear
+docker compose exec app php artisan config:clear
+docker compose exec app php artisan route:clear
+docker compose exec app php artisan view:clear
+
+vueから
+Alpine.jsの痕跡
+なんちゃらから
+Livewireに変更や
+
+Laravel 10
+Livewire 3
+TailwindCSS
+最初からモジュラーモノリス構造
+
+1. FastAPIから始まって
+Next.jsに変えて
+Vue.jsに変えて
+Alpine.jsを入れて
+今度はLivewire...
+
+   1. FastAPI → APIの限界
+   2. Next.js → 複雑化
+   3. Vue.js → 状態管理の難しさ
+   4. Alpine.js → 機能不足
+   5. Livewire検討 → やめて基本に戻る
+
+シンプルに：
+Blade + TailwindCSS
+普通のJavaScript
+jQueryで必要な動き
+これで十分かと！
+
+けっきょく
+
+「Django + TailwindCSS」
+
+になった。

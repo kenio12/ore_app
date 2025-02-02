@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <span class="fs-4 me-2">🤖</span>
+            <span class="fw-bold">俺のアプリ</span>
+            <span class="fs-4 me-2">🤖</span>
+        </a>
+
+        <div class="ms-auto">
+            {% if user.is_authenticated %}
+                <div class="d-flex align-items-center">
+                    <a href="#" class="btn btn-outline-secondary me-2 d-flex align-items-center">
+                        <span class="fs-5 me-1">👤</span>
+                        <span>{{ user.username }}</span>
+                    </a>
+                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger">
+                            <span class="fs-5 me-1">🚪</span>
+                            ログアウト
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">
+                        <span class="fs-5 me-1">🔑</span>
+                        ログイン
+                    </a>
+                    <a href="{% url 'accounts:signup' %}" class="btn btn-primary">
+                        <span class="fs-5 me-1">✨</span>
+                        新規登録
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>

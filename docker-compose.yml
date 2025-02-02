@@ -1,41 +1,30 @@
-version: '3'
+version: '3.8'
+
 services:
-  app:
-    build:
-      context: .
-      dockerfile: docker/php/Dockerfile
+  web:
+    container_name: ore-app-web
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./src:/var/www/html
+      - .:/code
     ports:
-      - "5174:5174"
-    env_file:
-      - ./src/.env
+      - "8000:8000"
     environment:
-      - DOCKER_ENV=true
-      - VSCODE_REMOTE=1
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=config.settings
     depends_on:
       - db
-
-  web:
-    build:
-      context: .
-      dockerfile: docker/nginx/Dockerfile
-    ports:
-      - "80:80"
-    volumes:
-      - ./src:/var/www/html
-    depends_on:
-      - app
-
+  
   db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: ore_app
-    volumes:
-      - db-data:/var/lib/mysql
+    image: postgres:13
     ports:
-      - "3306:3306"
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=django_db
+      - POSTGRES_USER=django_user
+      - POSTGRES_PASSWORD=django_password
 
 volumes:
-  db-data: 
+  postgres_data: 

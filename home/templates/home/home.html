@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- メインコンテナ -->
+<div class="min-vh-100">
+    <!-- ヒーローセクション -->
+    <div class="position-relative text-center py-3 mb-3" style="background: linear-gradient(45deg, #000428, #004e92); box-shadow: inset 0 0 50px rgba(0, 123, 255, 0.3);">
+        <div class="d-flex flex-column align-items-center justify-content-center">
+            <div class="mx-auto text-center" style="max-width: 400px;">
+                <img src="{% static 'home/images/appman.png' %}" 
+                     alt="アプリマン" 
+                     class="img-fluid mb-2" 
+                     style="max-width: 300px; filter: drop-shadow(0 0 10px rgba(0, 123, 255, 0.5));">
+                <!-- <h1 class="display-4 fw-bold text-white mb-3" style="text-shadow: 0 0 15px rgba(0, 123, 255, 0.5);">🗡️ 俺は 🏴‍☠️</h1> -->
+                <p class="fs-3 text-white mb-0" style="text-shadow: 0 0 10px rgba(0, 123, 255, 0.5);">
+                    俺もアプリになった
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- フラッシュメッセージ -->
+    {% if messages %}
+        <div class="container mb-4">
+            {% for message in messages %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- アプリ一覧 -->
+    <div class="container mb-5">
+        <div class="row g-4">
+            {% for app in apps %}
+                <div class="col-md-6">
+                    <div class="card h-100 shadow">
+                        <!-- アプリカードヘッダー -->
+                        <div class="position-relative">
+                            {% if app.image %}
+                                <img src="{{ app.image.url }}" alt="{{ app.title }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <span class="display-4">🚀</span>
+                                </div>
+                            {% endif %}
+                            {% if app.status %}
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-dark">
+                                    {{ app.status }}
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- アプリ詳細 -->
+                        <div class="card-body">
+                            <h3 class="card-title h4 fw-bold">{{ app.title }}</h3>
+                            <p class="card-text text-muted">{{ app.description }}</p>
+                            
+                            <!-- テクノロジータグ -->
+                            {% if app.technologies %}
+                            <div class="mb-3">
+                                {% for tech in app.technologies %}
+                                    <span class="badge bg-light text-dark me-2">
+                                        {{ tech }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            
+                            <!-- アクションボタン -->
+                            <div class="d-flex justify-content-end gap-2">
+                                {% if app.demo_url %}
+                                    <a href="{{ app.demo_url }}" class="btn btn-primary">
+                                        デモを見る
+                                    </a>
+                                {% endif %}
+                                {% if app.github_url %}
+                                    <a href="{{ app.github_url }}" class="btn btn-dark">
+                                        GitHub
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center py-5">
+                    <p class="fs-4 text-muted">まだアプリがありません。</p>
+                    <p class="text-muted">開発中のアプリが追加されるのをお待ちください！</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} 
