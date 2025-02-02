@@ -21,6 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),  # accountsアプリのURL
     path('accounts/', include('django.contrib.auth.urls')),  # Django認証システムのURL
-    path('', include('home.urls')),  # ここを確認
-    path('apps/', include('apps_gallery.urls', namespace='apps')),  # これだけ残す
+    path('apps_gallery/', include('apps_gallery.urls')),  # URLパスを apps から apps_gallery に変更
 ]

@@ -7,13 +7,11 @@ from .constants.app_info import APP_TYPES, APP_STATUS, GENRES  # 定数をイン
 # Create your views here.
 
 def create_view(request):
-    # 新規作成の場合はappはNone
-    return handle_app_form(request)
+    return handle_app_form(request)  # handle_app_formを使用
 
 def edit_app(request, pk):
-    # 編集の場合は既存のappを取得
     app = get_object_or_404(AppGallery, pk=pk)
-    return handle_app_form(request, app)
+    return handle_app_form(request, app)  # handle_app_formを使用
 
 def handle_app_form(request, app=None):
     """アプリの作成・編集を処理する共通関数"""
@@ -51,7 +49,7 @@ def handle_app_form(request, app=None):
         'genres': GENRES,
         'is_edit': app is not None,  # 編集モードかどうか
     }
-    return render(request, 'apps_gallery/create.html', context)  # create.htmlを共通テンプレートとして使用
+    return render(request, 'apps_gallery/create_edit_detail.html', context)  # create_edit_detail.htmlを共通テンプレートとして使用
 
 def app_list(request):
     # とりあえず仮の実装
@@ -66,7 +64,7 @@ def app_detail(request, pk):
         'APP_STATUS': APP_STATUS,
         'GENRES': GENRES,
     }
-    return render(request, 'apps_gallery/detail.html', context)
+    return render(request, 'apps_gallery/create_edit_detail.html', context)
 
 def delete_app(request, pk):
     # とりあえず仮の実装

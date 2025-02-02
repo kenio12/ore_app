@@ -15,155 +15,123 @@
                 <input type="text" 
                        id="title" 
                        name="title" 
-                       class="form-control form-control-lg cyber-yellow-focus"
+                       class="form-control form-control-lg cyber-yellow-focus text-cyber-yellow"
                        value="{{ app.title|default:'' }}"
                        {% if readonly %}disabled{% endif %}>
             </div>
 
-            <!-- アプリの種類 -->
-            <div class="mb-4">
-                <label class="form-label fw-bold text-cyber-yellow">アプリの種類</label>
-                <div class="text-cyber-yellow">
-                    {% for type in app.app_types %}
-                        <span class="badge me-2" style="background-color: rgba(255, 215, 0, 0.2); color: var(--cyber-yellow); border: 1px solid var(--cyber-yellow);">
-                            {{ APP_TYPES|get_dict_value:type }}
-                        </span>
+            <!-- アプリの種類（チェックボックス） -->
+            <div class="mb-3">
+                <label class="form-label text-cyber-yellow">アプリの種類</label>
+                <div class="d-flex flex-wrap gap-3">
+                    {% for type_key, type_name in app_types.items %}
+                    <div class="form-check">
+                        <input type="checkbox" 
+                               name="types" 
+                               value="{{ type_key }}" 
+                               class="form-check-input cyber-yellow-check" 
+                               id="type_{{ type_key }}"
+                               {% if type_key in app.app_types %}checked{% endif %}>
+                        <label class="form-check-label text-cyber-yellow" for="type_{{ type_key }}">{{ type_name }}</label>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
 
-            <!-- ジャンル -->
-            <div class="mb-4">
-                <label class="form-label fw-bold text-cyber-yellow">ジャンル</label>
-                <div class="text-cyber-yellow">
-                    {% for genre in app.genres %}
-                        <span class="badge me-2" style="background-color: rgba(255, 215, 0, 0.2); color: var(--cyber-yellow); border: 1px solid var(--cyber-yellow);">
-                            {{ GENRES|get_dict_value:genre }}
-                        </span>
+            <!-- ジャンル（チェックボックス） -->
+            <div class="mb-3">
+                <label class="form-label text-cyber-yellow">ジャンル</label>
+                <div class="d-flex flex-wrap gap-3">
+                    {% for genre_key, genre_name in genres.items %}
+                    <div class="form-check">
+                        <input type="checkbox" 
+                               name="genres" 
+                               value="{{ genre_key }}" 
+                               class="form-check-input cyber-yellow-check" 
+                               id="genre_{{ genre_key }}"
+                               {% if genre_key in app.genres %}checked{% endif %}>
+                        <label class="form-check-label text-cyber-yellow" for="genre_{{ genre_key }}">{{ genre_name }}</label>
+                    </div>
                     {% endfor %}
-                    {% if app.other_genre %}
-                        <span class="badge me-2" style="background-color: rgba(255, 215, 0, 0.2); color: var(--cyber-yellow); border: 1px solid var(--cyber-yellow);">
-                            {{ app.other_genre }}
-                        </span>
-                    {% endif %}
                 </div>
             </div>
 
-            <!-- 開発状況 -->
-            <div class="mb-4">
-                <label class="form-label fw-bold text-cyber-yellow">開発状況</label>
-                <div class="text-cyber-yellow">
-                    <span class="badge" style="background-color: rgba(255, 215, 0, 0.2); color: var(--cyber-yellow); border: 1px solid var(--cyber-yellow);">
-                        {{ APP_STATUS|get_dict_value:app.status }}
-                    </span>
-                </div>
+            <!-- 開発状況（ドロップダウン） -->
+            <div class="mb-3">
+                <label for="status" class="form-label text-cyber-yellow">開発状況</label>
+                <select name="status" id="status" class="form-select cyber-yellow-focus text-cyber-yellow" {% if readonly %}disabled{% endif %}>
+                    <option value="" class="text-cyber-yellow">選択してください</option>
+                    {% for status_key, status_name in app_status.items %}
+                    <option value="{{ status_key }}" class="text-cyber-yellow" {% if app.status == status_key %}selected{% endif %}>
+                        {{ status_name }}
+                    </option>
+                    {% endfor %}
+                </select>
             </div>
 
-            <!-- アプリのURL -->
-            {% if app.app_url %}
-            <div class="mb-4">
-                <label class="form-label fw-bold text-cyber-yellow">アプリのURL</label>
-                <div>
-                    <a href="{{ app.app_url }}" 
-                       target="_blank" 
-                       class="text-cyber-yellow text-decoration-none">
-                        <i class="bi bi-link-45deg"></i> {{ app.app_url }}
-                    </a>
-                </div>
+            <!-- アプリのURL（読み取り専用） -->
+            <div class="mb-3">
+                <label for="app_url" class="form-label text-cyber-yellow">アプリのURL</label>
+                <input type="url" 
+                       name="app_url" 
+                       id="app_url" 
+                       class="form-control cyber-yellow-focus" 
+                       value="{{ app.app_url }}"
+                       readonly>
             </div>
-            {% endif %}
 
-            <!-- GitHubリポジトリURL -->
-            {% if app.github_url %}
-            <div class="mb-4">
-                <label class="form-label fw-bold text-cyber-yellow">GitHubリポジトリURL</label>
-                <div>
-                    <a href="{{ app.github_url }}" 
-                       target="_blank" 
-                       class="text-cyber-yellow text-decoration-none">
-                        <i class="bi bi-github"></i> {{ app.github_url }}
-                    </a>
-                </div>
+            <!-- GitHubリポジトリURL（読み取り専用） -->
+            <div class="mb-3">
+                <label for="github_url" class="form-label text-cyber-yellow">GitHubリポジトリURL</label>
+                <input type="url" 
+                       name="github_url" 
+                       id="github_url" 
+                       class="form-control cyber-yellow-focus" 
+                       value="{{ app.github_url }}"
+                       readonly>
             </div>
-            {% endif %}
         </div>
     </div>
 </div>
 
-<!-- JavaScriptを追加 -->
-<script>
-function toggleOtherGenreInput(checkbox) {
-    const otherInput = document.getElementById('other-genre-input');
-    if (checkbox.checked) {
-        otherInput.style.display = 'block';
-    } else {
-        otherInput.style.display = 'none';
-        otherInput.querySelector('input').value = ''; // チェックを外したら入力をクリア
-    }
-}
-</script>
-
 <style>
 /* 基本情報タブ専用のスタイル */
-#basic .text-cyber-yellow {
+.text-cyber-yellow {
     color: var(--cyber-yellow) !important;
     text-shadow: 0 0 5px var(--cyber-yellow);
 }
 
-#basic .form-control {
+/* チェックボックスの黄色スタイル */
+.cyber-yellow-check {
+    background-color: var(--bs-dark) !important;  /* 未チェック時の背景色を暗めに */
     border-color: var(--cyber-yellow) !important;
-    color: var(--cyber-yellow) !important;
 }
 
-#basic .cyber-yellow-focus:focus {
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 10px var(--cyber-yellow) !important;
-}
-
-#basic .cyber-yellow-check:checked {
+.cyber-yellow-check:checked {
     background-color: var(--cyber-yellow) !important;
     border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 10px var(--cyber-yellow) !important;
+    box-shadow: 0 0 5px var(--cyber-yellow);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
 }
 
-#basic .input-group-text {
-    background: rgba(255,215,0,0.1) !important;
+.cyber-yellow-check:focus {
+    border-color: var(--cyber-yellow);
+    box-shadow: 0 0 5px var(--cyber-yellow);
+}
+
+/* フォーム要素の黄色フォーカス */
+.cyber-yellow-focus:focus {
     border-color: var(--cyber-yellow) !important;
-    color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 5px var(--cyber-yellow) !important;
 }
 
-#basic .form-text {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-yellow) !important;
+/* セレクトボックスの背景色を暗めに */
+.form-select {
+    background-color: var(--bs-dark) !important;
 }
 
-#basic .form-text i {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-yellow) !important;
-}
-
-#basic .form-select {
-    border-color: var(--cyber-yellow) !important;
-    color: var(--cyber-yellow) !important;
-    background-color: rgba(0, 0, 0, 0.3) !important;
-}
-
-#basic .form-select option {
-    background-color: #1a1a1a !important;
-    color: var(--cyber-yellow) !important;
-}
-
-#basic .form-select:focus {
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 10px var(--cyber-yellow) !important;
-}
-
-#basic ::placeholder {
-    color: rgba(255, 215, 0, 0.5) !important;
-}
-
-#basic .bg-cyber-yellow {
-    background: rgba(255,215,0,0.1) !important;
-    border-color: var(--cyber-yellow) !important;
+/* フォーム要素の背景を暗めに */
+.form-control {
+    background-color: var(--bs-dark) !important;
 }
 </style> 
