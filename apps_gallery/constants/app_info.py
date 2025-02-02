@@ -56,15 +56,19 @@ GENRES = {
 TABS = {
     'basic': {
         'label': '基本情報',
-        'icon': 'information-circle'
+        'icon': 'bi-info-circle-fill'
     },
     'appeal': {
         'label': 'アプリの魅力',
-        'icon': 'sparkles'
+        'icon': 'bi-stars'
     },
     'screenshots': {
         'label': 'スクリーンショット',
-        'icon': 'photograph'
+        'icon': 'bi-image-fill'
+    },
+    'story': {
+        'label': '開発ストーリー',
+        'icon': 'bi-book-fill'
     }
 }
 
