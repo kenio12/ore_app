@@ -14,7 +14,7 @@
                          name="overview"
                          class="form-control cyber-green-focus"
                          rows="8"
-                         placeholder="あなたのアプリについて簡潔に説明してください">{{ app.overview|default:'' }}</textarea>
+                         {% if readonly %}disabled{% endif %}>{{ app.overview|default:'' }}</textarea>
                 <div class="form-text text-cyber-green">
                     <i class="bi bi-info-circle"></i>
                     アプリの主な機能や特徴を簡潔に説明してください
@@ -121,7 +121,8 @@
 /* アピールタブ専用のスタイル */
 #appeal .form-control {
     border-color: var(--cyber-green) !important;
-    color: #fff;
+    color: var(--cyber-green) !important;
+    background-color: rgba(0, 20, 50, 0.5) !important;
 }
 
 #appeal .cyber-green-focus:focus {
@@ -157,5 +158,14 @@
 #appeal .text-cyber-green {
     color: var(--cyber-green) !important;
     text-shadow: 0 0 5px var(--cyber-green);
+}
+
+/* 読み取り専用時のスタイル */
+#appeal .form-control[readonly],
+#appeal .form-control:disabled {
+    background-color: rgba(0, 20, 50, 0.5) !important;
+    color: var(--cyber-green) !important;
+    border-color: var(--cyber-green) !important;
+    opacity: 1;
 }
 </style> 

@@ -2,34 +2,71 @@
     <div class="card border-0">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
-                <i class="bi bi-image-fill text-cyber-green"></i> スクリーンショット
+                <i class="bi bi-image-fill text-cyber-purple"></i> スクリーンショット
             </h2>
             
-            <!-- アップロードエリア -->
-            <div class="mb-4">
-                <div class="border border-2 border-dashed rounded-3 p-5 text-center cyber-upload-area" id="dropzone">
-                    <input type="file" 
-                           id="screenshot-upload" 
-                           class="d-none" 
-                           accept="image/*" 
-                           multiple>
-                    <div class="text-cyber-purple">
-                        <i class="bi bi-cloud-arrow-up display-4"></i>
-                        <p class="h5 mt-3">ドラッグ&ドロップ</p>
-                        <p class="mb-3">または</p>
-                        <label for="screenshot-upload" 
-                               class="btn btn-cyber-purple">
-                            <i class="bi bi-folder"></i> ファイルを選択
-                        </label>
-                        <p class="small mt-3 text-cyber-purple-light">※ 最大3枚まで登録できます</p>
-                    </div>
-                </div>
+            <!-- デバッグ情報の表示 -->
+            <div class="text-cyber-purple">
+                Debug Info:
+                <pre>
+                readonly: {{ readonly }}
+                app: {{ app }}
+                screenshots exist: {{ app.screenshots.exists }}
+                </pre>
             </div>
 
-            <!-- プレビューエリア -->
-            <div class="row g-4" id="preview-area">
-                <!-- プレビュー画像がここに表示される -->
-            </div>
+            {% if readonly %}
+                {% if app.screenshots.exists %}
+                    <!-- スクリーンショットがある場合の表示 -->
+                    <div class="row g-4">
+                        {% for screenshot in app.screenshots.all %}
+                        <div class="col-md-6">
+                            <div class="screenshot-container">
+                                <img src="{{ screenshot.image.url }}" 
+                                     class="screenshot-preview" 
+                                     alt="スクリーンショット">
+                                {% if screenshot.description %}
+                                <p class="mt-2 mb-0 text-cyber-purple">{{ screenshot.description }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <!-- スクリーンショットがない場合のメッセージ -->
+                    <div class="text-center py-5">
+                        <i class="bi bi-image text-cyber-purple display-1"></i>
+                        <p class="h5 mt-3 text-cyber-purple">スクリーンショットはまだ登録されていません</p>
+                    </div>
+                {% endif %}
+            {% else %}
+                <!-- 編集モードの場合は既存のアップロード機能を表示 -->
+                <!-- アップロードエリア -->
+                <div class="mb-4">
+                    <div class="border border-2 border-dashed rounded-3 p-5 text-center cyber-upload-area" id="dropzone">
+                        <input type="file" 
+                               id="screenshot-upload" 
+                               class="d-none" 
+                               accept="image/*" 
+                               multiple>
+                        <div class="text-cyber-purple">
+                            <i class="bi bi-cloud-arrow-up display-4"></i>
+                            <p class="h5 mt-3">ドラッグ&ドロップ</p>
+                            <p class="mb-3">または</p>
+                            <label for="screenshot-upload" 
+                                   class="btn btn-cyber-purple">
+                                <i class="bi bi-folder"></i> ファイルを選択
+                            </label>
+                            <p class="small mt-3 text-cyber-purple-light">※ 最大3枚まで登録できます</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- プレビューエリア -->
+                <div class="row g-4" id="preview-area">
+                    <!-- プレビュー画像がここに表示される -->
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -100,15 +137,76 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-:root {
-    --tab-color: var(--cyber-green);  /* 緑に変更 */
+/* スクリーンショットタブ専用のスタイル */
+#screenshots .form-control {
+    border-color: var(--cyber-purple) !important;
+    color: var(--cyber-purple) !important;
+    background-color: rgba(0, 20, 50, 0.5) !important;
 }
 
-.text-cyber-green {  /* クラス名も変更 */
-    color: var(--tab-color) !important;
-    text-shadow: 0 0 5px var(--tab-color);
+#screenshots .cyber-purple-focus:focus {
+    border-color: var(--cyber-purple) !important;
+    box-shadow: 0 0 10px var(--cyber-purple) !important;
 }
 
+#screenshots .input-group-text {
+    background: rgba(191,95,255,0.1) !important;
+    border-color: var(--cyber-purple) !important;
+    color: var(--cyber-purple) !important;
+}
+
+#screenshots .bg-cyber-purple {
+    background: rgba(191,95,255,0.1) !important;
+    border-color: var(--cyber-purple) !important;
+}
+
+#screenshots .form-text {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple) !important;
+}
+
+#screenshots .form-text i {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple) !important;
+}
+
+#screenshots ::placeholder {
+    color: rgba(191,95,255,0.5) !important;
+}
+
+#screenshots .text-cyber-purple {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple);
+}
+
+/* 読み取り専用時のスタイル */
+#screenshots .form-control[readonly],
+#screenshots .form-control:disabled {
+    background-color: rgba(0, 20, 50, 0.5) !important;
+    color: var(--cyber-purple) !important;
+    border-color: var(--cyber-purple) !important;
+    opacity: 1;
+}
+
+/* スクリーンショットの表示を修正 */
+.screenshot-preview {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.screenshot-container {
+    margin-bottom: 20px;
+    border: 1px solid var(--cyber-purple);
+    border-radius: 8px;
+    padding: 10px;
+    background: rgba(191, 95, 255, 0.1);
+}
+
+/* サイバーパンクなアップロードエリア */
 .cyber-upload-area {
     background: rgba(191,95,255,0.1) !important;
     border-color: var(--cyber-purple) !important;
@@ -135,8 +233,23 @@ document.addEventListener('DOMContentLoaded', function() {
     filter: brightness(1.2);
     color: #fff;
 }
+</style>
 
-.form-text {
-    color: var(--cyber-purple) !important;
-}
-</style> 
+{% if readonly %}
+<div class="row g-4">
+    {% for screenshot in app.screenshots.all %}
+    <div class="col-md-6">
+        <div class="screenshot-container">
+            <img src="{{ screenshot.image.url }}" 
+                 class="screenshot-preview" 
+                 alt="スクリーンショット">
+            {% if screenshot.description %}
+            <p class="mt-2 mb-0 text-cyber-purple">{{ screenshot.description }}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<!-- 既存のアップロード関連のコード -->
+{% endif %} 

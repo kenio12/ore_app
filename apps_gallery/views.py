@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import AppGallery
 from .constants import *
+from .constants.app_info import APP_TYPES, APP_STATUS, GENRES  # 定数をインポート
 
 # Create your views here.
 
@@ -57,8 +58,15 @@ def app_list(request):
     return render(request, 'apps_gallery/list.html')
 
 def app_detail(request, pk):
-    # とりあえず仮の実装
-    return render(request, 'apps_gallery/detail.html')
+    app = get_object_or_404(AppGallery, pk=pk)
+    context = {
+        'app': app,
+        'readonly': True,
+        'APP_TYPES': APP_TYPES,
+        'APP_STATUS': APP_STATUS,
+        'GENRES': GENRES,
+    }
+    return render(request, 'apps_gallery/detail.html', context)
 
 def delete_app(request, pk):
     # とりあえず仮の実装

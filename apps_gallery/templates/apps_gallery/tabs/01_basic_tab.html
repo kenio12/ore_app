@@ -1,3 +1,5 @@
+{% load app_filters %}
+
 <div class="container">
     <div class="card border-0">
         <div class="card-body">
@@ -8,38 +10,24 @@
             <!-- アプリ名 -->
             <div class="mb-4">
                 <label class="form-label fw-bold text-cyber-yellow" for="title">
-                    アプリ名 <span class="text-danger">*</span>
+                    アプリ名
                 </label>
                 <input type="text" 
                        id="title" 
                        name="title" 
                        class="form-control form-control-lg cyber-yellow-focus"
                        value="{{ app.title|default:'' }}"
-                       required>
-                <div class="form-text text-cyber-yellow" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 5px var(--cyber-yellow);">
-                    <i class="bi bi-info-circle text-cyber-yellow"></i>
-                    アプリ名を入力してください
-                </div>
+                       {% if readonly %}disabled{% endif %}>
             </div>
 
             <!-- アプリの種類 -->
             <div class="mb-4">
                 <label class="form-label fw-bold text-cyber-yellow">アプリの種類</label>
-                <div class="row g-3">
-                    {% for key, value in app_types.items %}
-                    <div class="col-md-4">
-                        <div class="form-check">
-                            <input type="checkbox" 
-                                   id="type_{{ key }}" 
-                                   name="types" 
-                                   value="{{ key }}"
-                                   class="form-check-input cyber-yellow-check"
-                                   {% if app and key in app.app_types %}checked{% endif %}>
-                            <label class="form-check-label text-cyber-yellow" for="type_{{ key }}">
-                                {{ value }}
-                            </label>
-                        </div>
-                    </div>
+                <div class="text-cyber-yellow">
+                    {% for type in app.app_types %}
+                        <span class="badge me-2" style="background-color: rgba(255, 215, 0, 0.2); color: var(--cyber-yellow); border: 1px solid var(--cyber-yellow);">
+                            {{ APP_TYPES|get_dict_value:type }}
+                        </span>
                     {% endfor %}
                 </div>
             </div>
@@ -47,71 +35,57 @@
             <!-- ジャンル -->
             <div class="mb-4">
                 <label class="form-label fw-bold text-cyber-yellow">ジャンル</label>
-                <div class="row g-3">
-                    {% for key, value in genres.items %}
-                    <div class="col-md-4">
-                        <div class="form-check">
-                            <input type="checkbox" 
-                                   id="genre_{{ key }}" 
-                                   name="genres" 
-                                   value="{{ key }}"
-                                   class="form-check-input"
-                                   {% if key == 'other' %}onclick="toggleOtherGenreInput(this)"{% endif %}>
-                            <label class="form-check-label text-cyber-yellow" for="genre_{{ key }}">
-                                {{ value }}
-                            </label>
-                        </div>
-                    </div>
+                <div class="text-cyber-yellow">
+                    {% for genre in app.genres %}
+                        <span class="badge me-2" style="background-color: rgba(255, 215, 0, 0.2); color: var(--cyber-yellow); border: 1px solid var(--cyber-yellow);">
+                            {{ GENRES|get_dict_value:genre }}
+                        </span>
                     {% endfor %}
-                </div>
-                <!-- その他のジャンル入力欄 -->
-                <div id="other-genre-input" class="mt-3" style="display: none;">
-                    <input type="text" 
-                           name="other_genre" 
-                           class="form-control"
-                           placeholder="その他のジャンルを入力してください">
+                    {% if app.other_genre %}
+                        <span class="badge me-2" style="background-color: rgba(255, 215, 0, 0.2); color: var(--cyber-yellow); border: 1px solid var(--cyber-yellow);">
+                            {{ app.other_genre }}
+                        </span>
+                    {% endif %}
                 </div>
             </div>
 
             <!-- 開発状況 -->
             <div class="mb-4">
                 <label class="form-label fw-bold text-cyber-yellow">開発状況</label>
-                <select name="status" class="form-select cyber-yellow-focus">
-                    {% for key, value in app_status.items %}
-                        <option value="{{ key }}" class="text-cyber-yellow">{{ value }}</option>
-                    {% endfor %}
-                </select>
+                <div class="text-cyber-yellow">
+                    <span class="badge" style="background-color: rgba(255, 215, 0, 0.2); color: var(--cyber-yellow); border: 1px solid var(--cyber-yellow);">
+                        {{ APP_STATUS|get_dict_value:app.status }}
+                    </span>
+                </div>
             </div>
 
             <!-- アプリのURL -->
+            {% if app.app_url %}
             <div class="mb-4">
-                <label class="form-label fw-bold text-cyber-yellow" for="app_url">アプリのURL</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-cyber-yellow">
-                        <i class="bi bi-link-45deg text-cyber-yellow"></i>
-                    </span>
-                    <input type="url" 
-                           id="app_url" 
-                           name="app_url" 
-                           class="form-control cyber-yellow-focus"
-                           placeholder="https://example.com">
+                <label class="form-label fw-bold text-cyber-yellow">アプリのURL</label>
+                <div>
+                    <a href="{{ app.app_url }}" 
+                       target="_blank" 
+                       class="text-cyber-yellow text-decoration-none">
+                        <i class="bi bi-link-45deg"></i> {{ app.app_url }}
+                    </a>
                 </div>
             </div>
+            {% endif %}
 
             <!-- GitHubリポジトリURL -->
+            {% if app.github_url %}
             <div class="mb-4">
-                <label class="form-label fw-bold text-cyber-yellow" for="github_url">GitHubリポジトリURL</label>
-                <div class="input-group">
-                    <span class="input-group-text text-cyber-yellow">
-                        <i class="bi bi-github"></i>
-                    </span>
-                    <input type="url" 
-                           id="github_url" 
-                           name="github_url" 
-                           class="form-control cyber-yellow-focus"
-                           placeholder="https://github.com/username/repository">
+                <label class="form-label fw-bold text-cyber-yellow">GitHubリポジトリURL</label>
+                <div>
+                    <a href="{{ app.github_url }}" 
+                       target="_blank" 
+                       class="text-cyber-yellow text-decoration-none">
+                        <i class="bi bi-github"></i> {{ app.github_url }}
+                    </a>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -138,7 +112,7 @@ function toggleOtherGenreInput(checkbox) {
 
 #basic .form-control {
     border-color: var(--cyber-yellow) !important;
-    color: #fff;
+    color: var(--cyber-yellow) !important;
 }
 
 #basic .cyber-yellow-focus:focus {
@@ -170,7 +144,13 @@ function toggleOtherGenreInput(checkbox) {
 
 #basic .form-select {
     border-color: var(--cyber-yellow) !important;
-    color: #fff;
+    color: var(--cyber-yellow) !important;
+    background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+#basic .form-select option {
+    background-color: #1a1a1a !important;
+    color: var(--cyber-yellow) !important;
 }
 
 #basic .form-select:focus {
