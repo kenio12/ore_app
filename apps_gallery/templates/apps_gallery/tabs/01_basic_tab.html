@@ -14,6 +14,7 @@
                        id="title" 
                        name="title" 
                        class="form-control form-control-lg"
+                       value="{{ app.title|default:'' }}"
                        required>
                 <div class="invalid-feedback">アプリ名を入力してください</div>
             </div>
@@ -29,7 +30,8 @@
                                    id="type_{{ key }}" 
                                    name="types" 
                                    value="{{ key }}"
-                                   class="form-check-input">
+                                   class="form-check-input"
+                                   {% if app and key in app.app_types %}checked{% endif %}>
                             <label class="form-check-label" for="type_{{ key }}">
                                 {{ value }}
                             </label>
@@ -50,13 +52,21 @@
                                    id="genre_{{ key }}" 
                                    name="genres" 
                                    value="{{ key }}"
-                                   class="form-check-input">
+                                   class="form-check-input"
+                                   {% if key == 'other' %}onclick="toggleOtherGenreInput(this)"{% endif %}>
                             <label class="form-check-label" for="genre_{{ key }}">
                                 {{ value }}
                             </label>
                         </div>
                     </div>
                     {% endfor %}
+                </div>
+                <!-- その他のジャンル入力欄 -->
+                <div id="other-genre-input" class="mt-3" style="display: none;">
+                    <input type="text" 
+                           name="other_genre" 
+                           class="form-control"
+                           placeholder="その他のジャンルを入力してください">
                 </div>
             </div>
 
@@ -70,16 +80,16 @@
                 </select>
             </div>
 
-            <!-- デモURL -->
+            <!-- アプリのURL -->
             <div class="mb-4">
-                <label class="form-label fw-bold" for="demo_url">デモURL</label>
+                <label class="form-label fw-bold" for="app_url">アプリのURL</label>
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="bi bi-link-45deg"></i>
                     </span>
                     <input type="url" 
-                           id="demo_url" 
-                           name="demo_url" 
+                           id="app_url" 
+                           name="app_url" 
                            class="form-control"
                            placeholder="https://example.com">
                 </div>
@@ -101,4 +111,17 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<!-- JavaScriptを追加 -->
+<script>
+function toggleOtherGenreInput(checkbox) {
+    const otherInput = document.getElementById('other-genre-input');
+    if (checkbox.checked) {
+        otherInput.style.display = 'block';
+    } else {
+        otherInput.style.display = 'none';
+        otherInput.querySelector('input').value = ''; // チェックを外したら入力をクリア
+    }
+}
+</script> 

@@ -28,13 +28,13 @@ DESIGN_PATTERNS = {
 }
 
 # アーキテクチャのヒント
-ARCHITECTURE_HINTS = [
+ARCHITECTURE_HINTS = {
     'architecture_structure': '全体的なアーキテクチャの構成',
     'adoption_reason': '採用した理由や背景',
     'design_patterns': '特徴的な設計パターン',
     'module_dependencies': 'モジュール間の依存関係',
     'data_flow': 'データフローの概要'
-]
+}
 
 # セキュリティ対策
 SECURITY_MEASURES = {

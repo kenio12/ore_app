@@ -77,3 +77,27 @@ APP_DEFAULTS = {
     'title': '',
     'status': 'draft'
 }
+
+# モデルのフィールド定義
+MODEL_FIELDS = {
+    'title': {
+        'verbose_name': 'アプリ名',
+        'max_length': 100,
+    },
+    'other_genre': {
+        'verbose_name': 'その他のジャンル',
+        'max_length': 50,
+        'blank': True,
+    },
+    'app_url': {  # シンプルに「アプリのURL」に変更
+        'verbose_name': 'アプリのURL',
+        'max_length': 200,
+        'blank': True,
+    },
+    'github_url': {
+        'verbose_name': 'GitHubリポジトリURL',
+        'max_length': 200,
+        'blank': True,
+    },
+    # ... 他のフィールドは省略 ...
+}

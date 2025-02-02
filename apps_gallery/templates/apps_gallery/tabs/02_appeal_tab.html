@@ -14,7 +14,7 @@
                          name="overview"
                          class="form-control"
                          rows="8"
-                         placeholder="あなたのアプリについて簡潔に説明してください"></textarea>
+                         placeholder="あなたのアプリについて簡潔に説明してください">{{ app.overview|default:'' }}</textarea>
                 <div class="form-text">
                     <i class="bi bi-info-circle text-primary"></i>
                     アプリの主な機能や特徴を簡潔に説明してください
@@ -30,7 +30,7 @@
                          name="motivation"
                          class="form-control"
                          rows="8"
-                         placeholder="このアプリを開発しようと思ったきっかけを教えてください"></textarea>
+                         placeholder="このアプリを開発しようと思ったきっかけを教えてください">{{ app.motivation|default:'' }}</textarea>
                 <div class="form-text">
                     <i class="bi bi-lightbulb text-warning"></i>
                     開発のモチベーションや背景を説明してください
@@ -50,7 +50,8 @@
                             <input type="text" 
                                    name="catchphrases[]" 
                                    class="form-control form-control-lg"
-                                   placeholder="このアプリの売りを一言で！">
+                                   placeholder="このアプリの売りを一言で！"
+                                   value="{{ catchphrases.0|default:'' }}">
                         </div>
                         {% if forloop.first %}
                         <div class="form-text">
@@ -72,7 +73,7 @@
                          name="target_users"
                          class="form-control"
                          rows="6"
-                         placeholder="このアプリは誰のために作りましたか？"></textarea>
+                         placeholder="このアプリは誰のために作りましたか？">{{ app.target_users|default:'' }}</textarea>
                 <div class="form-text">
                     <i class="bi bi-people text-primary"></i>
                     想定しているユーザー層を具体的に説明してください
@@ -88,7 +89,7 @@
                          name="problems"
                          rows="6"
                          class="form-control"
-                         placeholder="現状の課題や改善点があれば教えてください"></textarea>
+                         placeholder="現状の課題や改善点があれば教えてください">{{ app.problems|default:'' }}</textarea>
                 <div class="form-text">
                     <i class="bi bi-exclamation-triangle text-warning"></i>
                     今後改善したい点や現在の制限事項を共有してください
@@ -104,7 +105,7 @@
                          name="final_appeal"
                          rows="8"
                          class="form-control"
-                         placeholder="最後に、このアプリの魅力を思う存分アピールしてください！"></textarea>
+                         placeholder="最後に、このアプリの魅力を思う存分アピールしてください！">{{ app.final_appeal|default:'' }}</textarea>
                 <div class="form-text">
                     <i class="bi bi-megaphone text-success"></i>
                     開発への思いや、アプリの可能性について自由に語ってください

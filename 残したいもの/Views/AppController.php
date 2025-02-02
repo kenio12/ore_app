@@ -205,7 +205,7 @@ class AppController extends Controller
                     'genres' => json_encode($basicData['genres']),
                     'app_status' => $basicData['app_status'],
                     'status' => $basicData['status'],
-                    'demo_url' => $basicData['demo_url'],
+                    'app_url' => $basicData['app_url'],
                     'github_url' => $basicData['github_url'],
                     'development_start_date' => $basicData['development_start_date'],
                     'development_end_date' => $basicData['development_end_date'],

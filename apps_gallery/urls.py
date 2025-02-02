@@ -1,10 +1,10 @@
 from django.urls import path
 from . import views
 
-app_name = 'apps'  # これがnamespaceになる
+app_name = 'apps_gallery'
 
 urlpatterns = [
-    path('create/', views.create_app, name='create'),  # アプリ作成
+    path('create/', views.create_view, name='create'),  # アプリ作成
     path('list/', views.app_list, name='list'),  # アプリ一覧
     path('<int:pk>/', views.app_detail, name='detail'),  # アプリ詳細
     path('<int:pk>/edit/', views.edit_app, name='edit'),  # アプリ編集

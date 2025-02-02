@@ -1,22 +1,57 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- サイバーパンク風の装飾 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<script>
+// バックフォワードキャッシュからの復元時の処理
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        // フォームの状態をリセット
+        const form = document.querySelector('form');
+        if (form) {
+            // CSRFトークンは保持
+            const csrfToken = form.querySelector('[name="csrfmiddlewaretoken"]').value;
+            form.reset();
+            form.querySelector('[name="csrfmiddlewaretoken"]').value = csrfToken;
+        }
+        
+        // 必要な初期化処理を実行
+        initializeForm();  // フォームの初期化関数
+    }
+});
+
+function initializeForm() {
+    // フォームの初期化処理
+    // 最初のタブをアクティブに
+    document.querySelector('.nav-link').classList.add('active');
+    // その他の初期化処理...
+}
+</script>
+
 <div class="container py-5">
-    <!-- タブナビゲーション（スクロールで隠れる） -->
-    <div class="bg-white shadow-sm mb-4 position-sticky top-0" style="transition: transform 0.3s ease-in-out; z-index: 1000;">
+    <!-- タブナビゲーション -->
+    <div class="bg-dark bg-opacity-75 shadow-lg mb-4 position-sticky top-0" style="transition: transform 0.3s ease-in-out; z-index: 1000; backdrop-filter: blur(10px);">
         <div class="container py-3">
             <nav class="nav nav-pills nav-fill">
-                {% for key, tab in tabs.items %}
-                <a class="nav-link" href="#{{ key }}">
-                    <i class="bi {{ tab.icon }}"></i> {{ tab.label }}
+                <a class="nav-link text-neon" href="#basic">
+                    <i class="bi bi-info-circle-fill"></i> 基本情報
                 </a>
-                {% endfor %}
+                <a class="nav-link text-neon" href="#appeal">
+                    <i class="bi bi-stars"></i> アプリの魅力
+                </a>
+                <a class="nav-link text-neon" href="#screenshots">
+                    <i class="bi bi-image-fill"></i> スクリーンショット
+                </a>
             </nav>
         </div>
     </div>
 
     <!-- フォームコンテンツ -->
-    <form method="POST" action="{% url 'apps:create' %}" class="needs-validation" novalidate>
+    <form method="POST" action="{% if is_edit %}{% url 'apps_gallery:edit' app.pk %}{% else %}{% url 'apps_gallery:create' %}{% endif %}" class="needs-validation" novalidate>
         {% csrf_token %}
         
         <!-- 各セクション -->
@@ -24,7 +59,7 @@
             <div class="col-12">
                 <!-- 基本情報セクション -->
                 <section id="basic" class="scroll-margin-top">
-                    <div class="card border-0 shadow-sm">
+                    <div class="card border-0 shadow-lg bg-dark bg-opacity-75 text-light" style="backdrop-filter: blur(10px);">
                         <div class="card-body p-4">
                             {% include 'apps_gallery/tabs/01_basic_tab.html' %}
                         </div>
@@ -35,7 +70,7 @@
             <div class="col-12">
                 <!-- アプリの魅力セクション -->
                 <section id="appeal" class="scroll-margin-top">
-                    <div class="card border-0 shadow-sm">
+                    <div class="card border-0 shadow-lg bg-dark bg-opacity-75 text-light" style="backdrop-filter: blur(10px);">
                         <div class="card-body p-4">
                             {% include 'apps_gallery/tabs/02_appeal_tab.html' %}
                         </div>
@@ -46,7 +81,7 @@
             <div class="col-12">
                 <!-- スクリーンショットセクション -->
                 <section id="screenshots" class="scroll-margin-top">
-                    <div class="card border-0 shadow-sm">
+                    <div class="card border-0 shadow-lg bg-dark bg-opacity-75 text-light" style="backdrop-filter: blur(10px);">
                         <div class="card-body p-4">
                             {% include 'apps_gallery/tabs/03_screenshots_tab.html' %}
                         </div>
@@ -57,18 +92,275 @@
 
         <!-- 送信ボタン -->
         <div class="position-fixed bottom-0 end-0 p-4">
-            <button type="submit" class="btn btn-primary btn-lg shadow-lg">
-                <i class="bi bi-save"></i> 保存する
+            <button type="submit" class="btn btn-cyber btn-lg shadow-lg">
+                <i class="bi bi-save"></i> {% if is_edit %}更新する{% else %}保存する{% endif %}
             </button>
         </div>
     </form>
 </div>
 
+<!-- サイバーパンク風のスタイル -->
+<style>
+.cyber-background {
+    /* より明るい青のグラデーション */
+    background: linear-gradient(45deg, #001e54, #0066cc);
+}
+
+.cyber-grid {
+    /* グリッドの透明度を上げる */
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    /* 光るアニメーション追加 */
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+.text-neon {
+    /* より明るいネオン */
+    color: #fff !important;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff, 0 0 20px #0ff;
+    transition: all 0.3s ease;
+}
+
+.text-neon:hover {
+    color: #fff !important;
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0ff, 0 0 20px #0ff;
+}
+
+.btn-cyber {
+    /* より明るいボタン */
+    background: linear-gradient(45deg, #ff8c00, #ffd700);
+    border: none;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    /* グロー効果追加 */
+    box-shadow: 0 0 15px rgba(255,140,0,0.3);
+}
+
+.btn-cyber:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255,140,0,0.6);
+}
+
+/* カード背景を少し明るく */
+.card {
+    background: rgba(13, 25, 45, 0.8) !important;
+}
+
+/* フォーム要素も明るく */
+.form-control {
+    background: rgba(0,20,50,0.5);
+    border: 1px solid rgba(0,255,255,0.3);
+    color: #fff;
+}
+
+.form-control:focus {
+    background: rgba(0,30,70,0.7);
+    border-color: #0ff;
+    box-shadow: 0 0 15px rgba(0,255,255,0.4);
+    color: #fff;
+}
+
+.form-label {
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0,255,255,0.3);
+}
+
+/* チェックボックスとラジオボタンをサイバー風に */
+.form-check-input {
+    border-color: rgba(0,255,255,0.5);
+}
+
+.form-check-input:checked {
+    background-color: #0ff;
+    border-color: #0ff;
+    box-shadow: 0 0 10px rgba(0,255,255,0.5);
+}
+
+/* 入力欄のプレースホルダーを明るく */
+.form-control::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+
+/* スクロールバーもサイバー風に */
+::-webkit-scrollbar {
+    width: 10px;
+    background: rgba(0,0,0,0.2);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, #00f2fe, #4facfe);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+}
+
+/* タブのネオンテキスト */
+.nav-link.text-neon {
+    color: #ffd700 !important; /* 黄金色 */
+    text-shadow: 0 0 5px #ff8c00, 0 0 10px #ff8c00, 0 0 15px #ff8c00;
+}
+
+.nav-link.text-neon:hover {
+    color: #ffa500 !important; /* オレンジ */
+    text-shadow: 0 0 5px #ff4500, 0 0 10px #ff4500, 0 0 15px #ff4500;
+}
+
+/* 見出しのネオンテキスト */
+.card-title {
+    color: #ffd700 !important;
+    text-shadow: 0 0 5px #ff8c00, 0 0 10px #ff8c00;
+    letter-spacing: 1px;
+}
+
+/* 定数（チェックボックスのラベル）は黄色っぽく */
+.form-check-label {
+    color: #ffe4b5 !important; /* モカシン色 */
+    text-shadow: 0 0 3px rgba(255,140,0,0.3);
+}
+
+/* アクティブなタブをより目立たせる */
+.nav-link.active {
+    background-color: rgba(255,140,0,0.2) !important;
+    box-shadow: 0 0 15px rgba(255,140,0,0.3);
+}
+
+/* カラーバリエーション用の変数定義 */
+:root {
+    --cyber-blue: #00ffff;
+    --cyber-orange: #ff8c00;
+    --cyber-yellow: #ffd700;
+    --cyber-green: #00ff9f;
+    --cyber-red: #ff2d55;
+    --cyber-purple: #bf5fff;
+}
+
+/* タブのネオンバリエーション */
+.nav-link.text-neon:nth-child(1) {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-orange), 0 0 10px var(--cyber-orange);
+}
+
+.nav-link.text-neon:nth-child(2) {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green), 0 0 10px var(--cyber-green);
+}
+
+.nav-link.text-neon:nth-child(3) {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple), 0 0 10px var(--cyber-purple);
+}
+
+/* 必須マーク */
+.text-danger {
+    color: var(--cyber-red) !important;
+    text-shadow: 0 0 5px var(--cyber-red);
+}
+
+/* チェックボックスとラジオの色分け */
+.form-check:nth-child(3n+1) .form-check-input:checked {
+    background-color: var(--cyber-green);
+    border-color: var(--cyber-green);
+    box-shadow: 0 0 10px var(--cyber-green);
+}
+
+.form-check:nth-child(3n+2) .form-check-input:checked {
+    background-color: var(--cyber-purple);
+    border-color: var(--cyber-purple);
+    box-shadow: 0 0 10px var(--cyber-purple);
+}
+
+.form-check:nth-child(3n+3) .form-check-input:checked {
+    background-color: var(--cyber-orange);
+    border-color: var(--cyber-orange);
+    box-shadow: 0 0 10px var(--cyber-orange);
+}
+
+/* ボタンのバリエーション */
+.btn-cyber-success {
+    background: linear-gradient(45deg, #00ff9f, #00ff66);
+    box-shadow: 0 0 15px rgba(0,255,159,0.3);
+}
+
+.btn-cyber-danger {
+    background: linear-gradient(45deg, #ff2d55, #ff0044);
+    box-shadow: 0 0 15px rgba(255,45,85,0.3);
+}
+
+.btn-cyber-purple {
+    background: linear-gradient(45deg, #bf5fff, #9932cc);
+    box-shadow: 0 0 15px rgba(191,95,255,0.3);
+}
+
+/* バリデーションエラー時の赤色ネオン */
+.form-control.is-invalid {
+    border-color: var(--cyber-red);
+    box-shadow: 0 0 10px var(--cyber-red);
+}
+
+/* 成功時の緑色ネオン */
+.form-control.is-valid {
+    border-color: var(--cyber-green);
+    box-shadow: 0 0 10px var(--cyber-green);
+}
+
+/* アラートメッセージ */
+.alert-cyber-success {
+    background: rgba(0,255,159,0.1);
+    border: 1px solid var(--cyber-green);
+    color: var(--cyber-green);
+    text-shadow: 0 0 5px rgba(0,255,159,0.5);
+}
+
+.alert-cyber-danger {
+    background: rgba(255,45,85,0.1);
+    border: 1px solid var(--cyber-red);
+    color: var(--cyber-red);
+    text-shadow: 0 0 5px rgba(255,45,85,0.5);
+}
+
+/* ホバーエフェクトの強化 */
+.btn-cyber:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.2);
+}
+
+/* アクティブなタブのバリエーション */
+.nav-link.active:nth-child(1) {
+    background-color: rgba(255,215,0,0.2) !important;
+    box-shadow: 0 0 15px rgba(255,215,0,0.3);
+}
+
+.nav-link.active:nth-child(2) {
+    background-color: rgba(0,255,159,0.2) !important;
+    box-shadow: 0 0 15px rgba(0,255,159,0.3);
+}
+
+.nav-link.active:nth-child(3) {
+    background-color: rgba(191,95,255,0.2) !important;
+    box-shadow: 0 0 15px rgba(191,95,255,0.3);
+}
+</style>
+
 <script>
 // スクロールでタブを隠す処理
 let lastScrollTop = 0;
 let isScrollingUp = false;
-const tabNav = document.querySelector('.bg-white.shadow-sm');
+const tabNav = document.querySelector('.bg-dark.bg-opacity-75');
 
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
@@ -111,8 +403,5 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         this.classList.add('active');
     });
 });
-
-// 最初のタブをアクティブに
-document.querySelector('.nav-link').classList.add('active');
 </script>
 {% endblock %} 
