@@ -22,4 +22,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),  # accountsアプリのURL
     path('accounts/', include('django.contrib.auth.urls')),  # Django認証システムのURL
     path('', include('home.urls')),  # ここを確認
+    path('apps/', include('apps_gallery.urls', namespace='apps')),  # これだけ残す
 ]

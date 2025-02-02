@@ -1,0 +1,104 @@
+<div class="container">
+    <div class="card border-0">
+        <div class="card-body">
+            <h2 class="card-title h3 mb-4">
+                <i class="bi bi-info-circle-fill text-primary"></i> 基本情報
+            </h2>
+            
+            <!-- アプリ名 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold" for="title">
+                    アプリ名 <span class="text-danger">*</span>
+                </label>
+                <input type="text" 
+                       id="title" 
+                       name="title" 
+                       class="form-control form-control-lg"
+                       required>
+                <div class="invalid-feedback">アプリ名を入力してください</div>
+            </div>
+
+            <!-- アプリの種類 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">アプリの種類</label>
+                <div class="row g-3">
+                    {% for key, value in app_types.items %}
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input type="checkbox" 
+                                   id="type_{{ key }}" 
+                                   name="types" 
+                                   value="{{ key }}"
+                                   class="form-check-input">
+                            <label class="form-check-label" for="type_{{ key }}">
+                                {{ value }}
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ジャンル -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">ジャンル</label>
+                <div class="row g-3">
+                    {% for key, value in genres.items %}
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input type="checkbox" 
+                                   id="genre_{{ key }}" 
+                                   name="genres" 
+                                   value="{{ key }}"
+                                   class="form-check-input">
+                            <label class="form-check-label" for="genre_{{ key }}">
+                                {{ value }}
+                            </label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- 開発状況 -->
+            <div class="mb-4">
+                <label class="form-label fw-bold">開発状況</label>
+                <select name="status" class="form-select">
+                    {% for key, value in app_status.items %}
+                        <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- デモURL -->
+            <div class="mb-4">
+                <label class="form-label fw-bold" for="demo_url">デモURL</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-link-45deg"></i>
+                    </span>
+                    <input type="url" 
+                           id="demo_url" 
+                           name="demo_url" 
+                           class="form-control"
+                           placeholder="https://example.com">
+                </div>
+            </div>
+
+            <!-- GitHubリポジトリURL -->
+            <div class="mb-4">
+                <label class="form-label fw-bold" for="github_url">GitHubリポジトリURL</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-github"></i>
+                    </span>
+                    <input type="url" 
+                           id="github_url" 
+                           name="github_url" 
+                           class="form-control"
+                           placeholder="https://github.com/username/repository">
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

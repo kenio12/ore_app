@@ -1,0 +1,100 @@
+<div class="container">
+    <div class="card border-0">
+        <div class="card-body">
+            <h2 class="card-title h3 mb-4">
+                <i class="bi bi-image-fill text-success"></i> スクリーンショット
+            </h2>
+            
+            <!-- アップロードエリア -->
+            <div class="mb-4">
+                <div class="border border-2 border-dashed rounded-3 p-5 text-center bg-light" id="dropzone">
+                    <input type="file" 
+                           id="screenshot-upload" 
+                           class="d-none" 
+                           accept="image/*" 
+                           multiple>
+                    <div class="text-muted">
+                        <i class="bi bi-cloud-arrow-up display-4"></i>
+                        <p class="h5 mt-3">ドラッグ&ドロップ</p>
+                        <p class="mb-3">または</p>
+                        <label for="screenshot-upload" 
+                               class="btn btn-primary">
+                            <i class="bi bi-folder"></i> ファイルを選択
+                        </label>
+                        <p class="small mt-3 text-muted">※ 最大3枚まで登録できます</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- プレビューエリア -->
+            <div class="row g-4" id="preview-area">
+                <!-- プレビュー画像がここに表示される -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('screenshot-upload');
+    const previewArea = document.getElementById('preview-area');
+
+    // ドラッグ&ドロップの処理
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('border-primary');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('border-primary');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('border-primary');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+
+    function handleFiles(files) {
+        if (document.querySelectorAll('.preview-image').length + files.length > 3) {
+            alert('スクリーンショットは最大3枚までです！');
+            return;
+        }
+
+        Array.from(files).forEach((file, index) => {
+            if (!file.type.startsWith('image/')) {
+                alert('画像ファイルのみアップロード可能です');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const previewContainer = document.createElement('div');
+                previewContainer.className = 'col-md-4 preview-image';
+                
+                previewContainer.innerHTML = `
+                    <div class="card h-100">
+                        <img src="${e.target.result}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 rounded-circle" style="width: 32px; height: 32px;">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                `;
+
+                previewArea.appendChild(previewContainer);
+
+                // 削除ボタンの処理
+                previewContainer.querySelector('button').addEventListener('click', () => {
+                    previewContainer.remove();
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+});
+</script> 

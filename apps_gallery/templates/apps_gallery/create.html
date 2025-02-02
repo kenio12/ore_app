@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- タブナビゲーション（スクロールで隠れる） -->
+    <div class="bg-white shadow-sm mb-4 position-sticky top-0" style="transition: transform 0.3s ease-in-out; z-index: 1000;">
+        <div class="container py-3">
+            <nav class="nav nav-pills nav-fill">
+                {% for key, tab in tabs.items %}
+                <a class="nav-link" href="#{{ key }}">
+                    <i class="bi {{ tab.icon }}"></i> {{ tab.label }}
+                </a>
+                {% endfor %}
+            </nav>
+        </div>
+    </div>
+
+    <!-- フォームコンテンツ -->
+    <form method="POST" action="{% url 'apps:create' %}" class="needs-validation" novalidate>
+        {% csrf_token %}
+        
+        <!-- 各セクション -->
+        <div class="row g-4">
+            <div class="col-12">
+                <!-- 基本情報セクション -->
+                <section id="basic" class="scroll-margin-top">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            {% include 'apps_gallery/tabs/_01_basic_tab.html' %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-12">
+                <!-- スクリーンショットセクション -->
+                <section id="screenshots" class="scroll-margin-top">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            {% include 'apps_gallery/tabs/_02_screenshots_tab.html' %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-12">
+                <!-- 開発ストーリーセクション -->
+                <section id="story" class="scroll-margin-top">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            {% include 'apps_gallery/tabs/_03_story_tab.html' %}
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- 送信ボタン -->
+        <div class="position-fixed bottom-0 end-0 p-4">
+            <button type="submit" class="btn btn-primary btn-lg shadow-lg">
+                <i class="bi bi-save"></i> 保存する
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+// スクロールでタブを隠す処理
+let lastScrollTop = 0;
+let isScrollingUp = false;
+const tabNav = document.querySelector('.bg-white.shadow-sm');
+
+window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (currentScroll > lastScrollTop) {
+        // 下スクロール
+        tabNav.style.transform = 'translateY(-100%)';
+        isScrollingUp = false;
+    } else {
+        // 上スクロール
+        tabNav.style.transform = 'translateY(0)';
+        isScrollingUp = true;
+    }
+    
+    // スクロールが一番上まで戻ったら
+    if (currentScroll === 0) {
+        tabNav.style.transform = 'translateY(0)';
+    }
+    
+    lastScrollTop = currentScroll;
+});
+
+// タブのクリックイベント
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetElement = document.querySelector(this.getAttribute('href'));
+        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+        const offset = 70; // タブの高さ分を調整
+
+        window.scrollTo({
+            top: targetPosition - offset,
+            behavior: 'smooth'
+        });
+        
+        // アクティブなタブを更新
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+        this.classList.add('active');
+    });
+});
+
+// 最初のタブをアクティブに
+document.querySelector('.nav-link').classList.add('active');
+</script>
+{% endblock %} 
