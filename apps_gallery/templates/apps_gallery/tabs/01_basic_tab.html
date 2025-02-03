@@ -15,24 +15,27 @@
                 <input type="text" 
                        id="title" 
                        name="title" 
-                       class="form-control form-control-lg cyber-yellow-focus text-cyber-yellow"
-                       value="{{ app.title|default:'' }}"
-                       {% if readonly %}disabled{% endif %}>
+                       class="form-control cyber-yellow-focus" 
+                       value="{{ app.title }}"
+                       {% if readonly %}readonly{% endif %}>
             </div>
 
             <!-- アプリの種類（チェックボックス） -->
             <div class="mb-3">
                 <label class="form-label text-cyber-yellow">アプリの種類</label>
                 <div class="d-flex flex-wrap gap-3">
-                    {% for type_key, type_name in app_types.items %}
+                    {% for type_key, type_name in APP_TYPES.items %}
                     <div class="form-check">
                         <input type="checkbox" 
                                name="types" 
                                value="{{ type_key }}" 
                                class="form-check-input cyber-yellow-check" 
                                id="type_{{ type_key }}"
-                               {% if type_key in app.app_types %}checked{% endif %}>
-                        <label class="form-check-label text-cyber-yellow" for="type_{{ type_key }}">{{ type_name }}</label>
+                               {% if type_key in app.app_types %}checked{% endif %}
+                               {% if readonly %}disabled{% endif %}>
+                        <label class="form-check-label text-cyber-yellow" for="type_{{ type_key }}">
+                            {{ type_name }}
+                        </label>
                     </div>
                     {% endfor %}
                 </div>
@@ -42,15 +45,18 @@
             <div class="mb-3">
                 <label class="form-label text-cyber-yellow">ジャンル</label>
                 <div class="d-flex flex-wrap gap-3">
-                    {% for genre_key, genre_name in genres.items %}
+                    {% for genre_key, genre_name in GENRES.items %}
                     <div class="form-check">
                         <input type="checkbox" 
                                name="genres" 
                                value="{{ genre_key }}" 
                                class="form-check-input cyber-yellow-check" 
                                id="genre_{{ genre_key }}"
-                               {% if genre_key in app.genres %}checked{% endif %}>
-                        <label class="form-check-label text-cyber-yellow" for="genre_{{ genre_key }}">{{ genre_name }}</label>
+                               {% if genre_key in app.genres %}checked{% endif %}
+                               {% if readonly %}disabled{% endif %}>
+                        <label class="form-check-label text-cyber-yellow" for="genre_{{ genre_key }}">
+                            {{ genre_name }}
+                        </label>
                     </div>
                     {% endfor %}
                 </div>
@@ -58,10 +64,23 @@
 
             <!-- 開発状況（ドロップダウン） -->
             <div class="mb-3">
-                <label for="status" class="form-label text-cyber-yellow">開発状況</label>
+                <label for="dev_status" class="form-label text-cyber-yellow">開発状況</label>
+                <select name="dev_status" id="dev_status" class="form-select cyber-yellow-focus text-cyber-yellow" {% if readonly %}disabled{% endif %}>
+                    <option value="" class="text-cyber-yellow">選択してください</option>
+                    {% for status_key, status_name in APP_STATUS.items %}
+                    <option value="{{ status_key }}" class="text-cyber-yellow" {% if app.dev_status == status_key %}selected{% endif %}>
+                        {{ status_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- 公開状態（ドロップダウン） -->
+            <div class="mb-3">
+                <label for="status" class="form-label text-cyber-yellow">公開状態</label>
                 <select name="status" id="status" class="form-select cyber-yellow-focus text-cyber-yellow" {% if readonly %}disabled{% endif %}>
                     <option value="" class="text-cyber-yellow">選択してください</option>
-                    {% for status_key, status_name in app_status.items %}
+                    {% for status_key, status_name in PUBLISH_STATUS.items %}
                     <option value="{{ status_key }}" class="text-cyber-yellow" {% if app.status == status_key %}selected{% endif %}>
                         {{ status_name }}
                     </option>
@@ -69,26 +88,55 @@
                 </select>
             </div>
 
-            <!-- アプリのURL（読み取り専用） -->
+            <!-- 作者名（表示のみ） -->
             <div class="mb-3">
-                <label for="app_url" class="form-label text-cyber-yellow">アプリのURL</label>
+                <label class="form-label text-cyber-yellow">作者</label>
+                <input type="text" 
+                       class="form-control cyber-yellow-focus" 
+                       value="{{ app.author.username }}"
+                       readonly>
+            </div>
+
+            <!-- アプリのURL -->
+            <div class="mb-3">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <label for="app_url" class="form-label text-cyber-yellow mb-0">アプリのURL</label>
+                    {% if app.app_url %}
+                    <a href="{{ app.app_url }}" 
+                       target="_blank" 
+                       class="btn btn-outline-warning btn-sm">
+                        <i class="bi bi-person-walking"></i>
+                        <i class="bi bi-box-arrow-up-right"></i> 見に行く！
+                    </a>
+                    {% endif %}
+                </div>
                 <input type="url" 
                        name="app_url" 
                        id="app_url" 
                        class="form-control cyber-yellow-focus" 
                        value="{{ app.app_url }}"
-                       readonly>
+                       {% if readonly %}readonly{% endif %}>
             </div>
 
-            <!-- GitHubリポジトリURL（読み取り専用） -->
+            <!-- GitHubリポジトリURL -->
             <div class="mb-3">
-                <label for="github_url" class="form-label text-cyber-yellow">GitHubリポジトリURL</label>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <label for="github_url" class="form-label text-cyber-yellow mb-0">GitHubリポジトリURL</label>
+                    {% if app.github_url %}
+                    <a href="{{ app.github_url }}" 
+                       target="_blank" 
+                       class="btn btn-outline-warning btn-sm">
+                        <i class="bi bi-person-walking"></i>
+                        <i class="bi bi-box-arrow-up-right"></i> 見に行く！
+                    </a>
+                    {% endif %}
+                </div>
                 <input type="url" 
                        name="github_url" 
                        id="github_url" 
                        class="form-control cyber-yellow-focus" 
                        value="{{ app.github_url }}"
-                       readonly>
+                       {% if readonly %}readonly{% endif %}>
             </div>
         </div>
     </div>
@@ -101,37 +149,91 @@
     text-shadow: 0 0 5px var(--cyber-yellow);
 }
 
-/* チェックボックスの黄色スタイル */
-.cyber-yellow-check {
-    background-color: var(--bs-dark) !important;  /* 未チェック時の背景色を暗めに */
-    border-color: var(--cyber-yellow) !important;
+/* フォーム要素の共通スタイル */
+#basic .form-control,
+#basic .form-select {
+    background-color: var(--bs-dark) !important;
+    border: 1px solid var(--cyber-yellow) !important;
+    color: var(--cyber-yellow) !important;
 }
 
-.cyber-yellow-check:checked {
-    background-color: var(--cyber-yellow) !important;
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 5px var(--cyber-yellow);
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
-}
-
-.cyber-yellow-check:focus {
-    border-color: var(--cyber-yellow);
-    box-shadow: 0 0 5px var(--cyber-yellow);
-}
-
-/* フォーム要素の黄色フォーカス */
-.cyber-yellow-focus:focus {
+/* フォーム要素のホバー時 */
+#basic .form-control:hover,
+#basic .form-select:hover {
     border-color: var(--cyber-yellow) !important;
     box-shadow: 0 0 5px var(--cyber-yellow) !important;
 }
 
-/* セレクトボックスの背景色を暗めに */
-.form-select {
-    background-color: var(--bs-dark) !important;
+/* フォーム要素のフォーカス時 */
+#basic .form-control:focus,
+#basic .form-select:focus {
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 10px var(--cyber-yellow) !important;
 }
 
-/* フォーム要素の背景を暗めに */
-.form-control {
+/* チェックボックスのスタイル */
+.cyber-yellow-check {
     background-color: var(--bs-dark) !important;
+    border-color: var(--cyber-yellow) !important;
+}
+
+/* チェックボックスがチェックされた時（通常時） */
+.cyber-yellow-check:checked {
+    background-color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 5px var(--cyber-yellow);
+    opacity: 1 !important;  /* 追加：不透明度を最大に */
+}
+
+/* 詳細画面（disabled）でチェックされた時のスタイル */
+.cyber-yellow-check:disabled:checked {
+    background-color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 5px var(--cyber-yellow);
+    opacity: 1 !important;  /* 追加：不透明度を最大に */
+}
+
+/* 詳細画面でチェックされた項目のラベル */
+.form-check-input:disabled:checked + .form-check-label {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 10px var(--cyber-yellow);
+    font-weight: bold;
+    opacity: 1 !important;  /* 追加：不透明度を最大に */
+}
+
+/* 詳細画面でチェックされていない項目のラベル */
+.form-check-input:disabled:not(:checked) + .form-check-label {
+    opacity: 0.5;
+}
+
+/* 読み取り専用フィールドのスタイル */
+.form-control:read-only,
+.form-select:disabled {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    border-color: var(--cyber-yellow) !important;
+    opacity: 0.8;
+}
+
+/* ドロップダウンのスタイル改善 */
+#basic .form-select {
+    background-color: var(--bs-dark) !important;
+    border: 1px solid var(--cyber-yellow) !important;
+    color: var(--cyber-yellow) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffd700' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+
+/* ドロップダウンの選択肢のスタイル */
+#basic .form-select option {
+    background-color: var(--bs-dark) !important;
+    color: var(--cyber-yellow) !important;
+}
+
+/* ドロップダウンの選択肢のホバー時 */
+#basic .form-select option:hover,
+#basic .form-select option:focus,
+#basic .form-select option:active,
+#basic .form-select option:checked {
+    background-color: rgba(255, 215, 0, 0.2) !important;
+    color: var(--cyber-yellow) !important;
 }
 </style> 

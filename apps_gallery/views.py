@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from .models import AppGallery
 from .constants import *  # 全ての定数をインポート
 
@@ -8,16 +10,29 @@ from .constants import *  # 全ての定数をインポート
 def create_view(request):
     return handle_app_form(request)  # handle_app_formを使用
 
+@login_required
 def edit_app(request, pk):
+    """アプリの編集ビュー"""
     app = get_object_or_404(AppGallery, pk=pk)
-    return handle_app_form(request, app)  # handle_app_formを使用
+    
+    # 作者でない場合は403エラー
+    if app.author != request.user:
+        raise PermissionDenied("このアプリを編集する権限がありません。")
+    
+    return handle_app_form(request, app)
 
+@login_required
 def handle_app_form(request, app=None):
     """アプリの作成・編集を処理する共通関数"""
+    # 編集時は作者チェック
+    if app and app.author != request.user:
+        raise PermissionDenied("このアプリを編集する権限がありません。")
+
     if request.method == 'POST':
         # 新規作成か更新かを判断
         if app is None:
             app = AppGallery()
+            app.author = request.user  # 新規作成時に作者を設定
         
         # POSTデータを処理
         app.title = request.POST.get('title')
@@ -46,9 +61,10 @@ def handle_app_form(request, app=None):
         'app': app,  # 新規作成の場合はNone
         'APP_TYPES': dict(APP_TYPES),
         'APP_STATUS': dict(APP_STATUS),
-        'PUBLISH_STATUS': dict(PUBLISH_STATUS),  # 追加
+        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
         'GENRES': dict(GENRES),
         'is_edit': app is not None,
+        'readonly': False,  # 編集画面では常にFalse
     }
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
@@ -57,13 +73,14 @@ def app_list(request):
     return render(request, 'apps_gallery/list.html')
 
 def app_detail(request, pk):
+    """アプリの詳細ビュー"""
     app = get_object_or_404(AppGallery, pk=pk)
     context = {
         'app': app,
         'readonly': True,
         'APP_TYPES': dict(APP_TYPES),
         'APP_STATUS': dict(APP_STATUS),
-        'PUBLISH_STATUS': dict(PUBLISH_STATUS),  # 追加
+        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
         'GENRES': dict(GENRES),
     }
     return render(request, 'apps_gallery/create_edit_detail.html', context)

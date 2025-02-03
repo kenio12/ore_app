@@ -37,37 +37,12 @@
                 新しいアプリを登録
             {% endif %}
         </h2>
-        
-        <!-- アクションボタン -->
-        <div class="btn-group">
-            {% if app %}
-                {% if readonly %}
-                    <a href="{% url 'apps_gallery:edit' app.pk %}" class="btn btn-cyber">
-                        <i class="bi bi-pencil-square"></i> 編集する
-                    </a>
-                {% else %}
-                    <button type="submit" class="btn btn-cyber">
-                        <i class="bi bi-save"></i> 保存
-                    </button>
-                    <a href="{% url 'apps_gallery:detail' app.pk %}" class="btn btn-cyber-danger">
-                        <i class="bi bi-x-circle"></i> キャンセル
-                    </a>
-                {% endif %}
-            {% else %}
-                <button type="submit" class="btn btn-cyber">
-                    <i class="bi bi-plus-circle"></i> 登録する
-                </button>
-                <a href="{% url 'apps_gallery:list' %}" class="btn btn-cyber-danger">
-                    <i class="bi bi-x-circle"></i> キャンセル
-                </a>
-            {% endif %}
-        </div>
     </div>
 
-    <!-- フォーム開始（新規作成と編集時のみ） -->
+    <!-- フォーム開始（編集モードの時のみ） -->
     {% if not readonly %}
-    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
-        {% csrf_token %}
+        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            {% csrf_token %}
     {% endif %}
 
     <!-- 各セクション -->
@@ -75,40 +50,51 @@
         <div class="col-12">
             <!-- 基本情報セクション -->
             <section id="basic" class="scroll-margin-top">
-                <div class="card border-0 shadow-lg bg-dark bg-opacity-75 text-light" style="backdrop-filter: blur(10px);">
-                    <div class="card-body p-4">
-                        {% include 'apps_gallery/tabs/01_basic_tab.html' %}
-                    </div>
-                </div>
+                {% include 'apps_gallery/tabs/01_basic_tab.html' %}
             </section>
         </div>
 
         <div class="col-12">
             <!-- アプリの魅力セクション -->
             <section id="appeal" class="scroll-margin-top">
-                <div class="card border-0 shadow-lg bg-dark bg-opacity-75 text-light" style="backdrop-filter: blur(10px);">
-                    <div class="card-body p-4">
-                        {% include 'apps_gallery/tabs/02_appeal_tab.html' %}
-                    </div>
-                </div>
+                {% include 'apps_gallery/tabs/02_appeal_tab.html' %}
             </section>
         </div>
 
         <div class="col-12">
             <!-- スクリーンショットセクション -->
             <section id="screenshots" class="scroll-margin-top">
-                <div class="card border-0 shadow-lg bg-dark bg-opacity-75 text-light" style="backdrop-filter: blur(10px);">
-                    <div class="card-body p-4">
-                        {% include 'apps_gallery/tabs/03_screenshots_tab.html' %}
-                    </div>
-                </div>
+                {% include 'apps_gallery/tabs/03_screenshots_tab.html' %}
             </section>
         </div>
     </div>
 
-    <!-- フォーム終了 -->
-    {% if not readonly %}
-    </form>
+    <!-- ステータスインジケーター（左下に固定） -->
+    <div class="position-fixed bottom-0 start-0 p-4" style="z-index: 1000;">
+        {% if app.author == request.user %}
+        <div class="cyber-status-indicator">
+            {% if not readonly %}
+                <a href="{% url 'apps_gallery:detail' app.pk %}" id="status-link" class="status-badge editing-link">
+                    <i class="bi bi-pencil-square"></i> 編集 <i class="bi bi-arrow-right-short"></i> 詳細 <i class="bi bi-eye-fill"></i>
+                </a>
+            {% else %}
+                <a href="{% url 'apps_gallery:edit' app.pk %}" id="status-link" class="status-badge viewing-link">
+                    <i class="bi bi-eye-fill"></i> 詳細 <i class="bi bi-arrow-right-short"></i> 編集 <i class="bi bi-pencil-square"></i>
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 編集モードかつ作者の場合のみ保存ボタンを表示 -->
+    {% if not readonly and app.author == request.user %}
+        <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000;">
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-cyber-success">
+                    <i class="bi bi-save"></i> 上書き保存
+                </button>
+            </div>
+        </div>
     {% endif %}
 </div>
 
@@ -119,10 +105,26 @@
     background: linear-gradient(45deg, #001e54, #0066cc);
 }
 
+/* 編集モード時の背景色を変更 */
+{% if not readonly %}
+.cyber-background {
+    background: linear-gradient(45deg, #003322, #006644);
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,100,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,100,0.2) 1px, transparent 1px);
+}
+{% else %}
 .cyber-grid {
     background-image: 
         linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
         linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+}
+{% endif %}
+
+.cyber-grid {
     background-size: 20px 20px;
     width: 100%;
     height: 100%;
@@ -155,7 +157,6 @@
 .form-select {
     background-color: rgba(0, 20, 50, 0.5) !important;
     border: 1px solid rgba(0, 255, 255, 0.3);
-    color: #fff !important;  /* テキストを白に */
 }
 
 .form-control:focus,
@@ -163,7 +164,6 @@
     background-color: rgba(0, 30, 70, 0.7);
     border-color: #0ff;
     box-shadow: 0 0 15px rgba(0,255,255,0.4);
-    color: #fff !important;
 }
 
 /* 読み取り専用・無効化状態のスタイル */
@@ -173,7 +173,6 @@
 .form-select:disabled {
     background-color: rgba(0, 20, 50, 0.5) !important;
     border: 1px solid rgba(0, 255, 255, 0.3);
-    color: #fff !important;
     opacity: 1;
 }
 
@@ -313,6 +312,132 @@
 /* 未チェック時のボーダーも黄色に */
 .form-check-input {
     border-color: var(--cyber-yellow);
+}
+
+/* 保存ボタンのスタイル */
+.btn-cyber-success {
+    background: linear-gradient(45deg, #00aa44, #00ff66);
+    color: #000;
+    border: 1px solid rgba(0, 255, 100, 0.5);
+    text-shadow: 0 0 5px rgba(0, 255, 100, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-success:hover {
+    background: linear-gradient(45deg, #00cc55, #00ff77);
+    box-shadow: 0 0 15px rgba(0, 255, 100, 0.5);
+    transform: translateY(-2px);
+}
+
+/* キャンセルボタンのスタイル */
+.btn-cyber-danger {
+    background: linear-gradient(45deg, #aa0000, #ff0000);
+    color: #fff;
+    border: 1px solid rgba(255, 0, 0, 0.5);
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-danger:hover {
+    background: linear-gradient(45deg, #cc0000, #ff2222);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+/* スタイルセクションに追加 */
+.btn-cyber-secondary {
+    background: linear-gradient(45deg, #2a2a2a, #4a4a4a);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-secondary:hover {
+    background: linear-gradient(45deg, #3a3a3a, #5a5a5a);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* ステータスインジケーターのスタイル */
+.cyber-status-indicator {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.status-badge, .status-badge:hover, .status-badge:focus, .status-badge:active {
+    text-decoration: none !important;
+    border: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    outline: none !important;
+}
+
+.editing-link, .viewing-link {
+    border: none !important;
+    background: none !important;
+}
+
+.status-badge.editing {
+    color: var(--cyber-orange);
+    text-shadow: 0 0 5px var(--cyber-orange);
+    animation: pulse 2s infinite;
+}
+
+.status-badge.viewing {
+    color: var(--cyber-blue);
+    text-shadow: 0 0 5px var(--cyber-blue);
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* スタイルセクションの修正 */
+.status-badge.viewing-link {
+    color: var(--cyber-blue);
+    text-shadow: 0 0 5px var(--cyber-blue);
+    border: 1px solid var(--cyber-blue);
+}
+
+.status-badge.viewing-link:hover {
+    background: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.status-badge.editing-link {
+    color: #00ff9f;
+    text-shadow: 0 0 5px #00ff9f;
+    border: 1px solid #00ff9f;
+}
+
+.status-badge.editing-link:hover {
+    background: rgba(0, 255, 159, 0.2);
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+#status-link {
+    text-decoration: none !important;
+    border: none;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    transform: none;
+    outline: none;
+}
+
+#status-link:hover {
+    text-decoration: none !important;
 }
 </style>
 

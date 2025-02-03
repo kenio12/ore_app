@@ -14,7 +14,7 @@
                          name="overview"
                          class="form-control cyber-green-focus"
                          rows="8"
-                         {% if readonly %}disabled{% endif %}>{{ app.overview|default:'' }}</textarea>
+                         {% if readonly %}readonly{% endif %}>{{ app.overview|default:'' }}</textarea>
                 <div class="form-text text-cyber-green">
                     <i class="bi bi-info-circle"></i>
                     アプリの主な機能や特徴を簡潔に説明してください
