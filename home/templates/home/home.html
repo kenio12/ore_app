@@ -48,19 +48,18 @@
                             <h3 class="card-title cyber-title">{{ app.title }}</h3>
                             <p class="card-text cyber-description">{{ app.overview }}</p>
                             
-                            <!-- 開発状況 -->
-                            <div class="mb-3">
-                                <span class="badge cyber-badge">{{ app.status }}</span>
-                            </div>
-                            
                             <!-- アプリの種類とジャンル -->
                             <div class="mb-3">
-                                {% for type in app.app_types %}
-                                    <span class="badge cyber-tag me-2">{{ APP_TYPES|get_dict_value:type }}</span>
-                                {% endfor %}
-                                {% for genre in app.genres %}
-                                    <span class="badge cyber-tag me-2">{{ GENRES|get_dict_value:genre }}</span>
-                                {% endfor %}
+                                <div class="mb-2">
+                                    {% for type in app.app_types %}
+                                        <span class="badge cyber-type me-2">{{ APP_TYPES|get_dict_value:type }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div>
+                                    {% for genre in app.genres %}
+                                        <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
+                                    {% endfor %}
+                                </div>
                             </div>
                             
                             <!-- アクションボタン -->
@@ -213,6 +212,32 @@
     0% { opacity: 0.5; }
     50% { opacity: 0.8; }
     100% { opacity: 0.5; }
+}
+
+/* ステータスバッジ */
+.cyber-status {
+    background: rgba(0, 255, 255, 0.2);
+    color: #0ff;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
+}
+
+/* アプリタイプバッジ */
+.cyber-type {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* ジャンルバッジ */
+.cyber-genre {
+    background: rgba(255, 0, 255, 0.2);
+    color: #ff00ff;
+    border: 1px solid rgba(255, 0, 255, 0.5);
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
 }
 </style>
 {% endblock %} 

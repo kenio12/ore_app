@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import AppGallery
-from .constants import *
-from .constants.app_info import APP_TYPES, APP_STATUS, GENRES  # 定数をインポート
+from .constants import *  # 全ての定数をインポート
 
 # Create your views here.
 
@@ -25,7 +24,8 @@ def handle_app_form(request, app=None):
         app.app_types = request.POST.getlist('types')
         app.genres = request.POST.getlist('genres')
         app.other_genre = request.POST.get('other_genre', '')
-        app.status = request.POST.get('status')
+        app.dev_status = request.POST.get('dev_status')  # 開発状況
+        app.status = request.POST.get('status')  # 公開状態
         app.app_url = request.POST.get('app_url', '')
         app.github_url = request.POST.get('github_url', '')
         app.overview = request.POST.get('overview', '')
@@ -44,12 +44,13 @@ def handle_app_form(request, app=None):
     # GETの場合はフォームを表示
     context = {
         'app': app,  # 新規作成の場合はNone
-        'app_types': APP_TYPES,
-        'app_status': APP_STATUS,
-        'genres': GENRES,
-        'is_edit': app is not None,  # 編集モードかどうか
+        'APP_TYPES': dict(APP_TYPES),
+        'APP_STATUS': dict(APP_STATUS),
+        'PUBLISH_STATUS': dict(PUBLISH_STATUS),  # 追加
+        'GENRES': dict(GENRES),
+        'is_edit': app is not None,
     }
-    return render(request, 'apps_gallery/create_edit_detail.html', context)  # create_edit_detail.htmlを共通テンプレートとして使用
+    return render(request, 'apps_gallery/create_edit_detail.html', context)
 
 def app_list(request):
     # とりあえず仮の実装
@@ -60,9 +61,10 @@ def app_detail(request, pk):
     context = {
         'app': app,
         'readonly': True,
-        'APP_TYPES': APP_TYPES,
-        'APP_STATUS': APP_STATUS,
-        'GENRES': GENRES,
+        'APP_TYPES': dict(APP_TYPES),
+        'APP_STATUS': dict(APP_STATUS),
+        'PUBLISH_STATUS': dict(PUBLISH_STATUS),  # 追加
+        'GENRES': dict(GENRES),
     }
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 

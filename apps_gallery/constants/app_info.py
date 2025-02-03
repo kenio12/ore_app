@@ -13,9 +13,14 @@ APP_TYPES = {
     'other': 'その他'
 }
 
+# 開発状況
 APP_STATUS = {
-    'completed': '完成',
-    'in_development': '開発中',
+    'completed': '完成品',
+    'in_development': '開発中'
+}
+
+# 公開状態
+PUBLISH_STATUS = {
     'draft': '非公開',
     'public': '公開'
 }

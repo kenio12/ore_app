@@ -1,29 +1,35 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
-from .constants.app_info import APP_DEFAULTS, APP_TYPES, APP_STATUS, GENRES, MODEL_FIELDS  # 明示的にインポート
-from .constants.architecture import *  # アーキテクチャ関連の定数
+from django.conf import settings
+from .constants import *  # 全ての定数をインポート
 
 class AppGallery(models.Model):
     """アプリギャラリーモデル"""
     
+    # 作者（ユーザー）との関連付け
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name='作者',
+        related_name='apps'
+    )
+    
     # ==================== 基本情報タブ ====================
-    # アプリ名
     title = models.CharField('アプリ名', max_length=100)
     
-    # アプリの種類（複数選択可能）
     app_types = models.JSONField(
         'アプリの種類',
         default=list,
         help_text=f'選択可能な値: {", ".join(APP_TYPES.keys())}'
     )
     
-    # ジャンル（複数選択可能）
     genres = models.JSONField(
         'ジャンル',
         default=list,
         help_text=f'選択可能な値: {", ".join(GENRES.keys())}'
     )
+    
     other_genre = models.CharField(
         'その他のジャンル',
         max_length=50,
@@ -31,11 +37,19 @@ class AppGallery(models.Model):
     )
     
     # 開発状況
-    status = models.CharField(
+    dev_status = models.CharField(
         '開発状況',
         max_length=20,
         choices=APP_STATUS.items(),
-        default=APP_DEFAULTS['status']  # 定数から初期値を取得
+        default='in_development'
+    )
+    
+    # 公開状態
+    status = models.CharField(
+        '公開状態',
+        max_length=20,
+        choices=PUBLISH_STATUS.items(),
+        default='draft'
     )
     
     # URL情報
