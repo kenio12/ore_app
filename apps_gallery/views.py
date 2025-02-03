@@ -49,6 +49,10 @@ def handle_app_form(request, app=None):
         app.problems = request.POST.get('problems', '')
         app.final_appeal = request.POST.get('final_appeal', '')
         
+        # キャッチコピーの処理を追加
+        catchphrases = request.POST.getlist('catchphrases[]')
+        app.catchphrases = [phrase for phrase in catchphrases if phrase]  # 空でないものだけ保存
+        
         app.save()
         
         # メッセージを設定

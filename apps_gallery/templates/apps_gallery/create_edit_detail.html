@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load app_filters %}
 
 {% block content %}
 <!-- サイバーパンク風の装飾 -->
@@ -86,12 +87,17 @@
         {% endif %}
     </div>
 
-    <!-- 編集モードかつ作者の場合のみ保存ボタンを表示 -->
-    {% if not readonly and app.author == request.user %}
+    <!-- 保存ボタン（新規作成時または編集モードかつ作者の場合のみ表示） -->
+    {% if not readonly and app.author == request.user or app is None %}
         <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000;">
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-cyber-success">
-                    <i class="bi bi-save"></i> 上書き保存
+                    <i class="bi bi-save"></i> 
+                    {% if app %}
+                        保存する
+                    {% else %}
+                        保存する
+                    {% endif %}
                 </button>
             </div>
         </div>
@@ -107,15 +113,28 @@
 
 /* 編集モード時の背景色を変更 */
 {% if not readonly %}
-.cyber-background {
-    background: linear-gradient(45deg, #003322, #006644);
-}
+    {% if app %}
+    .cyber-background {
+        background: linear-gradient(45deg, #003322, #006644);
+    }
 
-.cyber-grid {
-    background-image: 
-        linear-gradient(rgba(0,255,100,0.2) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,100,0.2) 1px, transparent 1px);
-}
+    .cyber-grid {
+        background-image: 
+            linear-gradient(rgba(0,255,100,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,100,0.2) 1px, transparent 1px);
+    }
+    {% else %}
+    /* 新規作成時の背景色 */
+    .cyber-background {
+        background: linear-gradient(45deg, #1a1a3a, #4a1a4a);
+    }
+
+    .cyber-grid {
+        background-image: 
+            linear-gradient(rgba(255,0,255,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    }
+    {% endif %}
 {% else %}
 .cyber-grid {
     background-image: 
@@ -315,19 +334,35 @@
 }
 
 /* 保存ボタンのスタイル */
+{% if app %}
+/* 上書き保存ボタンのスタイル（緑色） */
 .btn-cyber-success {
-    background: linear-gradient(45deg, #00aa44, #00ff66);
+    background: linear-gradient(45deg, #006644, #00cc88);
     color: #000;
-    border: 1px solid rgba(0, 255, 100, 0.5);
-    text-shadow: 0 0 5px rgba(0, 255, 100, 0.3);
-    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 255, 136, 0.5);
+    text-shadow: 0 0 5px rgba(0, 255, 136, 0.3);
 }
 
 .btn-cyber-success:hover {
-    background: linear-gradient(45deg, #00cc55, #00ff77);
-    box-shadow: 0 0 15px rgba(0, 255, 100, 0.5);
+    background: linear-gradient(45deg, #007755, #00dd99);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
     transform: translateY(-2px);
 }
+{% else %}
+/* 新規作成ボタンのスタイル（サイバーパンク風） */
+.btn-cyber-success {
+    background: linear-gradient(45deg, #ff00ff, #00ffff);
+    color: #000;
+    border: 1px solid rgba(255, 0, 255, 0.5);
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
+}
+
+.btn-cyber-success:hover {
+    background: linear-gradient(45deg, #ff22ff, #22ffff);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+    transform: translateY(-2px);
+}
+{% endif %}
 
 /* キャンセルボタンのスタイル */
 .btn-cyber-danger {
@@ -439,34 +474,66 @@
 #status-link:hover {
     text-decoration: none !important;
 }
+
+/* タブナビゲーションのスタイル強化 */
+.bg-dark.bg-opacity-75 {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+/* スクロール時のタブの見た目を改善 */
+.nav-link {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    transform: scaleX(1);
+}
 </style>
 
 <!-- スクリプト部分 -->
 <script>
-// スクロールでタブを隠す処理
+// スクロール処理の改善
 let lastScrollTop = 0;
-let isScrollingUp = false;
 const tabNav = document.querySelector('.bg-dark.bg-opacity-75');
+const scrollThreshold = 10; // スクロールの閾値
 
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
     
-    if (currentScroll > lastScrollTop) {
-        // 下スクロール
-        tabNav.style.transform = 'translateY(-100%)';
-        isScrollingUp = false;
-    } else {
-        // 上スクロール
-        tabNav.style.transform = 'translateY(0)';
-        isScrollingUp = true;
+    // スクロール量が閾値を超えた場合のみ処理
+    if (Math.abs(currentScroll - lastScrollTop) > scrollThreshold) {
+        if (currentScroll > lastScrollTop && currentScroll > 100) {
+            // 下スクロール
+            tabNav.style.transform = 'translateY(-100%)';
+        } else {
+            // 上スクロール
+            tabNav.style.transform = 'translateY(0)';
+        }
+        lastScrollTop = currentScroll;
     }
     
-    // スクロールが一番上まで戻ったら
-    if (currentScroll === 0) {
+    // スクロールが一番上の場合
+    if (currentScroll <= 0) {
         tabNav.style.transform = 'translateY(0)';
+        lastScrollTop = 0;
     }
-    
-    lastScrollTop = currentScroll;
 });
 
 // タブのクリックイベント
