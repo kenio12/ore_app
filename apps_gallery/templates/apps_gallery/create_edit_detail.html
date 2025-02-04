@@ -20,13 +20,13 @@
                 <span class="fs-4 me-2 cyber-emoji">🤖</span>
             </a>
             
-            <a class="nav-link text-neon" href="#basic">
+            <a class="nav-link text-neon" data-bs-target="#basic" href="#basic">
                 <i class="bi bi-info-circle-fill"></i> 基本情報
             </a>
-            <a class="nav-link text-neon" href="#appeal">
+            <a class="nav-link text-neon" data-bs-target="#appeal" href="#appeal">
                 <i class="bi bi-stars"></i> アプリの魅力
             </a>
-            <a class="nav-link text-neon" href="#screenshots">
+            <a class="nav-link text-neon" data-bs-target="#screenshots" href="#screenshots">
                 <i class="bi bi-image-fill"></i> スクリーンショット
             </a>
         </nav>
@@ -54,6 +54,7 @@
     {% if not readonly %}
         <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
             {% csrf_token %}
+            <input type="hidden" name="active_tab" id="active_tab" value="{{ active_tab }}">
     {% endif %}
 
     <!-- 各セクション -->
@@ -265,19 +266,56 @@ html {
 }
 
 /* タブのネオンテキスト */
-.nav-link.text-neon:nth-child(1) {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-orange), 0 0 10px var(--cyber-orange);
+.nav-link.text-neon {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue), 0 0 10px var(--cyber-blue);
 }
 
-.nav-link.text-neon:nth-child(2) {
+/* 基本情報タブ */
+.nav-link[data-bs-target="#basic"] {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow), 0 0 10px var(--cyber-yellow);
+}
+
+/* アプリの魅力タブ */
+.nav-link[data-bs-target="#appeal"] {
     color: var(--cyber-green) !important;
     text-shadow: 0 0 5px var(--cyber-green), 0 0 10px var(--cyber-green);
 }
 
-.nav-link.text-neon:nth-child(3) {
+/* スクリーンショットタブ */
+.nav-link[data-bs-target="#screenshots"] {
     color: var(--cyber-purple) !important;
     text-shadow: 0 0 5px var(--cyber-purple), 0 0 10px var(--cyber-purple);
+}
+
+/* アクティブなタブのスタイル */
+.nav-link.active[data-bs-target="#basic"] {
+    background-color: rgba(255, 215, 0, 0.2) !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.nav-link.active[data-bs-target="#appeal"] {
+    background-color: rgba(0, 255, 159, 0.2) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+.nav-link.active[data-bs-target="#screenshots"] {
+    background-color: rgba(191, 95, 255, 0.2) !important;
+    box-shadow: 0 0 15px rgba(191, 95, 255, 0.3);
+}
+
+/* ホバー時のスタイル */
+.nav-link[data-bs-target="#basic"]:hover {
+    background-color: rgba(255, 215, 0, 0.1) !important;
+}
+
+.nav-link[data-bs-target="#appeal"]:hover {
+    background-color: rgba(0, 255, 159, 0.1) !important;
+}
+
+.nav-link[data-bs-target="#screenshots"]:hover {
+    background-color: rgba(191, 95, 255, 0.1) !important;
 }
 
 /* 各タブの見出しの色を明確に */
@@ -669,6 +707,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+});
+
+// タブ切り替え時にactive_tabの値を更新
+document.querySelectorAll('.nav-link').forEach(tab => {
+    tab.addEventListener('click', function() {
+        document.getElementById('active_tab').value = this.getAttribute('data-bs-target').replace('#', '');
+    });
+});
+
+// ページ読み込み時に指定されたタブを表示
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab) {
+        const tabElement = document.querySelector(`[data-bs-target="#${tab}"]`);
+        if (tabElement) {
+            new bootstrap.Tab(tabElement).show();
+        }
+    }
 });
 </script>
 {% endblock %} 

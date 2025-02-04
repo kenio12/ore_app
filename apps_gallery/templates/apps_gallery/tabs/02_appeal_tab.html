@@ -1,8 +1,10 @@
+{% load app_filters %}
+
 <div class="container">
     <div class="card border-0">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
-                <i class="bi bi-stars text-cyber-yellow"></i> アプリの魅力
+                <i class="bi bi-stars text-cyber-green"></i> アプリの魅力
             </h2>
             
             <!-- アプリの説明 -->
@@ -62,17 +64,17 @@
                 {% else %}
                     <!-- 編集用 -->
                     <div class="catchphrase-container">
-                        {% for phrase in app.catchphrases %}
+                        {% for i in "123"|make_list %}
                             <div class="mb-3">
                                 <div class="input-group">
                                     <span class="input-group-text bg-cyber-green">
                                         <span class="text-cyber-green">{{ forloop.counter }}</span>
                                     </span>
                                     <input type="text" 
-                                           name="catchphrases[]" 
+                                           name="catchphrases" 
                                            class="form-control form-control-lg cyber-green-focus"
                                            placeholder="このアプリの売りを一言で！"
-                                           value="{{ phrase }}">
+                                           value="{{ app.catchphrases|default:""| get_item:forloop.counter0|default:"" }}">
                                 </div>
                                 {% if forloop.first %}
                                     <div class="form-text text-cyber-green">
@@ -82,21 +84,6 @@
                                 {% endif %}
                             </div>
                         {% endfor %}
-                        <!-- 新規入力欄の追加（既存のキャッチコピーが3つ未満の場合） -->
-                        {% if app.catchphrases|length < 3 %}
-                            <div class="mb-3">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-cyber-green">
-                                        <span class="text-cyber-green">{{ app.catchphrases|length|add:1 }}</span>
-                                    </span>
-                                    <input type="text" 
-                                           name="catchphrases[]" 
-                                           class="form-control form-control-lg cyber-green-focus"
-                                           placeholder="このアプリの売りを一言で！"
-                                           value="">
-                                </div>
-                            </div>
-                        {% endif %}
                     </div>
                 {% endif %}
             </div>

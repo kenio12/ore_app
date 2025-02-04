@@ -60,26 +60,29 @@ def handle_app_form(request, app=None, context=None):
         app.problems = request.POST.get('problems', '')
         app.final_appeal = request.POST.get('final_appeal', '')
         
-        # キャッチコピーの処理を追加
-        catchphrases = request.POST.getlist('catchphrases[]')
-        app.catchphrases = [phrase for phrase in catchphrases if phrase]  # 空でないものだけ保存
+        # キャッチコピーの処理を修正
+        catchphrases = request.POST.getlist('catchphrases')
+        # 空でないものだけを保存し、最大3つまでに制限
+        app.catchphrases = [phrase for phrase in catchphrases if phrase.strip()][:3]
         
         app.save()
         
         # メッセージを設定
         action = '更新' if app.pk else '作成'
         messages.success(request, f'アプリを{action}しました！')
-        return redirect('apps_gallery:detail', pk=app.pk)
+        # アンカー付きのURLにリダイレクト
+        return redirect(f'apps_gallery:detail?tab=appeal#{request.POST.get("active_tab", "")}')
 
-    # GETの場合のcontext設定
+    # アクティブなタブ情報をcontextに追加
     context.update({
-        'app': app,  # 新規作成の場合はNone
+        'app': app,
         'APP_TYPES': dict(APP_TYPES),
         'APP_STATUS': dict(APP_STATUS),
         'PUBLISH_STATUS': dict(PUBLISH_STATUS),
         'GENRES': dict(GENRES),
         'is_edit': app is not None,
-        'readonly': False,  # 編集画面では常にFalse
+        'readonly': False,
+        'active_tab': request.GET.get('tab', '')  # URLからタブ情報を取得
     })
     
     return render(request, 'apps_gallery/create_edit_detail.html', context)
