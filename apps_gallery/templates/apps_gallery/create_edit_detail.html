@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% load app_filters %}
+{% load static %}
+
+{# デバッグ用 #}
+{{ hide_navbar|default:"not set" }}
 
 {% block content %}
 <!-- サイバーパンク風の装飾 -->
@@ -11,6 +15,11 @@
 <div id="appTabs" class="app-tabs">
     <div class="container py-2">
         <nav class="nav nav-pills nav-fill">
+            <!-- ホームへ戻るロボットアイコン -->
+            <a href="{% url 'home:home' %}" class="nav-link" title="ホームへ戻る">
+                <span class="fs-4 me-2 cyber-emoji">🤖</span>
+            </a>
+            
             <a class="nav-link text-neon" href="#basic">
                 <i class="bi bi-info-circle-fill"></i> 基本情報
             </a>
@@ -488,6 +497,86 @@ html {
 
 #status-link:hover {
     text-decoration: none !important;
+}
+
+/* ロボットアイコンのスタイル */
+.robot-icon {
+    width: 40px;
+    height: 40px;
+    padding: 0 !important;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none !important;
+    border: none !important;
+    transition: all 0.3s ease;
+}
+
+.robot-icon:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+}
+
+.robot-image {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+/* ナビゲーションの調整 */
+.nav-pills {
+    display: flex;
+    align-items: center;
+}
+
+/* URLボタンのスタイル */
+.btn-cyber-visit {
+    background: linear-gradient(45deg, #00ff9f, #00ffff);
+    color: #000;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    font-weight: bold;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+    animation: neonPulse 2s infinite;
+}
+
+.btn-cyber-visit:hover {
+    background: linear-gradient(45deg, #00ffaa, #22ffff);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+    transform: translateY(-2px) scale(1.05);
+}
+
+/* ネオンパルスアニメーション */
+@keyframes neonPulse {
+    0% {
+        box-shadow: 0 0 5px rgba(0, 255, 255, 0.5),
+                   0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.8),
+                   0 0 20px rgba(0, 255, 255, 0.5);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(0, 255, 255, 0.5),
+                   0 0 10px rgba(0, 255, 255, 0.3);
+    }
+}
+
+/* URLフィールドのコンテナ */
+.url-field-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.url-field-container .form-control {
+    flex: 1;
+}
+
+.url-field-container .btn-cyber-visit {
+    white-space: nowrap;
 }
 </style>
 

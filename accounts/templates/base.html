@@ -10,11 +10,14 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="/">俺のアプリ</a>
+            <a class="navbar-brand" href="{% url 'home:home' %}">俺のアプリ</a>
             <div class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
                     <span class="nav-item nav-link">ようこそ {{ user.username }} さん！</span>
-                    <a class="nav-link" href="{% url 'logout' %}">ログアウト</a>
+                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link btn btn-link">ログアウト</button>
+                    </form>
                 {% else %}
                     <a class="nav-link" href="{% url 'login' %}">ログイン</a>
                     <a class="nav-link" href="{% url 'accounts:signup' %}">新規登録</a>

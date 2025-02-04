@@ -67,16 +67,6 @@
                                 <a href="{% url 'apps_gallery:detail' app.pk %}" class="btn btn-cyber-secondary">
                                     <i class="bi bi-search"></i> 詳細を見る
                                 </a>
-                                {% if app.app_url %}
-                                    <a href="{{ app.app_url }}" class="btn btn-cyber-primary" target="_blank">
-                                        アプリを見る
-                                    </a>
-                                {% endif %}
-                                {% if app.github_url %}
-                                    <a href="{{ app.github_url }}" class="btn btn-cyber-purple" target="_blank">
-                                        GitHub
-                                    </a>
-                                {% endif %}
                             </div>
                         </div>
                     </div>

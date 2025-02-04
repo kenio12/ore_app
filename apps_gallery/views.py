@@ -8,7 +8,11 @@ from .constants import *  # 全ての定数をインポート
 # Create your views here.
 
 def create_view(request):
-    return handle_app_form(request)  # handle_app_formを使用
+    # contextを作成して、hide_navbarをTrueに設定
+    context = {
+        'hide_navbar': True
+    }
+    return handle_app_form(request, context=context)  # contextを渡す
 
 @login_required
 def edit_app(request, pk):
@@ -27,6 +31,10 @@ def edit_app(request, pk):
 @login_required
 def handle_app_form(request, app=None, context=None):
     """アプリの作成・編集を処理する共通関数"""
+    # contextがNoneの場合は空のdictを作成
+    if context is None:
+        context = {}
+    
     # 編集時は作者チェック
     if app and app.author != request.user:
         raise PermissionDenied("このアプリを編集する権限がありません。")
@@ -63,8 +71,8 @@ def handle_app_form(request, app=None, context=None):
         messages.success(request, f'アプリを{action}しました！')
         return redirect('apps_gallery:detail', pk=app.pk)
 
-    # GETの場合はフォームを表示
-    context = {
+    # GETの場合のcontext設定
+    context.update({
         'app': app,  # 新規作成の場合はNone
         'APP_TYPES': dict(APP_TYPES),
         'APP_STATUS': dict(APP_STATUS),
@@ -72,8 +80,8 @@ def handle_app_form(request, app=None, context=None):
         'GENRES': dict(GENRES),
         'is_edit': app is not None,
         'readonly': False,  # 編集画面では常にFalse
-        'hide_navbar': context['hide_navbar'] if context else False,
-    }
+    })
+    
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
 def app_list(request):

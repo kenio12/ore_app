@@ -100,12 +100,10 @@
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <label for="app_url" class="form-label text-cyber-yellow mb-0">アプリのURL</label>
                     {% if app.app_url %}
-                    <a href="{{ app.app_url }}" 
-                       target="_blank" 
-                       class="btn btn-outline-warning btn-sm">
-                        <i class="bi bi-person-walking"></i>
-                        <i class="bi bi-box-arrow-up-right"></i> 見に行く！
-                    </a>
+                    <button onclick="window.open('{{ app.app_url }}', '_blank')" 
+                            style="background: #FFFF00; color: #000; border: 1px solid #FFFF00; font-weight: bold; padding: 5px 15px; border-radius: 4px;">
+                        <i class="bi bi-rocket-takeoff me-1"></i>アプリを見る
+                    </button>
                     {% endif %}
                 </div>
                 <input type="url" 
@@ -121,12 +119,10 @@
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <label for="github_url" class="form-label text-cyber-yellow mb-0">GitHubリポジトリURL</label>
                     {% if app.github_url %}
-                    <a href="{{ app.github_url }}" 
-                       target="_blank" 
-                       class="btn btn-outline-warning btn-sm">
-                        <i class="bi bi-person-walking"></i>
-                        <i class="bi bi-box-arrow-up-right"></i> 見に行く！
-                    </a>
+                    <button onclick="window.open('{{ app.github_url }}', '_blank')" 
+                            style="background: #FFFF00; color: #000; border: 1px solid #FFFF00; font-weight: bold; padding: 5px 15px; border-radius: 4px;">
+                        <i class="bi bi-github me-1"></i>コードを見る
+                    </button>
                     {% endif %}
                 </div>
                 <input type="url" 
@@ -233,5 +229,37 @@
 #basic .form-select option:checked {
     background-color: rgba(255, 215, 0, 0.2) !important;
     color: var(--cyber-yellow) !important;
+}
+
+/* 見に行く！ボタンのスタイル */
+.btn-cyber-visit {
+    background: #FFFF00;  /* 純粋な黄色 */
+    color: #000;
+    border: 1px solid #FFFF00;
+    font-weight: bold;
+    font-size: 0.9em;
+    padding: 5px 15px;
+    transition: all 0.3s ease;
+    animation: neonPulseYellow 1.5s infinite;
+    border-radius: 4px;
+}
+
+.btn-cyber-visit:hover {
+    background: #FFFF33;  /* より明るい黄色 */
+    transform: translateY(-2px);
+    color: #000;
+    box-shadow: 0 0 15px #FFFF00;
+}
+
+@keyframes neonPulseYellow {
+    0% {
+        box-shadow: 0 0 5px #FFFF00;
+    }
+    50% {
+        box-shadow: 0 0 15px #FFFF33;
+    }
+    100% {
+        box-shadow: 0 0 5px #FFFF00;
+    }
 }
 </style> 
