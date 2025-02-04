@@ -11,4 +11,5 @@ urlpatterns = [
     path('<int:pk>/', views.app_detail, name='detail'),  # アプリ詳細（最後に配置）
     path('upload-screenshot/', views.upload_screenshot, name='upload_screenshot'),
     path('delete-screenshot/<int:screenshot_id>/', views.delete_screenshot, name='delete_screenshot'),
+    path('set-thumbnail/<path:screenshot_id>/', views.set_thumbnail, name='set_thumbnail'),
 ] 

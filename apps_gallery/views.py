@@ -85,8 +85,14 @@ def handle_app_form(request, app=None, context=None):
         # メッセージを設定
         action = '更新' if app.pk else '作成'
         messages.success(request, f'アプリを{action}しました！')
-        # アンカー付きのURLにリダイレクト
-        return redirect(f'apps_gallery:detail?tab=appeal#{request.POST.get("active_tab", "")}')
+
+        # リダイレクト先の判定
+        if request.POST.get('redirect_to') == 'home':
+            # ロボットアイコンからの保存時はホームへ
+            return redirect('home:home')
+        else:
+            # 通常の保存時は詳細画面へ
+            return redirect(f'apps_gallery:detail?tab=appeal#{request.POST.get("active_tab", "")}')
 
     # アクティブなタブ情報をcontextに追加
     context.update({
@@ -202,4 +208,36 @@ def delete_screenshot(request, screenshot_id):
             return JsonResponse({'error': '指定された画像が見つかりません'}, status=404)
 
     except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def set_thumbnail(request, screenshot_id):
+    try:
+        app_id = request.GET.get('app_id')
+        app = get_object_or_404(AppGallery, pk=app_id)
+
+        # 権限チェック
+        if app.author != request.user:
+            return JsonResponse({'error': '権限がありません'}, status=403)
+
+        # スクリーンショットの並び替え
+        screenshots = app.screenshots or []
+        
+        # screenshot_idをそのまま使用（既にapp_screenshots/を含んでいる）
+        target_screenshot = next((s for s in screenshots if s['public_id'] == screenshot_id), None)
+        
+        if target_screenshot:
+            # 選択された画像を先頭に移動
+            screenshots.remove(target_screenshot)
+            screenshots.insert(0, target_screenshot)
+            app.screenshots = screenshots
+            app.save()
+            
+            return JsonResponse({'message': 'サムネイル設定成功'})
+        else:
+            return JsonResponse({'error': '指定された画像が見つかりません'}, status=404)
+
+    except Exception as e:
+        print(f"Error in set_thumbnail: {str(e)}")  # デバッグ用
         return JsonResponse({'error': str(e)}, status=500)

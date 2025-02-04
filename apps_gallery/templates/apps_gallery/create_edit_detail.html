@@ -86,9 +86,9 @@
         {% if app.author == request.user %}
         <div class="cyber-status-indicator">
             {% if not readonly %}
-                <a href="{% url 'apps_gallery:detail' app.pk %}" id="status-link" class="status-badge editing-link">
+                <button type="button" id="save-and-view" class="status-badge editing-link btn btn-link p-0">
                     <i class="bi bi-pencil-square"></i> 編集 <i class="bi bi-arrow-right-short"></i> 詳細 <i class="bi bi-eye-fill"></i>
-                </a>
+                </button>
             {% else %}
                 <a href="{% url 'apps_gallery:edit' app.pk %}" id="status-link" class="status-badge viewing-link">
                     <i class="bi bi-eye-fill"></i> 詳細 <i class="bi bi-arrow-right-short"></i> 編集 <i class="bi bi-pencil-square"></i>
@@ -104,15 +104,18 @@
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-cyber-success">
                     <i class="bi bi-save"></i> 
-                    {% if app %}
-                        保存する
-                    {% else %}
-                        保存する
-                    {% endif %}
+                    保存する
                 </button>
             </div>
         </div>
     {% endif %}
+
+    <!-- メッセージ表示エリア -->
+    <div id="save-message" class="position-fixed top-50 start-50 translate-middle" style="display: none; z-index: 9999;">
+        <div class="cyber-message">
+            <i class="bi bi-check-circle-fill"></i> 保存しました！
+        </div>
+    </div>
 </div>
 
 <style>
@@ -616,6 +619,30 @@ html {
 .url-field-container .btn-cyber-visit {
     white-space: nowrap;
 }
+
+/* 固定ボタンの位置調整 */
+.position-fixed.bottom-0.start-0.p-4,
+.position-fixed.bottom-0.end-0.p-4 {
+    bottom: -20px !important;  両方のボタンを下に配置
+}
+
+/* メッセージのスタイル */
+.cyber-message {
+    background: rgba(0, 255, 136, 0.2);
+    color: #00ff88;
+    padding: 15px 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 255, 136, 0.5);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+    font-weight: bold;
+    animation: fadeInOut 0.5s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1); }
+}
 </style>
 
 <script>
@@ -707,6 +734,81 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    // 保存して詳細画面へ遷移する処理を追加
+    const saveAndViewButton = document.getElementById('save-and-view');
+    if (saveAndViewButton) {
+        saveAndViewButton.addEventListener('click', function() {
+            // フォームを取得
+            const form = document.querySelector('form');
+            if (form) {
+                // FormDataオブジェクトを作成
+                const formData = new FormData(form);
+                
+                // フォームをサーバーに送信
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // メッセージを表示
+                        const messageElement = document.getElementById('save-message');
+                        messageElement.style.display = 'block';
+                        
+                        // 10秒後にメッセージを非表示にして詳細画面へ遷移
+                        setTimeout(() => {
+                            messageElement.style.display = 'none';
+                            window.location.href = "{% url 'apps_gallery:detail' app.pk %}";
+                        }, 1000); // 1秒後に遷移
+                    } else {
+                        throw new Error('保存に失敗しました');
+                    }
+                })
+                .catch(error => {
+                    alert('エラーが発生しました: ' + error.message);
+                });
+            }
+        });
+    }
+
+    // ロボットアイコンのクリックイベント処理を追加
+    const robotIcon = document.querySelector('.robot-icon');
+    if (robotIcon && !document.body.classList.contains('readonly-mode')) {
+        robotIcon.addEventListener('click', function(e) {
+            e.preventDefault(); // デフォルトの遷移を防止
+            
+            // フォームを取得
+            const form = document.querySelector('form');
+            if (form) {
+                // FormDataオブジェクトを作成
+                const formData = new FormData(form);
+                
+                // フォームをサーバーに送信
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // 保存成功後、直接ホームページへリダイレクト
+                        window.location.href = "{% url 'home:home' %}";
+                    } else {
+                        throw new Error('保存に失敗しました');
+                    }
+                })
+                .catch(error => {
+                    alert('エラーが発生しました: ' + error.message);
+                });
+            }
+        });
+    }
 });
 
 // タブ切り替え時にactive_tabの値を更新

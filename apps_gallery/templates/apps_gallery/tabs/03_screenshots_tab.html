@@ -31,8 +31,15 @@
                                     {% endif %}
                                     {% if not readonly %}
                                         <div class="screenshot-actions">
+                                            {% if not forloop.first %}
+                                                <button class="btn-set-thumbnail me-2" 
+                                                        data-id="{{ screenshot.public_id }}"
+                                                        title="サムネイルに設定">
+                                                    <i class="bi bi-star text-warning"></i>
+                                                </button>
+                                            {% endif %}
                                             <button class="btn-delete-screenshot" 
-                                                    data-id="{{ screenshot.id }}"
+                                                    data-id="{{ screenshot.public_id }}"
                                                     title="削除">
                                                 <i class="bi bi-trash text-danger"></i>
                                             </button>
@@ -415,6 +422,50 @@ document.addEventListener('DOMContentLoaded', function() {
                     } catch (error) {
                         console.error('Error:', error);
                         alert('エラーが発生しました: ' + error.message);
+                    }
+                }
+            });
+        });
+    }
+
+    // サムネイル設定ボタンの処理
+    const thumbnailButtons = document.querySelectorAll('.btn-set-thumbnail');
+    if (thumbnailButtons.length > 0) {
+        thumbnailButtons.forEach(button => {
+            button.addEventListener('click', async () => {
+                if (confirm('この画像をサムネイルに設定しますか？')) {
+                    const screenshotId = button.dataset.id;
+                    try {
+                        console.log('Setting thumbnail for:', screenshotId);
+
+                        button.disabled = true;
+
+                        const response = await fetch(`/apps_gallery/set-thumbnail/${screenshotId}/?app_id={{ app.id }}`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken'),
+                                'Accept': 'application/json'
+                            },
+                            credentials: 'same-origin'
+                        });
+
+                        console.log('Response received:', response.status);
+
+                        if (response.ok) {
+                            // 成功メッセージを表示
+                            alert('サムネイルを変更しました！');
+                            console.log('Success - reloading page');
+                            window.location.href = window.location.href;
+                            return;
+                        } else {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'サムネイルの設定に失敗しました');
+                        }
+                    } catch (error) {
+                        console.error('Fetch error:', error);
+                        alert('エラーが発生しました: ' + error.message);
+                    } finally {
+                        button.disabled = false;
                     }
                 }
             });
