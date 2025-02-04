@@ -19,10 +19,13 @@ def edit_app(request, pk):
     if app.author != request.user:
         raise PermissionDenied("このアプリを編集する権限がありません。")
     
-    return handle_app_form(request, app)
+    context = {
+        'hide_navbar': True  # navbarを非表示に
+    }
+    return handle_app_form(request, app, context)
 
 @login_required
-def handle_app_form(request, app=None):
+def handle_app_form(request, app=None, context=None):
     """アプリの作成・編集を処理する共通関数"""
     # 編集時は作者チェック
     if app and app.author != request.user:
@@ -69,6 +72,7 @@ def handle_app_form(request, app=None):
         'GENRES': dict(GENRES),
         'is_edit': app is not None,
         'readonly': False,  # 編集画面では常にFalse
+        'hide_navbar': context['hide_navbar'] if context else False,
     }
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
@@ -86,6 +90,7 @@ def app_detail(request, pk):
         'APP_STATUS': dict(APP_STATUS),
         'PUBLISH_STATUS': dict(PUBLISH_STATUS),
         'GENRES': dict(GENRES),
+        'hide_navbar': True  # navbarを非表示に
     }
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
