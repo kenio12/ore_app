@@ -23,3 +23,11 @@ def get_item(lst, index):
         return lst[index]
     except (IndexError, TypeError):
         return None 
+
+@register.filter(name='subtract')
+def subtract(value, arg):
+    """数値から別の数値を引くフィルター"""
+    try:
+        return value - arg
+    except (ValueError, TypeError):
+        return value 

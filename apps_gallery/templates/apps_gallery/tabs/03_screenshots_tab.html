@@ -1,263 +1,424 @@
+{% load app_filters %}
+
 <div class="container">
     <div class="card border-0">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
-                <i class="bi bi-image-fill text-cyber-purple"></i> スクリーンショット
+                <i class="bi bi-camera-fill text-cyber-purple"></i> スクリーンショット
             </h2>
-            
-            <!-- デバッグ情報の表示 -->
-            <div class="text-cyber-purple">
-                Debug Info:
-                <pre>
-                readonly: {{ readonly }}
-                app: {{ app }}
-                screenshots exist: {{ app.screenshots.exists }}
-                </pre>
-            </div>
 
-            {% if readonly %}
-                {% if app.screenshots.exists %}
-                    <!-- スクリーンショットがある場合の表示 -->
-                    <div class="row g-4">
-                        {% for screenshot in app.screenshots.all %}
-                        <div class="col-md-6">
-                            <div class="screenshot-container">
-                                <img src="{{ screenshot.image.url }}" 
-                                     class="screenshot-preview" 
-                                     alt="スクリーンショット">
-                                {% if screenshot.description %}
-                                <p class="mt-2 mb-0 text-cyber-purple">{{ screenshot.description }}</p>
-                                {% endif %}
+            <!-- スクリーンショットギャラリー -->
+            <div class="screenshots-gallery mb-4">
+                {% if app.screenshots %}
+                    <div class="screenshots-container">
+                        {% for screenshot in app.screenshots %}
+                            <div class="screenshot-wrapper mb-4">
+                                <div class="screenshot-card {% if forloop.first %}is-thumbnail{% endif %}">
+                                    <div class="screenshot-image">
+                                        <img src="{{ screenshot.url }}" 
+                                             alt="スクリーンショット" 
+                                             class="img-fluid screenshot-preview">
+                                        {% if forloop.first %}
+                                            <div class="thumbnail-badge">
+                                                <i class="bi bi-star-fill"></i> サムネイル
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    {% if screenshot.description %}
+                                        <div class="screenshot-description">
+                                            <p class="text-cyber-purple mb-0">{{ screenshot.description }}</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if not readonly %}
+                                        <div class="screenshot-actions">
+                                            <button class="btn-delete-screenshot" 
+                                                    data-id="{{ screenshot.id }}"
+                                                    title="削除">
+                                                <i class="bi bi-trash text-danger"></i>
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <!-- スクリーンショットがない場合のメッセージ -->
-                    <div class="text-center py-5">
-                        <i class="bi bi-image text-cyber-purple display-1"></i>
-                        <p class="h5 mt-3 text-cyber-purple">スクリーンショットはまだ登録されていません</p>
+                    <div class="empty-state">
+                        <i class="bi bi-camera text-cyber-purple"></i>
+                        <p>スクリーンショットはまだありません</p>
+                        <p class="text-muted">最初の画像がサムネイルとして使用されます</p>
                     </div>
                 {% endif %}
-            {% else %}
-                <!-- 編集モードの場合は既存のアップロード機能を表示 -->
-                <!-- アップロードエリア -->
-                <div class="mb-4">
-                    <div class="border border-2 border-dashed rounded-3 p-5 text-center cyber-upload-area" id="dropzone">
-                        <input type="file" 
-                               id="screenshot-upload" 
-                               class="d-none" 
-                               accept="image/*" 
-                               multiple
-                               {% if readonly %}disabled{% endif %}>
-                        <div class="text-cyber-purple">
-                            <i class="bi bi-cloud-arrow-up display-4"></i>
-                            <p class="h5 mt-3">ドラッグ&ドロップ</p>
-                            <p class="mb-3">または</p>
-                            <label for="screenshot-upload" 
-                                   class="btn btn-cyber-purple">
-                                <i class="bi bi-folder"></i> ファイルを選択
-                            </label>
-                            <p class="small mt-3 text-cyber-purple-light">※ 最大3枚まで登録できます</p>
-                        </div>
-                    </div>
-                </div>
+            </div>
 
-                <!-- プレビューエリア -->
-                <div class="row g-4" id="preview-area">
-                    <!-- プレビュー画像がここに表示される -->
+            <!-- アップロードフォーム -->
+            {% if not readonly %}
+                <div class="upload-form mb-5 pb-5">
+                    {% if app.screenshots|length < 3 %}
+                        <div class="upload-preview-area mb-3" id="previewArea">
+                            <div class="preview-placeholder">
+                                <i class="bi bi-cloud-upload"></i>
+                                <span>画像をドロップするか、クリックして選択</span>
+                                <p class="text-muted mt-2">
+                                    {% if app.screenshots|length == 0 %}
+                                        最初の画像がサムネイルとして使用されます
+                                    {% else %}
+                                        あと{{ 3|subtract:app.screenshots|length }}枚アップロードできます
+                                    {% endif %}
+                                </p>
+                            </div>
+                            <img id="imagePreview" class="d-none">
+                        </div>
+                        <div class="input-group">
+                            <input type="file" 
+                                   id="screenshotInput" 
+                                   accept="image/*" 
+                                   class="form-control cyber-purple-focus"
+                                   style="display: none;">
+                            <input type="text" 
+                                   id="descriptionInput" 
+                                   placeholder="スクリーンショットの説明を入力" 
+                                   class="form-control cyber-purple-focus">
+                            <button type="button" 
+                                    id="uploadButton" 
+                                    class="btn btn-cyber-purple" 
+                                    disabled>
+                                <i class="bi bi-upload me-2"></i>アップロード
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="text-center text-cyber-purple mb-5 pb-5">
+                            <i class="bi bi-exclamation-circle"></i>
+                            スクリーンショットは最大3枚までです
+                        </div>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>
     </div>
 </div>
 
+<style>
+/* スクリーンショット関連のスタイル */
+.screenshots-gallery {
+    min-height: 200px;
+}
+
+.screenshots-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.screenshot-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.screenshot-card {
+    position: relative;
+    background: rgba(13, 25, 45, 0.8);
+    border: 1px solid var(--cyber-purple);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    width: 100%;
+    max-width: 800px;
+}
+
+.screenshot-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(191, 95, 255, 0.3);
+}
+
+.screenshot-image {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.screenshot-image img {
+    position: relative;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 400px;
+    display: block;
+    margin: 0 auto;
+}
+
+.screenshot-description {
+    padding: 1rem;
+    background: rgba(13, 25, 45, 0.9);
+    border-top: 1px solid var(--cyber-purple);
+}
+
+.screenshot-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.screenshot-card:hover .screenshot-actions {
+    opacity: 1;
+}
+
+.btn-delete-screenshot {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.btn-delete-screenshot i {
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+/* アップロードフォーム */
+.upload-form {
+    background: rgba(13, 25, 45, 0.8);
+    border: 1px solid var(--cyber-purple);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.upload-preview-area {
+    position: relative;
+    min-height: 200px;
+    border: 2px dashed var(--cyber-purple);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-preview-area:hover {
+    border-color: #fff;
+    background: rgba(191, 95, 255, 0.1);
+}
+
+.preview-placeholder {
+    text-align: center;
+    color: var(--cyber-purple);
+}
+
+.preview-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+#imagePreview {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--cyber-purple);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+/* サイバーパンクボタン */
+.btn-cyber-purple {
+    background: linear-gradient(45deg, #6f00ff, #bf5fff);
+    color: #fff;
+    border: 1px solid rgba(191, 95, 255, 0.5);
+    text-shadow: 0 0 5px rgba(191, 95, 255, 0.3);
+}
+
+.btn-cyber-purple:hover:not(:disabled) {
+    background: linear-gradient(45deg, #7722ff, #cc77ff);
+    box-shadow: 0 0 15px rgba(191, 95, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-cyber-purple:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* スタイルを追加 */
+.is-thumbnail {
+    border: 2px solid var(--cyber-purple) !important;
+    box-shadow: 0 0 15px rgba(191, 95, 255, 0.5);
+}
+
+.thumbnail-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: linear-gradient(45deg, #6f00ff, #bf5fff);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.thumbnail-badge i {
+    color: #FFD700;
+    margin-right: 5px;
+}
+</style>
+
 <script>
-{% if not readonly %}
-document.addEventListener('DOMContentLoaded', function() {
-    const dropzone = document.getElementById('dropzone');
-    const fileInput = document.getElementById('screenshot-upload');
-    const previewArea = document.getElementById('preview-area');
-
-    // ドラッグ&ドロップのイベントリスナー
-    dropzone.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        dropzone.classList.add('dragover');
-    });
-
-    dropzone.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        dropzone.classList.remove('dragover');
-    });
-
-    dropzone.addEventListener('drop', function(e) {
-        e.preventDefault();
-        dropzone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        handleFiles(files);
-    });
-
-    // ファイル選択のイベントリスナー
-    fileInput.addEventListener('change', function(e) {
-        const files = e.target.files;
-        handleFiles(files);
-    });
-
-    // ファイル処理関数
-    function handleFiles(files) {
-        if (document.querySelectorAll('.preview-image').length + files.length > 3) {
-            alert('スクリーンショットは最大3枚までです！');
-            return;
+// グローバルスコープでCSRFトークンを取得する関数を定義
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
         }
+    }
+    return cookieValue;
+}
 
-        Array.from(files).forEach((file, index) => {
+document.addEventListener('DOMContentLoaded', function() {
+    // 要素の取得を条件付きで行う
+    const previewArea = document.getElementById('previewArea');
+    const imagePreview = document.getElementById('imagePreview');
+    const fileInput = document.getElementById('screenshotInput');
+    const descriptionInput = document.getElementById('descriptionInput');
+    const uploadButton = document.getElementById('uploadButton');
+
+    // アップロード関連の要素が存在する場合のみ処理を実行
+    if (previewArea && imagePreview && fileInput && descriptionInput && uploadButton) {
+        const placeholder = document.querySelector('.preview-placeholder');
+
+        // ドラッグ&ドロップ処理
+        previewArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            previewArea.classList.add('dragover');
+        });
+
+        previewArea.addEventListener('dragleave', () => {
+            previewArea.classList.remove('dragover');
+        });
+
+        previewArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            previewArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        // クリックでファイル選択
+        previewArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
             if (!file.type.startsWith('image/')) {
-                alert('画像ファイルのみアップロード可能です');
+                alert('画像ファイルを選択してください');
                 return;
             }
 
             const reader = new FileReader();
             reader.onload = (e) => {
-                const previewContainer = document.createElement('div');
-                previewContainer.className = 'col-md-4 preview-image';
-                
-                previewContainer.innerHTML = `
-                    <div class="card h-100">
-                        <img src="${e.target.result}" class="card-img-top" style="height: 200px; object-fit: cover;">
-                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 rounded-circle" style="width: 32px; height: 32px;">
-                            <i class="bi bi-x"></i>
-                        </button>
-                    </div>
-                `;
-
-                previewArea.appendChild(previewContainer);
-
-                // 削除ボタンの処理
-                previewContainer.querySelector('button').addEventListener('click', () => {
-                    previewContainer.remove();
-                });
+                imagePreview.src = e.target.result;
+                imagePreview.classList.remove('d-none');
+                placeholder.classList.add('d-none');
+                uploadButton.disabled = false;
             };
             reader.readAsDataURL(file);
+        }
+
+        // アップロード処理
+        uploadButton.addEventListener('click', async () => {
+            console.log('アップロード開始'); // デバッグ用
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            formData.append('description', descriptionInput.value);
+            formData.append('app_id', '{{ app.id }}');
+
+            console.log('FormDataの内容:', {
+                image: fileInput.files[0],
+                description: descriptionInput.value,
+                app_id: '{{ app.id }}'
+            }); // デバッグ用
+
+            try {
+                console.log('fetchリクエスト開始'); // デバッグ用
+                const response = await fetch('/apps_gallery/upload-screenshot/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+
+                console.log('レスポンス受信:', response.status); // デバッグ用
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('アップロード成功:', data);
+                    location.reload();
+                } else {
+                    const error = await response.json();
+                    console.error('アップロードエラー:', error);
+                    throw new Error(error.error || 'アップロードに失敗しました');
+                }
+            } catch (error) {
+                console.error('エラーの詳細:', error);
+                alert('エラーが発生しました: ' + error.message);
+            }
+        });
+    }
+
+    // 削除ボタンの処理（別途存在チェック）
+    const deleteButtons = document.querySelectorAll('.btn-delete-screenshot');
+    if (deleteButtons.length > 0) {
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', async () => {
+                if (confirm('このスクリーンショットを削除してもよろしいですか？')) {
+                    const screenshotId = button.dataset.id;
+                    try {
+                        const response = await fetch(`/apps_gallery/delete-screenshot/${screenshotId}/`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken')
+                            }
+                        });
+
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            throw new Error('削除に失敗しました');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('エラーが発生しました: ' + error.message);
+                    }
+                }
+            });
         });
     }
 });
-{% endif %}
-</script>
-
-<style>
-/* スクリーンショットタブ専用のスタイル */
-#screenshots .form-control {
-    border-color: var(--cyber-purple) !important;
-    color: var(--cyber-purple) !important;
-    background-color: rgba(0, 20, 50, 0.5) !important;
-}
-
-#screenshots .cyber-purple-focus:focus {
-    border-color: var(--cyber-purple) !important;
-    box-shadow: 0 0 10px var(--cyber-purple) !important;
-}
-
-#screenshots .input-group-text {
-    background: rgba(191,95,255,0.1) !important;
-    border-color: var(--cyber-purple) !important;
-    color: var(--cyber-purple) !important;
-}
-
-#screenshots .bg-cyber-purple {
-    background: rgba(191,95,255,0.1) !important;
-    border-color: var(--cyber-purple) !important;
-}
-
-#screenshots .form-text {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 5px var(--cyber-purple) !important;
-}
-
-#screenshots .form-text i {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 5px var(--cyber-purple) !important;
-}
-
-#screenshots ::placeholder {
-    color: rgba(191,95,255,0.5) !important;
-}
-
-#screenshots .text-cyber-purple {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 5px var(--cyber-purple);
-}
-
-/* 読み取り専用時のスタイル */
-#screenshots .form-control[readonly],
-#screenshots .form-control:disabled {
-    background-color: rgba(0, 20, 50, 0.5) !important;
-    color: var(--cyber-purple) !important;
-    border-color: var(--cyber-purple) !important;
-    opacity: 1;
-}
-
-/* スクリーンショットの表示を修正 */
-.screenshot-preview {
-    width: 100%;
-    height: 200px;
-    object-fit: contain;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    padding: 10px;
-}
-
-.screenshot-container {
-    margin-bottom: 20px;
-    border: 1px solid var(--cyber-purple);
-    border-radius: 8px;
-    padding: 10px;
-    background: rgba(191, 95, 255, 0.1);
-}
-
-/* サイバーパンクなアップロードエリア */
-.cyber-upload-area {
-    background: rgba(191,95,255,0.1) !important;
-    border-color: var(--cyber-purple) !important;
-}
-
-.cyber-upload-area:hover {
-    box-shadow: 0 0 15px var(--cyber-purple);
-}
-
-.text-cyber-purple-light {
-    color: rgba(191,95,255,0.7);
-}
-
-.btn-cyber-purple {
-    background: linear-gradient(45deg, var(--cyber-purple), #9932cc);
-    border: none;
-    color: #fff;
-    text-shadow: 0 0 5px rgba(0,0,0,0.3);
-    box-shadow: 0 0 10px rgba(191,95,255,0.3);
-}
-
-.btn-cyber-purple:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.2);
-    color: #fff;
-}
-</style>
-
-{% if readonly %}
-<div class="row g-4">
-    {% for screenshot in app.screenshots.all %}
-    <div class="col-md-6">
-        <div class="screenshot-container">
-            <img src="{{ screenshot.image.url }}" 
-                 class="screenshot-preview" 
-                 alt="スクリーンショット">
-            {% if screenshot.description %}
-            <p class="mt-2 mb-0 text-cyber-purple">{{ screenshot.description }}</p>
-            {% endif %}
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% else %}
-<!-- 既存のアップロード関連のコード -->
-{% endif %} 
+</script> 

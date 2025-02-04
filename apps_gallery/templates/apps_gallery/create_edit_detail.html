@@ -36,7 +36,7 @@
 <!-- メインコンテンツ -->
 <div class="container main-content">
     <!-- ヘッダー部分（新規作成/編集/詳細で切り替え） -->
-    <div class="d-flex justify-content-between align-items-center" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <div class="d-flex justify-content-between align-items-center mt-3" style="margin-top: 2rem; margin-bottom: 2rem;">
         <h2 style="color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; font-weight: bold;">
             {% if app %}
                 {% if readonly %}
@@ -116,6 +116,11 @@
 </div>
 
 <style>
+/* メインコンテンツのマージン */
+.main-content {
+    margin-top: 6rem;  /* 4remから6remに増やして、タブとタイトルの間隔を確保 */
+}
+
 /* タブナビゲーション */
 .app-tabs {
     position: fixed;
@@ -128,11 +133,6 @@
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     z-index: 999;
     transition: transform 0.3s ease;
-}
-
-/* メインコンテンツのマージン */
-.main-content {
-    margin-top: 4rem;
 }
 
 /* スクロール時のスムーズな動き */

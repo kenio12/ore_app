@@ -4,6 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from .models import AppGallery
 from .constants import *  # 全ての定数をインポート
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+import json
+import cloudinary
+import cloudinary.uploader
 
 # Create your views here.
 
@@ -19,14 +24,24 @@ def edit_app(request, pk):
     """アプリの編集ビュー"""
     app = get_object_or_404(AppGallery, pk=pk)
     
+    # デバッグ用：保存されているスクリーンショットの内容を確認
+    print("Current screenshots in database:", app.screenshots)
+    
     # 作者でない場合は403エラー
     if app.author != request.user:
         raise PermissionDenied("このアプリを編集する権限がありません。")
     
     context = {
-        'hide_navbar': True  # navbarを非表示に
+        'hide_navbar': True,
+        'app': app,
+        'APP_TYPES': dict(APP_TYPES),
+        'APP_STATUS': dict(APP_STATUS),
+        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
+        'GENRES': dict(GENRES),
+        'is_edit': True,
+        'readonly': False
     }
-    return handle_app_form(request, app, context)
+    return render(request, 'apps_gallery/create_edit_detail.html', context)
 
 @login_required
 def handle_app_form(request, app=None, context=None):
@@ -108,3 +123,83 @@ def app_detail(request, pk):
 def delete_app(request, pk):
     # とりあえず仮の実装
     return render(request, 'apps_gallery/delete.html')
+
+@login_required
+@require_http_methods(["POST"])
+def upload_screenshot(request):
+    try:
+        image = request.FILES.get('image')
+        app_id = request.POST.get('app_id')
+        description = request.POST.get('description', '')
+
+        if not image:
+            return JsonResponse({'error': '画像が選択されていません'}, status=400)
+
+        # アプリの取得
+        app = get_object_or_404(AppGallery, pk=app_id)
+        
+        # 権限チェック
+        if app.author != request.user:
+            return JsonResponse({'error': '権限がありません'}, status=403)
+
+        # 画像の枚数チェック
+        if len(app.screenshots) >= 3:
+            return JsonResponse({'error': '画像は最大3枚までです'}, status=400)
+
+        # Cloudinaryにアップロード
+        upload_result = cloudinary.uploader.upload(
+            image,
+            folder='app_screenshots'
+        )
+
+        # スクリーンショット情報を作成
+        screenshot_info = {
+            'url': upload_result['secure_url'],
+            'public_id': upload_result['public_id'],
+            'description': description
+        }
+
+        # 既存のスクリーンショットリストに追加
+        screenshots = app.screenshots or []  # Noneの場合は空リストを使用
+        screenshots.append(screenshot_info)
+        app.screenshots = screenshots
+        app.save()
+
+        return JsonResponse({
+            'message': 'アップロード成功',
+            'screenshot': screenshot_info
+        })
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_screenshot(request, screenshot_id):
+    try:
+        app_id = request.GET.get('app_id')
+        app = get_object_or_404(AppGallery, pk=app_id)
+
+        # 権限チェック
+        if app.author != request.user:
+            return JsonResponse({'error': '権限がありません'}, status=403)
+
+        # スクリーンショットの削除
+        screenshots = app.screenshots or []
+        screenshot = next((s for s in screenshots if s['public_id'] == screenshot_id), None)
+        
+        if screenshot:
+            # Cloudinaryから画像を削除
+            cloudinary.uploader.destroy(screenshot['public_id'])
+            
+            # リストから該当の画像情報を削除
+            screenshots = [s for s in screenshots if s['public_id'] != screenshot_id]
+            app.screenshots = screenshots
+            app.save()
+            
+            return JsonResponse({'message': '削除成功'})
+        else:
+            return JsonResponse({'error': '指定された画像が見つかりません'}, status=404)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
