@@ -10,6 +10,14 @@ def home(request):
         dev_status='completed'  # 完成品のみ
     ).order_by('-created_at')
     
+    # デバッグ出力を追加
+    print("=== Debug Output ===")
+    for app in apps:
+        print(f"App ID: {app.pk}")
+        print(f"Title: {app.title}")
+        print(f"Screenshots: {app.screenshots}")
+        print("---")
+    
     context = {
         'apps': apps,
         'APP_TYPES': dict(APP_TYPES),

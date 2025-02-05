@@ -44,29 +44,54 @@
             {% for app in apps %}
                 <div class="col-12 mb-4">
                     <div class="card cyber-card">
-                        <div class="card-body">
-                            <h3 class="card-title cyber-title">{{ app.title }}</h3>
-                            <p class="card-text cyber-description">{{ app.overview }}</p>
-                            
-                            <!-- アプリの種類とジャンル -->
-                            <div class="mb-3">
-                                <div class="mb-2">
-                                    {% for type in app.app_types %}
-                                        <span class="badge cyber-type me-2">{{ APP_TYPES|get_dict_value:type }}</span>
-                                    {% endfor %}
+                        {% if app.screenshots %}
+                            <!-- 画像の向きをチェックするためのhidden img -->
+                            <img src="{{ app.screenshots.0.url }}" 
+                                 class="d-none image-checker" 
+                                 onload="checkImageOrientation(this, '{{ app.id }}')"
+                                 data-title="{{ app.title }}"
+                                 data-overview="{{ app.overview }}"
+                                 data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                 data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                        {% endif %}
+                        
+                        <!-- 初期表示用のカード内容 -->
+                        <div class="row g-0" id="card-content-{{ app.id }}">
+                            {% if app.screenshots %}
+                                <div class="col-md-4">
+                                    <div class="h-100">
+                                        <img src="{{ app.screenshots.0.url }}" 
+                                             class="img-fluid cyber-image rounded-start h-100"
+                                             style="object-fit: cover;">
+                                    </div>
                                 </div>
-                                <div>
-                                    {% for genre in app.genres %}
-                                        <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
-                                    {% endfor %}
+                            {% endif %}
+                            <div class="{% if app.screenshots %}col-md-8{% else %}col-12{% endif %}">
+                                <div class="card-body">
+                                    <h3 class="card-title cyber-title">{{ app.title }}</h3>
+                                    <p class="card-text cyber-description">{{ app.overview }}</p>
+                                    
+                                    <!-- アプリの種類とジャンル -->
+                                    <div class="mb-3">
+                                        <div class="mb-2">
+                                            {% for type in app.app_types %}
+                                                <span class="badge cyber-type me-2">{{ APP_TYPES|get_dict_value:type }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        <div>
+                                            {% for genre in app.genres %}
+                                                <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- アクションボタン -->
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a href="/apps_gallery/{{ app.id }}/" class="btn btn-cyber-secondary">
+                                            <i class="bi bi-search"></i> 詳細を見る
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <!-- アクションボタン -->
-                            <div class="d-flex justify-content-end gap-2">
-                                <a href="{% url 'apps_gallery:detail' app.pk %}" class="btn btn-cyber-secondary">
-                                    <i class="bi bi-search"></i> 詳細を見る
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -80,6 +105,85 @@
         </div>
     </div>
 </div>
+
+<script>
+function checkImageOrientation(img, appId) {
+    // 画像が読み込まれた後に実行
+    const isPortrait = img.naturalHeight > img.naturalWidth;
+    const cardContent = document.getElementById(`card-content-${appId}`);
+    
+    // データを取得
+    const title = img.dataset.title;
+    const overview = img.dataset.overview;
+    const types = img.dataset.types.split(',');
+    const genres = img.dataset.genres.split(',');
+    
+    if (isPortrait) {
+        // 縦長画像の場合：左側に配置
+        cardContent.innerHTML = `
+            <div class="col-md-4">
+                <div class="h-100">
+                    <img src="${img.src}" 
+                         class="img-fluid cyber-image rounded-start h-100"
+                         style="object-fit: cover;">
+                </div>
+            </div>
+            <div class="col-md-8">
+                ${getCardBody(appId, title, overview, types, genres)}
+            </div>
+        `;
+    } else {
+        // 横長画像の場合：カードの下に配置
+        cardContent.innerHTML = `
+            <div class="col-12">
+                ${getCardBody(appId, title, overview, types, genres)}
+                <div class="screenshot-wrapper mb-4">
+                    <div class="screenshot-card">
+                        <div class="screenshot-image">
+                            <img src="${img.src}" 
+                                 class="img-fluid screenshot-preview">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+function getCardBody(appId, title, overview, types, genres) {
+    const typesBadges = types.map(type => 
+        `<span class="badge cyber-type me-2">${type}</span>`
+    ).join('');
+    
+    const genresBadges = genres.map(genre => 
+        `<span class="badge cyber-genre me-2">${genre}</span>`
+    ).join('');
+
+    return `
+        <div class="card-body">
+            <h3 class="card-title cyber-title">${title}</h3>
+            <p class="card-text cyber-description">${overview}</p>
+            
+            <!-- アプリの種類とジャンル -->
+            <div class="mb-3">
+                <div class="mb-2">
+                    ${typesBadges}
+                </div>
+                <div>
+                    ${genresBadges}
+                </div>
+            </div>
+            
+            <!-- アクションボタン -->
+            <div class="d-flex justify-content-end gap-2">
+                <a href="/apps_gallery/${appId}/" class="btn btn-cyber-secondary">
+                    <i class="bi bi-search"></i> 詳細を見る
+                </a>
+            </div>
+        </div>
+    `;
+}
+</script>
 
 <style>
 /* サイバーパンク風の背景 */
@@ -158,12 +262,21 @@
 }
 
 .cyber-image {
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-right: 1px solid rgba(0, 255, 255, 0.1);
 }
 
 .cyber-placeholder {
-    height: 200px;
-    background: linear-gradient(45deg, rgba(0,0,0,0.3), rgba(0,123,255,0.1));
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid rgba(0, 255, 255, 0.1);
 }
 
 .cyber-title {
@@ -247,6 +360,40 @@
     color: #fff;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
+}
+
+/* スクリーンショット関連のスタイル */
+.screenshot-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0 1rem 1rem 1rem;
+}
+
+.screenshot-card {
+    position: relative;
+    background: rgba(13, 25, 45, 0.8);
+    border: 1px solid var(--cyber-purple);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.screenshot-image {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+.screenshot-image img {
+    position: relative;
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 400px;
+    display: block;
+    margin: 0 auto;
 }
 </style>
 {% endblock %} 
