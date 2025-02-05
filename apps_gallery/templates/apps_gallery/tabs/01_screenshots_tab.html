@@ -306,11 +306,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('screenshotInput');
     const descriptionInput = document.getElementById('descriptionInput');
     const uploadButton = document.getElementById('uploadButton');
+    const placeholder = document.querySelector('.preview-placeholder');
+
+    // 画像アップロード時の一時データを保存
+    let tempUploadedImages = [];
 
     // アップロード関連の要素が存在する場合のみ処理を実行
     if (previewArea && imagePreview && fileInput && descriptionInput && uploadButton) {
-        const placeholder = document.querySelector('.preview-placeholder');
-
         // ドラッグ&ドロップ処理
         previewArea.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -359,117 +361,242 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // アップロード処理
         uploadButton.addEventListener('click', async () => {
-            console.log('アップロード開始'); // デバッグ用
-            const formData = new FormData();
-            formData.append('image', fileInput.files[0]);
-            formData.append('description', descriptionInput.value);
-            formData.append('app_id', '{{ app.id }}');
-
-            console.log('FormDataの内容:', {
-                image: fileInput.files[0],
-                description: descriptionInput.value,
-                app_id: '{{ app.id }}'
-            }); // デバッグ用
-
             try {
-                console.log('fetchリクエスト開始'); // デバッグ用
+                console.log('アップロード開始');
+                const formData = new FormData();
+                formData.append('image', fileInput.files[0]);
+                formData.append('description', descriptionInput.value);
+                formData.append('app_id', '{{ app.id }}');
+
+                uploadButton.disabled = true;
+                
                 const response = await fetch('/apps_gallery/upload-screenshot/', {
                     method: 'POST',
                     body: formData,
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken')
-                    }
+                    },
+                    credentials: 'same-origin'
                 });
 
-                console.log('レスポンス受信:', response.status); // デバッグ用
+                console.log('レスポンス受信:', response.status);
 
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('アップロード成功:', data);
-                    location.reload();
-                } else {
-                    const error = await response.json();
-                    console.error('アップロードエラー:', error);
-                    throw new Error(error.error || 'アップロードに失敗しました');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+
+                const data = await response.json();
+                console.log('アップロード成功:', data);
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // スクリーンショットを動的に追加
+                const container = document.querySelector('.screenshots-container');
+                if (!container) {
+                    // コンテナがない場合は新規作成
+                    const newContainer = document.createElement('div');
+                    newContainer.className = 'screenshots-container';
+                    document.querySelector('.screenshots-gallery').appendChild(newContainer);
+                }
+
+                // スクリーンショット要素を作成
+                const screenshotWrapper = document.createElement('div');
+                screenshotWrapper.className = 'screenshot-wrapper mb-4';
+
+                // 最初のスクリーンショットかどうかをチェック
+                const isFirstScreenshot = !document.querySelector('.screenshots-container .screenshot-wrapper');
+
+                screenshotWrapper.innerHTML = `
+                    <div class="screenshot-card ${isFirstScreenshot ? 'is-thumbnail' : ''}">
+                        <div class="screenshot-image">
+                            <img src="${data.screenshot.url}" 
+                                 alt="スクリーンショット" 
+                                 class="img-fluid screenshot-preview">
+                            ${isFirstScreenshot ? `
+                                <div class="thumbnail-badge">
+                                    <i class="bi bi-star-fill"></i> サムネイル
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${data.screenshot.description ? `
+                            <div class="screenshot-description">
+                                <p class="text-cyber-purple mb-0">${data.screenshot.description}</p>
+                            </div>
+                        ` : ''}
+                        <div class="screenshot-actions">
+                            ${!isFirstScreenshot ? `
+                                <button class="btn-set-thumbnail me-2" 
+                                        data-id="${data.screenshot.public_id}"
+                                        title="サムネイルに設定">
+                                    <i class="bi bi-star text-warning"></i>
+                                </button>
+                            ` : ''}
+                            <button class="btn-delete-screenshot" 
+                                    data-id="${data.screenshot.public_id}"
+                                    title="削除">
+                                <i class="bi bi-trash text-danger"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // empty-stateがある場合は削除
+                const emptyState = document.querySelector('.empty-state');
+                if (emptyState) {
+                    emptyState.remove();
+                }
+
+                // コンテナに追加
+                document.querySelector('.screenshots-container').appendChild(screenshotWrapper);
+
+                // 入力をリセット
+                fileInput.value = '';
+                descriptionInput.value = '';
+                imagePreview.classList.add('d-none');
+                placeholder.classList.remove('d-none');
+                uploadButton.disabled = true;
+
+                // アップロード成功時に一時データに追加
+                tempUploadedImages.push(data.screenshot.public_id);
+
+                // LocalStorageに一時データを保存
+                localStorage.setItem('tempUploadedImages', JSON.stringify(tempUploadedImages));
+
+                // アップロード成功時のメッセージを修正
+                if (isFirstScreenshot) {
+                    alert('画像のアップロードに成功しました！\nこの画像が自動的にサムネイルとして設定されました。');
+                } else {
+                    alert('画像のアップロードに成功しました！');
+                }
+
             } catch (error) {
                 console.error('エラーの詳細:', error);
                 alert('エラーが発生しました: ' + error.message);
+            } finally {
+                uploadButton.disabled = false;
             }
         });
-    }
 
-    // 削除ボタンの処理（別途存在チェック）
-    const deleteButtons = document.querySelectorAll('.btn-delete-screenshot');
-    if (deleteButtons.length > 0) {
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', async () => {
-                if (confirm('このスクリーンショットを削除してもよろしいですか？')) {
-                    const screenshotId = button.dataset.id;
-                    try {
-                        const response = await fetch(`/apps_gallery/delete-screenshot/${screenshotId}/`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRFToken': getCookie('csrftoken')
+        // 削除ボタンの処理（別途存在チェック）
+        const deleteButtons = document.querySelectorAll('.btn-delete-screenshot');
+        if (deleteButtons.length > 0) {
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', async (event) => {
+                    event.preventDefault();
+                    
+                    if (confirm('このスクリーンショットを削除してもよろしいですか？')) {
+                        const screenshotId = button.dataset.id;
+                        try {
+                            console.log('削除リクエスト開始:', screenshotId); // デバッグログ
+                            const response = await fetch(`/apps_gallery/delete-screenshot/${screenshotId}/?app_id={{ app.id }}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRFToken': getCookie('csrftoken')
+                                }
+                            });
+
+                            console.log('レスポンス受信:', response.status); // デバッグログ
+
+                            if (response.ok) {
+                                console.log('削除成功 - リロード実行'); // デバッグログ
+                                window.location.href = window.location.href;
+                            } else {
+                                const errorData = await response.json();
+                                throw new Error(errorData.error || '削除に失敗しました');
                             }
-                        });
-
-                        if (response.ok) {
-                            location.reload();
-                        } else {
-                            throw new Error('削除に失敗しました');
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('エラーが発生しました: ' + error.message);
                         }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        alert('エラーが発生しました: ' + error.message);
                     }
-                }
+                });
             });
+        }
+
+        // サムネイル設定ボタンの処理
+        const thumbnailButtons = document.querySelectorAll('.btn-set-thumbnail');
+        if (thumbnailButtons.length > 0) {
+            thumbnailButtons.forEach(button => {
+                button.addEventListener('click', async () => {
+                    if (confirm('この画像をサムネイルに設定しますか？')) {
+                        const screenshotId = button.dataset.id;
+                        try {
+                            console.log('Setting thumbnail for:', screenshotId);
+
+                            button.disabled = true;
+
+                            const response = await fetch(`/apps_gallery/set-thumbnail/${screenshotId}/?app_id={{ app.id }}`, {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRFToken': getCookie('csrftoken'),
+                                    'Accept': 'application/json'
+                                },
+                                credentials: 'same-origin'
+                            });
+
+                            console.log('Response received:', response.status);
+
+                            if (response.ok) {
+                                // 成功メッセージを表示
+                                alert('サムネイルを変更しました！');
+                                console.log('Success - reloading page');
+                                window.location.href = window.location.href;
+                                return;
+                            } else {
+                                const errorData = await response.json();
+                                throw new Error(errorData.error || 'サムネイルの設定に失敗しました');
+                            }
+                        } catch (error) {
+                            console.error('Fetch error:', error);
+                            alert('エラーが発生しました: ' + error.message);
+                        } finally {
+                            button.disabled = false;
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    // フォーム送信時の処理を追加
+    const appForm = document.getElementById('app-form');
+    if (appForm) {
+        appForm.addEventListener('submit', () => {
+            // フォーム送信成功時に一時データをクリア
+            localStorage.removeItem('tempUploadedImages');
         });
     }
 
-    // サムネイル設定ボタンの処理
-    const thumbnailButtons = document.querySelectorAll('.btn-set-thumbnail');
-    if (thumbnailButtons.length > 0) {
-        thumbnailButtons.forEach(button => {
-            button.addEventListener('click', async () => {
-                if (confirm('この画像をサムネイルに設定しますか？')) {
-                    const screenshotId = button.dataset.id;
-                    try {
-                        console.log('Setting thumbnail for:', screenshotId);
+    // ページ離脱時の警告とクリーンアップ
+    window.addEventListener('beforeunload', function(e) {
+        const tempImages = JSON.parse(localStorage.getItem('tempUploadedImages') || '[]');
+        if (tempImages.length > 0) {
+            // 変更がある場合は警告を表示
+            e.preventDefault();
+            e.returnValue = '';
 
-                        button.disabled = true;
+            // クリーンアップ処理を実行
+            cleanupTempImages(tempImages);
+        }
+    });
 
-                        const response = await fetch(`/apps_gallery/set-thumbnail/${screenshotId}/?app_id={{ app.id }}`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRFToken': getCookie('csrftoken'),
-                                'Accept': 'application/json'
-                            },
-                            credentials: 'same-origin'
-                        });
-
-                        console.log('Response received:', response.status);
-
-                        if (response.ok) {
-                            // 成功メッセージを表示
-                            alert('サムネイルを変更しました！');
-                            console.log('Success - reloading page');
-                            window.location.href = window.location.href;
-                            return;
-                        } else {
-                            const errorData = await response.json();
-                            throw new Error(errorData.error || 'サムネイルの設定に失敗しました');
-                        }
-                    } catch (error) {
-                        console.error('Fetch error:', error);
-                        alert('エラーが発生しました: ' + error.message);
-                    } finally {
-                        button.disabled = false;
+    // クリーンアップ関数
+    async function cleanupTempImages(imageIds) {
+        try {
+            for (const id of imageIds) {
+                await fetch(`/apps_gallery/delete-screenshot/${id}/?cleanup=true`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
                     }
-                }
-            });
-        });
+                });
+            }
+            localStorage.removeItem('tempUploadedImages');
+        } catch (error) {
+            console.error('クリーンアップエラー:', error);
+        }
     }
 });
 </script> 

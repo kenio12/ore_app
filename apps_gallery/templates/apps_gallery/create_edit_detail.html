@@ -20,14 +20,14 @@
                 <span class="fs-4 me-2 cyber-emoji">🤖</span>
             </a>
             
+            <a class="nav-link text-neon" data-bs-target="#screenshots" href="#screenshots">
+                <i class="bi bi-image-fill"></i> スクリーンショット
+            </a>
             <a class="nav-link text-neon" data-bs-target="#basic" href="#basic">
                 <i class="bi bi-info-circle-fill"></i> 基本情報
             </a>
             <a class="nav-link text-neon" data-bs-target="#appeal" href="#appeal">
                 <i class="bi bi-stars"></i> アプリの魅力
-            </a>
-            <a class="nav-link text-neon" data-bs-target="#screenshots" href="#screenshots">
-                <i class="bi bi-image-fill"></i> スクリーンショット
             </a>
         </nav>
     </div>
@@ -52,70 +52,72 @@
 
     <!-- フォーム開始（編集モードの時のみ） -->
     {% if not readonly %}
-        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate id="app-form">
             {% csrf_token %}
             <input type="hidden" name="active_tab" id="active_tab" value="{{ active_tab }}">
+            {% if app %}
+                <input type="hidden" name="app_id" value="{{ app.id }}">
+            {% endif %}
     {% endif %}
 
     <!-- 各セクション -->
     <div class="row g-4">
         <div class="col-12">
+            <!-- スクリーンショットセクション -->
+            <section id="screenshots" class="scroll-margin-top">
+                {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
+            </section>
+        </div>
+
+        <div class="col-12">
             <!-- 基本情報セクション -->
             <section id="basic" class="scroll-margin-top">
-                {% include 'apps_gallery/tabs/01_basic_tab.html' %}
+                {% include 'apps_gallery/tabs/02_basic_tab.html' %}
             </section>
         </div>
 
         <div class="col-12">
             <!-- アプリの魅力セクション -->
             <section id="appeal" class="scroll-margin-top">
-                {% include 'apps_gallery/tabs/02_appeal_tab.html' %}
-            </section>
-        </div>
-
-        <div class="col-12">
-            <!-- スクリーンショットセクション -->
-            <section id="screenshots" class="scroll-margin-top">
-                {% include 'apps_gallery/tabs/03_screenshots_tab.html' %}
+                {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
             </section>
         </div>
     </div>
 
     <!-- ステータスインジケーター（左下に固定） -->
     <div class="position-fixed bottom-0 start-0 p-4" style="z-index: 1000;">
-        {% if app.author == request.user %}
-        <div class="cyber-status-indicator">
-            {% if not readonly %}
-                <button type="button" id="save-and-view" class="status-badge editing-link btn btn-link p-0">
-                    <i class="bi bi-pencil-square"></i> 編集 <i class="bi bi-arrow-right-short"></i> 詳細 <i class="bi bi-eye-fill"></i>
-                </button>
-            {% else %}
-                <a href="{% url 'apps_gallery:edit' app.pk %}" id="status-link" class="status-badge viewing-link">
-                    <i class="bi bi-eye-fill"></i> 詳細 <i class="bi bi-arrow-right-short"></i> 編集 <i class="bi bi-pencil-square"></i>
-                </a>
+        {% if app %}  {# appが存在する場合のみ表示 #}
+            {% if app.author == request.user %}
+                <div class="cyber-status-indicator">
+                    {% if not readonly %}
+                        <button type="button" id="save-and-view" class="status-badge editing-link btn btn-link p-0">
+                            <i class="bi bi-pencil-square"></i> 編集もーど </i>
+                        </button>
+                    {% else %}
+                        <a href="{% url 'apps_gallery:edit' app.pk %}" id="status-link" class="status-badge viewing-link">
+                            <i class="bi bi-eye-fill"></i> 詳細もーど </i>
+                        </a>
+                    {% endif %}
+                </div>
             {% endif %}
-        </div>
         {% endif %}
     </div>
 
     <!-- 保存ボタン（新規作成時または編集モードかつ作者の場合のみ表示） -->
     {% if not readonly and app.author == request.user or app is None %}
         <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000;">
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-cyber-success">
-                    <i class="bi bi-save"></i> 
-                    保存する
-                </button>
+            <button type="submit" class="btn btn-cyber-save" form="app-form">
+                <i class="bi bi-save"></i> 保存
+            </button>
+        </div>
+
+        <!-- 保存完了メッセージ -->
+        <div id="save-message" class="position-fixed top-50 start-50 translate-middle" style="display: none; z-index: 1100;">
+            <div class="alert alert-success">
+                保存しました！
             </div>
         </div>
     {% endif %}
-
-    <!-- メッセージ表示エリア -->
-    <div id="save-message" class="position-fixed top-50 start-50 translate-middle" style="display: none; z-index: 9999;">
-        <div class="cyber-message">
-            <i class="bi bi-check-circle-fill"></i> 保存しました！
-        </div>
-    </div>
 </div>
 
 <style>
@@ -646,188 +648,19 @@ html {
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const appTabs = document.getElementById('appTabs');
-    let lastScrollTop = 0;
-    
-    // スクロールイベントの処理（タブの表示/非表示用）
-    window.addEventListener('scroll', function() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        if (scrollTop > lastScrollTop && scrollTop > 100) {
-            appTabs.style.transform = 'translateY(-100%)';
-        } else {
-            appTabs.style.transform = 'translateY(0)';
-        }
-        
-        lastScrollTop = scrollTop;
-    });
+// アップロード関連のコードを全て削除し、必要なスタイルだけを残す
+(function() {
+    // スタイル関連のコードのみ残す
+    const initializeStyles = () => {
+        // スタイルの初期化処理（必要な場合）
+    };
 
-    // タブクリック時のスクロール処理
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            
-            if (targetElement) {
-                const tabHeight = appTabs.offsetHeight;
-                let offset;
-
-                // セクションごとに異なるオフセットを設定
-                switch(targetId) {
-                    case '#basic':
-                        offset = tabHeight + 20;
-                        break;
-                    case '#appeal':
-                        offset = tabHeight + 20;
-                        break;
-                    case '#screenshots':
-                        offset = tabHeight + 100; // スクリーンショット用の固定オフセット
-                        break;
-                    default:
-                        offset = tabHeight + 20;
-                }
-
-                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
-                
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // アクティブタブの更新
-    window.addEventListener('scroll', function() {
-        const sections = document.querySelectorAll('section[id]');
-        const tabHeight = appTabs.offsetHeight;
-
-        sections.forEach(section => {
-            const sectionId = section.getAttribute('id');
-            let offset;
-
-            // セクションごとに異なるオフセットを設定
-            switch(sectionId) {
-                case 'basic':
-                    offset = tabHeight + 50;
-                    break;
-                case 'appeal':
-                    offset = tabHeight + 50;
-                    break;
-                case 'screenshots':
-                    offset = tabHeight + 100; // スクリーンショット用の固定オフセット
-                    break;
-                default:
-                    offset = tabHeight + 50;
-            }
-
-            const sectionTop = section.offsetTop - offset;
-            const sectionHeight = section.offsetHeight;
-            
-            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.classList.remove('active');
-                });
-                document.querySelector(`a[href="#${sectionId}"]`).classList.add('active');
-            }
-        });
-    });
-
-    // 保存して詳細画面へ遷移する処理を追加
-    const saveAndViewButton = document.getElementById('save-and-view');
-    if (saveAndViewButton) {
-        saveAndViewButton.addEventListener('click', function() {
-            // フォームを取得
-            const form = document.querySelector('form');
-            if (form) {
-                // FormDataオブジェクトを作成
-                const formData = new FormData(form);
-                
-                // フォームをサーバーに送信
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // メッセージを表示
-                        const messageElement = document.getElementById('save-message');
-                        messageElement.style.display = 'block';
-                        
-                        // 10秒後にメッセージを非表示にして詳細画面へ遷移
-                        setTimeout(() => {
-                            messageElement.style.display = 'none';
-                            window.location.href = "{% url 'apps_gallery:detail' app.pk %}";
-                        }, 1000); // 1秒後に遷移
-                    } else {
-                        throw new Error('保存に失敗しました');
-                    }
-                })
-                .catch(error => {
-                    alert('エラーが発生しました: ' + error.message);
-                });
-            }
-        });
+    // DOMContentLoaded時に初期化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeStyles);
+    } else {
+        initializeStyles();
     }
-
-    // ロボットアイコンのクリックイベント処理を追加
-    const robotIcon = document.querySelector('.robot-icon');
-    if (robotIcon && !document.body.classList.contains('readonly-mode')) {
-        robotIcon.addEventListener('click', function(e) {
-            e.preventDefault(); // デフォルトの遷移を防止
-            
-            // フォームを取得
-            const form = document.querySelector('form');
-            if (form) {
-                // FormDataオブジェクトを作成
-                const formData = new FormData(form);
-                
-                // フォームをサーバーに送信
-                fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // 保存成功後、直接ホームページへリダイレクト
-                        window.location.href = "{% url 'home:home' %}";
-                    } else {
-                        throw new Error('保存に失敗しました');
-                    }
-                })
-                .catch(error => {
-                    alert('エラーが発生しました: ' + error.message);
-                });
-            }
-        });
-    }
-});
-
-// タブ切り替え時にactive_tabの値を更新
-document.querySelectorAll('.nav-link').forEach(tab => {
-    tab.addEventListener('click', function() {
-        document.getElementById('active_tab').value = this.getAttribute('data-bs-target').replace('#', '');
-    });
-});
-
-// ページ読み込み時に指定されたタブを表示
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const tab = urlParams.get('tab');
-    if (tab) {
-        const tabElement = document.querySelector(`[data-bs-target="#${tab}"]`);
-        if (tabElement) {
-            new bootstrap.Tab(tabElement).show();
-        }
-    }
-});
+})();
 </script>
 {% endblock %} 
