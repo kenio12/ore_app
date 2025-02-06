@@ -23,44 +23,48 @@ def create_view(request):
         try:
             form = AppForm(request.POST)
             if form.is_valid():
-                # 1. まずアプリの基本情報を保存
                 app = form.save(commit=False)
                 app.author = request.user
                 app.save()
                 
-                # 2. スクリーンショットの処理（一括で）
+                # スクリーンショットの処理
                 screenshots_data = []
                 if request.session.get('temp_screenshots'):
+                    print("セッション内のスクリーンショット:", request.session['temp_screenshots'])  # デバッグ出力
                     for screenshot in request.session['temp_screenshots']:
                         try:
-                            # Base64のヘッダー部分を確認して処理
-                            if 'data:image' in screenshot['image']:
-                                image_data = screenshot['image'].split('base64,')[1]
-                            else:
-                                image_data = screenshot['image']
+                            image_data = screenshot.get('image')
+                            if not image_data:
+                                continue
+                            
+                            # Base64ヘッダーの処理
+                            if 'data:image' in image_data:
+                                # Base64ヘッダーを削除
+                                image_data = image_data.split('base64,')[1]
                             
                             # Cloudinaryにアップロード
                             upload_result = cloudinary.uploader.upload(
-                                image_data,
+                                f"data:image/jpeg;base64,{image_data}",
                                 folder='app_screenshots'
                             )
                             
-                            # スクリーンショット情報を配列に追加
+                            print("Cloudinaryアップロード結果:", upload_result)  # デバッグ出力
+                            
                             screenshots_data.append({
                                 'public_id': upload_result['public_id'],
                                 'url': upload_result['secure_url'],
                                 'description': screenshot.get('description', '')
                             })
                         except Exception as e:
-                            print(f"画像処理エラー: {e}")
+                            print(f"画像処理エラー: {str(e)}")
                             continue
                     
-                    # 3. 全ての画像を一度に保存
                     if screenshots_data:
+                        print("保存する画像データ:", screenshots_data)  # デバッグ出力
                         app.screenshots = screenshots_data
                         app.save()
                     
-                    # 4. セッションクリア
+                    # セッションをクリア
                     del request.session['temp_screenshots']
                     request.session.modified = True
                 
@@ -104,7 +108,7 @@ def edit_app(request, pk):
         try:
             # 既存のスクリーンショットを保持
             existing_screenshots = app.screenshots or []
-            print("既存のスクリーンショット:", existing_screenshots)
+            print("既存のスクリーンショット:", existing_screenshots)  # デバッグ出力
             
             # 基本情報の保存
             app.title = request.POST.get('title', app.title)
@@ -123,21 +127,26 @@ def edit_app(request, pk):
             
             # スクリーンショットの処理
             if request.session.get('temp_screenshots'):
+                print("セッション内のスクリーンショット:", request.session['temp_screenshots'])  # デバッグ出力
                 for screenshot in request.session['temp_screenshots']:
                     try:
-                        # imageUrlまたはimageを使用
-                        image_data = screenshot.get('imageUrl') or screenshot.get('image')
+                        # Base64データの処理
+                        image_data = screenshot.get('image')
                         if not image_data:
                             continue
                             
+                        # Base64ヘッダーの処理
                         if 'data:image' in image_data:
+                            # Base64ヘッダーを削除
                             image_data = image_data.split('base64,')[1]
                         
                         # Cloudinaryにアップロード
                         upload_result = cloudinary.uploader.upload(
-                            image_data,
+                            f"data:image/jpeg;base64,{image_data}",  # Base64ヘッダーを追加
                             folder='app_screenshots'
                         )
+                        
+                        print("Cloudinaryアップロード結果:", upload_result)  # デバッグ出力
                         
                         # 新しい画像情報を追加
                         existing_screenshots.append({
@@ -151,6 +160,7 @@ def edit_app(request, pk):
                         continue
                 
                 # 全ての画像を保存
+                print("保存する画像データ:", existing_screenshots)  # デバッグ出力
                 app.screenshots = existing_screenshots
                 
                 # セッションクリア
@@ -325,7 +335,7 @@ def delete_app(request, pk):
 def upload_screenshot(request):
     try:
         image = request.FILES.get('image')
-        description = request.POST.get('description', '')  # 説明文を取得
+        description = request.POST.get('description', '')
         
         if not image:
             return JsonResponse({'error': '画像が必要です'}, status=400)
@@ -333,29 +343,28 @@ def upload_screenshot(request):
         # セッションに保存
         temp_screenshots = request.session.get('temp_screenshots', [])
         
-        # Base64でエンコード
+        # 画像データをBase64でエンコード
         image_data = base64.b64encode(image.read()).decode('utf-8')
         
-        # 画像情報と説明文を保存
+        # 画像情報を保存
         screenshot_info = {
-            'image_data': image_data,
-            'description': description  # 説明文も一緒に保存
+            'image': f'data:image/jpeg;base64,{image_data}',  # Base64ヘッダーを追加
+            'description': description
         }
         
         temp_screenshots.append(screenshot_info)
         request.session['temp_screenshots'] = temp_screenshots
         request.session.modified = True
 
-        # プレビュー用にBase64データも返す
         return JsonResponse({
             'status': 'success',
             'message': '画像を一時保存しました',
             'description': description,
-            'preview_data': image_data  # プレビュー用のBase64データ
+            'preview_data': f'data:image/jpeg;base64,{image_data}'  # プレビュー用にBase64ヘッダーを追加
         })
 
     except Exception as e:
-        logger.error(f"Screenshot upload error: {str(e)}")  # ログ追加
+        print(f"Screenshot upload error: {str(e)}")  # デバッグ用
         return JsonResponse({
             'error': f'アップロード中にエラーが発生しました: {str(e)}'
         }, status=500)
