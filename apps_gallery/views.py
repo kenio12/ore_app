@@ -11,6 +11,7 @@ import cloudinary
 import cloudinary.uploader
 from django.urls import reverse
 import base64
+import logging
 
 # Create your views here.
 
@@ -227,14 +228,16 @@ def upload_screenshot(request):
         request.session['temp_screenshots'] = temp_screenshots
         request.session.modified = True
 
+        # プレビュー用にBase64データも返す
         return JsonResponse({
             'status': 'success',
             'message': '画像を一時保存しました',
-            'description': description  # フロントエンドに説明文を返す
+            'description': description,
+            'preview_data': image_data  # プレビュー用のBase64データ
         })
 
     except Exception as e:
-        print(f"Error in upload_screenshot: {str(e)}")
+        logger.error(f"Screenshot upload error: {str(e)}")  # ログ追加
         return JsonResponse({
             'error': f'アップロード中にエラーが発生しました: {str(e)}'
         }, status=500)

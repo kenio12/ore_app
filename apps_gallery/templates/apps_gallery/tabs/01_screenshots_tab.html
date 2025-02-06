@@ -855,6 +855,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // 画像アップロード処理
+    async function handleFileUpload(file) {
+        // 現在の画像数をチェック
+        const currentScreenshots = document.querySelectorAll('.screenshot-wrapper').length;
+        
+        if (currentScreenshots >= 3) {
+            showToast('スクリーンショットは最大3枚までです', 'error');
+            return false;
+        }
+
+        // ファイルサイズチェック
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        if (file.size > maxSize) {
+            const optimizedFile = await optimizeImage(file);
+            if (optimizedFile.size > maxSize) {
+                showToast('ファイルサイズが大きすぎます（最大2MB）', 'error');
+                return false;
+            }
+            file = optimizedFile;
+        }
+
+        // ... rest of the upload code ...
+    }
+
     // スタイルも追加
     const style = document.createElement('style');
     style.textContent = `

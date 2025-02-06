@@ -5,6 +5,15 @@
                 <i class="bi bi-info-circle-fill text-cyber-yellow"></i> 基本情報
             </h2>
             
+            <!-- 作者名（表示のみ） -->
+            <div class="mb-4">
+                <label class="form-label text-cyber-yellow">作者</label>
+                <input type="text" 
+                       class="form-control cyber-yellow-focus" 
+                       value="{{ user.username }}"
+                       readonly>
+            </div>
+
             <!-- アプリ名 -->
             <div class="mb-4">
                 <label class="form-label fw-bold text-cyber-yellow" for="title">
@@ -18,44 +27,47 @@
                        {% if readonly %}readonly{% endif %}>
             </div>
 
-            <!-- アプリの種類（チェックボックス） -->
-            <div class="mb-3">
-                <label class="form-label text-cyber-yellow">アプリの種類</label>
-                <div class="d-flex flex-wrap gap-3">
-                    {% for type_key, type_name in APP_TYPES.items %}
-                    <div class="form-check">
-                        <input type="checkbox" 
-                               name="types" 
-                               value="{{ type_key }}" 
-                               class="form-check-input cyber-yellow-check" 
-                               id="type_{{ type_key }}"
-                               {% if type_key in app.app_types %}checked{% endif %}
-                               {% if readonly %}disabled{% endif %}>
-                        <label class="form-check-label text-cyber-yellow" for="type_{{ type_key }}">
-                            {{ type_name }}
-                        </label>
-                    </div>
+            <!-- アプリの種類 -->
+            <div class="form-group mb-4">
+                <label class="form-label">
+                    <i class="bi bi-gear-fill text-cyber-purple"></i> アプリの種類
+                </label>
+                <div class="cyber-checkbox-group">
+                    {% for value, label in APP_TYPES.items %}
+                        <div class="form-check">
+                            <input type="checkbox" 
+                                   name="types" 
+                                   value="{{ value }}"
+                                   class="form-check-input cyber-checkbox" 
+                                   id="type_{{ value }}"
+                                   {% if value in app.app_types %}checked{% endif %}
+                                   {% if readonly %}disabled{% endif %}>
+                            <label class="form-check-label" for="type_{{ value }}">{{ label }}</label>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
 
-            <!-- ジャンル（チェックボックス） -->
-            <div class="mb-3">
-                <label class="form-label text-cyber-yellow">ジャンル</label>
-                <div class="d-flex flex-wrap gap-3">
-                    {% for genre_key, genre_name in GENRES.items %}
-                    <div class="form-check">
-                        <input type="checkbox" 
-                               name="genres" 
-                               value="{{ genre_key }}" 
-                               class="form-check-input cyber-yellow-check" 
-                               id="genre_{{ genre_key }}"
-                               {% if genre_key in app.genres %}checked{% endif %}
-                               {% if readonly %}disabled{% endif %}>
-                        <label class="form-check-label text-cyber-yellow" for="genre_{{ genre_key }}">
-                            {{ genre_name }}
-                        </label>
-                    </div>
+            <!-- 区切り線を追加 -->
+            <hr class="cyber-divider my-4">
+
+            <!-- ジャンル -->
+            <div class="form-group mb-4">
+                <label class="form-label">
+                    <i class="bi bi-tags-fill text-cyber-purple"></i> ジャンル
+                </label>
+                <div class="cyber-checkbox-group">
+                    {% for value, label in GENRES.items %}
+                        <div class="form-check">
+                            <input type="checkbox" 
+                                   name="genres" 
+                                   value="{{ value }}"
+                                   class="form-check-input cyber-checkbox" 
+                                   id="genre_{{ value }}"
+                                   {% if value in app.genres %}checked{% endif %}
+                                   {% if readonly %}disabled{% endif %}>
+                            <label class="form-check-label" for="genre_{{ value }}">{{ label }}</label>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
@@ -84,15 +96,6 @@
                     </option>
                     {% endfor %}
                 </select>
-            </div>
-
-            <!-- 作者名（表示のみ） -->
-            <div class="mb-3">
-                <label class="form-label text-cyber-yellow">作者</label>
-                <input type="text" 
-                       class="form-control cyber-yellow-focus" 
-                       value="{{ app.author.username }}"
-                       readonly>
             </div>
 
             <!-- アプリのURL -->
@@ -166,38 +169,27 @@
 }
 
 /* チェックボックスのスタイル */
-.cyber-yellow-check {
+.cyber-checkbox {
     background-color: var(--bs-dark) !important;
     border-color: var(--cyber-yellow) !important;
 }
 
-/* チェックボックスがチェックされた時（通常時） */
-.cyber-yellow-check:checked {
+/* チェックボックスがチェックされた時 */
+.cyber-checkbox:checked {
     background-color: var(--cyber-yellow) !important;
     border-color: var(--cyber-yellow) !important;
     box-shadow: 0 0 5px var(--cyber-yellow);
-    opacity: 1 !important;  /* 追加：不透明度を最大に */
 }
 
-/* 詳細画面（disabled）でチェックされた時のスタイル */
-.cyber-yellow-check:disabled:checked {
-    background-color: var(--cyber-yellow) !important;
+/* チェックボックスのラベル */
+.form-check-label {
+    color: var(--cyber-yellow);
+}
+
+/* チェックボックスホバー時 */
+.cyber-checkbox:hover {
     border-color: var(--cyber-yellow) !important;
     box-shadow: 0 0 5px var(--cyber-yellow);
-    opacity: 1 !important;  /* 追加：不透明度を最大に */
-}
-
-/* 詳細画面でチェックされた項目のラベル */
-.form-check-input:disabled:checked + .form-check-label {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 10px var(--cyber-yellow);
-    font-weight: bold;
-    opacity: 1 !important;  /* 追加：不透明度を最大に */
-}
-
-/* 詳細画面でチェックされていない項目のラベル */
-.form-check-input:disabled:not(:checked) + .form-check-label {
-    opacity: 0.5;
 }
 
 /* 読み取り専用フィールドのスタイル */
@@ -247,5 +239,52 @@
     color: var(--cyber-yellow);
     box-shadow: 0 0 15px var(--cyber-yellow);
     transform: translateY(-2px);
+}
+
+/* チェックボックスグループのスタイル */
+.cyber-checkbox-group {
+    background: rgba(13, 25, 45, 0.5);
+    border: 1px solid var(--cyber-yellow);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* 区切り線のスタイル */
+.cyber-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        var(--cyber-yellow),
+        transparent
+    );
+    opacity: 0.5;
+    margin: 2rem 0;
+}
+
+/* チェックボックス間の余白 */
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+/* 最後のチェックボックスの余白を消す */
+.form-check:last-child {
+    margin-bottom: 0;
+}
+
+/* ラベルのスタイル */
+.form-label {
+    color: var(--cyber-yellow);
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* アイコンのスタイル */
+.form-label i {
+    margin-right: 0.5rem;
+    color: var(--cyber-yellow);
 }
 </style> 
