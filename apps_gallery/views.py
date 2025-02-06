@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from .models import AppGallery
+from .forms import AppForm  # この行を追加！
 from .constants import *  # 全ての定数をインポート
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -15,29 +16,83 @@ import logging
 
 # Create your views here.
 
+@login_required  # ログインが必要
 def create_view(request):
     """アプリの新規作成ビュー"""
+    if request.method == 'POST':
+        try:
+            form = AppForm(request.POST)
+            if form.is_valid():
+                # 1. まずアプリの基本情報を保存
+                app = form.save(commit=False)
+                app.author = request.user
+                app.save()
+                
+                # 2. スクリーンショットの処理（一括で）
+                screenshots_data = []
+                if request.session.get('temp_screenshots'):
+                    for screenshot in request.session['temp_screenshots']:
+                        try:
+                            # Base64のヘッダー部分を確認して処理
+                            if 'data:image' in screenshot['image']:
+                                image_data = screenshot['image'].split('base64,')[1]
+                            else:
+                                image_data = screenshot['image']
+                            
+                            # Cloudinaryにアップロード
+                            upload_result = cloudinary.uploader.upload(
+                                image_data,
+                                folder='app_screenshots'
+                            )
+                            
+                            # スクリーンショット情報を配列に追加
+                            screenshots_data.append({
+                                'public_id': upload_result['public_id'],
+                                'url': upload_result['secure_url'],
+                                'description': screenshot.get('description', '')
+                            })
+                        except Exception as e:
+                            print(f"画像処理エラー: {e}")
+                            continue
+                    
+                    # 3. 全ての画像を一度に保存
+                    if screenshots_data:
+                        app.screenshots = screenshots_data
+                        app.save()
+                    
+                    # 4. セッションクリア
+                    del request.session['temp_screenshots']
+                    request.session.modified = True
+                
+                return JsonResponse({
+                    'success': True,
+                    'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': app.pk})
+                })
+            
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors
+            }, status=400)
+            
+        except Exception as e:
+            print(f"全体的なエラー: {e}")
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+    
+    # GET処理は変更なし
+    form = AppForm()
     context = {
         'hide_navbar': True,
-        'readonly': False,  # 明示的にFalseを設定
-        'app': None,  # 新規作成時はNone
+        'readonly': False,
         'APP_TYPES': dict(APP_TYPES),
         'APP_STATUS': dict(APP_STATUS),
         'PUBLISH_STATUS': dict(PUBLISH_STATUS),
         'GENRES': dict(GENRES),
-        'is_edit': False,  # 新規作成時はFalse
+        'is_edit': False,
+        'form': form
     }
-    
-    print("Debug - Create View Context:", {  # デバッグ用出力
-        'readonly': context['readonly'],
-        'app_exists': context['app'] is not None
-    })
-    
-    if request.method == 'POST':
-        # POSTリクエストの処理
-        return handle_app_form(request, context=context)
-    
-    # GETリクエストの場合は新規作成フォームを表示
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
 @login_required
@@ -45,33 +100,76 @@ def edit_app(request, pk):
     """アプリの編集ビュー"""
     app = get_object_or_404(AppGallery, pk=pk)
     
-    # POSTリクエストの場合、フォームデータを処理
     if request.method == 'POST':
-        # フォームデータを取得と保存処理
-        app.title = request.POST.get('title', app.title)
-        app.app_types = request.POST.getlist('types', app.app_types)
-        app.genres = request.POST.getlist('genres', app.genres)
-        app.dev_status = request.POST.get('dev_status', app.dev_status)
-        app.status = request.POST.get('status', app.status)
-        app.app_url = request.POST.get('app_url', app.app_url)
-        app.github_url = request.POST.get('github_url', app.github_url)
-        app.overview = request.POST.get('overview', app.overview)
-        app.motivation = request.POST.get('motivation', app.motivation)
-        app.catchphrases = request.POST.getlist('catchphrases')
-        app.target_users = request.POST.get('target_users', app.target_users)
-        app.problems = request.POST.get('problems', app.problems)
-        app.final_appeal = request.POST.get('final_appeal', app.final_appeal)
-        app.save()
-        
-        # AJAXリクエストの場合はJSONレスポンスを返す
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        try:
+            # 既存のスクリーンショットを保持
+            existing_screenshots = app.screenshots or []
+            print("既存のスクリーンショット:", existing_screenshots)
+            
+            # 基本情報の保存
+            app.title = request.POST.get('title', app.title)
+            app.app_types = request.POST.getlist('types', app.app_types)
+            app.genres = request.POST.getlist('genres', app.genres)
+            app.dev_status = request.POST.get('dev_status', app.dev_status)
+            app.status = request.POST.get('status', app.status)
+            app.app_url = request.POST.get('app_url', app.app_url)
+            app.github_url = request.POST.get('github_url', app.github_url)
+            app.overview = request.POST.get('overview', app.overview)
+            app.motivation = request.POST.get('motivation', app.motivation)
+            app.catchphrases = request.POST.getlist('catchphrases')
+            app.target_users = request.POST.get('target_users', app.target_users)
+            app.problems = request.POST.get('problems', app.problems)
+            app.final_appeal = request.POST.get('final_appeal', app.final_appeal)
+            
+            # スクリーンショットの処理
+            if request.session.get('temp_screenshots'):
+                for screenshot in request.session['temp_screenshots']:
+                    try:
+                        # imageUrlまたはimageを使用
+                        image_data = screenshot.get('imageUrl') or screenshot.get('image')
+                        if not image_data:
+                            continue
+                            
+                        if 'data:image' in image_data:
+                            image_data = image_data.split('base64,')[1]
+                        
+                        # Cloudinaryにアップロード
+                        upload_result = cloudinary.uploader.upload(
+                            image_data,
+                            folder='app_screenshots'
+                        )
+                        
+                        # 新しい画像情報を追加
+                        existing_screenshots.append({
+                            'public_id': upload_result['public_id'],
+                            'url': upload_result['secure_url'],
+                            'description': screenshot.get('description', '')
+                        })
+                        
+                    except Exception as e:
+                        print(f"画像処理エラー: {str(e)}")
+                        continue
+                
+                # 全ての画像を保存
+                app.screenshots = existing_screenshots
+                
+                # セッションクリア
+                del request.session['temp_screenshots']
+                request.session.modified = True
+            
+            app.save()
+            
             return JsonResponse({
-                'status': 'success',
+                'success': True,
                 'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': pk})
             })
-        
-        # 通常のリクエストの場合は詳細画面にリダイレクト
-        return redirect('apps_gallery:detail', pk=pk)
+            
+        except Exception as e:
+            print(f"保存エラー: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
     
     # 作者でない場合は403エラー
     if app.author != request.user:
@@ -92,60 +190,77 @@ def edit_app(request, pk):
 @login_required
 def handle_app_form(request, app=None, context=None):
     """アプリの作成・編集を処理する共通関数"""
-    # contextがNoneの場合は空のdictを作成
-    if context is None:
-        context = {}
-    
-    # 編集時は作者チェック
-    if app and app.author != request.user:
-        raise PermissionDenied("このアプリを編集する権限がありません。")
+    try:
+        # contextがNoneの場合は空のdictを作成
+        if context is None:
+            context = {}
+        
+        # 編集時は作者チェック
+        if app and app.author != request.user:
+            raise PermissionDenied("このアプリを編集する権限がありません。")
 
-    # 明示的にreadonlyを設定
-    if 'readonly' not in context:
-        context['readonly'] = False
+        # 明示的にreadonlyを設定
+        if 'readonly' not in context:
+            context['readonly'] = False
 
-    if request.method == 'POST':
-        form = AppForm(request.POST, instance=app)
-        if form.is_valid():
-            app = form.save(commit=False)
-            if not app.author:
-                app.author = request.user
-            app.save()
-            
-            # アプリ保存時の処理
-            if 'temp_screenshots' in request.session:
-                temp_screenshots = request.session['temp_screenshots']
-                for screenshot in temp_screenshots:
-                    # Base64データをデコード
-                    image_data = base64.b64decode(screenshot['image_data'])
-                    
-                    # Cloudinaryにアップロード
-                    upload_result = cloudinary.uploader.upload(
-                        image_data,
-                        folder='app_screenshots',
-                        resource_type='image'
-                    )
-                    
-                    # スクリーンショット情報を保存
-                    screenshot_info = {
-                        'public_id': upload_result['public_id'],
-                        'url': upload_result['secure_url'],
-                        'description': screenshot['description']  # 説明文も保存
-                    }
-                    
-                    screenshots = app.screenshots or []
-                    screenshots.append(screenshot_info)
-                    app.screenshots = screenshots
-                
+        if request.method == 'POST':
+            form = AppForm(request.POST, instance=app)
+            if form.is_valid():
+                app = form.save(commit=False)
+                if not app.author:
+                    app.author = request.user
                 app.save()
-                del request.session['temp_screenshots']
+                
+                # アプリ保存時の処理
+                if 'temp_screenshots' in request.session:
+                    temp_screenshots = request.session['temp_screenshots']
+                    for screenshot in temp_screenshots:
+                        # Base64データをデコード
+                        image_data = base64.b64decode(screenshot['image'])
+                        
+                        # Cloudinaryにアップロード
+                        upload_result = cloudinary.uploader.upload(
+                            image_data,
+                            folder='app_screenshots',
+                            resource_type='image'
+                        )
+                        
+                        # スクリーンショット情報を保存
+                        screenshot_info = {
+                            'public_id': upload_result['public_id'],
+                            'url': upload_result['secure_url'],
+                            'description': screenshot['description']  # 説明文も保存
+                        }
+                        
+                        screenshots = app.screenshots or []
+                        screenshots.append(screenshot_info)
+                        app.screenshots = screenshots
+                    
+                    app.save()
+                    del request.session['temp_screenshots']
 
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': True,
-                    'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': app.pk})
-                })
-            return redirect('apps_gallery:detail', pk=app.pk)
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True,
+                        'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': app.pk})
+                    })
+                return redirect('apps_gallery:detail', pk=app.pk)
+            else:
+                # フォームが無効な場合のエラーハンドリング
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False,
+                        'errors': form.errors
+                    }, status=400)
+    except Exception as e:
+        # エラーログを出力
+        print(f"Error in handle_app_form: {str(e)}")
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': False,
+                'error': '保存に失敗しました'
+            }, status=500)
+        messages.error(request, '保存に失敗しました')
 
     # アクティブなタブ情報をcontextに追加
     context.update({
@@ -175,17 +290,20 @@ def app_detail(request, pk):
     """アプリの詳細ビュー"""
     app = get_object_or_404(AppGallery, pk=pk)
     
-    # POSTリクエストの場合は編集モードに切り替え
-    if request.method == 'POST':
-        # AJAXリクエストの場合はJSONレスポンスを返す
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({
-                'status': 'success',
-                'redirect_url': reverse('apps_gallery:edit', kwargs={'pk': pk})
-            })
-        
-        # 通常のリクエストの場合は編集画面にリダイレクト
-        return redirect('apps_gallery:edit', pk=pk)
+    # デバッグ用の詳細なログ出力
+    print("\n==== 画像表示デバッグ情報 ====")
+    print(f"App ID: {app.id}")
+    print(f"App Title: {app.title}")
+    print("Screenshots Data Type:", type(app.screenshots))
+    print("Screenshots Raw Data:", app.screenshots)
+    
+    if app.screenshots:
+        print("\n個別のスクリーンショット情報:")
+        for i, screenshot in enumerate(app.screenshots, 1):
+            print(f"\nスクリーンショット {i}:")
+            print(f"データ型: {type(screenshot)}")
+            for key, value in screenshot.items():
+                print(f"{key}: {value}")
     
     context = {
         'app': app,
