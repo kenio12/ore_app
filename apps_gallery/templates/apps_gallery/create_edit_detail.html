@@ -47,7 +47,7 @@
     <!-- ヘッダー部分（新規作成/編集/詳細で切り替え） -->
     <div class="d-flex justify-content-between align-items-center mt-3" style="margin-top: 2rem; margin-bottom: 2rem;">
         <h2 style="color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; font-weight: bold;">
-            {% if app %}
+            {% if app.id %}
                 {% if readonly %}
                     {{ app.title }}の詳細
                 {% else %}
@@ -119,9 +119,9 @@
 
     <!-- 保存ボタン（新規作成時または編集モードかつ作者の場合のみ表示） -->
     {% if not readonly %}
-        <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000;">
+        <div class="position-fixed p-4" style="z-index: 1000; bottom: 0; right: 0;">
             <button type="submit" class="btn btn-cyber-save" form="app-form">
-                <i class="bi bi-save"></i> 保存する
+                <i class="bi bi-save"></i> 保存
             </button>
         </div>
     {% endif %}
