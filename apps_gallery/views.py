@@ -19,6 +19,34 @@ import logging
 @login_required  # ログインが必要
 def create_view(request):
     """アプリの新規作成ビュー"""
+    # デバッグ出力を追加
+    print("\n==== セッション状態のデバッグ情報 ====")
+    temp_screenshots = request.session.get('temp_screenshots', [])
+    print(f"セッション内の画像数: {len(temp_screenshots)}")
+    for i, shot in enumerate(temp_screenshots, 1):
+        print(f"\n画像 {i}:")
+        print(f"Public ID: {shot.get('public_id')}")
+        print(f"URL: {shot.get('url')}")
+    
+    # 3枚より多い場合は、古い画像を削除
+    if len(temp_screenshots) > 3:
+        print("\n3枚を超える画像を削除します...")
+        # 古い画像をCloudinaryから削除（4枚目以降）
+        for old_shot in temp_screenshots[3:]:
+            if 'public_id' in old_shot:
+                try:
+                    cloudinary.uploader.destroy(old_shot['public_id'])
+                    print(f"削除: {old_shot['public_id']}")
+                except Exception as e:
+                    logging.error(f"Failed to delete image from Cloudinary: {e}")
+                    print(f"削除失敗: {e}")
+        
+        # セッションには最新3枚だけを残す
+        temp_screenshots = temp_screenshots[:3]
+        request.session['temp_screenshots'] = temp_screenshots
+        request.session.modified = True
+        print(f"\n更新後のセッション内画像数: {len(temp_screenshots)}")
+
     if request.method == 'POST':
         try:
             form = AppForm(request.POST)
@@ -216,40 +244,42 @@ def delete_app(request, pk):
 @require_http_methods(["POST"])
 def upload_screenshot(request):
     """スクリーンショットのアップロード処理"""
-    if request.method == 'POST' and request.FILES.get('screenshot'):
-        # セッションから現在の画像数を取得
-        temp_screenshots = request.session.get('temp_screenshots', [])
-        
-        # 既存の画像数をチェック（編集時は既存のscreenshotsも数える）
-        existing_count = len(temp_screenshots)
-        if 'app_id' in request.POST:  # 編集時
-            app_id = request.POST['app_id']
-            app = AppGallery.objects.get(id=app_id)
-            existing_count += len(app.screenshots)
-
-        # 3枚制限のチェック
-        if existing_count >= 3:
-            return JsonResponse({
-                'error': '画像は最大3枚までしかアップロードできません！'
-            }, status=400)
-
-        # 以降は既存のアップロード処理
+    if request.method == 'POST' and request.FILES.get('image'):
         try:
-            image_file = request.FILES['screenshot']
             app_id = request.POST.get('app_id')
+            
+            # フォルダ構造を明確に分ける
+            if app_id:
+                # 既存アプリの場合
+                app = AppGallery.objects.get(id=app_id)
+                if len(app.screenshots) >= 3:
+                    return JsonResponse({
+                        'error': '画像は最大3枚までです'
+                    }, status=400)
+                upload_folder = f'app_screenshots/app_{app_id}'
+            else:
+                # 新規作成の場合
+                temp_screenshots = request.session.get('temp_screenshots', [])
+                if len(temp_screenshots) >= 3:
+                    return JsonResponse({
+                        'error': '画像は最大3枚までです'
+                    }, status=400)
+                upload_folder = 'app_screenshots/temp'
 
-            # ファイルサイズチェック（10MB）
+            # 新しい画像をアップロード
+            image_file = request.FILES['image']
+            
             if image_file.size > 10 * 1024 * 1024:
                 return JsonResponse({
                     'error': '画像サイズが大きすぎます（上限: 10MB）'
                 }, status=400)
 
-            # Cloudinaryにアップロード（ここでリサイズ）
+            # Cloudinaryにアップロード
             upload_result = cloudinary.uploader.upload(
                 image_file,
-                folder='app_screenshots',
+                folder=upload_folder,
                 transformation=[
-                    {'width': 1200, 'height': 800, 'crop': 'limit'},  # 最大サイズを指定
+                    {'width': 1200, 'height': 800, 'crop': 'limit'},
                     {'quality': 'auto:good'}
                 ]
             )
@@ -261,20 +291,12 @@ def upload_screenshot(request):
             }
 
             if app_id:
-                # 既存のアプリの場合
-                app = get_object_or_404(AppGallery, pk=app_id)
-                if app.author != request.user:
-                    return JsonResponse({'error': '権限がありません'}, status=403)
-                
-                # 既存のスクリーンショットリストに追加
-                screenshots = app.screenshots or []
-                screenshots.append(screenshot_data)
-                app.screenshots = screenshots
+                # 既存アプリの場合は末尾に追加
+                app.screenshots.append(screenshot_data)  # insert(0) から append() に変更
                 app.save()
             else:
-                # 新規作成時（セッションに保存）
-                temp_screenshots = request.session.get('temp_screenshots', [])
-                temp_screenshots.append(screenshot_data)
+                # 新規作成の場合も末尾に追加
+                temp_screenshots.append(screenshot_data)  # insert(0) から append() に変更
                 request.session['temp_screenshots'] = temp_screenshots
                 request.session.modified = True
 
@@ -285,7 +307,7 @@ def upload_screenshot(request):
             })
 
         except Exception as e:
-            logging.error(f"Screenshot upload error: Unexpected error - {str(e)}")
+            logging.error(f"Screenshot upload error: {str(e)}")
             return JsonResponse({
                 'error': 'アップロード中にエラーが発生しました',
                 'details': str(e)
