@@ -5,7 +5,7 @@
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0 text-cyber">アプリ管理</h4>
         <a href="{% url 'apps_gallery:create' %}" class="btn btn-cyber-purple">
-            <i class="fas fa-plus me-2"></i>新規作成
+            <i class="bi bi-plus me-2"></i>新規作成
         </a>
     </div>
     <div class="card-body">
@@ -22,10 +22,10 @@
                     </thead>
                     <tbody>
                         {% for app in apps %}
-                            <tr>
+                            <tr style="cursor: pointer;" onclick="window.location='{% url 'apps_gallery:edit' pk=app.pk %}'">
                                 <td class="text-cyber">{{ app.title }}</td>
                                 <td class="text-cyber">
-                                    <span class="text-cyber badge bg-{% if app.status == 'published' %}success{% else %}warning{% endif %}" 
+                                    <span class="badge bg-{% if app.status == 'published' %}success{% else %}warning{% endif %}" 
                                           data-bs-toggle="tooltip" 
                                           data-bs-placement="top" 
                                           title="{% if app.status == 'published' %}公開中：このアプリは全ユーザーに公開されています{% else %}下書き：このアプリはまだ非公開です{% endif %}">
@@ -34,14 +34,14 @@
                                 </td>
                                 <td class="text-cyber">{{ app.created_at|date:"Y/m/d" }}</td>
                                 <td class="text-cyber">
-                                    <a href="{% url 'apps_gallery:detail' pk=app.pk %}" class="btn btn-sm btn-cyber-primary me-2">
-                                        <i class="fas fa-eye"></i>
+                                    <a href="{% url 'apps_gallery:detail' pk=app.pk %}" class="btn btn-sm btn-cyber-primary me-2" onclick="event.stopPropagation();">
+                                        <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{% url 'apps_gallery:edit' pk=app.pk %}" class="btn btn-sm btn-success me-2">
-                                        <i class="fas fa-edit"></i>
+                                    <a href="{% url 'apps_gallery:edit' pk=app.pk %}" class="btn btn-sm btn-success me-2" onclick="event.stopPropagation();">
+                                        <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button class="btn btn-sm btn-cyber-danger" onclick="confirmDelete({{ app.pk }})">
-                                        <i class="fas fa-trash"></i>
+                                    <button class="btn btn-sm btn-cyber-danger" onclick="event.stopPropagation(); confirmDelete({{ app.pk }})">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
                             </tr>
