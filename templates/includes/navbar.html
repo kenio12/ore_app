@@ -9,15 +9,19 @@
         <div class="ms-auto">
             {% if user.is_authenticated %}
                 <div class="d-flex align-items-center">
-                    <a href="{% url 'apps_gallery:create' %}" class="btn btn-cyber-neon me-3">
-                        <i class="bi bi-plus-circle me-2"></i>
-                        アプリを投稿
-                    </a>
+                    <div class="action-buttons me-3">
+                        <a href="{% url 'apps_gallery:create' %}" class="action-btn create">
+                            <i class="bi bi-plus-circle"></i>
+                            アプリを投稿
+                        </a>
+                    </div>
                     
-                    <a href="{% url 'dashboard:index' %}" class="btn btn-cyber-blue">
-                        <i class="bi bi-person me-2"></i>
-                        {{ user.username }}
-                    </a>
+                    <div class="action-buttons">
+                        <a href="{% url 'dashboard:index' %}" class="action-btn profile">
+                            <i class="bi bi-person"></i>
+                            {{ user.username }}
+                        </a>
+                    </div>
                 </div>
             {% else %}
                 <div>
@@ -147,5 +151,56 @@
     bottom: 0;
     background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     animation: neonPulse 2s infinite;
+}
+
+/* アクションボタン */
+.action-buttons {
+    display: inline-flex;
+    background: transparent;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.action-btn {
+    padding: 8px 16px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    background: transparent;
+    text-shadow: 0 0 5px currentColor;
+}
+
+.action-btn.create {
+    color: #00ff9f;
+    border: 1px solid #00ff9f;
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.3),
+                inset 0 0 5px rgba(0, 255, 159, 0.2);
+}
+
+.action-btn.create:hover {
+    background: rgba(0, 255, 159, 0.1);
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5),
+                inset 0 0 10px rgba(0, 255, 159, 0.3);
+    transform: translateY(-1px);
+}
+
+.action-btn.profile {
+    color: #ffd700;
+    border: 1px solid #ffd700;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3),
+                inset 0 0 5px rgba(255, 215, 0, 0.2);
+}
+
+.action-btn.profile:hover {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5),
+                inset 0 0 10px rgba(255, 215, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.action-btn i {
+    filter: drop-shadow(0 0 3px currentColor);
 }
 </style>
