@@ -727,72 +727,85 @@ function showMessage(message, type = 'success') {
     }, 5000);
 }
 
+// トースト通知を表示する関数を追加
+function showToast(message, type = 'success') {
+    const toastElement = document.createElement('div');
+    toastElement.className = `cyber-message position-fixed top-50 start-50 translate-middle ${type}`;
+    toastElement.style.zIndex = '1100';
+    toastElement.innerHTML = message;
+    
+    document.body.appendChild(toastElement);
+
+    // 5秒後にフェードアウト
+    setTimeout(() => {
+        toastElement.style.opacity = '0';
+        setTimeout(() => toastElement.remove(), 500);
+    }, 3000);
+}
+
 // フォーム送信処理
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('appForm');
-    
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const isEdit = form.dataset.isEdit === 'true';
-        const appId = form.dataset.appId;
-        const formData = new FormData(form);
-        
-        try {
-            const url = isEdit ? `/apps_gallery/edit/${appId}/` : '/apps_gallery/create/';
-            const response = await fetch(url, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                window.location.href = data.redirect_url;
-            } else {
-                // エラー処理
-                console.error('保存エラー:', data.errors);
-                showToast('保存に失敗しました', 'error');
-            }
-        } catch (error) {
-            console.error('送信エラー:', error);
-            showToast('送信中にエラーが発生しました', 'error');
-        }
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    // 編集/詳細モード切り替え処理
-    const statusForm = document.querySelector('.cyber-status-indicator form');
-    if (statusForm) {
-        statusForm.addEventListener('submit', async function(e) {
+    // 編集モードリンクのクリックイベント
+    const editingLink = document.querySelector('.editing-link');
+    if (editingLink) {
+        editingLink.addEventListener('click', async function(e) {
             e.preventDefault();
-            e.stopPropagation();  // 追加：イベントの伝播を停止
+            
+            // フォームを取得して強制保存
+            const form = document.getElementById('appForm');
+            const formData = new FormData(form);
             
             try {
-                const response = await fetch(this.action, {
+                // フォームを送信
+                const response = await fetch(form.action, {
                     method: 'POST',
+                    body: formData,
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken'),
-                        'X-Requested-With': 'XMLHttpRequest'  // 追加：AJAXリクエストであることを明示
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.redirect_url) {
-                        window.location.href = data.redirect_url;  // 修正：レスポンスからリダイレクトURLを取得
-                    }
+                
+                const data = await response.json();
+                if (data.success) {
+                    showToast('保存しました', 'success');
+                    // 保存成功後に遷移
+                    window.location.href = this.href;
                 } else {
-                    throw new Error('モード切り替えに失敗しました');
+                    showToast('保存に失敗しました', 'error');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('モード切り替え中にエラーが発生しました: ' + error.message);
+                showToast('保存中にエラーが発生しました', 'error');
+            }
+        });
+    }
+    
+    // 保存ボタンのイベントリスナー（フォームが存在する場合のみ）
+    const form = document.getElementById('appForm');
+    if (form && !document.body.classList.contains('readonly')) {  // readonlyでない場合のみ
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    // 保存成功時はトースト通知のみ（遷移なし）
+                    showToast('保存しました', 'success');
+                } else {
+                    showToast('保存に失敗しました', 'error');
+                }
+            } catch (error) {
+                showToast('保存中にエラーが発生しました', 'error');
             }
         });
     }

@@ -11,106 +11,46 @@
             <div class="screenshots-gallery">
                 {% if app.screenshots %}
                     <div class="screenshots-container">
-                        <!-- まずサムネイル画像を表示 -->
                         {% for screenshot in app.screenshots %}
-                            {% if app.thumbnail.url == screenshot.url %}
-                                <div class="screenshot-wrapper mb-4">
-                                    <div class="screenshot-card is-thumbnail">
-                                        <div class="screenshot-image">
-                                            <img src="{{ screenshot.url }}" 
-                                                 alt="スクリーンショット" 
-                                                 class="img-fluid screenshot-preview">
+                            <div class="screenshot-wrapper mb-4">
+                                <div class="screenshot-card {% if app.thumbnail.url == screenshot.url %}is-thumbnail{% endif %}">
+                                    <div class="screenshot-image">
+                                        <img src="{{ screenshot.url }}" 
+                                             alt="スクリーンショット" 
+                                             class="img-fluid screenshot-preview">
+                                        
+                                        {% if app.thumbnail.url == screenshot.url %}
                                             <div class="thumbnail-badge">
                                                 <i class="bi bi-star-fill"></i> サムネイル
                                             </div>
-                                            
-                                            {% if not readonly %}
-                                                <div class="screenshot-actions">
-                                                    <button type="button" 
-                                                            class="btn-action btn-delete-screenshot" 
-                                                            data-index="{{ forloop.counter0 }}"
-                                                            title="削除">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                        {% if screenshot.description %}
-                                            <div class="screenshot-description">
-                                                <p class="text-cyber-purple mb-0">{{ screenshot.description }}</p>
-                                            </div>
                                         {% endif %}
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-
-                        <!-- サムネイル以外の画像を表示 -->
-                        {% for screenshot in app.screenshots %}
-                            {% if not app.thumbnail %}
-                                {% if forloop.first %}
-                                    <div class="screenshot-wrapper mb-4">
-                                        <div class="screenshot-card is-thumbnail">
-                                            <div class="screenshot-image">
-                                                <img src="{{ screenshot.url }}" 
-                                                     alt="スクリーンショット" 
-                                                     class="img-fluid screenshot-preview">
-                                                <div class="thumbnail-badge">
-                                                    <i class="bi bi-star-fill"></i> サムネイル
-                                                </div>
-                                                
-                                                {% if not readonly %}
-                                                    <div class="screenshot-actions">
-                                                        <button type="button" 
-                                                                class="btn-action btn-delete-screenshot" 
-                                                                data-index="{{ forloop.counter0 }}"
-                                                                title="削除">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                            {% if screenshot.description %}
-                                                <div class="screenshot-description">
-                                                    <p class="text-cyber-purple mb-0">{{ screenshot.description }}</p>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            {% elif app.thumbnail.url != screenshot.url %}
-                                <div class="screenshot-wrapper mb-4">
-                                    <div class="screenshot-card">
-                                        <div class="screenshot-image">
-                                            <img src="{{ screenshot.url }}" 
-                                                 alt="スクリーンショット" 
-                                                 class="img-fluid screenshot-preview">
-                                            
-                                            {% if not readonly %}
-                                                <div class="screenshot-actions">
+                                        
+                                        {% if not readonly %}
+                                            <div class="screenshot-actions">
+                                                {% if app.thumbnail.url != screenshot.url %}
                                                     <button type="button" 
                                                             class="btn-action btn-set-thumbnail" 
                                                             data-index="{{ forloop.counter0 }}"
                                                             title="サムネイルに設定">
                                                         <i class="bi bi-star"></i>
                                                     </button>
-                                                    <button type="button" 
-                                                            class="btn-action btn-delete-screenshot" 
-                                                            data-index="{{ forloop.counter0 }}"
-                                                            title="削除">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                        {% if screenshot.description %}
-                                            <div class="screenshot-description">
-                                                <p class="text-cyber-purple mb-0">{{ screenshot.description }}</p>
+                                                {% endif %}
+                                                <button type="button" 
+                                                        class="btn-action btn-delete-screenshot" 
+                                                        data-index="{{ forloop.counter0 }}"
+                                                        title="削除">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
                                             </div>
                                         {% endif %}
                                     </div>
+                                    {% if screenshot.description %}
+                                        <div class="screenshot-description">
+                                            <p class="text-cyber-purple mb-0">{{ screenshot.description }}</p>
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            {% endif %}
+                            </div>
                         {% endfor %}
                     </div>
                 {% endif %}

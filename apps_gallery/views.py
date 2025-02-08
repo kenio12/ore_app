@@ -157,26 +157,12 @@ def edit_app(request, pk):
     """アプリの編集ビュー"""
     app = get_object_or_404(AppGallery, pk=pk)
     
-    # 権限チェック
     if app.author != request.user:
         raise PermissionDenied("このアプリを編集する権限がありません。")
-    
-    # スクリーンショットがあるのにサムネイルがない場合、最初の画像をサムネイルに設定
-    if app.screenshots and not app.thumbnail:
-        app.thumbnail = {
-            'public_id': app.screenshots[0].get('public_id'),
-            'url': app.screenshots[0].get('url')
-        }
-        app.save()
-        print(f"サムネイルを自動設定しました: {app.thumbnail}")
     
     if request.method == 'POST':
         try:
             form_data = request.POST
-            
-            # 既存のスクリーンショットとサムネイルを保持
-            existing_screenshots = app.screenshots
-            existing_thumbnail = app.thumbnail
             
             # フォームデータで更新
             app.title = form_data.get('title', app.title)
@@ -186,23 +172,12 @@ def edit_app(request, pk):
             app.status = form_data.get('status', app.status)
             app.app_url = form_data.get('app_url', app.app_url)
             app.github_url = form_data.get('github_url', app.github_url)
-            app.overview = form_data.get('overview', app.overview)
-            app.motivation = form_data.get('motivation', app.motivation)
-            app.catchphrases = form_data.getlist('catchphrases', app.catchphrases)
-            app.target_users = form_data.getlist('target_users', app.target_users)
-            app.problems = form_data.getlist('problems', app.problems)
-            app.final_appeal = form_data.getlist('final_appeal', app.final_appeal)
-            
-            # スクリーンショットとサムネイルを復元
-            app.screenshots = existing_screenshots
-            app.thumbnail = existing_thumbnail
-            
-            # サムネイルがない場合は最初の画像を設定
-            if app.screenshots and not app.thumbnail:
-                app.thumbnail = {
-                    'public_id': app.screenshots[0].get('public_id'),
-                    'url': app.screenshots[0].get('url')
-                }
+            app.overview = form_data.get('overview', '')
+            app.motivation = form_data.get('motivation', '')
+            app.catchphrases = form_data.getlist('catchphrases')  # これはリスト
+            app.target_users = form_data.get('target_users')      # 普通のテキスト
+            app.problems = form_data.get('problems')              # 普通のテキスト
+            app.final_appeal = form_data.get('final_appeal')      # 普通のテキスト
             
             app.save()
             

@@ -16,7 +16,7 @@
                          name="overview"
                          class="form-control cyber-green-focus"
                          rows="8"
-                         {% if readonly %}readonly{% endif %}>{{ app.overview|default:'' }}</textarea>
+                         {% if readonly %}readonly{% endif %}>{{ app.overview|safe }}</textarea>
                 <div class="form-text text-cyber-green">
                     <i class="bi bi-info-circle"></i>
                     アプリの主な機能や特徴を簡潔に説明してください
@@ -33,7 +33,7 @@
                          class="form-control cyber-green-focus"
                          rows="8"
                          {% if readonly %}readonly{% endif %}
-                         placeholder="このアプリを開発しようと思ったきっかけを教えてください">{{ app.motivation|default:'' }}</textarea>
+                         placeholder="このアプリを開発しようと思ったきっかけを教えてください">{{ app.motivation|safe }}</textarea>
                 <div class="form-text text-cyber-green">
                     <i class="bi bi-lightbulb"></i>
                     開発のモチベーションや背景を説明してください
@@ -49,17 +49,19 @@
                     <!-- 詳細表示用 -->
                     <div class="catchphrase-container">
                         {% for phrase in app.catchphrases %}
-                            <div class="mb-3">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-cyber-green">
-                                        <span class="text-cyber-green">{{ forloop.counter }}</span>
-                                    </span>
-                                    <input type="text" 
-                                           class="form-control form-control-lg cyber-green-focus"
-                                           value="{{ phrase }}"
-                                           readonly>
+                            {% if phrase %}  {# 空の値は表示しない #}
+                                <div class="mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-cyber-green">
+                                            <span class="text-cyber-green">{{ forloop.counter }}</span>
+                                        </span>
+                                        <input type="text" 
+                                               class="form-control form-control-lg cyber-green-focus"
+                                               value="{{ phrase }}"
+                                               readonly>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 {% else %}
@@ -75,7 +77,7 @@
                                            name="catchphrases" 
                                            class="form-control form-control-lg cyber-green-focus"
                                            placeholder="このアプリの売りを一言で！"
-                                           value="{{ app.catchphrases|default:""| get_item:forloop.counter0|default:"" }}">
+                                           value="{{ app.catchphrases|get_item:forloop.counter0 }}">
                                 </div>
                                 {% if forloop.first %}
                                     <div class="form-text text-cyber-green">
@@ -99,7 +101,7 @@
                          class="form-control cyber-green-focus"
                          rows="6"
                          {% if readonly %}readonly{% endif %}
-                         placeholder="このアプリは誰のために作りましたか？">{{ app.target_users|default:'' }}</textarea>
+                         placeholder="このアプリは誰のために作りましたか？">{{ app.target_users|safe }}</textarea>
                 <div class="form-text text-cyber-green">
                     <i class="bi bi-people"></i>
                     想定しているユーザー層を具体的に説明してください
@@ -116,7 +118,7 @@
                          rows="6"
                          class="form-control cyber-green-focus"
                          {% if readonly %}readonly{% endif %}
-                         placeholder="現状の課題や改善点があれば教えてください">{{ app.problems|default:'' }}</textarea>
+                         placeholder="現状の課題や改善点があれば教えてください">{{ app.problems|safe }}</textarea>
                 <div class="form-text text-cyber-green">
                     <i class="bi bi-exclamation-triangle"></i>
                     今後改善したい点や現在の制限事項を共有してください
@@ -133,7 +135,7 @@
                          rows="8"
                          class="form-control cyber-green-focus"
                          {% if readonly %}readonly{% endif %}
-                         placeholder="最後に、このアプリの魅力を思う存分アピールしてください！">{{ app.final_appeal|default:'' }}</textarea>
+                         placeholder="最後に、このアプリの魅力を思う存分アピールしてください！">{{ app.final_appeal|safe }}</textarea>
                 <div class="form-text text-cyber-green">
                     <i class="bi bi-megaphone"></i>
                     開発への思いや、アプリの可能性について自由に語ってください
