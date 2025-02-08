@@ -61,10 +61,14 @@
 
     <!-- フォーム開始（編集モードの時のみ） -->
     {% if not readonly %}
-        <form id="app-form" method="POST" action="{% if app %}{% url 'apps_gallery:edit' app.id %}{% else %}{% url 'apps_gallery:create' %}{% endif %}" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <form id="app-form" method="POST" 
+              action="{% url 'apps_gallery:create' %}"  {# 新規作成時は常にcreateのURLを使用 #}
+              enctype="multipart/form-data" 
+              class="needs-validation" 
+              novalidate>
             {% csrf_token %}
             <input type="hidden" name="active_tab" id="active_tab" value="{{ active_tab }}">
-            {% if app %}
+            {% if app.id %}
                 <input type="hidden" name="app_id" value="{{ app.id }}">
             {% endif %}
     {% endif %}
@@ -100,18 +104,16 @@
 
     <!-- ステータスインジケーター（左下に固定） -->
     <div class="position-fixed bottom-0 start-0 p-4" style="z-index: 1000;">
-        {% if app %}  {# appが存在する場合のみ表示 #}
-            <div class="cyber-status-indicator">
-                {% if not readonly %}
-                    <a href="{% url 'apps_gallery:detail' app.pk %}" class="status-badge editing-link">
-                        <i class="bi bi-pencil-square"></i> 編集もーど
-                    </a>
-                {% else %}
-                    <a href="{% url 'apps_gallery:edit' app.pk %}" class="status-badge viewing-link">
-                        <i class="bi bi-eye-fill"></i> 詳細もーど
-                    </a>
-                {% endif %}
-            </div>
+        {% if not is_create %}  {# 新規作成時以外の場合のみ表示 #}
+            {% if app.id %}
+                <div class="cyber-status-indicator">
+                    {% if not readonly %}
+                        <span class="status-badge editing-link">
+                            <i class="bi bi-pencil-square"></i> 編集もーど
+                        </span>
+                    {% endif %}
+                </div>
+            {% endif %}
         {% endif %}
     </div>
 

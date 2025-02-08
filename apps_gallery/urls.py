@@ -10,7 +10,7 @@ urlpatterns = [
     path('list/', views.app_list, name='list'),  # アプリ一覧
     path('delete/<int:pk>/', views.delete_app, name='delete'),  # アプリ削除（詳細の前に配置）
     path('upload-screenshot/', views.upload_screenshot, name='upload_screenshot'),
-    path('api/screenshot/<str:public_id>/delete/', views.delete_screenshot, name='delete_screenshot'),
-    path('set-thumbnail/<str:screenshot_id>/', views.set_thumbnail, name='set_thumbnail'),
+    path('delete-screenshot/', views.delete_screenshot, name='delete_screenshot'),  # スクリーンショット削除
+    path('set-thumbnail/', views.set_thumbnail, name='set_thumbnail'),  # サムネイル設定
     path('reset-screenshots/<int:pk>/', views.reset_screenshots, name='reset_screenshots'),
 ] 
