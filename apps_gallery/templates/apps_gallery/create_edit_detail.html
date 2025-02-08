@@ -61,7 +61,7 @@
 
     <!-- フォーム開始（編集モードの時のみ） -->
     {% if not readonly %}
-        <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate id="app-form">
+        <form id="app-form" method="POST" action="{% if app %}{% url 'apps_gallery:edit' app.id %}{% else %}{% url 'apps_gallery:create' %}{% endif %}" enctype="multipart/form-data" class="needs-validation" novalidate>
             {% csrf_token %}
             <input type="hidden" name="active_tab" id="active_tab" value="{{ active_tab }}">
             {% if app %}
@@ -103,12 +103,9 @@
         {% if app %}  {# appが存在する場合のみ表示 #}
             <div class="cyber-status-indicator">
                 {% if not readonly %}
-                    <form method="post" action="{% url 'apps_gallery:detail' app.pk %}">
-                        {% csrf_token %}
-                        <button type="submit" class="status-badge editing-link">
-                            <i class="bi bi-pencil-square"></i> 編集もーど
-                        </button>
-                    </form>
+                    <a href="{% url 'apps_gallery:detail' app.pk %}" class="status-badge editing-link">
+                        <i class="bi bi-pencil-square"></i> 編集もーど
+                    </a>
                 {% else %}
                     <a href="{% url 'apps_gallery:edit' app.pk %}" class="status-badge viewing-link">
                         <i class="bi bi-eye-fill"></i> 詳細もーど
@@ -687,6 +684,9 @@ html {
 
 /* メッセージのスタイル */
 .cyber-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
     background: rgba(0, 255, 136, 0.2);
     color: #00ff88;
     padding: 15px 30px;
@@ -695,17 +695,14 @@ html {
     backdrop-filter: blur(5px);
     box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
     font-weight: bold;
+    z-index: 9999;
     animation: fadeInOut 0.5s ease-in-out;
+    transition: opacity 0.5s ease-out;
 }
 
 @keyframes fadeInOut {
     0% { opacity: 0; transform: scale(0.8); }
     100% { opacity: 1; transform: scale(1); }
-}
-
-/* メッセージのフェードアウトアニメーション */
-.cyber-message {
-    transition: opacity 0.5s ease-out;
 }
 </style>
 
@@ -725,26 +722,35 @@ html {
     }
 })();
 
-// メッセージを10秒後に消す
-document.addEventListener('DOMContentLoaded', function() {
-    const messages = document.querySelectorAll('.cyber-message');
-    messages.forEach(function(message) {
-        setTimeout(function() {
-            message.style.opacity = '0';
-            setTimeout(function() {
-                message.remove();
-            }, 500); // フェードアウト後に要素を削除
-        }, 10000); // 10秒後にフェードアウト開始
-    });
-});
+// メッセージを表示する関数
+function showMessage(message) {
+    // 既存のメッセージがあれば削除
+    const existingMessage = document.querySelector('.cyber-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
 
+    // 新しいメッセージ要素を作成
+    const messageElement = document.createElement('div');
+    messageElement.className = 'cyber-message';
+    messageElement.innerHTML = `<i class="bi bi-check-circle"></i> ${message}`;
+    document.body.appendChild(messageElement);
+
+    // 10秒後にメッセージを消す
+    setTimeout(() => {
+        messageElement.style.opacity = '0';
+        setTimeout(() => {
+            messageElement.remove();
+        }, 500); // フェードアウト後に要素を削除
+    }, 10000);
+}
+
+// フォーム送信処理
 document.addEventListener('DOMContentLoaded', function() {
-    // フォーム送信処理
     const appForm = document.getElementById('app-form');
     if (appForm) {
         appForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            e.stopPropagation();  // 追加：イベントの伝播を停止
             
             try {
                 const formData = new FormData(this);
@@ -753,27 +759,44 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: formData,
                     headers: {
                         'X-CSRFToken': getCookie('csrftoken'),
-                        'X-Requested-With': 'XMLHttpRequest'  // 追加：AJAXリクエストであることを明示
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
 
-                if (response.ok) {
-                    // 保存成功時の処理
-                    localStorage.removeItem('tempUploadedImages');
+                // レスポンスのContent-Typeをチェック
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    // JSONレスポンスの処理
                     const data = await response.json();
-                    if (data.redirect_url) {
-                        window.location.href = data.redirect_url;  // 修正：レスポンスからリダイレクトURLを取得
+                    if (data.success) {
+                        // 成功メッセージを表示
+                        showMessage('保存しました');
+                        
+                        // 編集モードを維持
+                        if (data.stay_in_edit) {
+                            return;
+                        }
+                    } else {
+                        throw new Error(data.error || '保存に失敗しました');
                     }
                 } else {
-                    throw new Error('保存に失敗しました');
+                    // HTMLレスポンスの場合
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        throw new Error('保存に失敗しました');
+                    }
                 }
+
             } catch (error) {
                 console.error('Error:', error);
-                alert('保存中にエラーが発生しました: ' + error.message);
+                showMessage('エラーが発生しました: ' + error.message);
             }
         });
     }
+});
 
+document.addEventListener('DOMContentLoaded', function() {
     // 編集/詳細モード切り替え処理
     const statusForm = document.querySelector('.cyber-status-indicator form');
     if (statusForm) {

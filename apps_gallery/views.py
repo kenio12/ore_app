@@ -101,98 +101,46 @@ def create_view(request):
 
 @login_required
 def edit_app(request, pk):
-    """アプリの編集ビュー"""
     app = get_object_or_404(AppGallery, pk=pk)
     
     if request.method == 'POST':
         try:
-            # 既存のスクリーンショットを保持
-            existing_screenshots = app.screenshots or []
-            print("既存のスクリーンショット:", existing_screenshots)  # デバッグ出力
-            
-            # 基本情報の保存
-            app.title = request.POST.get('title', app.title)
-            app.app_types = request.POST.getlist('types', app.app_types)
-            app.genres = request.POST.getlist('genres', app.genres)
-            app.dev_status = request.POST.get('dev_status', app.dev_status)
-            app.status = request.POST.get('status', app.status)
-            app.app_url = request.POST.get('app_url', app.app_url)
-            app.github_url = request.POST.get('github_url', app.github_url)
-            app.overview = request.POST.get('overview', app.overview)
-            app.motivation = request.POST.get('motivation', app.motivation)
-            app.catchphrases = request.POST.getlist('catchphrases')
-            app.target_users = request.POST.get('target_users', app.target_users)
-            app.problems = request.POST.get('problems', app.problems)
-            app.final_appeal = request.POST.get('final_appeal', app.final_appeal)
-            
-            # スクリーンショットの処理
-            if request.session.get('temp_screenshots'):
-                print("セッション内のスクリーンショット:", request.session['temp_screenshots'])  # デバッグ出力
-                for screenshot in request.session['temp_screenshots']:
-                    try:
-                        # Base64データの処理
-                        image_data = screenshot.get('image')
-                        if not image_data:
-                            continue
-                            
-                        # Base64ヘッダーの処理
-                        if 'data:image' in image_data:
-                            # Base64ヘッダーを削除
-                            image_data = image_data.split('base64,')[1]
-                        
-                        # Cloudinaryにアップロード
-                        upload_result = cloudinary.uploader.upload(
-                            f"data:image/jpeg;base64,{image_data}",  # Base64ヘッダーを追加
-                            folder='app_screenshots'
-                        )
-                        
-                        print("Cloudinaryアップロード結果:", upload_result)  # デバッグ出力
-                        
-                        # 新しい画像情報を追加
-                        existing_screenshots.append({
-                            'public_id': upload_result['public_id'],
-                            'url': upload_result['secure_url'],
-                            'description': screenshot.get('description', '')
-                        })
-                        
-                    except Exception as e:
-                        print(f"画像処理エラー: {str(e)}")
-                        continue
-                
-                # 全ての画像を保存
-                print("保存する画像データ:", existing_screenshots)  # デバッグ出力
-                app.screenshots = existing_screenshots
-                
-                # セッションクリア
-                del request.session['temp_screenshots']
-                request.session.modified = True
-            
+            form_data = request.POST
+            app.title = form_data.get('title', app.title)
+            app.app_types = form_data.getlist('types', app.app_types)
+            app.genres = form_data.getlist('genres', app.genres)
+            app.dev_status = form_data.get('dev_status', app.dev_status)
+            app.status = form_data.get('status', app.status)
+            app.app_url = form_data.get('app_url', app.app_url)
+            app.github_url = form_data.get('github_url', app.github_url)
+            app.overview = form_data.get('overview', app.overview)
+            app.motivation = form_data.get('motivation', app.motivation)
+            app.catchphrases = form_data.getlist('catchphrases', app.catchphrases)
+            app.target_users = form_data.getlist('target_users', app.target_users)
+            app.problems = form_data.getlist('problems', app.problems)
+            app.final_appeal = form_data.getlist('final_appeal', app.final_appeal)
             app.save()
             
-            return JsonResponse({
-                'success': True,
-                'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': pk})
-            })
+            # AJAXリクエストの場合
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': pk})
+                })
+            
+            # 通常のフォーム送信の場合
+            return redirect('apps_gallery:detail', pk=pk)
             
         except Exception as e:
-            print(f"保存エラー: {str(e)}")
-            return JsonResponse({
-                'success': False,
-                'error': str(e)
-            }, status=500)
-    
-    # 作者でない場合は403エラー
-    if app.author != request.user:
-        raise PermissionDenied("このアプリを編集する権限がありません。")
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'error': str(e)
+                }, status=500)
+            messages.error(request, f'保存中にエラーが発生しました: {str(e)}')
     
     context = {
-        'hide_navbar': True,
         'app': app,
-        'APP_TYPES': dict(APP_TYPES),
-        'APP_STATUS': dict(APP_STATUS),
-        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
-        'GENRES': dict(GENRES),
-        'is_edit': True,
         'readonly': False
     }
     return render(request, 'apps_gallery/create_edit_detail.html', context)
@@ -334,44 +282,35 @@ def delete_app(request, pk):
 @require_http_methods(["POST"])
 def upload_screenshot(request):
     try:
-        image = request.FILES.get('image')
-        description = request.POST.get('description', '')
-        
-        if not image:
-            return JsonResponse({'error': '画像が必要です'}, status=400)
-            
-        # セッションに保存
-        temp_screenshots = request.session.get('temp_screenshots', [])
-        
-        # 画像データをBase64でエンコード
-        image_data = base64.b64encode(image.read()).decode('utf-8')
-        
-        # 画像情報を保存
-        screenshot_info = {
-            'image': f'data:image/jpeg;base64,{image_data}',  # Base64ヘッダーを追加
-            'description': description
-        }
-        
-        temp_screenshots.append(screenshot_info)
-        request.session['temp_screenshots'] = temp_screenshots
-        request.session.modified = True
+        if 'image' not in request.FILES:
+            return JsonResponse({'error': '画像ファイルが必要です'}, status=400)
 
-        return JsonResponse({
+        image_file = request.FILES['image']
+        
+        # Cloudinaryにアップロード
+        upload_result = cloudinary.uploader.upload(
+            image_file,
+            folder='app_screenshots',
+            resource_type='image'
+        )
+
+        # レスポンスデータを作成
+        response_data = {
             'status': 'success',
-            'message': '画像を一時保存しました',
-            'description': description,
-            'preview_data': f'data:image/jpeg;base64,{image_data}'  # プレビュー用にBase64ヘッダーを追加
-        })
+            'image_url': upload_result['secure_url'],
+            'public_id': upload_result['public_id'],
+            'message': '画像を一時保存しました'
+        }
+
+        return JsonResponse(response_data)
 
     except Exception as e:
-        print(f"Screenshot upload error: {str(e)}")  # デバッグ用
-        return JsonResponse({
-            'error': f'アップロード中にエラーが発生しました: {str(e)}'
-        }, status=500)
+        print(f"Error in upload_screenshot: {str(e)}")  # デバッグ用
+        return JsonResponse({'error': str(e)}, status=500)
 
 @login_required
 @require_http_methods(["DELETE"])
-def delete_screenshot(request, screenshot_id):
+def delete_screenshot(request, public_id):
     """スクリーンショット削除処理"""
     try:
         app_id = request.GET.get('app_id')
@@ -384,16 +323,19 @@ def delete_screenshot(request, screenshot_id):
         if app.author != request.user:
             return JsonResponse({'error': '権限がありません'}, status=403)
         
+        # public_idの正規化（app_screenshots/が含まれている場合の対応）
+        full_public_id = public_id if 'app_screenshots/' in public_id else f'app_screenshots/{public_id}'
+        
         # スクリーンショットの削除
         screenshots = app.screenshots or []
-        updated_screenshots = [s for s in screenshots if s['public_id'] != screenshot_id]
+        updated_screenshots = [s for s in screenshots if s['public_id'] != full_public_id]
         
         if len(screenshots) == len(updated_screenshots):
             return JsonResponse({'error': '指定された画像が見つかりません'}, status=404)
         
         # Cloudinaryから画像を削除
         try:
-            cloudinary.uploader.destroy(screenshot_id)
+            cloudinary.uploader.destroy(full_public_id)
         except Exception as e:
             print(f"Error deleting from Cloudinary: {e}")
         

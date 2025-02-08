@@ -364,30 +364,38 @@
     font-size: 0.9rem;
 }
 
+/* トースト通知のスタイル */
 .cyber-toast {
     position: fixed;
     bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 20px;
+    padding: 15px 25px;
     background: rgba(0, 255, 136, 0.2);
     color: #00ff88;
-    padding: 10px 20px;
-    border-radius: 4px;
     border: 1px solid rgba(0, 255, 136, 0.5);
+    border-radius: 8px;
     backdrop-filter: blur(5px);
     z-index: 9999;
-    animation: fadeInOut 0.3s ease-in-out;
+    animation: toastFadeIn 0.3s ease-in-out;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
 }
 
 .cyber-toast.error {
     background: rgba(255, 0, 0, 0.2);
     color: #ff4444;
     border-color: rgba(255, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
 }
 
-@keyframes fadeInOut {
-    0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+@keyframes toastFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ローディングインジケータのスタイル */
@@ -455,459 +463,222 @@ function getCookie(name) {
             }
         }
     }
+    // CSRFトークンが見つからない場合の処理
+    if (!cookieValue && name === 'csrftoken') {
+        const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+        if (csrfInput) {
+            cookieValue = csrfInput.value;
+        }
+    }
     return cookieValue;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     const previewArea = document.getElementById('previewArea');
-    const screenshotInput = document.getElementById('screenshotInput');
     const imagePreview = document.getElementById('imagePreview');
+    const screenshotInput = document.getElementById('screenshotInput');
     const cancelPreview = document.getElementById('cancelPreview');
     const previewPlaceholder = document.querySelector('.preview-placeholder');
-    const previewWrapper = document.querySelector('.preview-wrapper');
+    
+    // 要素の存在確認
+    if (!previewArea || !imagePreview || !screenshotInput || !cancelPreview || !previewPlaceholder) {
+        console.error('必要な要素が見つかりません');
+        return;
+    }
 
-    if (previewArea) {
-        // クリックでファイル選択
-        previewArea.addEventListener('click', function() {
-            screenshotInput.click();
-        });
+    // クリックでファイル選択
+    previewArea.addEventListener('click', function() {
+        screenshotInput.click();
+    });
 
-        // ドラッグ&ドロップイベント
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            previewArea.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
+    // ドラッグオーバー時のスタイル
+    ['dragenter', 'dragover'].forEach(eventName => {
+        previewArea.addEventListener(eventName, function(e) {
             e.preventDefault();
             e.stopPropagation();
+            this.classList.add('dragover');
+        }, false);
+    });
+
+    // ドラッグリーブ時のスタイル
+    ['dragleave', 'drop'].forEach(eventName => {
+        previewArea.addEventListener(eventName, function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.remove('dragover');
+        }, false);
+    });
+
+    // ドロップ時の処理
+    previewArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFiles(files[0]);
+            screenshotInput.files = files;
         }
+    });
 
-        // ドラッグオーバー時のスタイル
-        ['dragenter', 'dragover'].forEach(eventName => {
-            previewArea.addEventListener(eventName, function() {
-                previewArea.classList.add('dragover');
-            });
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            previewArea.addEventListener(eventName, function() {
-                previewArea.classList.remove('dragover');
-            });
-        });
-
-        // ドロップ時の処理
-        previewArea.addEventListener('drop', function(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-
-            if (files.length > 0) {
-                handleFiles(files);
-            }
-        });
-
-        // ファイル選択時の処理
-        screenshotInput.addEventListener('change', function() {
-            if (this.files.length > 0) {
-                handleFiles(this.files);
-            }
-        });
-
-        // プレビューのキャンセル
-        if (cancelPreview) {
-            cancelPreview.addEventListener('click', function(e) {
-                e.stopPropagation();
-                resetPreview();
-            });
+    // ファイル選択時の処理
+    screenshotInput.addEventListener('change', function(e) {
+        if (this.files.length > 0) {
+            handleFiles(this.files[0]);
         }
-    }
+    });
 
-    // プレビューをリセットする関数
-    function resetPreview() {
-        if (screenshotInput) screenshotInput.value = '';
-        if (imagePreview) imagePreview.classList.add('d-none');
-        if (cancelPreview) cancelPreview.classList.add('d-none');
-        if (previewPlaceholder) previewPlaceholder.style.display = 'block';
-        if (previewWrapper) previewWrapper.style.display = 'none';
-    }
+    // プレビューのキャンセル
+    cancelPreview.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        resetPreview();
+    });
 
-    // ローディング表示の制御関数
-    function showLoader() {
-        document.getElementById('uploadLoader').style.display = 'flex';
-    }
-
-    function hideLoader() {
-        document.getElementById('uploadLoader').style.display = 'none';
-    }
-
-    // handleFiles関数を修正
-    async function handleFiles(files) {
-        const file = files[0];
-        if (file.type.startsWith('image/')) {
-            try {
-                showLoader(); // ローディング表示開始
-                
-                console.log('Original file size:', (file.size / 1024 / 1024).toFixed(2) + 'MB');
-                
-                // 画像を最適化
-                const optimizedFile = await optimizeImage(file);
-                console.log('Optimized file size:', (optimizedFile.size / 1024 / 1024).toFixed(2) + 'MB');
-                
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    try {
-                        console.log('File loaded, preparing to upload...'); 
-
-                        const formData = new FormData();
-                        formData.append('image', optimizedFile);
-                        
-                        console.log('Sending upload request...'); 
-                        
-                        const response = await fetch('/apps_gallery/upload-screenshot/', {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-CSRFToken': getCookie('csrftoken')
-                            }
-                        });
-
-                        const data = await response.json();
-                        console.log('Upload response:', data);
-                        
-                        if (!response.ok) {
-                            throw new Error(data.error || '一時保存に失敗しました');
-                        }
-
-                        // 成功時の処理
-                        showToast('画像を一時保存しました');
-                        addToGallery(e.target.result, '', data);
-                        resetPreview();
-
-                    } catch (error) {
-                        console.error('Error details:', error);
-                        showToast('エラーが発生しました: ' + error.message, 'error');
-                    } finally {
-                        hideLoader(); // 処理完了時にローディング非表示
-                    }
-                };
-                reader.readAsDataURL(optimizedFile);
-            } catch (error) {
-                console.error('Error optimizing image:', error);
-                showToast('画像の最適化に失敗しました', 'error');
-                hideLoader(); // エラー時もローディング非表示
-            }
-        } else {
+    // ファイル処理関数
+    function handleFiles(file) {
+        if (!file.type.startsWith('image/')) {
             showToast('画像ファイルを選択してください', 'error');
-            resetPreview();
-        }
-    }
-
-    // ギャラリーに画像を追加する関数
-    function addToGallery(imageUrl, description, imageData) {
-        console.log('Starting addToGallery...', {imageUrl, description, imageData}); // デバッグ用
-        
-        // まず.screenshots-galleryを探す
-        const gallerySection = document.querySelector('.screenshots-gallery');
-        if (!gallerySection) {
-            console.error('Screenshots gallery section not found!');
             return;
         }
-        
-        // empty-stateを探して非表示にする
-        const emptyState = gallerySection.querySelector('.empty-state');
-        if (emptyState) {
-            emptyState.style.display = 'none';
-        }
-        
-        // ギャラリーコンテナを探すか作成する
-        let galleryContainer = gallerySection.querySelector('.screenshots-container');
-        if (!galleryContainer) {
-            console.log('Creating new gallery container...');
-            galleryContainer = document.createElement('div');
-            galleryContainer.className = 'screenshots-container';
-            if (emptyState) {
-                emptyState.insertAdjacentElement('afterend', galleryContainer);
-            } else {
-                gallerySection.appendChild(galleryContainer);
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // プレビュー表示
+            imagePreview.src = e.target.result;
+            imagePreview.classList.remove('d-none');
+            previewPlaceholder.style.display = 'none';
+            cancelPreview.classList.remove('d-none');
+
+            // スタイルの直接設定
+            imagePreview.style.display = 'block';
+            imagePreview.style.maxWidth = '100%';
+            imagePreview.style.maxHeight = '300px';
+            imagePreview.style.margin = '0 auto';
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // プレビューのリセット
+    function resetPreview() {
+        screenshotInput.value = '';
+        imagePreview.src = '';
+        imagePreview.classList.add('d-none');
+        imagePreview.style.display = 'none';
+        previewPlaceholder.style.display = 'block';
+        cancelPreview.classList.add('d-none');
+    }
+
+    // サムネイル設定の処理
+    async function setThumbnail(imageId) {
+        try {
+            const response = await fetch(`/apps_gallery/set-thumbnail/${imageId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            // レスポンスのContent-Typeチェック
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('予期せぬレスポース形式です。ページを再読み込みしてください。');
             }
-        }
-        
-        // 既存の画像数を取得
-        const existingImages = galleryContainer.querySelectorAll('.screenshot-wrapper').length;
-        const isFirstImage = existingImages === 0;
-        
-        console.log('Creating screenshot HTML...'); 
-        
-        // 一時的なIDを生成（必要な場合）
-        const tempId = 'temp_' + Date.now();
-        const imageId = imageData?.id || tempId;
-        
-        // 新しいスクリーンショットカードを作成
-        const screenshotHtml = `
-            <div class="screenshot-wrapper mb-4" data-image-id="${imageId}">
-                <div class="screenshot-card ${isFirstImage ? 'is-thumbnail' : ''}">
-                    <div class="screenshot-image">
-                        <img src="${imageUrl}" 
-                             alt="スクリーンショット" 
-                             class="img-fluid screenshot-preview">
-                        ${isFirstImage ? `
-                            <div class="thumbnail-badge">
-                                <i class="bi bi-star-fill"></i> サムネイル
-                            </div>
-                        ` : ''}
-                    </div>
-                    <div class="screenshot-actions">
-                        ${!isFirstImage ? `
-                            <button class="btn-set-thumbnail me-2" 
-                                    type="button"
-                                    data-image-id="${imageId}"
-                                    title="サムネイルに設定">
-                                <i class="bi bi-star text-warning"></i>
-                            </button>
-                        ` : ''}
-                        <button class="btn-delete-temp-screenshot" 
-                                type="button"
-                                data-image-id="${imageId}"
-                                title="削除">
-                            <i class="bi bi-trash text-danger"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // DOMに追加
-        const tempContainer = document.createElement('div');
-        tempContainer.innerHTML = screenshotHtml;
-        const newScreenshot = tempContainer.firstElementChild;
-        
-        galleryContainer.appendChild(newScreenshot);
-        console.log('Screenshot added successfully');
-        
-        // イベントリスナーの設定
-        const deleteBtn = newScreenshot.querySelector('.btn-delete-temp-screenshot');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', function() {
-                newScreenshot.remove();
-                if (galleryContainer.children.length === 0 && emptyState) {
-                    emptyState.style.display = 'block';
-                }
-            });
-        }
-        
-        // サムネイル設定ボタンのイベントリスナー
-        const thumbnailBtn = newScreenshot.querySelector('.btn-set-thumbnail');
-        if (thumbnailBtn) {
-            thumbnailBtn.addEventListener('click', async function() {
-                try {
-                    const imageId = this.dataset.imageId;
-                    if (!imageId) {
-                        throw new Error('画像IDが見つかりません');
-                    }
 
-                    // 新規作成時の処理
-                    if (!document.querySelector('input[name="app_id"]')) {
-                        // DOM操作でサムネイルを変更
-                        const galleryContainer = document.querySelector('.screenshots-container');
-                        
-                        // 既存のサムネイルを解除
-                        const currentThumbnail = galleryContainer.querySelector('.is-thumbnail');
-                        if (currentThumbnail) {
-                            currentThumbnail.classList.remove('is-thumbnail');
-                            const currentBadge = currentThumbnail.querySelector('.thumbnail-badge');
-                            if (currentBadge) currentBadge.remove();
-                        }
-                        
-                        // 新しいサムネイルを設定
-                        const card = this.closest('.screenshot-card');
-                        card.classList.add('is-thumbnail');
-                        
-                        // サムネイルバッジを追加
-                        const imageContainer = card.querySelector('.screenshot-image');
-                        const badge = document.createElement('div');
-                        badge.className = 'thumbnail-badge';
-                        badge.innerHTML = '<i class="bi bi-star-fill"></i> サムネイル';
-                        imageContainer.appendChild(badge);
-                        
-                        // カードを先頭に移動
-                        const wrapper = this.closest('.screenshot-wrapper');
-                        if (wrapper) {
-                            galleryContainer.insertBefore(wrapper, galleryContainer.firstChild);
-                        }
+            const data = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(data.error || 'サムネイル設定に失敗しました');
+            }
 
-                        showToast('サムネイルを設定しました');
-                        return;
-                    }
+            // 成功時の処理
+            showToast('サムネイルを設定しました');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
 
-                    // 既存アプリの編集時の処理
-                    const appId = document.querySelector('input[name="app_id"]').value;
-                    if (!appId) {
-                        throw new Error('アプリIDが見つかりません');
-                    }
-
-                    // サーバーにリクエストを送信
-                    const response = await fetch(`/apps_gallery/set-thumbnail/${imageId}/?app_id=${appId}`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRFToken': getCookie('csrftoken')
-                        }
-                    });
-
-                    const data = await response.json();
-                    
-                    if (!response.ok) {
-                        throw new Error(data.error || 'サムネイル設定に失敗しました');
-                    }
-
-                    // 成功時の処理（既存の処理と同じ）
-                    const galleryContainer = document.querySelector('.screenshots-container');
-                    const currentThumbnail = galleryContainer.querySelector('.is-thumbnail');
-                    if (currentThumbnail) {
-                        currentThumbnail.classList.remove('is-thumbnail');
-                        const currentBadge = currentThumbnail.querySelector('.thumbnail-badge');
-                        if (currentBadge) currentBadge.remove();
-                    }
-                    
-                    const card = this.closest('.screenshot-card');
-                    card.classList.add('is-thumbnail');
-                    
-                    const imageContainer = card.querySelector('.screenshot-image');
-                    const badge = document.createElement('div');
-                    badge.className = 'thumbnail-badge';
-                    badge.innerHTML = '<i class="bi bi-star-fill"></i> サムネイル';
-                    imageContainer.appendChild(badge);
-                    
-                    const wrapper = this.closest('.screenshot-wrapper');
-                    if (wrapper) {
-                        galleryContainer.insertBefore(wrapper, galleryContainer.firstChild);
-                    }
-
-                    showToast('サムネイルを設定しました');
-
-                } catch (error) {
-                    console.error('Error:', error);
-                    showToast('エラーが発生しました: ' + error.message, 'error');
-                }
-            });
+        } catch (error) {
+            console.error('Thumbnail action error:', error);
+            
+            if (error.message.includes('セッション')) {
+                window.location.reload();
+                return;
+            }
+            
+            showToast(error.message || 'エラーが発生しました', 'error');
         }
     }
 
-    // トースト通知用の関数
+    // トースト通知を表示する関数
     function showToast(message, type = 'success') {
+        // 既存のトーストを削除
+        const existingToast = document.querySelector('.cyber-toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        // 新しいトースト要素を作成
         const toast = document.createElement('div');
         toast.className = `cyber-toast ${type}`;
         toast.textContent = message;
+
+        // bodyに追加
         document.body.appendChild(toast);
-        
-        // 3秒後に消える
+
+        // 3秒後に自動的に消える
         setTimeout(() => {
-            toast.remove();
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
         }, 3000);
     }
 
-    // 画像の最適化関数
-    async function optimizeImage(file) {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_SIZE = 1200; // 最大サイズを1200pxに設定
-                    
-                    // 元のアスペクト比を計算
-                    const ratio = img.width / img.height;
-                    
-                    let width, height;
-                    
-                    // 長辺を1200pxにする
-                    if (img.width > img.height) {
-                        width = Math.min(MAX_SIZE, img.width);
-                        height = width / ratio;
-                    } else {
-                        height = Math.min(MAX_SIZE, img.height);
-                        width = height * ratio;
+    // アップロード処理
+    const uploadForm = document.getElementById('screenshot-upload-form');
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const appIdInput = document.querySelector('input[name="app_id"]');
+            
+            if (appIdInput) {
+                formData.append('app_id', appIdInput.value);
+            }
+
+            try {
+                const response = await fetch('/apps_gallery/upload-screenshot/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
                     }
-                    
-                    // サイズを設定
-                    canvas.width = width;
-                    canvas.height = height;
-                    
-                    console.log(`Resizing image from ${img.width}x${img.height} to ${width}x${height}`);
-                    
-                    // 画像を描画
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    // JPEG形式で保存（品質80%）
-                    canvas.toBlob((blob) => {
-                        const optimizedFile = new File([blob], file.name, {
-                            type: 'image/jpeg',
-                            lastModified: Date.now()
-                        });
-                        console.log('Original size:', Math.round(file.size / 1024), 'KB');
-                        console.log('Optimized size:', Math.round(optimizedFile.size / 1024), 'KB');
-                        resolve(optimizedFile);
-                    }, 'image/jpeg', 0.8);
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+                });
+
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'アップロードに失敗しました');
+                }
+
+                // 成功時の処理
+                showToast(data.message || 'アップロードしました');
+                
+                // フォームをリセット
+                resetPreview();
+                
+                // ページをリロード
+                if (data.reload) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showToast(error.message || 'エラーが発生しました', 'error');
+            }
         });
     }
-
-    // 画像アップロード処理
-    async function handleFileUpload(file) {
-        // 現在の画像数をチェック
-        const currentScreenshots = document.querySelectorAll('.screenshot-wrapper').length;
-        
-        if (currentScreenshots >= 3) {
-            showToast('スクリーンショットは最大3枚までです', 'error');
-            return false;
-        }
-
-        // ファイルサイズチェック
-        const maxSize = 2 * 1024 * 1024; // 2MB
-        if (file.size > maxSize) {
-            const optimizedFile = await optimizeImage(file);
-            if (optimizedFile.size > maxSize) {
-                showToast('ファイルサイズが大きすぎます（最大2MB）', 'error');
-                return false;
-            }
-            file = optimizedFile;
-        }
-
-        // ... rest of the upload code ...
-    }
-
-    // スタイルも追加
-    const style = document.createElement('style');
-    style.textContent = `
-    .cyber-toast {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0, 255, 136, 0.2);
-        color: #00ff88;
-        padding: 10px 20px;
-        border-radius: 4px;
-        border: 1px solid rgba(0, 255, 136, 0.5);
-        backdrop-filter: blur(5px);
-        z-index: 9999;
-        animation: fadeInOut 0.3s ease-in-out;
-    }
-
-    .cyber-toast.error {
-        background: rgba(255, 0, 0, 0.2);
-        color: #ff4444;
-        border-color: rgba(255, 0, 0, 0.5);
-    }
-
-    @keyframes fadeInOut {
-        0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-        100% { opacity: 1; transform: translateX(-50%) translateY(0); }
-    }
-    `;
-    document.head.appendChild(style);
 });
 </script> 
