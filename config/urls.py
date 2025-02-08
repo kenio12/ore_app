@@ -16,6 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
+
+def health_check(request):
+    return HttpResponse("OK")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +27,5 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),  # Django認証システムのURL
     path('apps_gallery/', include('apps_gallery.urls')),  # URLパスを apps から apps_gallery に変更
     path('', include('home.urls')),  # ホームページのURL追加
+    path('health/', health_check, name='health_check'),
 ]
