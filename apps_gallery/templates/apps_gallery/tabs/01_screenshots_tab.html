@@ -551,6 +551,10 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('app_id', appIdInput.value);
         }
 
+        // ローディング表示
+        const uploadLoader = document.getElementById('uploadLoader');
+        uploadLoader.style.display = 'flex';
+
         try {
             const response = await fetch('/apps_gallery/upload-screenshot/', {
                 method: 'POST',
@@ -566,7 +570,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 showToast('画像をアップロードしました', 'success');
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000); // 1秒後にリロード
+                }, 1000);
             } else {
                 throw new Error(data.error || 'アップロードに失敗しました');
             }
@@ -574,6 +578,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Error:', error);
             showToast(error.message, 'error');
+        } finally {
+            // ローディング非表示
+            uploadLoader.style.display = 'none';
         }
     }
 

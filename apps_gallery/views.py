@@ -218,10 +218,20 @@ def upload_screenshot(request):
 
         image_file = request.FILES['image']
         
-        # Cloudinaryにアップロード
+        # ファイルサイズチェック（10MB）
+        if image_file.size > 10 * 1024 * 1024:  # 10MB in bytes
+            return JsonResponse({
+                'error': '画像サイズが大きすぎます（上限: 10MB）'
+            }, status=400)
+
+        # Cloudinaryにアップロード（サイズ制限付き）
         upload_result = cloudinary.uploader.upload(
             image_file,
-            folder='app_screenshots'
+            folder='app_screenshots',
+            transformation=[
+                {'width': 2000, 'height': 2000, 'crop': 'limit'},  # 最大サイズを制限
+                {'quality': 'auto:good'}  # 自動で最適な品質に調整
+            ]
         )
 
         screenshot_data = {
@@ -243,7 +253,7 @@ def upload_screenshot(request):
         })
 
     except Exception as e:
-        print(f"Error in upload_screenshot: {str(e)}")  # エラーログを出力
+        logging.error(f"Screenshot upload error: {str(e)}")
         return JsonResponse({
             'error': 'アップロード中にエラーが発生しました',
             'details': str(e)

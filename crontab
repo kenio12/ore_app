@@ -1,0 +1,3 @@
+# 毎日３時に未使用の画像を削除する
+0 3 * * * cd /code && python manage.py cleanup_unused_images >> /var/log/cron.log 2>&1
+
