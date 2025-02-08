@@ -15,6 +15,7 @@ def home(request):
     for app in apps:
         print(f"App ID: {app.pk}")
         print(f"Title: {app.title}")
+        print(f"Thumbnail: {app.thumbnail}")
         print(f"Screenshots: {app.screenshots}")
         print("---")
     

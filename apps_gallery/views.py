@@ -56,6 +56,8 @@ def create_view(request):
                 
                 # セッションから画像情報を取得
                 temp_screenshots = request.session.get('temp_screenshots', [])
+                temp_thumbnail = request.session.get('temp_thumbnail')
+                
                 if temp_screenshots:
                     # 新しいスクリーンショットリストを作成
                     new_screenshots = []
@@ -90,7 +92,28 @@ def create_view(request):
                     del request.session['temp_screenshots']
                     request.session.modified = True
                 
+                # サムネイルの処理
+                if temp_thumbnail:
+                    old_public_id = temp_thumbnail['public_id']
+                    new_public_id = old_public_id.replace('app_screenshots/temp', f'app_screenshots/app_{app.id}')
+                    
+                    try:
+                        result = cloudinary.uploader.rename(old_public_id, new_public_id)
+                        app.thumbnail = {
+                            'public_id': result['public_id'],
+                            'url': result['secure_url']
+                        }
+                    except Exception as e:
+                        logging.error(f"Failed to move thumbnail: {e}")
+                
                 app.save()
+                
+                # セッションをクリア
+                if 'temp_screenshots' in request.session:
+                    del request.session['temp_screenshots']
+                if 'temp_thumbnail' in request.session:
+                    del request.session['temp_thumbnail']
+                request.session.modified = True
                 
                 return JsonResponse({
                     'success': True,
@@ -330,7 +353,7 @@ def upload_screenshot(request):
                     return JsonResponse({
                         'error': '画像は最大3枚までです'
                     }, status=400)
-                upload_folder = f'app_screenshots/app_{appid}'
+                upload_folder = f'app_screenshots/app_{app_id}'
             else:
                 # 新規作成の場合
                 temp_screenshots = request.session.get('temp_screenshots', [])
@@ -450,25 +473,22 @@ def set_thumbnail(request):
         index = int(data.get('index', 0))
 
         if app_id:
-            # 既存のアプリの場合
             app = get_object_or_404(AppGallery, pk=app_id)
             if app.author != request.user:
                 return JsonResponse({'error': '権限がありません'}, status=403)
             
             screenshots = app.screenshots or []
             if 0 <= index < len(screenshots):
-                # 選択された画像を先頭に移動
-                selected = screenshots.pop(index)
-                screenshots.insert(0, selected)
-                app.screenshots = screenshots
+                # 選択された画像をサムネイルとして設定
+                selected = screenshots[index]
+                app.thumbnail = selected
                 app.save()
         else:
-            # 新規作成時（セッションの画像を並び替え）
+            # 新規作成時（セッションの画像を設定）
             screenshots = request.session.get('temp_screenshots', [])
             if 0 <= index < len(screenshots):
-                selected = screenshots.pop(index)
-                screenshots.insert(0, selected)
-                request.session['temp_screenshots'] = screenshots
+                selected = screenshots[index]
+                request.session['temp_thumbnail'] = selected
                 request.session.modified = True
 
         return JsonResponse({

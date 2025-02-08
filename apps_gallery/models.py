@@ -15,6 +15,14 @@ class AppGallery(models.Model):
         related_name='apps'
     )
     
+    # サムネイル画像を追加
+    thumbnail = models.JSONField(
+        'サムネイル画像',
+        null=True,
+        blank=True,
+        help_text='アプリのサムネイル画像情報'
+    )
+    
     # ==================== 基本情報タブ ====================
     title = models.CharField('アプリ名', max_length=100)
     

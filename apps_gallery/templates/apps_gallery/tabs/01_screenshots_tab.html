@@ -13,12 +13,12 @@
                     <div class="screenshots-container">
                         {% for screenshot in app.screenshots %}
                             <div class="screenshot-wrapper mb-4">
-                                <div class="screenshot-card {% if forloop.first %}is-thumbnail{% endif %}">
+                                <div class="screenshot-card {% if forloop.first %}{% if not app.thumbnail %}is-thumbnail{% endif %}{% endif %}">
                                     <div class="screenshot-image">
                                         <img src="{{ screenshot.url }}" 
                                              alt="スクリーンショット" 
                                              class="img-fluid screenshot-preview">
-                                        {% if forloop.first %}
+                                        {% if app.thumbnail.url == screenshot.url %}
                                             <div class="thumbnail-badge">
                                                 <i class="bi bi-star-fill"></i> サムネイル
                                             </div>
@@ -26,7 +26,7 @@
                                         
                                         <!-- アクションボタン -->
                                         <div class="screenshot-actions">
-                                            {% if not forloop.first %}
+                                            {% if app.thumbnail.url != screenshot.url %}
                                                 <button type="button" 
                                                         class="btn-action btn-set-thumbnail" 
                                                         data-index="{{ forloop.counter0 }}"

@@ -44,8 +44,16 @@
             {% for app in apps %}
                 <div class="col-12 mb-4">
                     <div class="card cyber-card">
-                        {% if app.screenshots %}
-                            <!-- 画像の向きをチェックするためのhidden img -->
+                        <!-- サムネイルまたはスクリーンショットの表示 -->
+                        {% if app.thumbnail %}
+                            <img src="{{ app.thumbnail.url }}" 
+                                 class="d-none image-checker" 
+                                 onload="checkImageOrientation(this, '{{ app.id }}')"
+                                 data-title="{{ app.title }}"
+                                 data-overview="{{ app.overview }}"
+                                 data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                 data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                        {% elif app.screenshots %}
                             <img src="{{ app.screenshots.0.url }}" 
                                  class="d-none image-checker" 
                                  onload="checkImageOrientation(this, '{{ app.id }}')"
@@ -57,7 +65,15 @@
                         
                         <!-- 初期表示用のカード内容 -->
                         <div class="row g-0" id="card-content-{{ app.id }}">
-                            {% if app.screenshots %}
+                            {% if app.thumbnail %}
+                                <div class="col-md-4">
+                                    <div class="h-100">
+                                        <img src="{{ app.thumbnail.url }}" 
+                                             class="img-fluid cyber-image rounded-start h-100"
+                                             style="object-fit: cover;">
+                                    </div>
+                                </div>
+                            {% elif app.screenshots %}
                                 <div class="col-md-4">
                                     <div class="h-100">
                                         <img src="{{ app.screenshots.0.url }}" 
@@ -66,7 +82,7 @@
                                     </div>
                                 </div>
                             {% endif %}
-                            <div class="{% if app.screenshots %}col-md-8{% else %}col-12{% endif %}">
+                            <div class="{% if app.thumbnail or app.screenshots %}col-md-8{% else %}col-12{% endif %}">
                                 <div class="card-body">
                                     <h3 class="card-title cyber-title">{{ app.title }}</h3>
                                     <p class="card-text cyber-description">{{ app.overview }}</p>
