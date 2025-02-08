@@ -10,11 +10,11 @@
 
 <div class="min-vh-100">
     <!-- ヒーローセクション -->
-    <div class="position-relative text-center pt-2 mb-4 cyber-hero" 
+    <div class="position-relative text-center pt-5 mt-4 mb-4 cyber-hero" 
          style="position: relative;
                 width: 100vw;
                 max-width: 100%;
-                aspect-ratio: 1 / 1;
+                aspect-ratio: 16 / 16;
                 margin: 0 auto;
                 border-radius: 8px;
                 overflow: hidden;">
@@ -24,26 +24,25 @@
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    transform: translateY(-30%);
                     margin: 0;
                     padding: 0;
                     z-index: 1;">
             <img src="{% static 'home/images/sy.png' %}" 
                  style="width: 100%;
-                        height: auto;
+                        height: 100%;
                         display: block;
                         margin: 0;
                         padding: 0;">
         </div>
 
         <!-- appmanを最前面に -->
-        <div class="mx-auto text-center position-absolute" style="top: 30%; left: 50%; transform: translate(-50%, -50%); z-index: 3;">
+        <div class="mx-auto text-center position-absolute" style="top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 3;">
             <img src="{% static 'home/images/appman.png' %}" 
                  alt="アプリマン" 
                  class="img-fluid cyber-glow" 
                  style="max-width: 400px;
                         position: relative;">
-            <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0">
+            <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0" style="font-size: 1.8rem; margin-top: 1rem;">
                 俺もアプリになった
             </p>
         </div>
@@ -450,42 +449,45 @@ function getCardBody(appId, title, overview, types, genres) {
 
 /* サイバーテキストの光るエフェクト */
 .cyber-glow-text {
-    font-size: 2rem;
     font-weight: bold;
-    color: #ff69b4;
+    color: #00ffff;
     text-shadow: 
-        0 0 5px #ff69b4,
-        0 0 10px #ff69b4,
-        0 0 20px #ff00ff,
-        0 0 40px #ff00ff,
-        0 0 80px #ff00ff;
+        0 0 5px #00ffff,
+        0 0 10px #00ffff,
+        0 0 20px #0099ff,
+        0 0 40px #0099ff,
+        0 0 80px #0099ff,
+        0 0 100px #0099ff;  /* 光る効果を強化 */
     animation: textPulse 2s ease-in-out infinite;
 }
 
 @keyframes textPulse {
     0% {
         text-shadow: 
-            0 0 5px #ff69b4,
-            0 0 10px #ff69b4,
-            0 0 20px #ff00ff,
-            0 0 40px #ff00ff,
-            0 0 80px #ff00ff;
+            0 0 5px #00ffff,
+            0 0 10px #00ffff,
+            0 0 20px #0099ff,
+            0 0 40px #0099ff,
+            0 0 80px #0099ff,
+            0 0 100px #0099ff;
     }
     50% {
         text-shadow: 
-            0 0 10px #ff69b4,
-            0 0 20px #ff69b4,
-            0 0 40px #ff00ff,
-            0 0 80px #ff00ff,
-            0 0 120px #ff00ff;
+            0 0 10px #00ffff,
+            0 0 20px #00ffff,
+            0 0 40px #0099ff,
+            0 0 80px #0099ff,
+            0 0 120px #0099ff,
+            0 0 140px #0099ff;  /* ピーク時の光る効果を強化 */
     }
     100% {
         text-shadow: 
-            0 0 5px #ff69b4,
-            0 0 10px #ff69b4,
-            0 0 20px #ff00ff,
-            0 0 40px #ff00ff,
-            0 0 80px #ff00ff;
+            0 0 5px #00ffff,
+            0 0 10px #00ffff,
+            0 0 20px #0099ff,
+            0 0 40px #0099ff,
+            0 0 80px #0099ff,
+            0 0 100px #0099ff;
     }
 }
 
@@ -505,64 +507,36 @@ function getCardBody(appId, title, overview, types, genres) {
     100% { filter: brightness(1); }
 }
 
-/* サイバーテキストの光るエフェクト */
-.cyber-glow-text {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #00ffff;
-    text-shadow: 
-        0 0 5px #00ffff,
-        0 0 10px #00ffff,
-        0 0 20px #0099ff,
-        0 0 40px #0099ff,
-        0 0 80px #0099ff;
-    animation: textPulse 2s ease-in-out infinite;
-}
-
-@keyframes textPulse {
-    0% {
-        text-shadow: 
-            0 0 5px #00ffff,
-            0 0 10px #00ffff,
-            0 0 20px #0099ff,
-            0 0 40px #0099ff,
-            0 0 80px #0099ff;
-    }
-    50% {
-        text-shadow: 
-            0 0 10px #00ffff,
-            0 0 20px #00ffff,
-            0 0 40px #0099ff,
-            0 0 80px #0099ff,
-            0 0 120px #0099ff;
-    }
-    100% {
-        text-shadow: 
-            0 0 5px #00ffff,
-            0 0 10px #00ffff,
-            0 0 20px #0099ff,
-            0 0 40px #0099ff,
-            0 0 80px #0099ff;
-    }
-}
-
-/* スマートフォン用の調整 */
-@media (max-width: 576px) {
+/* ==================== スマートフォン用の設定 - 絶対に変更禁止 ==================== */
+/* 
+    警告：この設定は完全に固定です！
+    - top: 0 !important
+    - margin-top: 0 !important
+    - padding-top: 0 !important
+    - border-top: 0 !important
+    これらの値は死守すること！
+    どのような変更要件が来ても、この設定は変更禁止！
+*/
+@media (max-width: 576px) {  /* スマートフォンのみの設定 */
     .mx-auto.text-center.position-absolute {
-        top: 35% !important;
-        transform: translate(-50%, 0) !important;
+        top: 0 !important;   /* appmanの位置を完全最上部に - 変更禁止 */
+        transform: translate(-50%, 0) !important;  /* 変更禁止 */
     }
     
     .cyber-hero {
         background-image: none !important;
         aspect-ratio: auto !important;
         min-height: 70vh;
+        margin-top: 0 !important;     /* 上マージンを完全削除 - 変更禁止 */
+        padding-top: 0 !important;    /* 上パディングを完全削除 - 変更禁止 */
+        border-top: 0 !important;     /* 上ボーダーも削除 - 変更禁止 */
     }
 
     .cyber-glow {
-        max-width: 400px !important; /* 大きめのサイズに固定 */
-        width: auto !important; /* 自動調整に変更 */
+        max-width: 400px !important;
+        width: auto !important;
         height: auto !important;
+        margin-top: 0 !important;     /* 画像の上マージンも削除 - 変更禁止 */
     }
 
     .cyber-text-hero {
@@ -572,6 +546,66 @@ function getCardBody(appId, title, overview, types, genres) {
     .cyber-glow-text {
         font-size: 1.5rem !important;
     }
+
+    img[src*='sy.png'] {
+        display: none !important;  /* スマートフォンでのみ非表示 - 変更禁止 */
+    }
 }
+/* =============================================================== */
+
+/* ==================== タブレット用の設定 - 絶対に変更禁止 ==================== */
+/* 
+    警告：この設定は完全に固定です！
+    - margin-top: 0 !important
+    - padding-top: 0 !important
+    - aspect-ratio: 16 / 20 !important
+    これらの値は死守すること！
+    どのような変更要件が来ても、この設定は変更禁止！
+*/
+@media (min-width: 577px) and (max-width: 991px) {
+    .cyber-hero {
+        aspect-ratio: 16 / 20 !important;  /* タブレット用アスペクト比 - 変更禁止 */
+        margin-top: 0 !important;          /* 上マージンなし - 変更禁止 */
+        padding-top: 0 !important;         /* 上パディングなし - 変更禁止 */
+    }
+
+    .mx-auto.text-center.position-absolute {
+        top: 45% !important;  /* appmanの位置 - 変更禁止 */
+    }
+
+    img[src*='sy.png'] {
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: center !important; /* 画像を中央に配置 - 変更禁止 */
+    }
+}
+/* =============================================================== */
+
+/* ==================== PC用の設定 - 絶対に変更禁止 ==================== */
+/* 
+    警告：この設定は完全に固定です！
+    - margin-top: 0 !important
+    - padding-top: 0.2rem !important
+    - aspect-ratio: 16 / 16 !important
+    これらの値は死守すること！
+    どのような変更要件が来ても、この設定は変更禁止！
+*/
+@media (min-width: 992px) {
+    .cyber-hero {
+        aspect-ratio: 16 / 16 !important;  /* PC用のアスペクト比 - 変更禁止 */
+        margin-top: 0 !important;          /* 上マージンを0に - 変更禁止 */
+        padding-top: 0.2rem !important;    /* 上パディングをほぼ0に - 変更禁止 */
+    }
+
+    .mx-auto.text-center.position-absolute {
+        top: 35% !important;  /* appmanの位置 - 変更禁止 */
+    }
+
+    img[src*='sy.png'] {
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+/* =============================================================== */
 </style>
 {% endblock %} 
