@@ -109,29 +109,27 @@
         </form>
     {% endif %}
 
-    <!-- ステータスインジケーター（左下に固定） -->
-    <div class="position-fixed bottom-0 start-0 p-4" style="z-index: 1000;">
-        <div class="cyber-status-indicator">
-            {% if not readonly and app.id %}  {# app.idの存在確認を追加 #}
-                <a href="{% url 'apps_gallery:detail' app.id %}" class="status-badge editing-link">
-                    <i class="bi bi-pencil-square"></i> 編集もーど
-                </a>
-            {% elif app.id %}  {# 詳細表示時 #}
-                <a href="{% url 'apps_gallery:edit' app.id %}" class="status-badge viewing-link">
-                    <i class="bi bi-eye"></i> 詳細もーど
-                </a>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- 保存ボタン（新規作成時または編集モードかつ作者の場合のみ表示） -->
+    <!-- 保存ボタン - 編集モードの時のみ表示 -->
     {% if not readonly %}
-        <div class="position-fixed p-4" style="z-index: 1000; bottom: 0; right: 0;">
-            <button type="submit" class="btn btn-cyber-save" form="appForm">
+        <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000;">
+            <button type="submit" form="appForm" class="btn btn-cyber-save">
                 <i class="bi bi-save"></i> 保存
             </button>
         </div>
     {% endif %}
+
+    <!-- 中央のステータスインジケーター -->
+    <div class="cyber-status-indicator">
+        {% if not readonly and app.id %}
+            <span class="status-badge editing-link" onclick="window.location.href='{% url 'apps_gallery:detail' app.id %}'">
+                <i class="bi bi-pencil-square"></i> 編集もーど
+            </span>
+        {% elif readonly and app.id %}
+            <span class="status-badge viewing-link" onclick="window.location.href='{% url 'apps_gallery:edit' app.id %}'">
+                <i class="bi bi-eye"></i> 詳細もーど
+            </span>
+        {% endif %}
+    </div>
 </div>
 
 <style>
@@ -515,84 +513,38 @@ html {
 
 /* ステータスインジケーターのスタイル */
 .cyber-status-indicator {
-    background: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 20px;
     padding: 10px 20px;
-    border-radius: 20px;
-    backdrop-filter: blur(5px);
+    z-index: 1000;
+}
+
+/* モード表示のスタイル */
+.status-badge {
+    display: inline-block;
+    padding: 8px 25px;
+    color: var(--cyber-yellow);
+    background: rgba(0, 0, 0, 0.3);  /* スケルトン調の背景 */
+    backdrop-filter: blur(8px);
     border: 1px solid rgba(0, 255, 255, 0.3);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    border-radius: 20px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.status-badge, .status-badge:hover, .status-badge:focus, .status-badge:active {
-    text-decoration: none !important;
-    border: none !important;
-    background: none !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    transform: none !important;
-    outline: none !important;
-}
-
-.editing-link, .viewing-link {
-    border: none !important;
-    background: none !important;
-}
-
-.status-badge.editing {
-    color: var(--cyber-orange);
-    text-shadow: 0 0 5px var(--cyber-orange);
-    animation: pulse 2s infinite;
-}
-
-.status-badge.viewing {
-    color: var(--cyber-blue);
-    text-shadow: 0 0 5px var(--cyber-blue);
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-}
-
-/* スタイルセクションの修正 */
-.status-badge.viewing-link {
-    color: var(--cyber-blue);
-    text-shadow: 0 0 5px var(--cyber-blue);
-    border: 1px solid var(--cyber-blue);
-}
-
-.status-badge.viewing-link:hover {
+/* ホバー時のエフェクト */
+.status-badge:hover {
     background: rgba(0, 255, 255, 0.2);
+    border-color: rgba(0, 255, 255, 0.8);
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    transform: translateY(-2px);
 }
 
-.status-badge.editing-link {
-    color: #00ff9f;
-    text-shadow: 0 0 5px #00ff9f;
-    border: 1px solid #00ff9f;
-}
-
-.status-badge.editing-link:hover {
-    background: rgba(0, 255, 159, 0.2);
-    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
-}
-
-#status-link {
-    text-decoration: none !important;
-    border: none;
-    background: none;
-    box-shadow: none;
-    padding: 0;
-    margin: 0;
-    transform: none;
-    outline: none;
-}
-
-#status-link:hover {
-    text-decoration: none !important;
-}
+/* 既存の .editing-link と .viewing-link のスタイルを削除 */
 
 /* ロボットアイコンのスタイル */
 .robot-icon {
@@ -695,6 +647,36 @@ html {
 @keyframes fadeInOut {
     0% { opacity: 0; transform: scale(0.8); }
     100% { opacity: 1; transform: scale(1); }
+}
+
+/* 編集モードのスタイル - 黒文字 */
+.status-badge.editing-link {
+    color: #000000;  /* 黒文字に */
+    border: 2px solid rgba(0, 255, 157, 0.8);
+    background: rgba(0, 255, 157, 0.25);
+    text-shadow: none;  /* 文字の光るエフェクトを削除 */
+    font-weight: bold;  /* 太字に */
+}
+
+.status-badge.editing-link:hover {
+    background: rgba(0, 255, 157, 0.4);
+    border-color: #00ff9d;
+    box-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
+}
+
+/* 詳細モードのスタイル - 黒文字 */
+.status-badge.viewing-link {
+    color: #000000;  /* 黒文字に */
+    border: 2px solid rgba(0, 255, 255, 0.8);
+    background: rgba(0, 255, 255, 0.25);
+    text-shadow: none;  /* 文字の光るエフェクトを削除 */
+    font-weight: bold;  /* 太字に */
+}
+
+.status-badge.viewing-link:hover {
+    background: rgba(0, 255, 255, 0.4);
+    border-color: #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
 }
 </style>
 

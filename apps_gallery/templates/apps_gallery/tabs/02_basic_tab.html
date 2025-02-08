@@ -168,36 +168,98 @@
     box-shadow: 0 0 10px var(--cyber-yellow) !important;
 }
 
-/* チェックボックスのスタイル */
+/* チェックボックスのスタイル改善 */
 .cyber-checkbox {
-    background-color: var(--bs-dark) !important;
-    border-color: var(--cyber-yellow) !important;
+    width: 1.2em;
+    height: 1.2em;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* チェックボックスがチェックされた時 */
+/* チェックボックスがチェックされた時のスタイル */
 .cyber-checkbox:checked {
     background-color: var(--cyber-yellow) !important;
     border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 5px var(--cyber-yellow);
+    box-shadow: 0 0 15px var(--cyber-yellow),
+                0 0 30px var(--cyber-yellow),
+                inset 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+/* チェックマークのスタイル */
+.cyber-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 0.3em;
+    height: 0.6em;
+    border: solid black;
+    border-width: 0 4px 4px 0;
+}
+
+/* チェックボックスホバー時のスタイル */
+.cyber-checkbox:hover {
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 8px var(--cyber-yellow);
+    transform: scale(1.05);
 }
 
 /* チェックボックスのラベル */
 .form-check-label {
     color: var(--cyber-yellow);
+    margin-left: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
 }
 
-/* チェックボックスホバー時 */
-.cyber-checkbox:hover {
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 5px var(--cyber-yellow);
+/* チェックボックスがチェックされた時のラベル */
+.cyber-checkbox:checked + .form-check-label {
+    color: var(--cyber-yellow);
+    text-shadow: 0 0 2px var(--cyber-yellow),
+                 0 0 4px var(--cyber-yellow);
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+/* チェックボックスグループ内のラベルホバー時 */
+.form-check-label:hover {
+    color: var(--cyber-yellow);
+    text-shadow: 0 0 2px var(--cyber-yellow);
 }
 
 /* 読み取り専用フィールドのスタイル */
 .form-control:read-only,
-.form-select:disabled {
-    background-color: rgba(0, 0, 0, 0.3) !important;
+.form-select:disabled,
+.cyber-checkbox:disabled,
+.cyber-checkbox:disabled + .form-check-label {
+    background-color: var(--bs-dark) !important;
     border-color: var(--cyber-yellow) !important;
-    opacity: 0.8;
+    color: var(--cyber-yellow) !important;
+    opacity: 0.5 !important;
+}
+
+/* チェックボックスが無効でチェック済みの場合 */
+.cyber-checkbox:disabled:checked {
+    background-color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 15px var(--cyber-yellow),
+                0 0 30px var(--cyber-yellow);
+    opacity: 1 !important;
+}
+
+/* チェックボックスが無効でチェック済みの場合のラベル */
+.cyber-checkbox:disabled:checked + .form-check-label {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 2px var(--cyber-yellow),
+                 0 0 4px var(--cyber-yellow);
+    font-weight: bold;
+    opacity: 1 !important;
+    letter-spacing: 0.5px;
 }
 
 /* ドロップダウンのスタイル改善 */
