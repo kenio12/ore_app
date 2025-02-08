@@ -712,26 +712,16 @@ html {
 })();
 
 // メッセージを表示する関数
-function showMessage(message) {
-    // 既存のメッセージがあれば削除
-    const existingMessage = document.querySelector('.cyber-message');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
-
-    // 新しいメッセージ要素を作成
+function showMessage(message, type = 'success') {
     const messageElement = document.createElement('div');
-    messageElement.className = 'cyber-message';
-    messageElement.innerHTML = `<i class="bi bi-check-circle"></i> ${message}`;
+    messageElement.className = `cyber-message ${type}`;
+    messageElement.innerHTML = `<i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
     document.body.appendChild(messageElement);
 
-    // 10秒後にメッセージを消す
     setTimeout(() => {
         messageElement.style.opacity = '0';
-        setTimeout(() => {
-            messageElement.remove();
-        }, 500); // フェードアウト後に要素を削除
-    }, 10000);
+        setTimeout(() => messageElement.remove(), 500);
+    }, 5000);
 }
 
 // フォーム送信処理
@@ -875,6 +865,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }, observerOptions);
 
     sections.forEach(section => observer.observe(section));
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 画像アップロード関連の処理
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            // 現在の画像数を取得
+            const currentImages = document.querySelectorAll('.screenshot-preview').length;
+            
+            // 3枚以上の場合はアップロードを中止
+            if (currentImages >= 3) {
+                e.preventDefault();
+                showMessage('画像は最大3枚までしかアップロードできません！', 'error');
+                fileInput.value = ''; // 選択をクリア
+                return;
+            }
+            
+            // 以降は既存のアップロード処理
+            // ... existing upload code ...
+        });
+    }
 });
 </script>
 {% endblock %} 

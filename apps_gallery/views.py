@@ -3,8 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from .models import AppGallery
-from .forms import AppForm  # この行を追加！
-from .constants import *  # 全ての定数をインポート
+from .forms import AppForm
+from .constants import *
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import json
@@ -216,65 +216,82 @@ def delete_app(request, pk):
 @require_http_methods(["POST"])
 def upload_screenshot(request):
     """スクリーンショットのアップロード処理"""
-    try:
-        if 'image' not in request.FILES:
-            return JsonResponse({'error': '画像ファイルが必要です'}, status=400)
+    if request.method == 'POST' and request.FILES.get('screenshot'):
+        # セッションから現在の画像数を取得
+        temp_screenshots = request.session.get('temp_screenshots', [])
+        
+        # 既存の画像数をチェック（編集時は既存のscreenshotsも数える）
+        existing_count = len(temp_screenshots)
+        if 'app_id' in request.POST:  # 編集時
+            app_id = request.POST['app_id']
+            app = AppGallery.objects.get(id=app_id)
+            existing_count += len(app.screenshots)
 
-        image_file = request.FILES['image']
-        app_id = request.POST.get('app_id')
-
-        # ファイルサイズチェック（10MB）
-        if image_file.size > 10 * 1024 * 1024:
+        # 3枚制限のチェック
+        if existing_count >= 3:
             return JsonResponse({
-                'error': '画像サイズが大きすぎます（上限: 10MB）'
+                'error': '画像は最大3枚までしかアップロードできません！'
             }, status=400)
 
-        # Cloudinaryにアップロード（ここでリサイズ）
-        upload_result = cloudinary.uploader.upload(
-            image_file,
-            folder='app_screenshots',
-            transformation=[
-                {'width': 1200, 'height': 800, 'crop': 'limit'},  # 最大サイズを指定
-                {'quality': 'auto:good'}
-            ]
-        )
+        # 以降は既存のアップロード処理
+        try:
+            image_file = request.FILES['screenshot']
+            app_id = request.POST.get('app_id')
 
-        screenshot_data = {
-            'public_id': upload_result['public_id'],
-            'url': upload_result['secure_url'],
-            'description': ''
-        }
+            # ファイルサイズチェック（10MB）
+            if image_file.size > 10 * 1024 * 1024:
+                return JsonResponse({
+                    'error': '画像サイズが大きすぎます（上限: 10MB）'
+                }, status=400)
 
-        if app_id:
-            # 既存のアプリの場合
-            app = get_object_or_404(AppGallery, pk=app_id)
-            if app.author != request.user:
-                return JsonResponse({'error': '権限がありません'}, status=403)
-            
-            # 既存のスクリーンショットリストに追加
-            screenshots = app.screenshots or []
-            screenshots.append(screenshot_data)
-            app.screenshots = screenshots
-            app.save()
-        else:
-            # 新規作成時（セッションに保存）
-            temp_screenshots = request.session.get('temp_screenshots', [])
-            temp_screenshots.append(screenshot_data)
-            request.session['temp_screenshots'] = temp_screenshots
-            request.session.modified = True
+            # Cloudinaryにアップロード（ここでリサイズ）
+            upload_result = cloudinary.uploader.upload(
+                image_file,
+                folder='app_screenshots',
+                transformation=[
+                    {'width': 1200, 'height': 800, 'crop': 'limit'},  # 最大サイズを指定
+                    {'quality': 'auto:good'}
+                ]
+            )
 
-        return JsonResponse({
-            'status': 'success',
-            'screenshot': screenshot_data,
-            'message': '画像をアップロードしました'
-        })
+            screenshot_data = {
+                'public_id': upload_result['public_id'],
+                'url': upload_result['secure_url'],
+                'description': ''
+            }
 
-    except Exception as e:
-        logging.error(f"Screenshot upload error: Unexpected error - {str(e)}")
-        return JsonResponse({
-            'error': 'アップロード中にエラーが発生しました',
-            'details': str(e)
-        }, status=500)
+            if app_id:
+                # 既存のアプリの場合
+                app = get_object_or_404(AppGallery, pk=app_id)
+                if app.author != request.user:
+                    return JsonResponse({'error': '権限がありません'}, status=403)
+                
+                # 既存のスクリーンショットリストに追加
+                screenshots = app.screenshots or []
+                screenshots.append(screenshot_data)
+                app.screenshots = screenshots
+                app.save()
+            else:
+                # 新規作成時（セッションに保存）
+                temp_screenshots = request.session.get('temp_screenshots', [])
+                temp_screenshots.append(screenshot_data)
+                request.session['temp_screenshots'] = temp_screenshots
+                request.session.modified = True
+
+            return JsonResponse({
+                'status': 'success',
+                'screenshot': screenshot_data,
+                'message': '画像をアップロードしました'
+            })
+
+        except Exception as e:
+            logging.error(f"Screenshot upload error: Unexpected error - {str(e)}")
+            return JsonResponse({
+                'error': 'アップロード中にエラーが発生しました',
+                'details': str(e)
+            }, status=500)
+
+    return JsonResponse({'error': '画像ファイルが必要です'}, status=400)
 
 @login_required
 @require_http_methods(["POST"])
