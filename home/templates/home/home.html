@@ -10,17 +10,28 @@
 
 <div class="min-vh-100">
     <!-- ヒーローセクション -->
-    <div class="position-relative text-center py-5 mb-4 cyber-hero" style="background-image: url('{% static 'home/images/sy.png' %}'); background-size: cover; background-position: center;">
+    <div class="position-relative text-center pt-2 mb-4 cyber-hero" 
+         style="background-image: url('{% static 'home/images/sy.png' %}'); 
+                background-size: contain;  
+                background-position: center top;
+                background-repeat: no-repeat;
+                width: 100vw;
+                max-width: 100%;
+                aspect-ratio: 1 / 1;
+                margin: 0 auto;
+                border-radius: 8px;
+                overflow: hidden;">
         <div class="cyber-overlay"></div>
         <div class="cyber-lines"></div>
-        <div class="d-flex flex-column align-items-center justify-content-center position-relative">
-            <div class="mx-auto text-center" style="max-width: 400px;">
+        <div class="d-flex flex-column align-items-center justify-content-start position-relative h-100">
+            <div class="mx-auto text-center position-absolute" style="top: 30%; left: 50%; transform: translate(-50%, -50%);">
                 <img src="{% static 'home/images/appman.png' %}" 
                      alt="アプリマン" 
-                     class="img-fluid mb-2 cyber-glow" 
-                     style="max-width: 300px;">
-                <!-- <h1 class="display-4 fw-bold text-white mb-3" style="text-shadow: 0 0 15px rgba(0, 123, 255, 0.5);">🗡️ 俺は 🏴‍☠️</h1> -->
-                <p class="cyber-text-hero mb-0">
+                     class="img-fluid cyber-glow" 
+                     style="max-width: 400px; /* サイズを200pxから400pxに拡大 */
+                            position: relative;
+                            z-index: 2;">
+                <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0">
                     俺もアプリになった
                 </p>
             </div>
@@ -408,6 +419,148 @@ function getCardBody(appId, title, overview, types, genres) {
     max-height: 400px;
     display: block;
     margin: 0 auto;
+}
+
+/* サイバーピンクテキスト */
+.cyber-pink {
+    background: linear-gradient(45deg, #ff00ff, #ff69b4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5),
+                 0 0 20px rgba(255, 105, 180, 0.3);
+    animation: neonPinkPulse 2s infinite;
+}
+
+@keyframes neonPinkPulse {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+    100% { filter: brightness(1); }
+}
+
+/* サイバーテキストの光るエフェクト */
+.cyber-glow-text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff69b4;
+    text-shadow: 
+        0 0 5px #ff69b4,
+        0 0 10px #ff69b4,
+        0 0 20px #ff00ff,
+        0 0 40px #ff00ff,
+        0 0 80px #ff00ff;
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+    0% {
+        text-shadow: 
+            0 0 5px #ff69b4,
+            0 0 10px #ff69b4,
+            0 0 20px #ff00ff,
+            0 0 40px #ff00ff,
+            0 0 80px #ff00ff;
+    }
+    50% {
+        text-shadow: 
+            0 0 10px #ff69b4,
+            0 0 20px #ff69b4,
+            0 0 40px #ff00ff,
+            0 0 80px #ff00ff,
+            0 0 120px #ff00ff;
+    }
+    100% {
+        text-shadow: 
+            0 0 5px #ff69b4,
+            0 0 10px #ff69b4,
+            0 0 20px #ff00ff,
+            0 0 40px #ff00ff,
+            0 0 80px #ff00ff;
+    }
+}
+
+/* サイバーブルーテキスト */
+.cyber-blue {
+    background: linear-gradient(45deg, #00ffff, #0099ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5),
+                 0 0 20px rgba(0, 153, 255, 0.3);
+    animation: neonBluePulse 2s infinite;
+}
+
+@keyframes neonBluePulse {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+    100% { filter: brightness(1); }
+}
+
+/* サイバーテキストの光るエフェクト */
+.cyber-glow-text {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #00ffff;
+    text-shadow: 
+        0 0 5px #00ffff,
+        0 0 10px #00ffff,
+        0 0 20px #0099ff,
+        0 0 40px #0099ff,
+        0 0 80px #0099ff;
+    animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+    0% {
+        text-shadow: 
+            0 0 5px #00ffff,
+            0 0 10px #00ffff,
+            0 0 20px #0099ff,
+            0 0 40px #0099ff,
+            0 0 80px #0099ff;
+    }
+    50% {
+        text-shadow: 
+            0 0 10px #00ffff,
+            0 0 20px #00ffff,
+            0 0 40px #0099ff,
+            0 0 80px #0099ff,
+            0 0 120px #0099ff;
+    }
+    100% {
+        text-shadow: 
+            0 0 5px #00ffff,
+            0 0 10px #00ffff,
+            0 0 20px #0099ff,
+            0 0 40px #0099ff,
+            0 0 80px #0099ff;
+    }
+}
+
+/* スマートフォン用の調整 */
+@media (max-width: 576px) {
+    .mx-auto.text-center.position-absolute {
+        top: 35% !important;
+        transform: translate(-50%, 0) !important;
+    }
+    
+    .cyber-hero {
+        background-image: none !important;
+        aspect-ratio: auto !important;
+        min-height: 70vh;
+    }
+
+    .cyber-glow {
+        max-width: 400px !important; /* 大きめのサイズに固定 */
+        width: auto !important; /* 自動調整に変更 */
+        height: auto !important;
+    }
+
+    .cyber-text-hero {
+        font-size: 1.5rem !important;
+    }
+
+    .cyber-glow-text {
+        font-size: 1.5rem !important;
+    }
 }
 </style>
 {% endblock %} 
