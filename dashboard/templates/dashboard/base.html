@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- サイドバー -->
+        <div class="col-md-3 col-lg-2">
+            <div class="card cyber-card">
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'dashboard:index' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+                            <i class="fas fa-terminal me-2"></i>ターミナル
+                        </a>
+                        <a href="{% url 'dashboard:apps' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'apps' %}active{% endif %}">
+                            <i class="fas fa-microchip me-2"></i>アプリ管理
+                        </a>
+                        <a href="{% url 'dashboard:profile' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                            <i class="fas fa-user-circle me-2"></i>プロフィール
+                        </a>
+                        <a href="{% url 'dashboard:account' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'account' %}active{% endif %}">
+                            <i class="fas fa-network-wired me-2"></i>システム設定
+                        </a>
+                        <a href="{% url 'dashboard:notifications' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
+                            <i class="fas fa-satellite-dish me-2"></i>通信設定
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- メインコンテンツ -->
+        <div class="col-md-9 col-lg-10">
+            {% block dashboard_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<style>
+/* サイバーパンクスタイル */
+.cyber-card {
+    background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+}
+
+.cyber-nav-item {
+    background: transparent;
+    color: #00ff00 !important;
+    border-left: 3px solid transparent;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+.cyber-nav-item:hover {
+    background: rgba(0, 255, 0, 0.1);
+    border-left: 3px solid #00ff00;
+    transform: translateX(5px);
+}
+
+.cyber-nav-item.active {
+    background: rgba(0, 255, 0, 0.2);
+    border-left: 3px solid #00ff00;
+    box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+/* グローエフェクト */
+@keyframes neonGlow {
+    0% { box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00; }
+    50% { box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00; }
+    100% { box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00; }
+}
+
+/* スキャンライン */
+@keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+}
+
+.cyber-content {
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 255, 0, 0.1);
+    animation: scanline 2s linear infinite;
+}
+
+/* ホログラム効果 */
+.cyber-hologram {
+    position: relative;
+}
+
+.cyber-hologram::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 0%, rgba(0, 255, 0, 0.1) 50%, transparent 100%);
+    animation: hologram 3s linear infinite;
+}
+
+@keyframes hologram {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* 背景スタイルを追加 */
+body {
+    background: #0a0a0a;  /* 深い黒色の背景 */
+    color: #00ff00;  /* ネオングリーンのテキスト */
+    background-image: 
+        linear-gradient(45deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+        linear-gradient(-45deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;  /* グリッドのサイズ */
+}
+
+/* カードのスタイルを更新 */
+.card {
+    background: rgba(18, 18, 18, 0.9) !important;  /* 半透明の暗い背景 */
+    border: 1px solid rgba(0, 255, 0, 0.3) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.1) !important;
+}
+
+/* テキストカラーを統一 */
+.text-light {
+    color: #00ff00 !important;
+}
+
+.card-title, 
+.card-header, 
+.modal-title,
+.modal-body,
+.table,
+.display-4 {
+    color: #00ff00 !important;
+}
+
+/* テーブルのスタイルを更新 */
+.table {
+    color: #00ff00 !important;
+}
+
+.table-dark {
+    background: rgba(10, 10, 10, 0.8) !important;
+}
+
+/* ボタンのホバーエフェクトを強化 */
+.btn-cyber-primary:hover,
+.btn-cyber-secondary:hover,
+.btn-cyber-danger:hover {
+    animation: neonPulse 1.5s infinite;
+    transform: scale(1.05);
+}
+
+@keyframes neonPulse {
+    0% { box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
+    50% { box-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+    100% { box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
+}
+
+/* サイドバーのプロフィール用スタイル */
+.cyber-avatar {
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.cyber-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.cyber-avatar-placeholder {
+    border-radius: 50%;
+    border: 2px solid #00ff00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.cyber-avatar-placeholder:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+/* モーダルのスタイルも更新 */
+.modal-content {
+    background: rgba(18, 18, 18, 0.9) !important;
+    border: 1px solid rgba(0, 255, 0, 0.3) !important;
+}
+
+/* プレースホルダーテキストも緑に */
+.text-center {
+    color: #00ff00 !important;
+}
+</style>
+{% endblock %} 

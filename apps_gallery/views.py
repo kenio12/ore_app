@@ -54,10 +54,38 @@ def create_view(request):
                 app = form.save(commit=False)
                 app.author = request.user
                 
-                # セッションから画像情報を取得して保存
+                # セッションから画像情報を取得
                 temp_screenshots = request.session.get('temp_screenshots', [])
                 if temp_screenshots:
-                    app.screenshots = temp_screenshots
+                    # 新しいスクリーンショットリストを作成
+                    new_screenshots = []
+                    
+                    for screenshot in temp_screenshots:
+                        # 一時フォルダから本番フォルダへ画像を移動
+                        try:
+                            # 新しい public_id を生成（app_idを含むパスに）
+                            old_public_id = screenshot['public_id']
+                            new_public_id = old_public_id.replace('app_screenshots/temp', f'app_screenshots/app_{app.id}')
+                            
+                            # Cloudinaryで画像を移動（rename）
+                            result = cloudinary.uploader.rename(old_public_id, new_public_id)
+                            
+                            # 新しい情報でスクリーンショットを更新
+                            new_screenshot = {
+                                'public_id': result['public_id'],
+                                'url': result['secure_url'],
+                                'description': screenshot.get('description', '')
+                            }
+                            new_screenshots.append(new_screenshot)
+                            
+                        except Exception as e:
+                            logging.error(f"Failed to move screenshot: {e}")
+                            # エラーが発生しても処理を継続
+                            continue
+                    
+                    # 新しいスクリーンショットリストを保存
+                    app.screenshots = new_screenshots
+                    
                     # セッションをクリア
                     del request.session['temp_screenshots']
                     request.session.modified = True
@@ -105,6 +133,10 @@ def create_view(request):
 def edit_app(request, pk):
     app = get_object_or_404(AppGallery, pk=pk)
     
+    # 権限チェックを追加
+    if app.author != request.user:
+        raise PermissionDenied("このアプリを編集する権限がありません。")
+    
     if request.method == 'POST':
         try:
             form_data = request.POST
@@ -121,6 +153,42 @@ def edit_app(request, pk):
             app.target_users = form_data.getlist('target_users', app.target_users)
             app.problems = form_data.getlist('problems', app.problems)
             app.final_appeal = form_data.getlist('final_appeal', app.final_appeal)
+            
+            # スクリーンショットの処理を追加
+            temp_screenshots = request.session.get('temp_screenshots', [])
+            if temp_screenshots:
+                # 既存のスクリーンショットリストを取得
+                current_screenshots = app.screenshots or []
+                
+                # 新しいスクリーンショットを追加
+                for screenshot in temp_screenshots:
+                    try:
+                        # tempフォルダから本番フォルダへ移動
+                        old_public_id = screenshot['public_id']
+                        new_public_id = old_public_id.replace('app_screenshots/temp', f'app_screenshots/app_{app.id}')
+                        
+                        # Cloudinaryで画像を移動
+                        result = cloudinary.uploader.rename(old_public_id, new_public_id)
+                        
+                        # 新しい情報でスクリーンショットを追加
+                        new_screenshot = {
+                            'public_id': result['public_id'],
+                            'url': result['secure_url'],
+                            'description': screenshot.get('description', '')
+                        }
+                        current_screenshots.append(new_screenshot)
+                        
+                    except Exception as e:
+                        logging.error(f"Failed to move screenshot in edit: {e}")
+                        continue
+                
+                # 更新されたスクリーンショットリストを保存
+                app.screenshots = current_screenshots
+                
+                # セッションをクリア
+                del request.session['temp_screenshots']
+                request.session.modified = True
+            
             app.save()
             
             # AJAXリクエストの場合
@@ -143,7 +211,13 @@ def edit_app(request, pk):
     
     context = {
         'app': app,
-        'readonly': False
+        'readonly': False,
+        'APP_TYPES': dict(APP_TYPES),
+        'APP_STATUS': dict(APP_STATUS),
+        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
+        'GENRES': dict(GENRES),
+        'is_edit': True,
+        'hide_navbar': True
     }
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
@@ -256,7 +330,7 @@ def upload_screenshot(request):
                     return JsonResponse({
                         'error': '画像は最大3枚までです'
                     }, status=400)
-                upload_folder = f'app_screenshots/app_{app_id}'
+                upload_folder = f'app_screenshots/app_{appid}'
             else:
                 # 新規作成の場合
                 temp_screenshots = request.session.get('temp_screenshots', [])

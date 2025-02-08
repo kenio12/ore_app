@@ -28,4 +28,5 @@ urlpatterns = [
     path('apps_gallery/', include('apps_gallery.urls')),  # URLパスを apps から apps_gallery に変更
     path('', include('home.urls')),  # ホームページのURL追加
     path('health/', health_check, name='health_check'),
+    path('dashboard/', include('dashboard.urls')),
 ]

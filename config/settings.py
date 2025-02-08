@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'widget_tweaks',
     'apps_gallery.apps.AppsGalleryConfig',
+    'dashboard.apps.DashboardConfig',
 ]
 
 MIDDLEWARE = [

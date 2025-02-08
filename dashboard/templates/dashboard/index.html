@@ -1,0 +1,124 @@
+{% extends 'dashboard/base.html' %}
+
+{% block dashboard_content %}
+<div class="row">
+    <!-- 統計カード -->
+    <div class="col-md-4 mb-4">
+        <a href="{% url 'dashboard:apps' %}" class="text-decoration-none">
+            <div class="card bg-dark text-cyber h-100 hover-card">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-cyber">投稿アプリ数</h5>
+                    <div class="d-flex align-items-center justify-content-center flex-grow-1">
+                        <p class="display-4 mb-0 text-cyber">{{ total_apps|default:"0" }}</p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- プロフィールカード -->
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark text-cyber h-100">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-cyber">プロフィール</h5>
+                <div class="d-flex align-items-center justify-content-center flex-grow-1">
+                    <a href="{% url 'dashboard:profile' %}" class="text-cyber text-decoration-none">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="プロフィール画像" class="rounded-circle cyber-avatar" style="width: 100px; height: 100px; object-fit: cover;">
+                        {% else %}
+                            <div class="cyber-avatar-placeholder">
+                                <i class="fas fa-user display-1"></i>
+                            </div>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 最近のアプリ -->
+    <div class="col-12 mb-4">
+        <div class="card bg-dark text-cyber">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-cyber">最近のアプリ</h5>
+                <a href="{% url 'dashboard:apps' %}" class="btn btn-cyber-secondary btn-sm">すべて見る</a>
+            </div>
+            <div class="card-body">
+                {% if recent_apps %}
+                    <div class="table-responsive">
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th class="text-cyber">タイトル</th>
+                                    <th class="text-cyber">作成日</th>
+                                    <th class="text-cyber">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for app in recent_apps %}
+                                    <tr>
+                                        <td class="text-cyber">{{ app.title }}</td>
+                                        <td class="text-cyber">{{ app.created_at|date:"Y/m/d" }}</td>
+                                        <td>
+                                            <a href="{% url 'apps_gallery:detail' pk=app.pk %}" class="btn btn-sm btn-cyber-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-center mb-0 text-cyber">まだアプリを投稿していません。</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.text-cyber {
+    color: #00ff00 !important;
+}
+
+.cyber-avatar {
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.cyber-avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+}
+
+.cyber-avatar-placeholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #00ff00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.cyber-avatar-placeholder:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+}
+
+.hover-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+}
+</style>
+{% endblock %} 

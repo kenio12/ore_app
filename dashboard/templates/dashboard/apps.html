@@ -1,0 +1,108 @@
+{% extends 'dashboard/base.html' %}
+
+{% block dashboard_content %}
+<div class="card bg-dark text-cyber">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 text-cyber">アプリ管理</h4>
+        <a href="{% url 'apps_gallery:create' %}" class="btn btn-cyber-purple">
+            <i class="fas fa-plus me-2"></i>新規作成
+        </a>
+    </div>
+    <div class="card-body">
+        {% if apps %}
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-cyber">タイトル</th>
+                            <th class="text-cyber">ステータス</th>
+                            <th class="text-cyber">作成日</th>
+                            <th class="text-cyber">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in apps %}
+                            <tr>
+                                <td class="text-cyber">{{ app.title }}</td>
+                                <td class="text-cyber">
+                                    <span class="text-cyber badge bg-{% if app.status == 'published' %}success{% else %}warning{% endif %}" 
+                                          data-bs-toggle="tooltip" 
+                                          data-bs-placement="top" 
+                                          title="{% if app.status == 'published' %}公開中：このアプリは全ユーザーに公開されています{% else %}下書き：このアプリはまだ非公開です{% endif %}">
+                                        {{ app.get_status_display }}
+                                    </span>
+                                </td>
+                                <td class="text-cyber">{{ app.created_at|date:"Y/m/d" }}</td>
+                                <td class="text-cyber">
+                                    <a href="{% url 'apps_gallery:detail' pk=app.pk %}" class="btn btn-sm btn-cyber-primary me-2">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'apps_gallery:edit' pk=app.pk %}" class="btn btn-sm btn-success me-2">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-cyber-danger" onclick="confirmDelete({{ app.pk }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center text-cyber">まだアプリを投稿していません。</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.text-cyber {
+    color: #00ff00 !important;
+}
+</style>
+
+<!-- 削除確認モーダル -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title text-cyber">削除確認</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-cyber">
+                このアプリを削除してもよろしいですか？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cyber-secondary" data-bs-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-cyber-danger" id="confirmDeleteBtn">削除する</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// ツールチップを初期化
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+});
+
+let appIdToDelete = null;
+
+function confirmDelete(appId) {
+    appIdToDelete = appId;
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    if (appIdToDelete) {
+        window.location.href = `/apps/${appIdToDelete}/delete/`;
+    }
+});
+</script>
+{% endblock %}
+{% endblock %} 
