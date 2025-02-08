@@ -221,20 +221,21 @@ def upload_screenshot(request):
             return JsonResponse({'error': '画像ファイルが必要です'}, status=400)
 
         image_file = request.FILES['image']
-        
+        app_id = request.POST.get('app_id')
+
         # ファイルサイズチェック（10MB）
-        if image_file.size > 10 * 1024 * 1024:  # 10MB in bytes
+        if image_file.size > 10 * 1024 * 1024:
             return JsonResponse({
                 'error': '画像サイズが大きすぎます（上限: 10MB）'
             }, status=400)
 
-        # Cloudinaryにアップロード（サイズ制限付き）
+        # Cloudinaryにアップロード（ここでリサイズ）
         upload_result = cloudinary.uploader.upload(
             image_file,
             folder='app_screenshots',
             transformation=[
-                {'width': 2000, 'height': 2000, 'crop': 'limit'},  # 最大サイズを制限
-                {'quality': 'auto:good'}  # 自動で最適な品質に調整
+                {'width': 1200, 'height': 800, 'crop': 'limit'},  # 最大サイズを指定
+                {'quality': 'auto:good'}
             ]
         )
 
@@ -244,11 +245,23 @@ def upload_screenshot(request):
             'description': ''
         }
 
-        # セッションに保存（新規作成時）
-        temp_screenshots = request.session.get('temp_screenshots', [])
-        temp_screenshots.append(screenshot_data)
-        request.session['temp_screenshots'] = temp_screenshots
-        request.session.modified = True
+        if app_id:
+            # 既存のアプリの場合
+            app = get_object_or_404(AppGallery, pk=app_id)
+            if app.author != request.user:
+                return JsonResponse({'error': '権限がありません'}, status=403)
+            
+            # 既存のスクリーンショットリストに追加
+            screenshots = app.screenshots or []
+            screenshots.append(screenshot_data)
+            app.screenshots = screenshots
+            app.save()
+        else:
+            # 新規作成時（セッションに保存）
+            temp_screenshots = request.session.get('temp_screenshots', [])
+            temp_screenshots.append(screenshot_data)
+            request.session['temp_screenshots'] = temp_screenshots
+            request.session.modified = True
 
         return JsonResponse({
             'status': 'success',
@@ -257,7 +270,7 @@ def upload_screenshot(request):
         })
 
     except Exception as e:
-        logging.error(f"Screenshot upload error: {str(e)}")
+        logging.error(f"Screenshot upload error: Unexpected error - {str(e)}")
         return JsonResponse({
             'error': 'アップロード中にエラーが発生しました',
             'details': str(e)
