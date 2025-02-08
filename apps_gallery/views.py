@@ -154,15 +154,31 @@ def create_view(request):
 
 @login_required
 def edit_app(request, pk):
+    """アプリの編集ビュー"""
     app = get_object_or_404(AppGallery, pk=pk)
     
-    # 権限チェックを追加
+    # 権限チェック
     if app.author != request.user:
         raise PermissionDenied("このアプリを編集する権限がありません。")
+    
+    # スクリーンショットがあるのにサムネイルがない場合、最初の画像をサムネイルに設定
+    if app.screenshots and not app.thumbnail:
+        app.thumbnail = {
+            'public_id': app.screenshots[0].get('public_id'),
+            'url': app.screenshots[0].get('url')
+        }
+        app.save()
+        print(f"サムネイルを自動設定しました: {app.thumbnail}")
     
     if request.method == 'POST':
         try:
             form_data = request.POST
+            
+            # 既存のスクリーンショットとサムネイルを保持
+            existing_screenshots = app.screenshots
+            existing_thumbnail = app.thumbnail
+            
+            # フォームデータで更新
             app.title = form_data.get('title', app.title)
             app.app_types = form_data.getlist('types', app.app_types)
             app.genres = form_data.getlist('genres', app.genres)
@@ -177,54 +193,32 @@ def edit_app(request, pk):
             app.problems = form_data.getlist('problems', app.problems)
             app.final_appeal = form_data.getlist('final_appeal', app.final_appeal)
             
-            # スクリーンショットの処理を追加
-            temp_screenshots = request.session.get('temp_screenshots', [])
-            if temp_screenshots:
-                # 既存のスクリーンショットリストを取得
-                current_screenshots = app.screenshots or []
-                
-                # 新しいスクリーンショットを追加
-                for screenshot in temp_screenshots:
-                    try:
-                        # tempフォルダから本番フォルダへ移動
-                        old_public_id = screenshot['public_id']
-                        new_public_id = old_public_id.replace('app_screenshots/temp', f'app_screenshots/app_{app.id}')
-                        
-                        # Cloudinaryで画像を移動
-                        result = cloudinary.uploader.rename(old_public_id, new_public_id)
-                        
-                        # 新しい情報でスクリーンショットを追加
-                        new_screenshot = {
-                            'public_id': result['public_id'],
-                            'url': result['secure_url'],
-                            'description': screenshot.get('description', '')
-                        }
-                        current_screenshots.append(new_screenshot)
-                        
-                    except Exception as e:
-                        logging.error(f"Failed to move screenshot in edit: {e}")
-                        continue
-                
-                # 更新されたスクリーンショットリストを保存
-                app.screenshots = current_screenshots
-                
-                # セッションをクリア
-                del request.session['temp_screenshots']
-                request.session.modified = True
+            # スクリーンショットとサムネイルを復元
+            app.screenshots = existing_screenshots
+            app.thumbnail = existing_thumbnail
+            
+            # サムネイルがない場合は最初の画像を設定
+            if app.screenshots and not app.thumbnail:
+                app.thumbnail = {
+                    'public_id': app.screenshots[0].get('public_id'),
+                    'url': app.screenshots[0].get('url')
+                }
             
             app.save()
             
-            # AJAXリクエストの場合
+            print(f"保存後のスクリーンショット数: {len(app.screenshots)}")
+            print(f"保存後のサムネイル: {app.thumbnail}")
+            
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': True,
                     'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': pk})
                 })
             
-            # 通常のフォーム送信の場合
             return redirect('apps_gallery:detail', pk=pk)
             
         except Exception as e:
+            print(f"編集保存エラー: {str(e)}")
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': False,
@@ -341,76 +335,67 @@ def delete_app(request, pk):
 @require_http_methods(["POST"])
 def upload_screenshot(request):
     """スクリーンショットのアップロード処理"""
-    if request.method == 'POST' and request.FILES.get('image'):
-        try:
-            app_id = request.POST.get('app_id')
-            
-            # フォルダ構造を明確に分ける
-            if app_id:
-                # 既存アプリの場合
-                app = AppGallery.objects.get(id=app_id)
-                if len(app.screenshots) >= 3:
-                    return JsonResponse({
-                        'error': '画像は最大3枚までです'
-                    }, status=400)
-                upload_folder = f'app_screenshots/app_{app_id}'
-            else:
-                # 新規作成の場合
-                temp_screenshots = request.session.get('temp_screenshots', [])
-                if len(temp_screenshots) >= 3:
-                    return JsonResponse({
-                        'error': '画像は最大3枚までです'
-                    }, status=400)
-                upload_folder = 'app_screenshots/temp'
+    try:
+        print("\n==== アップロード処理開始 ====")
+        print(f"リクエストメソッド: {request.method}")
+        print(f"FILES: {request.FILES}")
+        print(f"POST データ: {request.POST}")
+        
+        if 'image' not in request.FILES:
+            return JsonResponse({'error': '画像ファイルが必要です'}, status=400)
 
-            # 新しい画像をアップロード
-            image_file = request.FILES['image']
-            
-            if image_file.size > 10 * 1024 * 1024:
-                return JsonResponse({
-                    'error': '画像サイズが大きすぎます（上限: 10MB）'
-                }, status=400)
+        image = request.FILES['image']
+        app_id = request.POST.get('app_id')
+        
+        print(f"アプリID: {app_id}")
 
-            # Cloudinaryにアップロード
-            upload_result = cloudinary.uploader.upload(
-                image_file,
-                folder=upload_folder,
-                transformation=[
-                    {'width': 1200, 'height': 800, 'crop': 'limit'},
-                    {'quality': 'auto:good'}
-                ]
-            )
+        # Cloudinaryにアップロード
+        upload_result = cloudinary.uploader.upload(
+            image,
+            folder='app_screenshots/temp' if not app_id else f'app_screenshots/app_{app_id}'
+        )
+        
+        print(f"Cloudinaryアップロード結果: {upload_result}")
 
-            screenshot_data = {
-                'public_id': upload_result['public_id'],
-                'url': upload_result['secure_url'],
-                'description': ''
-            }
+        screenshot_data = {
+            'public_id': upload_result['public_id'],
+            'url': upload_result['secure_url'],
+            'description': ''
+        }
 
-            if app_id:
-                # 既存アプリの場合は末尾に追加
-                app.screenshots.append(screenshot_data)  # insert(0) から append() に変更
-                app.save()
-            else:
-                # 新規作成の場合も末尾に追加
-                temp_screenshots.append(screenshot_data)  # insert(0) から append() に変更
-                request.session['temp_screenshots'] = temp_screenshots
-                request.session.modified = True
+        if app_id:
+            # 既存アプリの場合
+            app = get_object_or_404(AppGallery, pk=app_id)
+            screenshots = app.screenshots if app.screenshots else []
+            screenshots.append(screenshot_data)
+            app.screenshots = screenshots  # リストを明示的に再代入
+            app.save()
+            print(f"アプリに画像を追加: {screenshot_data}")
+            print(f"保存後のスクリーンショット数: {len(app.screenshots)}")
+        else:
+            # 新規作成の場合
+            temp_screenshots = request.session.get('temp_screenshots', [])
+            temp_screenshots.append(screenshot_data)
+            request.session['temp_screenshots'] = temp_screenshots
+            request.session.modified = True
+            print(f"セッションに画像を追加: {screenshot_data}")
+            print(f"セッション内の画像数: {len(request.session['temp_screenshots'])}")
 
-            return JsonResponse({
-                'status': 'success',
-                'screenshot': screenshot_data,
-                'message': '画像をアップロードしました'
-            })
+        return JsonResponse({
+            'status': 'success',
+            'screenshot': screenshot_data,
+            'message': '画像をアップロードしました'
+        })
 
-        except Exception as e:
-            logging.error(f"Screenshot upload error: {str(e)}")
-            return JsonResponse({
-                'error': 'アップロード中にエラーが発生しました',
-                'details': str(e)
-            }, status=500)
-
-    return JsonResponse({'error': '画像ファイルが必要です'}, status=400)
+    except Exception as e:
+        print(f"アップロードエラー: {str(e)}")
+        print(f"エラーの詳細: {e.__class__.__name__}")
+        import traceback
+        print(f"スタックトレース: {traceback.format_exc()}")
+        return JsonResponse({
+            'error': 'アップロード中にエラーが発生しました',
+            'details': str(e)
+        }, status=500)
 
 @login_required
 @require_http_methods(["POST"])
@@ -429,26 +414,64 @@ def delete_screenshot(request):
             
             screenshots = app.screenshots or []
             if 0 <= index < len(screenshots):
+                # 削除対象の画像情報を取得
+                target_screenshot = screenshots[index]
+                
                 # Cloudinaryから画像を削除
-                public_id = screenshots[index].get('public_id')
+                public_id = target_screenshot.get('public_id')
                 if public_id:
                     cloudinary.uploader.destroy(public_id)
+                
+                # サムネイルかどうかをチェック
+                was_thumbnail = (app.thumbnail and app.thumbnail.get('url') == target_screenshot.get('url'))
                 
                 # リストから該当の画像を削除
                 screenshots.pop(index)
                 app.screenshots = screenshots
+                
+                # サムネイルだった場合、新しいサムネイルを設定
+                if was_thumbnail and screenshots:
+                    # 残っている最初の画像をサムネイルに設定
+                    app.thumbnail = {
+                        'public_id': screenshots[0].get('public_id'),
+                        'url': screenshots[0].get('url')
+                    }
+                elif not screenshots:
+                    # 画像が全て削除された場合
+                    app.thumbnail = None
+                
                 app.save()
+                print(f"削除後のスクリーンショット数: {len(app.screenshots)}")
+                print(f"新しいサムネイル: {app.thumbnail}")
         else:
             # 新規作成時（セッションから削除）
             screenshots = request.session.get('temp_screenshots', [])
             if 0 <= index < len(screenshots):
+                # 削除対象の画像情報を取得
+                target_screenshot = screenshots[index]
+                
                 # Cloudinaryから画像を削除
-                public_id = screenshots[index].get('public_id')
+                public_id = target_screenshot.get('public_id')
                 if public_id:
                     cloudinary.uploader.destroy(public_id)
                 
+                # セッションのサムネイル情報を取得
+                temp_thumbnail = request.session.get('temp_thumbnail')
+                was_thumbnail = (temp_thumbnail and temp_thumbnail.get('url') == target_screenshot.get('url'))
+                
                 screenshots.pop(index)
                 request.session['temp_screenshots'] = screenshots
+                
+                # サムネイルだった場合、新しいサムネイルを設定
+                if was_thumbnail and screenshots:
+                    request.session['temp_thumbnail'] = {
+                        'public_id': screenshots[0].get('public_id'),
+                        'url': screenshots[0].get('url')
+                    }
+                elif not screenshots:
+                    if 'temp_thumbnail' in request.session:
+                        del request.session['temp_thumbnail']
+                
                 request.session.modified = True
 
         return JsonResponse({

@@ -11,79 +11,143 @@
             <div class="screenshots-gallery">
                 {% if app.screenshots %}
                     <div class="screenshots-container">
+                        <!-- まずサムネイル画像を表示 -->
                         {% for screenshot in app.screenshots %}
-                            <div class="screenshot-wrapper mb-4">
-                                <div class="screenshot-card {% if forloop.first %}{% if not app.thumbnail %}is-thumbnail{% endif %}{% endif %}">
-                                    <div class="screenshot-image">
-                                        <img src="{{ screenshot.url }}" 
-                                             alt="スクリーンショット" 
-                                             class="img-fluid screenshot-preview">
-                                        {% if app.thumbnail.url == screenshot.url %}
+                            {% if app.thumbnail.url == screenshot.url %}
+                                <div class="screenshot-wrapper mb-4">
+                                    <div class="screenshot-card is-thumbnail">
+                                        <div class="screenshot-image">
+                                            <img src="{{ screenshot.url }}" 
+                                                 alt="スクリーンショット" 
+                                                 class="img-fluid screenshot-preview">
                                             <div class="thumbnail-badge">
                                                 <i class="bi bi-star-fill"></i> サムネイル
                                             </div>
-                                        {% endif %}
-                                        
-                                        <!-- アクションボタン -->
-                                        <div class="screenshot-actions">
-                                            {% if app.thumbnail.url != screenshot.url %}
-                                                <button type="button" 
-                                                        class="btn-action btn-set-thumbnail" 
-                                                        data-index="{{ forloop.counter0 }}"
-                                                        title="サムネイルに設定">
-                                                    <i class="bi bi-star"></i>
-                                                </button>
+                                            
+                                            {% if not readonly %}
+                                                <div class="screenshot-actions">
+                                                    <button type="button" 
+                                                            class="btn-action btn-delete-screenshot" 
+                                                            data-index="{{ forloop.counter0 }}"
+                                                            title="削除">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
                                             {% endif %}
-                                            <button type="button" 
-                                                    class="btn-action btn-delete-screenshot" 
-                                                    data-index="{{ forloop.counter0 }}"
-                                                    title="削除">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                        </div>
+                                        {% if screenshot.description %}
+                                            <div class="screenshot-description">
+                                                <p class="text-cyber-purple mb-0">{{ screenshot.description }}</p>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- サムネイル以外の画像を表示 -->
+                        {% for screenshot in app.screenshots %}
+                            {% if not app.thumbnail %}
+                                {% if forloop.first %}
+                                    <div class="screenshot-wrapper mb-4">
+                                        <div class="screenshot-card is-thumbnail">
+                                            <div class="screenshot-image">
+                                                <img src="{{ screenshot.url }}" 
+                                                     alt="スクリーンショット" 
+                                                     class="img-fluid screenshot-preview">
+                                                <div class="thumbnail-badge">
+                                                    <i class="bi bi-star-fill"></i> サムネイル
+                                                </div>
+                                                
+                                                {% if not readonly %}
+                                                    <div class="screenshot-actions">
+                                                        <button type="button" 
+                                                                class="btn-action btn-delete-screenshot" 
+                                                                data-index="{{ forloop.counter0 }}"
+                                                                title="削除">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            {% if screenshot.description %}
+                                                <div class="screenshot-description">
+                                                    <p class="text-cyber-purple mb-0">{{ screenshot.description }}</p>
+                                                </div>
+                                            {% endif %}
                                         </div>
                                     </div>
-                                    {% if screenshot.description %}
-                                        <div class="screenshot-description">
-                                            <p class="text-cyber-purple mb-0">{{ screenshot.description }}</p>
+                                {% endif %}
+                            {% elif app.thumbnail.url != screenshot.url %}
+                                <div class="screenshot-wrapper mb-4">
+                                    <div class="screenshot-card">
+                                        <div class="screenshot-image">
+                                            <img src="{{ screenshot.url }}" 
+                                                 alt="スクリーンショット" 
+                                                 class="img-fluid screenshot-preview">
+                                            
+                                            {% if not readonly %}
+                                                <div class="screenshot-actions">
+                                                    <button type="button" 
+                                                            class="btn-action btn-set-thumbnail" 
+                                                            data-index="{{ forloop.counter0 }}"
+                                                            title="サムネイルに設定">
+                                                        <i class="bi bi-star"></i>
+                                                    </button>
+                                                    <button type="button" 
+                                                            class="btn-action btn-delete-screenshot" 
+                                                            data-index="{{ forloop.counter0 }}"
+                                                            title="削除">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            {% endif %}
                                         </div>
-                                    {% endif %}
+                                        {% if screenshot.description %}
+                                            <div class="screenshot-description">
+                                                <p class="text-cyber-purple mb-0">{{ screenshot.description }}</p>
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         {% endfor %}
                     </div>
                 {% endif %}
             </div>
 
-            <!-- アップロードフォーム -->
-            <div class="upload-form mb-5 pb-5">
-                <form id="screenshot-upload-form" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="upload-preview-area mb-3" id="previewArea">
-                        <div class="preview-placeholder">
-                            <i class="bi bi-cloud-upload"></i>
-                            <span>画像をドロップするか、クリックして選択</span>
+            <!-- アップロードフォーム - 読み取り専用でない場合のみ表示 -->
+            {% if not readonly %}
+                <div class="upload-form mb-5 pb-5">
+                    <form id="screenshot-upload-form" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="upload-preview-area mb-3" id="previewArea">
+                            <div class="preview-placeholder">
+                                <i class="bi bi-cloud-upload"></i>
+                                <span>画像をドロップするか、クリックして選択</span>
+                            </div>
+                            <div class="preview-wrapper position-relative">
+                                <img id="imagePreview" class="d-none">
+                                <button type="button" 
+                                        id="cancelPreview" 
+                                        class="btn-cancel-preview d-none" 
+                                        title="選択をキャンセル">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="preview-wrapper position-relative">
-                            <img id="imagePreview" class="d-none">
-                            <button type="button" 
-                                    id="cancelPreview" 
-                                    class="btn-cancel-preview d-none" 
-                                    title="選択をキャンセル">
-                                <i class="bi bi-x-circle"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <input type="file" 
-                           id="screenshotInput" 
-                           name="image"
-                           accept="image/*" 
-                           class="form-control cyber-purple-focus"
-                           style="display: none;">
-                    {% if app %}
-                        <input type="hidden" name="app_id" value="{{ app.id }}">
-                    {% endif %}
-                </form>
-            </div>
+                        <input type="file" 
+                               id="screenshotInput" 
+                               name="image"
+                               accept="image/*" 
+                               class="form-control cyber-purple-focus"
+                               style="display: none;">
+                        {% if app %}
+                            <input type="hidden" name="app_id" value="{{ app.id }}">
+                        {% endif %}
+                    </form>
+                </div>
+            {% endif %}
 
             <!-- ローディングインジケータ -->
             <div id="uploadLoader" class="upload-loader" style="display: none;">
@@ -586,37 +650,40 @@ document.addEventListener('DOMContentLoaded', function() {
         const appIdInput = document.querySelector('input[name="app_id"]');
         if (appIdInput) {
             formData.append('app_id', appIdInput.value);
+            console.log('送信するapp_id:', appIdInput.value);
         }
 
         const uploadLoader = document.getElementById('uploadLoader');
         uploadLoader.style.display = 'flex';
 
         try {
+            console.log('アップロード開始:', file.name);
+
             const response = await fetch('/apps_gallery/upload-screenshot/', {
                 method: 'POST',
                 body: formData,
                 headers: {
                     'X-CSRFToken': getCookie('csrftoken')
-                }
+                },
+                credentials: 'same-origin'
             });
 
+            const data = await response.json();
+            console.log('サーバーレスポンス:', data);
+
             if (!response.ok) {
-                throw new Error('アップロードに失敗しました');
+                throw new Error(data.error || 'アップロードに失敗しました');
             }
 
-            const data = await response.json();
             showToast('画像をアップロードしました', 'success');
             
-            // アップロードフォームの表示/非表示を更新
-            updateUploadFormVisibility();
-            
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            // リロード前に少し待つ
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            window.location.reload();
 
         } catch (error) {
-            console.error('Error:', error);
-            showToast('アップロード中にエラーが発生しました', 'error');
+            console.error('アップロードエラー:', error);
+            showToast(error.message, 'error');
         } finally {
             uploadLoader.style.display = 'none';
         }

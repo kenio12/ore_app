@@ -65,8 +65,11 @@
 
     <!-- フォーム開始（編集モードの時のみ） -->
     {% if not readonly %}
-        <form id="app-form" method="POST" 
-              action="{% url 'apps_gallery:create' %}"  {# 新規作成時は常にcreateのURLを使用 #}
+        <form id="appForm" 
+              method="post" 
+              action="{% if is_edit %}{% url 'apps_gallery:edit' app.id %}{% else %}{% url 'apps_gallery:create' %}{% endif %}"
+              data-is-edit="{% if is_edit %}true{% else %}false{% endif %}"
+              data-app-id="{{ app.id|default:'' }}"
               enctype="multipart/form-data" 
               class="needs-validation" 
               novalidate>
@@ -124,7 +127,7 @@
     <!-- 保存ボタン（新規作成時または編集モードかつ作者の場合のみ表示） -->
     {% if not readonly %}
         <div class="position-fixed p-4" style="z-index: 1000; bottom: 0; right: 0;">
-            <button type="submit" class="btn btn-cyber-save" form="app-form">
+            <button type="submit" class="btn btn-cyber-save" form="appForm">
                 <i class="bi bi-save"></i> 保存
             </button>
         </div>
@@ -726,55 +729,40 @@ function showMessage(message, type = 'success') {
 
 // フォーム送信処理
 document.addEventListener('DOMContentLoaded', function() {
-    const appForm = document.getElementById('app-form');
-    if (appForm) {
-        appForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+    const form = document.getElementById('appForm');
+    
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const isEdit = form.dataset.isEdit === 'true';
+        const appId = form.dataset.appId;
+        const formData = new FormData(form);
+        
+        try {
+            const url = isEdit ? `/apps_gallery/edit/${appId}/` : '/apps_gallery/create/';
+            const response = await fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
             
-            try {
-                const formData = new FormData(this);
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken'),
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    let errorMessage = '';
-                    if (data.errors) {
-                        // エラーメッセージを日本語で分かりやすく表示
-                        const errorMessages = [];
-                        if (data.errors.title) {
-                            errorMessages.push('タイトルを入力してください');
-                        }
-                        if (data.errors.overview) {
-                            errorMessages.push('アプリの概要を入力してください');
-                        }
-                        errorMessage = errorMessages.join('\n');
-                    } else {
-                        errorMessage = '保存に失敗しました';
-                    }
-                    throw new Error(errorMessage);
-                }
-
-                if (data.success) {
-                    showMessage('保存しました', 'success');
-                    if (!data.stay_in_edit) {
-                        window.location.href = data.redirect_url;
-                    }
-                }
-
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage(error.message, 'error');
+            const data = await response.json();
+            
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                // エラー処理
+                console.error('保存エラー:', data.errors);
+                showToast('保存に失敗しました', 'error');
             }
-        });
-    }
+        } catch (error) {
+            console.error('送信エラー:', error);
+            showToast('送信中にエラーが発生しました', 'error');
+        }
+    });
 });
 
 document.addEventListener('DOMContentLoaded', function() {
