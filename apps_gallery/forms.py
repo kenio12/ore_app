@@ -52,7 +52,7 @@ class AppForm(forms.ModelForm):
 
         # 必須フィールドの設定
         self.fields['title'].required = True
-        self.fields['overview'].required = True
+        # self.fields['overview'].required = True  # この行をコメントアウトまたは削除
 
         # その他のフィールドは任意に
         optional_fields = ['app_url', 'github_url', 'motivation', 'catchphrases', 

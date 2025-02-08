@@ -41,16 +41,20 @@ def create_view(request):
                     'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': app.pk})
                 })
             
+            # フォームのエラーをより詳細に記録
+            print("Form validation errors:", form.errors)
             return JsonResponse({
                 'success': False,
-                'errors': form.errors
+                'errors': form.errors,
+                'error_details': {field: errors[0] for field, errors in form.errors.items()}
             }, status=400)
             
         except Exception as e:
             print(f"全体的なエラー: {e}")
             return JsonResponse({
                 'success': False,
-                'error': str(e)
+                'error': str(e),
+                'error_trace': str(e.__traceback__)
             }, status=500)
     
     form = AppForm()

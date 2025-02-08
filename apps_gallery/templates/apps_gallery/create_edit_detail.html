@@ -2,6 +2,10 @@
 {% load app_filters %}
 {% load static %}
 
+{# ナビバーを完全に非表示にする #}
+{% block navbar %}
+{% endblock %}
+
 {# デバッグ用 #}
 {{ hide_navbar|default:"not set" }}
 
@@ -22,8 +26,8 @@
 
 <!-- タブナビゲーション -->
 <div id="appTabs" class="app-tabs">
-    <div class="container py-2">
-        <nav class="nav nav-pills nav-fill">
+    <div class="container py-1">
+        <nav class="nav nav-pills nav-fill mt-0">
             <!-- ホームへ戻るロボットアイコン -->
             <a href="{% url 'home:home' %}" class="nav-link" title="ホームへ戻る">
                 <span class="fs-4 me-2 cyber-emoji">🤖</span>
@@ -45,7 +49,7 @@
 <!-- メインコンテンツ -->
 <div class="container main-content">
     <!-- ヘッダー部分（新規作成/編集/詳細で切り替え） -->
-    <div class="d-flex justify-content-between align-items-center mt-3" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 style="color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; font-weight: bold;">
             {% if app.id %}
                 {% if readonly %}
@@ -104,17 +108,17 @@
 
     <!-- ステータスインジケーター（左下に固定） -->
     <div class="position-fixed bottom-0 start-0 p-4" style="z-index: 1000;">
-        {% if not is_create %}  {# 新規作成時以外の場合のみ表示 #}
-            {% if app.id %}
-                <div class="cyber-status-indicator">
-                    {% if not readonly %}
-                        <span class="status-badge editing-link">
-                            <i class="bi bi-pencil-square"></i> 編集もーど
-                        </span>
-                    {% endif %}
-                </div>
+        <div class="cyber-status-indicator">
+            {% if not readonly and app.id %}  {# app.idの存在確認を追加 #}
+                <a href="{% url 'apps_gallery:detail' app.id %}" class="status-badge editing-link">
+                    <i class="bi bi-pencil-square"></i> 編集もーど
+                </a>
+            {% elif app.id %}  {# 詳細表示時 #}
+                <a href="{% url 'apps_gallery:edit' app.id %}" class="status-badge viewing-link">
+                    <i class="bi bi-eye"></i> 詳細もーど
+                </a>
             {% endif %}
-        {% endif %}
+        </div>
     </div>
 
     <!-- 保存ボタン（新規作成時または編集モードかつ作者の場合のみ表示） -->
@@ -130,48 +134,19 @@
 <style>
 /* メインコンテンツのマージン */
 .main-content {
-    margin-top: 6rem;  /* デフォルトのマージン */
+    margin-top: 4rem !important;  /* 少し小さく */
 }
 
 /* レスポンシブ対応 */
-@media (max-width: 768px) {  /* タブレット以下のサイズ */
+@media (max-width: 768px) {  /* タブレット以下 */
     .main-content {
-        margin-top: 8rem;  /* マージンを増やす */
-    }
-    
-    /* タイトルのフォントサイズを調整 */
-    .main-content h2 {
-        font-size: 1.5rem;  /* フォントサイズを小さく */
-        margin-bottom: 1rem;
-    }
-    
-    /* タブのパディングを調整 */
-    .nav-link {
-        padding: 0.5rem 0.75rem;  /* パディングを小さく */
-        font-size: 0.9rem;  /* フォントサイズを小さく */
-    }
-    
-    /* アイコンとテキストを縦並びに */
-    .nav-link i {
-        display: block;
-        margin: 0 auto 0.25rem;
+        margin-top: 6rem !important;  /* 適度に */
     }
 }
 
-@media (max-width: 576px) {  /* スマートフォンサイズ */
+@media (max-width: 576px) {  /* スマホ */
     .main-content {
-        margin-top: 10rem;  /* さらにマージンを増やす */
-    }
-    
-    /* タイトルをさらに小さく */
-    .main-content h2 {
-        font-size: 1.25rem;
-    }
-    
-    /* タブをさらにコンパクトに */
-    .nav-link {
-        padding: 0.4rem 0.5rem;
-        font-size: 0.8rem;
+        margin-top: 8rem !important;  /* スマホでも適度に */
     }
 }
 
@@ -186,7 +161,19 @@
     -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     z-index: 999;
+    padding-top: 0 !important;  /* 上部のパディングを0に */
+    margin-top: 0 !important;   /* 上部のマージンを0に */
     transition: transform 0.3s ease;
+}
+
+.app-tabs .container {
+    padding-top: 0 !important;  /* コンテナの上部パディングを0に */
+    margin-top: 0 !important;   /* コンテナの上部マージンを0に */
+}
+
+.nav-pills {
+    padding-top: 0 !important;  /* ナビの上部パディングを0に */
+    margin-top: 0 !important;   /* ナビの上部マージンを0に */
 }
 
 /* スクロール時のスムーズな動き */
@@ -765,34 +752,36 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 });
 
-                // レスポンスのContent-Typeをチェック
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    // JSONレスポンスの処理
-                    const data = await response.json();
-                    if (data.success) {
-                        // 成功メッセージを表示
-                        showMessage('保存しました');
-                        
-                        // 編集モードを維持
-                        if (data.stay_in_edit) {
-                            return;
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    let errorMessage = '';
+                    if (data.errors) {
+                        // エラーメッセージを日本語で分かりやすく表示
+                        const errorMessages = [];
+                        if (data.errors.title) {
+                            errorMessages.push('タイトルを入力してください');
                         }
+                        if (data.errors.overview) {
+                            errorMessages.push('アプリの概要を入力してください');
+                        }
+                        errorMessage = errorMessages.join('\n');
                     } else {
-                        throw new Error(data.error || '保存に失敗しました');
+                        errorMessage = '保存に失敗しました';
                     }
-                } else {
-                    // HTMLレスポンスの場合
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        throw new Error('保存に失敗しました');
+                    throw new Error(errorMessage);
+                }
+
+                if (data.success) {
+                    showMessage('保存しました', 'success');
+                    if (!data.stay_in_edit) {
+                        window.location.href = data.redirect_url;
                     }
                 }
 
             } catch (error) {
                 console.error('Error:', error);
-                showMessage('エラーが発生しました: ' + error.message);
+                showMessage(error.message, 'error');
             }
         });
     }
@@ -874,6 +863,63 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+});
+
+// タブナビゲーションの初期化を削除
+document.addEventListener('DOMContentLoaded', function() {
+    const appTabs = document.getElementById('appTabs');
+    if (appTabs) {
+        // 固定位置の設定を削除
+        // appTabs.style.position = 'fixed';
+        // appTabs.style.top = '56px';
+        // appTabs.style.width = '100%';
+        // appTabs.style.zIndex = '999';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // スクロールに応じてタブを表示/非表示
+    let lastScrollTop = 0;
+    const appTabs = document.getElementById('appTabs');
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > lastScrollTop) {
+            // 下スクロール時
+            appTabs.style.transform = 'translateY(-100%)';
+        } else {
+            // 上スクロール時
+            appTabs.style.transform = 'translateY(0)';
+        }
+        lastScrollTop = scrollTop;
+    });
+
+    // セクションのIntersection Observer
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link[data-bs-target]');
+
+    const observerOptions = {
+        rootMargin: '-20% 0px -80% 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                navLinks.forEach(link => {
+                    const target = link.getAttribute('data-bs-target').replace('#', '');
+                    if (target === id) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => observer.observe(section));
 });
 </script>
 {% endblock %} 

@@ -5,16 +5,44 @@ services:
     container_name: ore-app-web
     build: .
     command: >
-      sh -c "service cron start &&
-             python manage.py runserver 0.0.0.0:8000"
+      sh -c '
+        # サービス起動前のヘルスチェック
+        echo "Checking system requirements..." &&
+        python -c "import sys; assert sys.version_info >= (3,11), \"Python 3.11+ required\"" &&
+        
+        # cronサービスの起動確認
+        service cron start &&
+        if ! service cron status > /dev/null 2>&1; then
+          echo "Failed to start cron service" >&2
+          exit 1
+        fi &&
+        
+        # データベース接続の待機
+        echo "Waiting for database..." &&
+        python manage.py wait_for_db &&
+        
+        # 開発サーバー起動
+        echo "Starting development server..." &&
+        python manage.py runserver 0.0.0.0:8000
+      '
     volumes:
       - .:/code
+      # ログ永続化用のボリューム
+      - app_logs:/var/log
     ports:
       - "8000:8000"
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
   
   db:
     image: postgres:13
@@ -22,10 +50,21 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+      # バックアップ用のボリューム
+      - db_backup:/backup
     environment:
       - POSTGRES_DB=django_db
       - POSTGRES_USER=django_user
       - POSTGRES_PASSWORD=django_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U django_user -d django_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
 
 volumes:
-  postgres_data: 
+  postgres_data:
+  app_logs:
+  db_backup: 
