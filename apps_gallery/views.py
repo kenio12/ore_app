@@ -13,6 +13,10 @@ import cloudinary.uploader
 from django.urls import reverse
 import base64
 import logging
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.views.generic import ListView
+from django.urls import reverse
 
 # Create your views here.
 
@@ -544,3 +548,27 @@ def reset_screenshots(request, pk):
         'status': 'error',
         'message': 'この機能は現在メンテナンス中です'
     }, status=503)
+
+@method_decorator(cache_page(60 * 15), name='dispatch')  # 15分キャッシュ
+class HomeView(ListView):
+    template_name = 'home/home.html'
+    context_object_name = 'apps'
+    
+    def get_queryset(self):
+        return AppGallery.objects.prefetch_related(
+            'screenshots',
+            'app_types',
+            'genres'
+        ).select_related(
+            'thumbnail'
+        ).all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['meta'] = {
+            'title': 'アプリ開発者のポートフォリオ',
+            'description': '私が開発したアプリケーションをご紹介します。',
+            'keywords': 'アプリ開発,ポートフォリオ,プログラミング',
+            'og_image': static('home/images/ogp.png'),
+        }
+        return context

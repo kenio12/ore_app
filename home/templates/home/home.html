@@ -11,30 +11,41 @@
 <div class="min-vh-100">
     <!-- ヒーローセクション -->
     <div class="position-relative text-center pt-2 mb-4 cyber-hero" 
-         style="background-image: url('{% static 'home/images/sy.png' %}'); 
-                background-size: contain;  
-                background-position: center top;
-                background-repeat: no-repeat;
+         style="position: relative;
                 width: 100vw;
                 max-width: 100%;
                 aspect-ratio: 1 / 1;
                 margin: 0 auto;
                 border-radius: 8px;
                 overflow: hidden;">
-        <div class="cyber-overlay"></div>
-        <div class="cyber-lines"></div>
-        <div class="d-flex flex-column align-items-center justify-content-start position-relative h-100">
-            <div class="mx-auto text-center position-absolute" style="top: 30%; left: 50%; transform: translate(-50%, -50%);">
-                <img src="{% static 'home/images/appman.png' %}" 
-                     alt="アプリマン" 
-                     class="img-fluid cyber-glow" 
-                     style="max-width: 400px; /* サイズを200pxから400pxに拡大 */
-                            position: relative;
-                            z-index: 2;">
-                <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0">
-                    俺もアプリになった
-                </p>
-            </div>
+        <!-- 背景画像を別のdivで設定 -->
+        <div style="position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    transform: translateY(-30%);
+                    margin: 0;
+                    padding: 0;
+                    z-index: 1;">
+            <img src="{% static 'home/images/sy.png' %}" 
+                 style="width: 100%;
+                        height: auto;
+                        display: block;
+                        margin: 0;
+                        padding: 0;">
+        </div>
+
+        <!-- appmanを最前面に -->
+        <div class="mx-auto text-center position-absolute" style="top: 30%; left: 50%; transform: translate(-50%, -50%); z-index: 3;">
+            <img src="{% static 'home/images/appman.png' %}" 
+                 alt="アプリマン" 
+                 class="img-fluid cyber-glow" 
+                 style="max-width: 400px;
+                        position: relative;">
+            <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0">
+                俺もアプリになった
+            </p>
         </div>
     </div>
 
