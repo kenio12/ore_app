@@ -9,31 +9,24 @@
         <div class="ms-auto">
             {% if user.is_authenticated %}
                 <div class="d-flex align-items-center">
-                    <a href="{% url 'apps_gallery:create' %}" class="btn btn-cyber-purple me-3 d-flex align-items-center">
-                        <span class="fs-5 me-1 cyber-emoji">📱</span>
-                        <span>アプリを投稿</span>
+                    <a href="{% url 'apps_gallery:create' %}" class="btn btn-cyber-neon me-3">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        アプリを投稿
                     </a>
                     
-                    <a href="{% url 'dashboard:index' %}" class="btn btn-cyber-secondary me-2 d-flex align-items-center">
-                        <span class="fs-5 me-1 cyber-emoji">👤</span>
-                        <span>{{ user.username }}</span>
+                    <a href="{% url 'dashboard:index' %}" class="btn btn-cyber-blue">
+                        <i class="bi bi-person me-2"></i>
+                        {{ user.username }}
                     </a>
-                    <form action="{% url 'logout' %}" method="post" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-cyber-danger">
-                            <span class="fs-5 me-1 cyber-emoji">🚪</span>
-                            ログアウト
-                        </button>
-                    </form>
                 </div>
             {% else %}
                 <div>
-                    <a href="{% url 'login' %}" class="btn btn-cyber-primary me-2">
-                        <span class="fs-5 me-1 cyber-emoji">🔑</span>
+                    <a href="{% url 'login' %}" class="btn btn-cyber-blue me-3">
+                        <i class="bi bi-key-fill me-2"></i>
                         ログイン
                     </a>
-                    <a href="{% url 'accounts:signup' %}" class="btn btn-cyber-purple">
-                        <span class="fs-5 me-1 cyber-emoji">✨</span>
+                    <a href="{% url 'accounts:signup' %}" class="btn btn-cyber-neon">
+                        <i class="bi bi-person-plus-fill me-2"></i>
                         新規登録
                     </a>
                 </div>
@@ -77,91 +70,68 @@
     filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
 }
 
-/* サイバーボタン - より強いネオン効果 */
-.btn-cyber-primary {
+/* サイバーボタン - 新デザイン */
+.btn-cyber-neon {
+    background: linear-gradient(45deg, #00ff9f, #00ff66);
+    border: 2px solid #00ff9f;
+    color: #000;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5),
+                inset 0 0 10px rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-blue {
     background: linear-gradient(45deg, #00f2fe, #4facfe);
     border: 2px solid #00f2fe;
     color: #fff;
-    text-shadow: 0 0 10px #00f2fe;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 242, 254, 0.5);
     box-shadow: 0 0 20px rgba(0, 242, 254, 0.5),
-                inset 0 0 20px rgba(0, 242, 254, 0.3),
-                0 0 40px rgba(0, 242, 254, 0.2);
+                inset 0 0 10px rgba(255, 255, 255, 0.3);
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
 }
 
-.btn-cyber-success {
-    background: linear-gradient(45deg, #00ff9f, #00ff66);
-    border: 2px solid #00ff9f;
-    color: #fff;
-    text-shadow: 0 0 10px #00ff9f;
-    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5),
-                inset 0 0 20px rgba(0, 255, 159, 0.3),
-                0 0 40px rgba(0, 255, 159, 0.2);
-}
-
-.btn-cyber-danger {
+.btn-cyber-red {
     background: linear-gradient(45deg, #ff2d55, #ff0044);
     border: 2px solid #ff2d55;
     color: #fff;
-    text-shadow: 0 0 10px #ff2d55;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 45, 85, 0.5);
     box-shadow: 0 0 20px rgba(255, 45, 85, 0.5),
-                inset 0 0 20px rgba(255, 45, 85, 0.3),
-                0 0 40px rgba(255, 45, 85, 0.2);
+                inset 0 0 10px rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
 }
 
-.btn-cyber-secondary {
-    background: linear-gradient(45deg, #a0a0a0, #404040);
-    border: 2px solid #a0a0a0;
-    color: #fff;
-    text-shadow: 0 0 10px #a0a0a0;
-    box-shadow: 0 0 20px rgba(160, 160, 160, 0.5),
-                inset 0 0 20px rgba(160, 160, 160, 0.3),
-                0 0 40px rgba(160, 160, 160, 0.2);
-}
-
-.btn-cyber-purple {
-    background: linear-gradient(45deg, #bf5fff, #9932cc);
-    border: 2px solid #bf5fff;
-    color: #fff;
-    text-shadow: 0 0 10px #bf5fff;
-    box-shadow: 0 0 20px rgba(191, 95, 255, 0.5),
-                inset 0 0 20px rgba(191, 95, 255, 0.3),
-                0 0 40px rgba(191, 95, 255, 0.2);
-}
-
-/* ホバーエフェクト - より派手に */
+/* ホバーエフェクト */
 [class*="btn-cyber-"]:hover {
-    transform: translateY(-3px) scale(1.05);
-    filter: brightness(1.3);
+    transform: translateY(-2px);
+    filter: brightness(1.2);
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.5),
-                inset 0 0 30px rgba(255, 255, 255, 0.3),
-                0 0 60px rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.8);
+                inset 0 0 20px rgba(255, 255, 255, 0.5);
     letter-spacing: 1px;
 }
 
-/* アクティブエフェクト - よりメカニカルに */
+/* アクティブエフェクト */
 [class*="btn-cyber-"]:active {
-    transform: translateY(2px) scale(0.95);
+    transform: translateY(1px);
     filter: brightness(0.8);
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.3),
                 inset 0 0 15px rgba(0, 0, 0, 0.5);
-    border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* ボタンの共通スタイル */
+/* ボタンの基本スタイル */
 [class*="btn-cyber-"] {
     padding: 8px 16px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
     border-radius: 4px;
     position: relative;
     overflow: hidden;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
 }
 
-/* ネオングロー効果のアニメーション */
+/* グロー効果のアニメーション */
 @keyframes neonPulse {
     0% { opacity: 0.8; }
     50% { opacity: 1; }

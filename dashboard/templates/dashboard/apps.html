@@ -1,6 +1,24 @@
 {% extends 'dashboard/base.html' %}
 
 {% block dashboard_content %}
+<!-- メッセージ表示部分を追加 -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header {% if message.tags %}bg-{{ message.tags }}{% endif %} text-white">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong class="me-auto">通知</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body bg-dark text-white">
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
 <div class="card bg-dark text-cyber">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0 text-cyber">アプリ管理</h4>
@@ -34,15 +52,17 @@
                                 </td>
                                 <td class="text-cyber">{{ app.created_at|date:"Y/m/d" }}</td>
                                 <td class="text-cyber">
-                                    <a href="{% url 'apps_gallery:detail' pk=app.pk %}" class="btn btn-sm btn-cyber-primary me-2" onclick="event.stopPropagation();">
-                                        <i class="bi bi-eye"></i>
-                                    </a>
-                                    <a href="{% url 'apps_gallery:edit' pk=app.pk %}" class="btn btn-sm btn-success me-2" onclick="event.stopPropagation();">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <button class="btn btn-sm btn-cyber-danger" onclick="event.stopPropagation(); confirmDelete({{ app.pk }})">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                    <div class="btn-group">
+                                        <a href="{% url 'apps_gallery:detail' pk=app.pk %}" class="btn btn-sm btn-outline-info">
+                                            <i class="bi bi-eye"></i> 詳細
+                                        </a>
+                                        <a href="{% url 'apps_gallery:edit' pk=app.pk %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-pencil"></i> 編集
+                                        </a>
+                                        <a href="{% url 'apps_gallery:delete' pk=app.pk %}" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> 削除
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -58,6 +78,21 @@
 <style>
 .text-cyber {
     color: #00ff00 !important;
+}
+
+.btn-cyber-danger {
+    background: rgba(220, 53, 69, 0.2);
+    color: #ff4444;
+    border: 1px solid #ff4444;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(255, 68, 68, 0.5);
+}
+
+.btn-cyber-danger:hover {
+    background: rgba(220, 53, 69, 0.4);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
+    transform: translateY(-2px);
 }
 </style>
 
@@ -80,14 +115,19 @@
     </div>
 </div>
 
-{% block extra_js %}
+<!-- トースト用のJavaScript -->
 <script>
-// ツールチップを初期化
 document.addEventListener('DOMContentLoaded', function() {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    var toastList = toastElList.map(function(toastEl) {
+        return new bootstrap.Toast(toastEl, {
+            autohide: true,
+            delay: 3000
+        });
     });
+    
+    // 自動的に表示
+    toastList.forEach(toast => toast.show());
 });
 
 let appIdToDelete = null;
@@ -104,5 +144,4 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
     }
 });
 </script>
-{% endblock %}
 {% endblock %} 

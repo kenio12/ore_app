@@ -1,0 +1,76 @@
+{% extends 'dashboard/base.html' %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card bg-dark border-danger">
+            <div class="card-body text-center">
+                <h2 class="card-title text-danger mb-4">
+                    <i class="bi bi-exclamation-triangle"></i> アプリの削除確認
+                </h2>
+                
+                <p class="text-white mb-4">
+                    「{{ app.title }}」を削除してもよろしいですか？<br>
+                    <span class="text-danger">この操作は取り消せません。</span>
+                </p>
+                
+                <div class="d-flex justify-content-center gap-3">
+                    <form method="post" action="{% url 'apps_gallery:delete' pk=app.pk %}" id="deleteForm">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger" id="deleteButton">
+                            <i class="bi bi-trash"></i> 削除する
+                        </button>
+                        <button type="button" class="btn btn-outline-danger d-none" id="deletingButton" disabled>
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            削除中...
+                        </button>
+                    </form>
+                    <a href="{% url 'dashboard:apps' %}" class="btn btn-outline-light" id="cancelButton">
+                        キャンセル
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    background: rgba(33, 37, 41, 0.95);
+    border-width: 2px;
+    box-shadow: 0 0 20px rgba(220, 53, 69, 0.2);
+}
+
+.btn-outline-danger:hover {
+    box-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
+}
+
+.btn-outline-light:hover {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.deleting {
+    animation: pulse 1.5s infinite;
+}
+</style>
+
+<script>
+document.getElementById('deleteForm').addEventListener('submit', function(e) {
+    // 通常の削除ボタンを隠す
+    document.getElementById('deleteButton').classList.add('d-none');
+    // 削除中ボタンを表示
+    document.getElementById('deletingButton').classList.remove('d-none');
+    // キャンセルボタンを無効化
+    document.getElementById('cancelButton').classList.add('disabled');
+    
+    // フォームの送信は通常通り続行
+    return true;
+});
+</script>
+{% endblock %} 

@@ -302,9 +302,45 @@ def app_detail(request, pk):
     }
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
+@login_required
 def delete_app(request, pk):
-    # とりあえず仮の実装
-    return render(request, 'apps_gallery/delete.html')
+    """アプリの削除処理"""
+    app = get_object_or_404(AppGallery, pk=pk)
+    
+    # 権限チェック
+    if app.author != request.user:
+        raise PermissionDenied("このアプリを削除する権限がありません。")
+    
+    if request.method == 'POST':
+        try:
+            # Cloudinaryの画像を削除
+            if app.screenshots:
+                for screenshot in app.screenshots:
+                    if 'public_id' in screenshot:
+                        cloudinary.uploader.destroy(screenshot['public_id'])
+            
+            # サムネイル画像の削除
+            if app.thumbnail and 'public_id' in app.thumbnail:
+                cloudinary.uploader.destroy(app.thumbnail['public_id'])
+            
+            # アプリのタイトルを保存（メッセージ用）
+            app_title = app.title
+            
+            # アプリを削除
+            app.delete()
+            
+            messages.success(request, f'「{app_title}」を削除しました。')
+            return redirect('dashboard:apps')  # ダッシュボードのアプリ管理画面にリダイレクト
+            
+        except Exception as e:
+            messages.error(request, f'削除中にエラーが発生しました: {str(e)}')
+            return redirect('apps_gallery:detail', pk=pk)
+    
+    context = {
+        'app': app,
+        'hide_navbar': True
+    }
+    return render(request, 'dashboard/delete.html', context)
 
 @login_required
 @require_http_methods(["POST"])
