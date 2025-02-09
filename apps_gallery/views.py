@@ -17,6 +17,13 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 from django.urls import reverse
+from .constants.hardware import CPU_TYPES, MEMORY_SIZES, STORAGE_TYPES
+from .constants.development import (
+    EDITORS,
+    VERSION_CONTROL,
+    CI_CD,
+    VIRTUALIZATION_TOOLS
+)
 
 # Create your views here.
 

@@ -2,6 +2,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import AppGallery
+from .constants.hardware import (
+    CPU_TYPES,
+    MEMORY_SIZES,
+    STORAGE_TYPES,
+)
+from .constants.development import (
+    EDITORS,
+    VERSION_CONTROL,
+    CI_CD,
+    VIRTUALIZATION_TOOLS,
+)
+from .constants.architecture import (
+    ARCHITECTURE_PATTERNS,
+    DESIGN_PATTERNS,
+)
 
 @login_required
 def technical_edit_view(request, pk):
@@ -24,7 +39,23 @@ def technical_edit_view(request, pk):
             'hide_navbar': True,
             'readonly': False,
             'is_edit': True,
+            # ハードウェア関連
+            'cpu_types': CPU_TYPES,
+            'memory_sizes': MEMORY_SIZES,
+            'storage_types': STORAGE_TYPES,
+            # 開発環境関連
+            'editors': EDITORS,
+            'version_control': VERSION_CONTROL,
+            'ci_cd': CI_CD,
+            'virtualization_tools': VIRTUALIZATION_TOOLS,
+            # アーキテクチャ関連
+            'architecture_patterns': ARCHITECTURE_PATTERNS,
+            'design_patterns': DESIGN_PATTERNS,
         }
+        
+        # デバッグ用
+        print("Context for technical edit:", context)
+        
         return render(request, 'apps_gallery/technical/edit_detail_technical.html', context)
         
     except AppGallery.DoesNotExist:
@@ -38,6 +69,22 @@ def technical_detail_view(request, pk):
     context = {
         'app': app,
         'readonly': True,
-        'hide_navbar': True
+        'hide_navbar': True,
+        # ハードウェア関連
+        'cpu_types': CPU_TYPES,
+        'memory_sizes': MEMORY_SIZES,
+        'storage_types': STORAGE_TYPES,
+        # 開発環境関連
+        'editors': EDITORS,
+        'version_control': VERSION_CONTROL,
+        'ci_cd': CI_CD,
+        'virtualization_tools': VIRTUALIZATION_TOOLS,
+        # アーキテクチャ関連
+        'architecture_patterns': ARCHITECTURE_PATTERNS,
+        'design_patterns': DESIGN_PATTERNS,
     }
+    
+    # デバッグ用
+    print("Context for technical detail:", context)
+    
     return render(request, 'apps_gallery/technical/edit_detail_technical.html', context) 

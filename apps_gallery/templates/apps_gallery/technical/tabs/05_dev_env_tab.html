@@ -1,4 +1,4 @@
-<div class="container" style="margin-top: 120px !important;">
+<div id="dev_env" class="container" style="margin-top: 20px !important;">
     <div class="card border-0 shadow-lg">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
@@ -6,40 +6,103 @@
                 <span class="text-cyber-purple">開発環境</span>
             </h2>
 
-            <!-- IDE/エディタ -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-purple">使用したIDE/エディタ</label>
-                <input type="text" 
-                       name="development_environment[editor]"
-                       class="form-control cyber-purple-focus"
-                       placeholder="例: Visual Studio Code, IntelliJ IDEA"
-                       value="{{ app.development_environment.editor|default:'' }}"
-                       {% if readonly %}readonly{% endif %}>
-            </div>
+            <form id="dev-env-form">
+                <!-- IDE/エディタ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">使用したIDE/エディタ</label>
+                    <div class="row g-3">
+                        {% for key, value in editors.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       id="editor-{{ key }}"
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[editors][]"
+                                       value="{{ key }}"
+                                       {% if key in app.development_environment.editors %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple" for="editor-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
 
-            <!-- バージョン管理 -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-purple">バージョン管理システム</label>
-                <input type="text" 
-                       name="development_environment[version_control]"
-                       class="form-control cyber-purple-focus"
-                       placeholder="例: Git, GitHub"
-                       value="{{ app.development_environment.version_control|default:'' }}"
-                       {% if readonly %}readonly{% endif %}>
-            </div>
+                <!-- バージョン管理 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">バージョン管理システム</label>
+                    <div class="row g-3">
+                        {% for key, value in version_control.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       id="vcs-{{ key }}"
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[version_control][]"
+                                       value="{{ key }}"
+                                       {% if key in app.development_environment.version_control %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple" for="vcs-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
 
-            <!-- CI/CD -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-purple">CI/CDツール</label>
-                <input type="text" 
-                       name="development_environment[ci_cd]"
-                       class="form-control cyber-purple-focus"
-                       placeholder="例: GitHub Actions, Jenkins"
-                       value="{{ app.development_environment.ci_cd|default:'' }}"
-                       {% if readonly %}readonly{% endif %}>
-            </div>
+                <!-- CI/CD -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">CI/CDツール</label>
+                    <div class="row g-3">
+                        {% for key, value in ci_cd.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[ci_cd][]"
+                                       value="{{ key }}"
+                                       {% if key in app.development_environment.ci_cd %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- 仮想化ツール -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">仮想化ツール</label>
+                    <div class="row g-3">
+                        {% for key, value in virtualization_tools.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[virtualization][]"
+                                       value="{{ key }}"
+                                       {% if key in app.development_environment.virtualization %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
+<!-- デバッグ情報の表示 -->
+<div style="display: none;">
+    <p>Editors: {{ editors }}</p>
+    <p>Version Control: {{ version_control }}</p>
+    <p>CI/CD: {{ ci_cd }}</p>
+    <p>Virtualization Tools: {{ virtualization_tools }}</p>
 </div>
 
 <style>
@@ -120,5 +183,35 @@
 #dev_env .cyber-purple-focus:focus {
     border-color: var(--cyber-purple) !important;
     box-shadow: 0 0 10px var(--cyber-purple) !important;
+}
+
+/* チェックボックスのスタイル改善 */
+.form-check-input.cyber-purple-focus {
+    border-color: var(--cyber-purple) !important;
+}
+
+.form-check-input.cyber-purple-focus:checked {
+    background-color: var(--cyber-purple) !important;
+    border-color: var(--cyber-purple) !important;
+}
+
+.form-check-input.cyber-purple-focus:focus {
+    box-shadow: 0 0 10px var(--cyber-purple) !important;
+}
+
+/* チェックボックスラベルのスタイル */
+.form-check-label.text-cyber-purple {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple) !important;
+}
+
+/* 無効化時のスタイル */
+.form-check-input.cyber-purple-focus:disabled {
+    opacity: 0.7;
+}
+
+/* 変数の定義 */
+:root {
+    --cyber-purple: #9333ea;
 }
 </style> 

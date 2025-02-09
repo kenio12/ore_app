@@ -1,4 +1,4 @@
-<div class="container" style="margin-top: 20px !important;">
+<div id="hardware" class="container" style="margin-top: 20px !important;">
     <div class="card border-0 shadow-lg">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
@@ -6,40 +6,85 @@
                 <span class="text-cyber-blue">ハードウェア要件</span>
             </h2>
 
-            <!-- CPU要件 -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-blue">CPU要件</label>
-                <input type="text" 
-                       name="hardware_requirements[cpu]"
-                       class="form-control cyber-blue-focus"
-                       placeholder="例: Intel Core i5 以上"
-                       value="{{ app.hardware_requirements.cpu|default:'' }}"
-                       {% if readonly %}readonly{% endif %}>
-            </div>
+            <form id="hardware-form">
+                <!-- CPU要件 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">CPU要件</label>
+                    <div class="row g-3">
+                        {% for key, value in cpu_types.items %}
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="cpu-{{ key }}"
+                                       name="hardware_requirements[cpu_type]"
+                                       class="form-check-input cyber-blue-focus"
+                                       value="{{ key }}"
+                                       {% if key == app.hardware_requirements.cpu_type %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-blue" for="cpu-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
 
-            <!-- メモリ要件 -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-blue">メモリ要件</label>
-                <input type="text" 
-                       name="hardware_requirements[memory]"
-                       class="form-control cyber-blue-focus"
-                       placeholder="例: 8GB RAM 以上"
-                       value="{{ app.hardware_requirements.memory|default:'' }}"
-                       {% if readonly %}readonly{% endif %}>
-            </div>
+                <!-- メモリ要件 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">メモリ要件</label>
+                    <div class="row g-3">
+                        {% for key, value in memory_sizes.items %}
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="memory-{{ key }}"
+                                       name="hardware_requirements[memory_size]"
+                                       class="form-check-input cyber-blue-focus"
+                                       value="{{ key }}"
+                                       {% if key == app.hardware_requirements.memory_size %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-blue" for="memory-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
 
-            <!-- ストレージ要件 -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-blue">ストレージ要件</label>
-                <input type="text" 
-                       name="hardware_requirements[storage]"
-                       class="form-control cyber-blue-focus"
-                       placeholder="例: 256GB SSD 以上"
-                       value="{{ app.hardware_requirements.storage|default:'' }}"
-                       {% if readonly %}readonly{% endif %}>
-            </div>
+                <!-- ストレージ要件 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">ストレージ要件</label>
+                    <div class="row g-3">
+                        {% for key, value in storage_types.items %}
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="storage-{{ key }}"
+                                       name="hardware_requirements[storage_type]"
+                                       class="form-check-input cyber-blue-focus"
+                                       value="{{ key }}"
+                                       {% if key == app.hardware_requirements.storage_type %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-blue" for="storage-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
+<!-- デバッグ情報の表示 -->
+<div style="display: none;">
+    <p>CPU Types: {{ cpu_types }}</p>
+    <p>Memory Sizes: {{ memory_sizes }}</p>
+    <p>Storage Types: {{ storage_types }}</p>
 </div>
 
 <style>
@@ -84,5 +129,30 @@
 /* 変数の定義 */
 :root {
     --cyber-blue: #00ffff;
+}
+
+/* チェックボックスとラジオボタンのスタイル改善 */
+.form-check-input.cyber-blue-focus {
+    border-color: var(--cyber-blue) !important;
+}
+
+.form-check-input.cyber-blue-focus:checked {
+    background-color: var(--cyber-blue) !important;
+    border-color: var(--cyber-blue) !important;
+}
+
+.form-check-input.cyber-blue-focus:focus {
+    box-shadow: 0 0 10px var(--cyber-blue) !important;
+}
+
+/* ラベルのスタイル改善 */
+.form-check-label.text-cyber-blue {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
+}
+
+/* 無効化時のスタイル */
+.form-check-input.cyber-blue-focus:disabled {
+    opacity: 0.7;
 }
 </style> 
