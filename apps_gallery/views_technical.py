@@ -29,4 +29,15 @@ def technical_edit_view(request, pk):
         
     except AppGallery.DoesNotExist:
         messages.error(request, 'アプリが見つかりません。')
-        return redirect('home:home') 
+        return redirect('home:home')
+
+def technical_detail_view(request, pk):
+    """技術情報の詳細ビュー"""
+    app = get_object_or_404(AppGallery, pk=pk)
+    
+    context = {
+        'app': app,
+        'readonly': True,
+        'hide_navbar': True
+    }
+    return render(request, 'apps_gallery/technical/edit_detail_technical.html', context) 

@@ -43,14 +43,20 @@
                 <i class="bi bi-stars"></i> アプリの魅力
             </a>
             
-            <!-- 技術基盤編へのリンク（編集モードの時のみ表示） -->
-            {% if not readonly and app.id %}
-                <a href="{% url 'apps_gallery:technical_edit' app.id %}" 
-                   class="nav-link technical-transition-btn" 
-                   onclick="return confirmUnsavedChanges(event)">
-                    <i class="bi bi-arrow-right-circle"></i> 
-                    技術へ
-                </a>
+            <!-- 技術情報へのリンク -->
+            {% if app.id %}  <!-- 新規作成時は表示しない -->
+                {% if not readonly %}
+                    <a href="{% url 'apps_gallery:technical_edit' app.id %}" 
+                       class="nav-link technical-transition-btn" 
+                       onclick="return confirmUnsavedChanges(event)">
+                        <i class="bi bi-arrow-right-circle"></i> 技術へ
+                    </a>
+                {% else %}
+                    <a href="{% url 'apps_gallery:technical_detail' app.id %}" 
+                       class="nav-link technical-transition-btn">
+                        <i class="bi bi-arrow-right-circle"></i> 技術へ
+                    </a>
+                {% endif %}
             {% endif %}
         </nav>
     </div>
@@ -94,21 +100,21 @@
     <div class="row g-4">
         <div class="col-12">
             <!-- スクリーンショットセクション -->
-            <section id="screenshots" class="scroll-margin-top">
+            <section id="screenshots" class="mb-5 scroll-margin-top">
                 {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
             </section>
         </div>
 
         <div class="col-12">
             <!-- 基本情報セクション -->
-            <section id="basic" class="scroll-margin-top">
+            <section id="basic" class="mb-5">
                 {% include 'apps_gallery/tabs/02_basic_tab.html' %}
             </section>
         </div>
 
         <div class="col-12">
             <!-- アプリの魅力セクション -->
-            <section id="appeal" class="scroll-margin-top">
+            <section id="appeal" class="mb-5">
                 {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
             </section>
         </div>
@@ -166,16 +172,22 @@
     margin-top: 4rem !important;  /* 少し小さく */
 }
 
+/* セクション間の余白 */
+section.mb-5 {
+    margin-bottom: 5rem !important;  /* 下の余白を大きく */
+    padding-bottom: 2rem;  /* 下のパディングも追加 */
+}
+
 /* レスポンシブ対応 */
 @media (max-width: 768px) {  /* タブレット以下 */
     .main-content {
-        margin-top: 6rem !important;  /* 適度に */
+        margin-top: 6rem !important;
     }
 }
 
 @media (max-width: 576px) {  /* スマホ */
     .main-content {
-        margin-top: 8rem !important;  /* スマホでも適度に */
+        margin-top: 8rem !important;
     }
 }
 

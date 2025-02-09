@@ -21,10 +21,18 @@
             </a>
             
             <!-- 基本情報へのリンク -->
-            <a href="{% url 'apps_gallery:edit' app.id %}" 
-               class="nav-link basic-transition-btn">
-                <i class="bi bi-arrow-left-circle"></i> 基本へ
-            </a>
+            {% if not readonly %}
+                <a href="{% url 'apps_gallery:edit' app.id %}" 
+                   class="nav-link text-neon nav-link-border" 
+                   onclick="return confirmUnsavedChanges(event)">
+                    <i class="bi bi-arrow-left-circle"></i> 基本へ
+                </a>
+            {% else %}
+                <a href="{% url 'apps_gallery:detail' app.id %}" 
+                   class="nav-link text-neon nav-link-border">
+                    <i class="bi bi-arrow-left-circle"></i> 基本へ
+                </a>
+            {% endif %}
             
             <!-- 技術情報のタブ -->
             <a class="nav-link text-neon" data-bs-target="#hardware" href="#hardware">
@@ -81,28 +89,39 @@
         
         <!-- 下部のボタングループを追加 -->
         <div class="bottom-button-group">
-            <!-- 左：基本情報へ戻るボタン -->
+            <!-- 左：詳細/編集切り替えボタン -->
             <div class="button-container">
-                <a href="{% url 'apps_gallery:edit' app.id %}" 
-                   class="btn-cyber-mode-switch basic-transition-btn"
-                   data-app-id="{{ app.id }}">
-                    <i class="bi bi-arrow-left-circle"></i> 基本へ
-                    <div class="cyber-glitch-effect"></div>
-                </a>
+                {% if not readonly %}
+                    <a href="{% url 'apps_gallery:technical_detail' app.id %}"
+                       class="btn-cyber-mode-switch" 
+                       id="btn-to-detail" 
+                       onclick="return confirmUnsavedChanges(event)">
+                        <i class="bi bi-eye"></i> 詳細へ
+                    </a>
+                {% else %}
+                    <a href="{% url 'apps_gallery:technical_edit' app.id %}" 
+                       class="btn-cyber-mode-switch" 
+                       id="btn-to-edit">
+                        <i class="bi bi-pencil-square"></i> 編集へ
+                    </a>
+                {% endif %}
             </div>
 
             <!-- 中央：ステータス表示 -->
             <div class="button-container">
-                <span class="status-badge editing-status">
-                    <i class="bi bi-tools"></i> 技術情報編集
+                <span class="status-badge {% if not readonly %}editing-status{% else %}viewing-status{% endif %}">
+                    <i class="bi bi-{% if not readonly %}pencil-square{% else %}eye{% endif %}"></i>
+                    {% if not readonly %}技術情報編集{% else %}技術情報詳細{% endif %}
                 </span>
             </div>
 
-            <!-- 右：保存ボタン -->
+            <!-- 右：保存ボタン（編集モードのみ） -->
             <div class="button-container">
-                <button type="submit" form="technicalForm" class="btn-cyber-save">
-                    <i class="bi bi-save"></i> 保存
-                </button>
+                {% if not readonly %}
+                    <button type="submit" form="technicalForm" class="btn-cyber-save">
+                        <i class="bi bi-save"></i> 保存
+                    </button>
+                {% endif %}
             </div>
         </div>
     </form>
@@ -196,6 +215,14 @@
     box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
 }
 
+.status-badge.viewing-status {
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    background: rgba(0, 255, 255, 0.1);
+    text-shadow: 0 0 5px #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
 /* 保存ボタン */
 .btn-cyber-save {
     background: rgba(255, 215, 0, 0.1);
@@ -234,6 +261,8 @@
     text-shadow: 0 0 10px #00ffff;
     font-weight: bold;
     transition: all 0.3s ease;
+    border-radius: 4px !important;  /* より四角いデザインに */
+    margin: 0 5px;  /* タブ間の間隔 */
 }
 
 .nav-link:hover {
@@ -352,25 +381,99 @@
     --cyber-yellow: #ffd700;
 }
 
-/* 基本へボタンの特別なスタイル */
-.basic-transition-btn {
+/* 基本へボタンのスタイル - create_edit_detail.htmlと同じスタイル */
+.technical-transition-btn {
     background: rgba(255, 215, 0, 0.1) !important;
     color: var(--cyber-yellow) !important;
+    border: 2px solid var(--cyber-yellow) !important;
     text-shadow: 0 0 5px var(--cyber-yellow) !important;
-    border: 1px solid var(--cyber-yellow) !important;
     margin: 0 10px;
     border-radius: 20px !important;
+    padding: 8px 25px !important;
+    font-weight: bold !important;
+    transition: all 0.3s ease;
 }
 
-.basic-transition-btn:hover {
+.technical-transition-btn:hover {
     background: rgba(255, 215, 0, 0.2) !important;
     transform: translateY(-2px);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3) !important;
 }
 
-.basic-transition-btn i {
+.technical-transition-btn i {
     color: var(--cyber-yellow) !important;
     filter: drop-shadow(0 0 5px var(--cyber-yellow)) !important;
+    margin-right: 8px;
+    animation: bounce-left 1s infinite;
+}
+
+@keyframes bounce-left {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-3px); }
+}
+
+/* 詳細へ/編集へボタンの共通スタイル */
+.btn-cyber-mode-switch {
+    display: inline-block;
+    padding: 8px 25px;
+    border-radius: 25px;  /* 丸みを追加 */
+    font-weight: bold;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* 詳細へボタン - 青色 */
+#btn-to-detail {
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+#btn-to-detail:hover {
+    background: rgba(0, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+/* 編集へボタン - 緑色 */
+#btn-to-edit {
+    background: rgba(0, 255, 159, 0.1);
+    color: #00ff9f;
+    border: 2px solid #00ff9f;
+    text-shadow: 0 0 5px #00ff9f;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+#btn-to-edit:hover {
+    background: rgba(0, 255, 159, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5);
+}
+
+/* アイコンのスタイル */
+.btn-cyber-mode-switch i {
+    margin-right: 8px;
+    filter: drop-shadow(0 0 3px currentColor);
+}
+
+/* 枠付きのタブスタイル */
+.nav-link-border {
+    border: 2px solid #00ffff !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+}
+
+.nav-link-border:hover {
+    background: rgba(0, 255, 255, 0.2) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.nav-link.active {
+    background: rgba(0, 255, 255, 0.2) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
 </style>
 
@@ -404,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 基本情報へ戻るボタンの処理
-    document.querySelectorAll('.basic-transition-btn').forEach(function(btn) {
+    document.querySelectorAll('.technical-transition-btn').forEach(function(btn) {
         btn.addEventListener('click', function(e) {
             if (formChanged) {
                 const result = confirm('保存されていない変更があります。保存してから移動することをお勧めします。\n\nこのまま移動しますか？');
