@@ -23,13 +23,14 @@
             <!-- 基本情報へのリンク -->
             {% if not readonly %}
                 <a href="{% url 'apps_gallery:edit' app.id %}" 
-                   class="nav-link text-neon nav-link-border" 
-                   onclick="return confirmUnsavedChanges(event)">
+                   class="nav-link technical-transition-btn" 
+                   id="backToBasicBtn"
+                   data-href="{% url 'apps_gallery:edit' app.id %}">
                     <i class="bi bi-arrow-left-circle"></i> 基本へ
                 </a>
             {% else %}
                 <a href="{% url 'apps_gallery:detail' app.id %}" 
-                   class="nav-link text-neon nav-link-border">
+                   class="nav-link technical-transition-btn">
                     <i class="bi bi-arrow-left-circle"></i> 基本へ
                 </a>
             {% endif %}
@@ -55,7 +56,10 @@
 <div class="container main-content">
     <!-- ヘッダー部分（編集/詳細で切り替え） -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 style="color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; font-weight: bold;">
+        <h2 style="color: {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
+                   text-shadow: 0 0 10px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}, 
+                              0 0 20px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
+                   font-weight: bold;">
             {% if readonly %}
                 {{ app.title }}の技術情報詳細
             {% else %}
@@ -131,7 +135,7 @@
 <style>
 /* サイバーパンクな背景 */
 .cyber-background {
-    background: linear-gradient(45deg, #003322, #006644);
+    background: linear-gradient(45deg, #001e54, #0066cc);
     position: fixed;
     top: 0;
     left: 0;
@@ -383,33 +387,31 @@
 
 /* 基本へボタンのスタイル - create_edit_detail.htmlと同じスタイル */
 .technical-transition-btn {
-    background: rgba(255, 215, 0, 0.1) !important;
-    color: var(--cyber-yellow) !important;
-    border: 2px solid var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-yellow) !important;
-    margin: 0 10px;
-    border-radius: 20px !important;
-    padding: 8px 25px !important;
-    font-weight: bold !important;
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
     transition: all 0.3s ease;
+    background: rgba(0, 255, 255, 0.1) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
 }
 
 .technical-transition-btn:hover {
-    background: rgba(255, 215, 0, 0.2) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3) !important;
+    background: rgba(0, 255, 255, 0.2) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
 }
 
 .technical-transition-btn i {
-    color: var(--cyber-yellow) !important;
-    filter: drop-shadow(0 0 5px var(--cyber-yellow)) !important;
-    margin-right: 8px;
-    animation: bounce-left 1s infinite;
+    margin-right: 0.5rem;
+    animation: bounce 1s infinite;
 }
 
-@keyframes bounce-left {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(-3px); }
+@keyframes bounce {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-3px);  /* 左向きの矢印なので-3pxに変更 */
+    }
 }
 
 /* 詳細へ/編集へボタンの共通スタイル */
@@ -475,57 +477,62 @@
     background: rgba(0, 255, 255, 0.2) !important;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
 }
+
+/* 編集モード時の背景色を変更 */
+{% if not readonly %}
+    {% if app %}
+    .cyber-background {
+        background: linear-gradient(45deg, #003322, #006644);
+    }
+
+    .cyber-grid {
+        background-image: 
+            linear-gradient(rgba(0,255,100,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,100,0.2) 1px, transparent 1px);
+    }
+    {% else %}
+    /* 新規作成時の背景色 */
+    .cyber-background {
+        background: linear-gradient(45deg, #1a1a3a, #4a1a4a);
+    }
+
+    .cyber-grid {
+        background-image: 
+            linear-gradient(rgba(255,0,255,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    }
+    {% endif %}
+{% else %}
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+}
+{% endif %}
 </style>
 
 <!-- スクロール制御のJavaScript -->
 <script>
-let lastScrollTop = 0;
-const appTabs = document.getElementById('technicalTabs');
-
-window.addEventListener('scroll', function() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    if (scrollTop > lastScrollTop) {
-        appTabs.style.transform = 'translateY(-100%)';
-    } else {
-        appTabs.style.transform = 'translateY(0)';
-    }
-    lastScrollTop = scrollTop;
-});
-
-// フォームの変更を検知するフラグ
-let formChanged = false;
-
-// DOMContentLoadedイベントを追加
 document.addEventListener('DOMContentLoaded', function() {
-    // フォームの変更を検知
-    const form = document.getElementById('technicalForm');
-    if (form) {
-        form.addEventListener('input', function() {
-            formChanged = true;
-        });
-    }
-
-    // 基本情報へ戻るボタンの処理
-    document.querySelectorAll('.technical-transition-btn').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
-            if (formChanged) {
-                const result = confirm('保存されていない変更があります。保存してから移動することをお勧めします。\n\nこのまま移動しますか？');
-                if (!result) {
-                    e.preventDefault();
-                    return false;
-                }
+    // 基本へボタンのクリックイベント
+    const backBtn = document.getElementById('backToBasicBtn');
+    if (backBtn) {
+        backBtn.addEventListener('click', function(e) {
+            e.preventDefault();  // デフォルトの遷移を防ぐ
+            
+            const confirmMessage = 
+                '【注意】\n\n' +
+                '基本情報の画面に移動します。\n' +
+                '入力中の内容は保存されません。\n\n' +
+                '移動する前に保存することを強く推奨します。\n\n' +
+                '本当に移動しますか？';
+            
+            if (confirm(confirmMessage)) {
+                const url = this.dataset.href;
+                location.href = url;
             }
         });
-    });
-
-    // ページを離れる前の確認
-    window.addEventListener('beforeunload', function(e) {
-        if (formChanged) {
-            e.preventDefault();
-            e.returnValue = '';
-        }
-    });
+    }
 });
 </script>
 {% endblock %} 

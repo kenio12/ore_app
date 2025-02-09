@@ -47,8 +47,9 @@
             {% if app.id %}  <!-- 新規作成時は表示しない -->
                 {% if not readonly %}
                     <a href="{% url 'apps_gallery:technical_edit' app.id %}" 
-                       class="nav-link technical-transition-btn" 
-                       onclick="return confirmUnsavedChanges(event)">
+                       class="nav-link technical-transition-btn"
+                       id="toTechnicalBtn"
+                       data-href="{% url 'apps_gallery:technical_edit' app.id %}">
                         <i class="bi bi-arrow-right-circle"></i> 技術へ
                     </a>
                 {% else %}
@@ -66,7 +67,10 @@
 <div class="container main-content">
     <!-- ヘッダー部分（新規作成/編集/詳細で切り替え） -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 style="color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; font-weight: bold;">
+        <h2 style="color: {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
+                   text-shadow: 0 0 10px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}, 
+                              0 0 20px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
+                   font-weight: bold;">
             {% if app.id %}
                 {% if readonly %}
                     {{ app.title }}の詳細
@@ -896,6 +900,28 @@ document.querySelectorAll('.technical-transition-btn').forEach(function(btn) {
             }
         }
     });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // 技術へボタンのクリックイベント
+    const toTechnicalBtn = document.getElementById('toTechnicalBtn');
+    if (toTechnicalBtn) {
+        toTechnicalBtn.addEventListener('click', function(e) {
+            e.preventDefault();  // デフォルトの遷移を防ぐ
+            
+            const confirmMessage = 
+                '【注意】\n\n' +
+                '技術情報の画面に移動します。\n' +
+                '入力中の内容は保存されません。\n\n' +
+                '移動する前に保存することを強く推奨します。\n\n' +
+                '本当に移動しますか？';
+            
+            if (confirm(confirmMessage)) {
+                const url = this.dataset.href;
+                location.href = url;
+            }
+        });
+    }
 });
 </script>
 {% endblock %} 
