@@ -135,6 +135,16 @@
                        value="{{ app.github_url }}"
                        {% if readonly %}readonly{% endif %}>
             </div>
+
+            <!-- アプリの売り（キャッチコピー） -->
+            <div class="mb-4">
+                <label class="form-label text-cyber-yellow">アプリの売り（キャッチコピー）</label>
+                <input type="text" 
+                       name="catchphrases" 
+                       class="form-control cyber-yellow-focus" 
+                       value="{{ app.catchphrases|default:''|join:', ' }}"
+                       {% if readonly %}readonly{% endif %}>
+            </div>
         </div>
     </div>
 </div>

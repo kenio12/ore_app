@@ -167,10 +167,10 @@ def edit_app(request, pk):
             app.github_url = form_data.get('github_url', app.github_url)
             app.overview = form_data.get('overview', '')
             app.motivation = form_data.get('motivation', '')
-            app.catchphrases = form_data.getlist('catchphrases')  # これはリスト
-            app.target_users = form_data.get('target_users')      # 普通のテキスト
-            app.problems = form_data.get('problems')              # 普通のテキスト
-            app.final_appeal = form_data.get('final_appeal')      # 普通のテキスト
+            app.catchphrases = form_data.getlist('catchphrases') or []
+            app.target_users = form_data.get('target_users', '')
+            app.problems = form_data.get('problems', '')
+            app.final_appeal = form_data.get('final_appeal', '')
             
             app.save()
             
