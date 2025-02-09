@@ -48,8 +48,7 @@
                 {% if not readonly %}
                     <a href="{% url 'apps_gallery:technical_edit' app.id %}" 
                        class="nav-link technical-transition-btn"
-                       id="toTechnicalBtn"
-                       data-href="{% url 'apps_gallery:technical_edit' app.id %}">
+                       onclick="showTechnicalDialog(event, '{% url 'apps_gallery:technical_edit' app.id %}')">
                         <i class="bi bi-arrow-right-circle"></i> 技術へ
                     </a>
                 {% else %}
@@ -135,11 +134,16 @@
         <div class="button-container">
             {% if app.id %}
                 {% if not readonly %}
-                    <a href="{% url 'apps_gallery:detail' app.id %}" class="btn-cyber-mode-switch" id="btn-to-detail" onclick="return confirmUnsavedChanges(event)">
+                    <a href="{% url 'apps_gallery:detail' app.id %}" 
+                       class="btn-cyber-mode-switch" 
+                       id="btn-to-detail" 
+                       onclick="showDetailDialog(event, '{% url 'apps_gallery:detail' app.id %}')">
                         <i class="bi bi-eye"></i> 詳細へ
                     </a>
                 {% else %}
-                    <a href="{% url 'apps_gallery:edit' app.id %}" class="btn-cyber-mode-switch" id="btn-to-edit">
+                    <a href="{% url 'apps_gallery:edit' app.id %}" 
+                       class="btn-cyber-mode-switch" 
+                       id="btn-to-edit">
                         <i class="bi bi-pencil-square"></i> 編集へ
                     </a>
                 {% endif %}
@@ -166,6 +170,74 @@
                     <i class="bi bi-save"></i> 保存
                 </button>
             {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- 技術情報への移動確認ダイアログ -->
+<div class="cyber-dialog-overlay" id="technicalDialog" style="display: none;">
+    <div class="cyber-message">
+        <div class="message-icon">
+            <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div class="message-content">
+            <div class="message-text">
+                編集が確認できます。編集を保存せずに、技術画面に移動すると、データが失われます。
+            </div>
+        </div>
+        <div class="cyber-dialog-buttons">
+            <button class="cyber-button cancel-dialog" onclick="closeTechnicalDialog()">
+                <span class="button-text">キャンセル</span>
+                <span class="button-glitch"></span>
+            </button>
+            <button class="cyber-button save-dialog" onclick="saveFormOnly()">
+                <span class="button-text">保存する</span>
+                <span class="button-glitch"></span>
+            </button>
+            <a href="/apps_gallery/technical/edit/13/" id="toTechnicalLink" class="cyber-button close-dialog">
+                <span class="button-text">技術へ移動</span>
+                <span class="button-glitch"></span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 詳細への移動確認ダイアログ -->
+<div class="cyber-dialog-overlay" id="detailDialog" style="display: none;">
+    <div class="cyber-message">
+        <div class="message-icon">
+            <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div class="message-content">
+            <div class="message-text">
+                編集が確認できます。編集を保存せずに、詳細画面に移動すると、データが失われます。
+            </div>
+        </div>
+        <div class="cyber-dialog-buttons">
+            <button class="cyber-button cancel-dialog" onclick="closeDetailDialog()">
+                <span class="button-text">キャンセル</span>
+                <span class="button-glitch"></span>
+            </button>
+            <button class="cyber-button save-dialog" onclick="saveFormOnly()">
+                <span class="button-text">保存する</span>
+                <span class="button-glitch"></span>
+            </button>
+            <a href="" id="toDetailLink" class="cyber-button close-dialog">
+                <span class="button-text">詳細へ移動</span>
+                <span class="button-glitch"></span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- トースト要素 -->
+<div class="toast-container position-fixed top-50 start-50 translate-middle" style="z-index: 9999;">
+    <div class="toast align-items-center text-bg-success border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                保存しました！
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -573,26 +645,25 @@ html {
     padding: 8px 25px;
     border-radius: 25px;
     font-weight: bold;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: #000000;  /* 黒地の背景 */
 }
 
 /* 編集モード時のステータス表示 */
 .status-badge.editing-status {
     color: #00ff9f;
     border: 2px solid #00ff9f;
-    background: rgba(0, 255, 159, 0.1);
     text-shadow: 0 0 5px #00ff9f;
     box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+    background: #000000;  /* 黒地の背景を明示的に指定 */
 }
 
 /* 詳細モード時のステータス表示 */
 .status-badge.viewing-status {
     color: #00ffff;
     border: 2px solid #00ffff;
-    background: rgba(0, 255, 255, 0.1);
     text-shadow: 0 0 5px #00ffff;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    background: #000000;  /* 黒地の背景を明示的に指定 */
 }
 
 /* 既存のボタンスタイル */
@@ -685,6 +756,114 @@ html {
         margin-left: 0 !important;
     }
 }
+
+/* ダイアログのスタイルを修正 */
+.cyber-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;  /* 水平方向の中央揃え */
+    align-items: center;      /* 垂直方向の中央揃え */
+}
+
+.cyber-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: rgba(13, 25, 45, 0.95);
+    border: 2px solid var(--cyber-blue);
+    box-shadow: 0 0 20px var(--cyber-blue);
+    max-width: 500px;        /* 最大幅を設定 */
+    width: 90%;             /* レスポンシブ対応 */
+    position: relative;      /* 位置を相対指定 */
+    margin: auto;           /* 自動マージンで中央揃え */
+}
+
+.message-icon {
+    font-size: 24px;
+    margin-bottom: 15px;  /* 下部にマージンを追加 */
+    color: var(--cyber-blue);
+    text-shadow: 0 0 10px var(--cyber-blue);
+}
+
+.message-content {
+    margin-bottom: 30px;  /* メッセージとボタンの間隔を広げる */
+    text-align: center;
+}
+
+.message-text {
+    color: #ffffff;
+    font-size: 16px;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.cyber-dialog-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+}
+
+.cyber-button {
+    background: transparent;
+    border: 2px solid var(--cyber-blue);
+    color: var(--cyber-blue);
+    padding: 10px 30px;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px var(--cyber-blue);
+    margin-top: 10px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.cyber-button:hover {
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 15px var(--cyber-blue);
+}
+
+.cyber-button.save-dialog {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: var(--cyber-yellow);
+    color: var(--cyber-yellow);
+    text-shadow: 0 0 5px var(--cyber-yellow);
+}
+
+.cyber-button.save-dialog:hover {
+    background: rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 15px var(--cyber-yellow);
+}
+
+.cyber-button.cancel-dialog {
+    background: rgba(128, 128, 128, 0.1);
+    border-color: #808080;
+    color: #808080;
+    text-shadow: 0 0 5px #808080;
+}
+
+.cyber-button.cancel-dialog:hover {
+    background: rgba(128, 128, 128, 0.2);
+    box-shadow: 0 0 15px rgba(128, 128, 128, 0.3);
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
 </style>
 
 <script>
@@ -703,45 +882,6 @@ html {
     }
 })();
 
-// メッセージを表示する関数
-function showMessage(message, type = 'success') {
-    const messageElement = document.createElement('div');
-    messageElement.className = `cyber-message ${type}`;
-    messageElement.innerHTML = `<i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
-    document.body.appendChild(messageElement);
-
-    setTimeout(() => {
-        messageElement.style.opacity = '0';
-        setTimeout(() => messageElement.remove(), 500);
-    }, 5000);
-}
-
-// トースト通知を表示する関数を追加
-function showToast(message, type = 'success') {
-    const toastElement = document.createElement('div');
-    toastElement.className = `cyber-message position-fixed top-50 start-50 translate-middle ${type}`;
-    toastElement.style.zIndex = '1100';
-    toastElement.innerHTML = message;
-    
-    document.body.appendChild(toastElement);
-
-    // 5秒後にフェードアウト
-    setTimeout(() => {
-        toastElement.style.opacity = '0';
-        setTimeout(() => toastElement.remove(), 500);
-    }, 3000);
-}
-
-// 保存確認のダイアログを表示する関数
-function confirmUnsavedChanges(event) {
-    event.preventDefault();
-    if (confirm('保存ボタンを押しましたか？\n保存せずに移動すると、変更内容が失われます。')) {
-        window.location.href = event.target.href;
-    }
-    return false;
-}
-
-// フォーム送信の処理
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('appForm');
     if (!form) return;
@@ -755,7 +895,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // タイトルのバリデーション
             if (!titleInput || titleInput.trim() === '') {
-                showToast('アプリ名（タイトル）を入力してください。これは必須項目です。', 'error');
                 const titleElement = document.getElementById('title');
                 if (titleElement) {
                     titleElement.focus();
@@ -774,101 +913,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            const data = await response.json();
-            
             if (!response.ok) {
-                showToast(data.error || 'エラーが発生しました。', 'error');
                 return;
             }
-
-            // 保存成功時のトースト表示のみ
-            showToast('保存しました！', 'success');
-            
-            // リダイレクトは削除
-            // 保存後はその場に留まる
 
         } catch (error) {
             console.error('エラー:', error);
-            showToast('ネットワークエラーが発生しました。', 'error');
         }
     });
-});
 
-// タブナビゲーションの初期化を削除
-document.addEventListener('DOMContentLoaded', function() {
-    const appTabs = document.getElementById('appTabs');
-    if (appTabs) {
-        // 固定位置の設定を削除
-        // appTabs.style.position = 'fixed';
-        // appTabs.style.top = '56px';
-        // appTabs.style.width = '100%';
-        // appTabs.style.zIndex = '999';
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    // スクロールに応じてタブを表示/非表示
-    let lastScrollTop = 0;
-    const appTabs = document.getElementById('appTabs');
+    // フォームの変更を検知
+    form.addEventListener('input', function() {
+        formChanged = true;
+    });
     
-    window.addEventListener('scroll', function() {
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        if (scrollTop > lastScrollTop) {
-            // 下スクロール時
-            appTabs.style.transform = 'translateY(-100%)';
-        } else {
-            // 上スクロール時
-            appTabs.style.transform = 'translateY(0)';
-        }
-        lastScrollTop = scrollTop;
-    });
-
-    // セクションのIntersection Observer
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link[data-bs-target]');
-
-    const observerOptions = {
-        rootMargin: '-20% 0px -80% 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
-                navLinks.forEach(link => {
-                    const target = link.getAttribute('data-bs-target').replace('#', '');
-                    if (target === id) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
-            }
-        });
-    }, observerOptions);
-
-    sections.forEach(section => observer.observe(section));
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    // 画像アップロード関連の処理
-    const fileInput = document.querySelector('input[type="file"]');
-    if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
-            // 現在の画像数を取得
-            const currentImages = document.querySelectorAll('.screenshot-preview').length;
-            
-            // 3枚以上の場合はアップロードを中止
-            if (currentImages >= 3) {
-                e.preventDefault();
-                showMessage('画像は最大3枚までしかアップロードできません！', 'error');
-                fileInput.value = ''; // 選択をクリア
-                return;
-            }
-            
-            // 以降は既存のアップロード処理
-            // ... existing upload code ...
+    // 技術へボタンのイベントリスナーを追加
+    const technicalBtn = document.querySelector('.technical-transition-btn');
+    if (technicalBtn) {
+        technicalBtn.addEventListener('click', function(event) {
+            const targetUrl = this.getAttribute('href');
+            showTechnicalDialog(event, targetUrl);
         });
     }
 });
@@ -876,51 +940,129 @@ document.addEventListener('DOMContentLoaded', function() {
 // フォームの変更を検知するフラグ
 let formChanged = false;
 
-// フォームの変更を検知
-document.getElementById('appForm').addEventListener('input', function() {
-    formChanged = true;
-});
-
-// ページを離れる前の確認
-window.addEventListener('beforeunload', function(e) {
+// 技術情報への移動確認ダイアログを表示
+function showTechnicalDialog(event, targetUrl) {
+    event.preventDefault();
+    
+    // フォームに変更がある場合のみダイアログを表示
     if (formChanged) {
-        e.preventDefault();
-        e.returnValue = '';
+        const dialog = document.getElementById('technicalDialog');
+        if (dialog) {
+            // 技術情報へのリンクを更新
+            document.getElementById('toTechnicalLink').href = targetUrl;
+            dialog.style.display = 'flex';
+        }
+    } else {
+        // 変更がない場合は直接遷移
+        window.location.href = targetUrl;
+    }
+}
+
+// 詳細への移動確認ダイアログを表示
+function showDetailDialog(event, targetUrl) {
+    event.preventDefault();
+    
+    // フォームに変更がある場合のみダイアログを表示
+    if (formChanged) {
+        const dialog = document.getElementById('detailDialog');
+        if (dialog) {
+            // 詳細へのリンクを更新
+            document.getElementById('toDetailLink').href = targetUrl;
+            dialog.style.display = 'flex';
+        }
+    } else {
+        // 変更がない場合は直接遷移
+        window.location.href = targetUrl;
+    }
+}
+
+// ダイアログを閉じる関数
+function closeDialog(dialogId) {
+    const dialog = document.getElementById(dialogId);
+    if (dialog) {
+        dialog.style.display = 'none';
+    }
+}
+
+// 技術情報ダイアログを閉じる
+function closeTechnicalDialog() {
+    const dialog = document.getElementById('technicalDialog');
+    if (dialog) {
+        dialog.style.display = 'none';
+    }
+}
+
+// 詳細ダイアログを閉じる
+function closeDetailDialog() {
+    const dialog = document.getElementById('detailDialog');
+    if (dialog) {
+        dialog.style.display = 'none';
+    }
+}
+
+// 保存処理中かどうかのフラグ
+let isSaving = false;
+
+// 保存のみを行う関数
+function saveFormOnly() {
+    const form = document.getElementById('appForm');
+    if (form) {
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                closeTechnicalDialog();   // まずダイアログを閉じる
+                
+                // デバッグ用のログ
+                console.log('保存成功、トースト表示を試みます');
+                
+                // トーストの要素を取得して表示
+                const toastEl = document.getElementById('liveToast');
+                console.log('トースト要素:', toastEl);  // デバッグ用
+                
+                if (toastEl) {
+                    try {
+                        const toast = new bootstrap.Toast(toastEl);
+                        console.log('トーストインスタンス作成成功');  // デバッグ用
+                        toast.show();
+                        console.log('トースト表示命令実行');  // デバッグ用
+                    } catch (error) {
+                        console.error('トースト表示エラー:', error);
+                    }
+                } else {
+                    console.error('トースト要素が見つかりません');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('保存エラー:', error);
+        });
+    }
+}
+
+// ボタンのクリックイベントを一度だけ設定
+document.addEventListener('DOMContentLoaded', function() {
+    const saveButton = document.querySelector('.cyber-button.save-dialog');
+    if (saveButton) {
+        saveButton.onclick = saveFormOnly;  // イベントリスナーを一度だけ設定
     }
 });
+</script>
 
-// 技術情報へ進むボタンの処理
-document.querySelectorAll('.technical-transition-btn').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-        if (formChanged) {
-            const result = confirm('保存されていない変更があります。保存してから移動することをお勧めします。\n\nこのまま移動しますか？');
-            if (!result) {
-                e.preventDefault();
-                return false;
-            }
-        }
-    });
-});
-
+<!-- Bootstrapのスクリプトが読み込まれていることを確認 -->
+<script>
 document.addEventListener('DOMContentLoaded', function() {
-    // 技術へボタンのクリックイベント
-    const toTechnicalBtn = document.getElementById('toTechnicalBtn');
-    if (toTechnicalBtn) {
-        toTechnicalBtn.addEventListener('click', function(e) {
-            e.preventDefault();  // デフォルトの遷移を防ぐ
-            
-            const confirmMessage = 
-                '【注意】\n\n' +
-                '技術情報の画面に移動します。\n' +
-                '入力中の内容は保存されません。\n\n' +
-                '移動する前に保存することを強く推奨します。\n\n' +
-                '本当に移動しますか？';
-            
-            if (confirm(confirmMessage)) {
-                const url = this.dataset.href;
-                location.href = url;
-            }
-        });
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrapが読み込まれていません！');
+    } else {
+        console.log('Bootstrap読み込み完了');
     }
 });
 </script>
