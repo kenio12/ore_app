@@ -109,26 +109,44 @@
         </form>
     {% endif %}
 
-    <!-- 保存ボタン - 編集モードの時のみ表示 -->
-    {% if not readonly %}
-        <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000;">
-            <button type="submit" form="appForm" class="btn btn-cyber-save">
-                <i class="bi bi-save"></i> 保存
-            </button>
+    <!-- 下部のボタングループ -->
+    <div class="bottom-button-group">
+        <!-- 左：切り替えボタン -->
+        <div class="button-container">
+            {% if app.id %}
+                {% if not readonly %}
+                    <a href="{% url 'apps_gallery:detail' app.id %}" class="btn-cyber-mode-switch" id="btn-to-detail">
+                        <i class="bi bi-eye"></i> 詳細へ
+                    </a>
+                {% else %}
+                    <a href="{% url 'apps_gallery:edit' app.id %}" class="btn-cyber-mode-switch" id="btn-to-edit">
+                        <i class="bi bi-pencil-square"></i> 編集へ
+                    </a>
+                {% endif %}
+            {% endif %}
         </div>
-    {% endif %}
 
-    <!-- 中央のステータスインジケーター -->
-    <div class="cyber-status-indicator">
-        {% if not readonly and app.id %}
-            <span class="status-badge editing-link" onclick="window.location.href='{% url 'apps_gallery:detail' app.id %}'">
-                <i class="bi bi-pencil-square"></i> 編集もーど
-            </span>
-        {% elif readonly and app.id %}
-            <span class="status-badge viewing-link" onclick="window.location.href='{% url 'apps_gallery:edit' app.id %}'">
-                <i class="bi bi-eye"></i> 詳細もーど
-            </span>
-        {% endif %}
+        <!-- 中央：ステータス表示 -->
+        <div class="button-container">
+            {% if not readonly and app.id %}
+                <span class="status-badge editing-status">
+                    <i class="bi bi-pencil-square"></i> 編集
+                </span>
+            {% elif readonly and app.id %}
+                <span class="status-badge viewing-status">
+                    <i class="bi bi-eye"></i> 詳細
+                </span>
+            {% endif %}
+        </div>
+
+        <!-- 右：保存ボタン -->
+        <div class="button-container">
+            {% if not readonly %}
+                <button type="submit" form="appForm" class="btn-cyber-save">
+                    <i class="bi bi-save"></i> 保存
+                </button>
+            {% endif %}
+        </div>
     </div>
 </div>
 
@@ -439,244 +457,124 @@ html {
 
 /* 保存ボタンのスタイル */
 .btn-cyber-save {
-    background: linear-gradient(45deg, #00ff9f, #00ffff);
-    color: #000;
-    border: 1px solid rgba(0, 255, 255, 0.5);
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    background: rgba(255, 215, 0, 0.1);  /* スケルトン背景 */
+    color: var(--cyber-yellow);  /* サイバー黄色のテキスト */
+    border: 2px solid var(--cyber-yellow);  /* 黄色のボーダー */
+    text-shadow: 0 0 5px var(--cyber-yellow);  /* テキストの光る効果 */
     padding: 10px 30px;
     font-weight: bold;
     transition: all 0.3s ease;
     border-radius: 25px;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);  /* 黄色の光る効果 */
     font-size: 1.1rem;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .btn-cyber-save:hover {
-    background: linear-gradient(45deg, #00ffaa, #22ffff);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
-    transform: translateY(-2px) scale(1.05);
+    background: rgba(255, 215, 0, 0.2);  /* ホバー時は少し濃く */
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);  /* ホバー時は光をより強く */
+    transform: translateY(-2px);
 }
 
 .btn-cyber-save:active {
     transform: translateY(1px);
 }
 
-/* 固定ボタンの位置調整 */
-.position-fixed.bottom-0.end-0.p-4 {
-    margin-bottom: 20px;  /* 下部の余白を追加 */
-}
-
-/* ボタンアイコンのスタイル */
-.btn-cyber-save i {
-    margin-right: 8px;
-    font-size: 1.2rem;
-}
-
-/* サイバーパンクなスタイル */
-.text-cyber-yellow {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-yellow);
-}
-
-/* チェックボックスの色を黄色に、チェックマークは黒に */
-.form-check-input:checked {
-    background-color: var(--cyber-yellow) !important;
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 5px var(--cyber-yellow);
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
-}
-
-.form-check-input:focus {
-    border-color: var(--cyber-yellow);
-    box-shadow: 0 0 5px var(--cyber-yellow);
-}
-
-/* 未チェック時のボーダーも黄色に */
-.form-check-input {
-    border-color: var(--cyber-yellow);
-}
-
-/* スタイルセクションに追加 */
-.btn-cyber-secondary {
-    background: linear-gradient(45deg, #2a2a2a, #4a4a4a);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
-}
-
-.btn-cyber-secondary:hover {
-    background: linear-gradient(45deg, #3a3a3a, #5a5a5a);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-/* ステータスインジケーターのスタイル */
-.cyber-status-indicator {
+/* ボタングループのコンテナ */
+.bottom-button-group {
     position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
     bottom: 20px;
-    padding: 10px 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
     z-index: 1000;
 }
 
-/* モード表示のスタイル */
+/* 各ボタンコンテナ */
+.button-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 250px;
+}
+
+/* 左のボタンコンテナ */
+.button-container:first-child {
+    justify-content: flex-start;
+}
+
+/* 右のボタンコンテナ */
+.button-container:last-child {
+    justify-content: flex-end;
+}
+
+/* ステータスバッジのスタイル */
 .status-badge {
     display: inline-block;
     padding: 8px 25px;
-    color: var(--cyber-yellow);
-    background: rgba(0, 0, 0, 0.3);  /* スケルトン調の背景 */
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    border-radius: 20px;
+    border-radius: 25px;
     font-weight: bold;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
-/* ホバー時のエフェクト */
-.status-badge:hover {
-    background: rgba(0, 255, 255, 0.2);
-    border-color: rgba(0, 255, 255, 0.8);
+/* 編集モード時のステータス表示 */
+.status-badge.editing-status {
+    color: #00ff9f;
+    border: 2px solid #00ff9f;
+    background: rgba(0, 255, 159, 0.1);
+    text-shadow: 0 0 5px #00ff9f;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+/* 詳細モード時のステータス表示 */
+.status-badge.viewing-status {
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    background: rgba(0, 255, 255, 0.1);
+    text-shadow: 0 0 5px #00ffff;
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+/* 既存のボタンスタイル */
+.btn-cyber-mode-switch {
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* 詳細へボタン - 青色 */
+#btn-to-detail {
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+#btn-to-detail:hover {
+    background: rgba(0, 255, 255, 0.2);
+    color: #00ffff;
     transform: translateY(-2px);
 }
 
-/* 既存の .editing-link と .viewing-link のスタイルを削除 */
-
-/* ロボットアイコンのスタイル */
-.robot-icon {
-    width: 40px;
-    height: 40px;
-    padding: 0 !important;
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none !important;
-    border: none !important;
-    transition: all 0.3s ease;
+/* 編集へボタン - 緑色 */
+#btn-to-edit {
+    background: rgba(0, 255, 159, 0.1);
+    color: #00ff9f;
+    border: 2px solid #00ff9f;
+    text-shadow: 0 0 5px #00ff9f;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
 }
 
-.robot-icon:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
-}
-
-.robot-image {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-}
-
-/* ナビゲーションの調整 */
-.nav-pills {
-    display: flex;
-    align-items: center;
-}
-
-/* URLボタンのスタイル */
-.btn-cyber-visit {
-    background: linear-gradient(45deg, #00ff9f, #00ffff);
-    color: #000;
-    border: 1px solid rgba(0, 255, 255, 0.5);
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-    font-weight: bold;
-    padding: 8px 20px;
-    transition: all 0.3s ease;
-    animation: neonPulse 2s infinite;
-}
-
-.btn-cyber-visit:hover {
-    background: linear-gradient(45deg, #00ffaa, #22ffff);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
-    transform: translateY(-2px) scale(1.05);
-}
-
-/* ネオンパルスアニメーション */
-@keyframes neonPulse {
-    0% {
-        box-shadow: 0 0 5px rgba(0, 255, 255, 0.5),
-                   0 0 10px rgba(0, 255, 255, 0.3);
-    }
-    50% {
-        box-shadow: 0 0 15px rgba(0, 255, 255, 0.8),
-                   0 0 20px rgba(0, 255, 255, 0.5);
-    }
-    100% {
-        box-shadow: 0 0 5px rgba(0, 255, 255, 0.5),
-                   0 0 10px rgba(0, 255, 255, 0.3);
-    }
-}
-
-/* URLフィールドのコンテナ */
-.url-field-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.url-field-container .form-control {
-    flex: 1;
-}
-
-.url-field-container .btn-cyber-visit {
-    white-space: nowrap;
-}
-
-/* メッセージのスタイル */
-.cyber-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(0, 255, 136, 0.2);
-    color: #00ff88;
-    padding: 15px 30px;
-    border-radius: 20px;
-    border: 1px solid rgba(0, 255, 136, 0.5);
-    backdrop-filter: blur(5px);
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-    font-weight: bold;
-    z-index: 9999;
-    animation: fadeInOut 0.5s ease-in-out;
-    transition: opacity 0.5s ease-out;
-}
-
-@keyframes fadeInOut {
-    0% { opacity: 0; transform: scale(0.8); }
-    100% { opacity: 1; transform: scale(1); }
-}
-
-/* 編集モードのスタイル - 黒文字 */
-.status-badge.editing-link {
-    color: #000000;  /* 黒文字に */
-    border: 2px solid rgba(0, 255, 157, 0.8);
-    background: rgba(0, 255, 157, 0.25);
-    text-shadow: none;  /* 文字の光るエフェクトを削除 */
-    font-weight: bold;  /* 太字に */
-}
-
-.status-badge.editing-link:hover {
-    background: rgba(0, 255, 157, 0.4);
-    border-color: #00ff9d;
-    box-shadow: 0 0 20px rgba(0, 255, 157, 0.5);
-}
-
-/* 詳細モードのスタイル - 黒文字 */
-.status-badge.viewing-link {
-    color: #000000;  /* 黒文字に */
-    border: 2px solid rgba(0, 255, 255, 0.8);
-    background: rgba(0, 255, 255, 0.25);
-    text-shadow: none;  /* 文字の光るエフェクトを削除 */
-    font-weight: bold;  /* 太字に */
-}
-
-.status-badge.viewing-link:hover {
-    background: rgba(0, 255, 255, 0.4);
-    border-color: #00ffff;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+#btn-to-edit:hover {
+    background: rgba(0, 255, 159, 0.2);
+    color: #00ff9f;
+    transform: translateY(-2px);
 }
 </style>
 
@@ -727,44 +625,9 @@ function showToast(message, type = 'success') {
 
 // フォーム送信処理
 document.addEventListener('DOMContentLoaded', function() {
-    // 編集モードリンクのクリックイベント
-    const editingLink = document.querySelector('.editing-link');
-    if (editingLink) {
-        editingLink.addEventListener('click', async function(e) {
-            e.preventDefault();
-            
-            // フォームを取得して強制保存
-            const form = document.getElementById('appForm');
-            const formData = new FormData(form);
-            
-            try {
-                // フォームを送信
-                const response = await fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken'),
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-                
-                const data = await response.json();
-                if (data.success) {
-                    showToast('保存しました', 'success');
-                    // 保存成功後に遷移
-                    window.location.href = this.href;
-                } else {
-                    showToast('保存に失敗しました', 'error');
-                }
-            } catch (error) {
-                showToast('保存中にエラーが発生しました', 'error');
-            }
-        });
-    }
-    
-    // 保存ボタンのイベントリスナー（フォームが存在する場合のみ）
+    // 保存ボタンのイベントリスナーのみ残す
     const form = document.getElementById('appForm');
-    if (form && !document.body.classList.contains('readonly')) {  // readonlyでない場合のみ
+    if (form && !document.body.classList.contains('readonly')) {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
