@@ -882,45 +882,74 @@ html {
     }
 })();
 
+// グローバル変数
+let isSaving = false;
+let formChanged = false;
+
 document.addEventListener('DOMContentLoaded', function() {
+    // フォームの参照を取得
     const form = document.getElementById('appForm');
-    if (!form) return;
-
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        try {
-            const formData = new FormData(this);
-            const titleInput = formData.get('title');
-            
-            // タイトルのバリデーション
-            if (!titleInput || titleInput.trim() === '') {
-                const titleElement = document.getElementById('title');
-                if (titleElement) {
-                    titleElement.focus();
-                    document.querySelector('[data-bs-target="#basic"]')?.click();
-                }
-                return;
-            }
-            
-            // 保存処理
-            const response = await fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            });
-            
-            if (!response.ok) {
-                return;
-            }
-
-        } catch (error) {
-            console.error('エラー:', error);
-        }
+    const toastEl = document.getElementById('liveToast');
+    
+    // Bootstrapトーストの初期化
+    const toast = new bootstrap.Toast(toastEl, {
+        delay: 3000,
+        animation: true
     });
+
+    // フォームのsubmitイベントをハンドル
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!isSaving) {
+                isSaving = true;
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // トースト表示
+                        toast.show();
+                        
+                        // フォーム変更フラグをリセット
+                        formChanged = false;
+                        
+                        // 1秒後にリダイレクト（トーストを見せるため）
+                        setTimeout(() => {
+                            if (form.dataset.isEdit === 'true') {
+                                window.location.href = `/apps_gallery/${form.dataset.appId}/`;
+                            } else {
+                                window.location.href = '/apps_gallery/';
+                            }
+                        }, 1000);
+                    }
+                })
+                .catch(error => {
+                    console.error('保存エラー:', error);
+                })
+                .finally(() => {
+                    isSaving = false;
+                });
+            }
+        });
+    }
+
+    // 保存ボタンのクリックイベント
+    const saveBtn = document.querySelector('.btn-cyber-save');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (form) {
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+    }
 
     // フォームの変更を検知
     form.addEventListener('input', function() {
@@ -936,9 +965,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// フォームの変更を検知するフラグ
-let formChanged = false;
 
 // 技術情報への移動確認ダイアログを表示
 function showTechnicalDialog(event, targetUrl) {
@@ -1000,58 +1026,24 @@ function closeDetailDialog() {
     }
 }
 
-// 保存処理中かどうかのフラグ
-let isSaving = false;
-
-// 保存のみを行う関数
+// 保存のみを行う関数（ダイアログからの呼び出し用）
 function saveFormOnly() {
     const form = document.getElementById('appForm');
-    if (form) {
-        const formData = new FormData(form);
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                closeTechnicalDialog();   // まずダイアログを閉じる
-                
-                // デバッグ用のログ
-                console.log('保存成功、トースト表示を試みます');
-                
-                // トーストの要素を取得して表示
-                const toastEl = document.getElementById('liveToast');
-                console.log('トースト要素:', toastEl);  // デバッグ用
-                
-                if (toastEl) {
-                    try {
-                        const toast = new bootstrap.Toast(toastEl);
-                        console.log('トーストインスタンス作成成功');  // デバッグ用
-                        toast.show();
-                        console.log('トースト表示命令実行');  // デバッグ用
-                    } catch (error) {
-                        console.error('トースト表示エラー:', error);
-                    }
-                } else {
-                    console.error('トースト要素が見つかりません');
-                }
-            }
-        })
-        .catch(error => {
-            console.error('保存エラー:', error);
-        });
+    if (form && !isSaving) {
+        form.dispatchEvent(new Event('submit'));
+        closeDialog();
     }
+
 }
 
-// ボタンのクリックイベントを一度だけ設定
+// トースト要素の初期化
 document.addEventListener('DOMContentLoaded', function() {
-    const saveButton = document.querySelector('.cyber-button.save-dialog');
-    if (saveButton) {
-        saveButton.onclick = saveFormOnly;  // イベントリスナーを一度だけ設定
+    const toastEl = document.getElementById('liveToast');
+    if (toastEl) {
+        const toast = new bootstrap.Toast(toastEl, {
+            delay: 3000,
+            animation: true
+        });
     }
 });
 </script>
@@ -1066,4 +1058,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+{% endblock %} 
 {% endblock %} 
