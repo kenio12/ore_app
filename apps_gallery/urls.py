@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views, views_technical  # views_technicalを追加
 
 app_name = 'apps_gallery'
 
@@ -13,4 +13,7 @@ urlpatterns = [
     path('delete-screenshot/', views.delete_screenshot, name='delete_screenshot'),  # スクリーンショット削除
     path('set-thumbnail/', views.set_thumbnail, name='set_thumbnail'),  # サムネイル設定
     path('reset-screenshots/<int:pk>/', views.reset_screenshots, name='reset_screenshots'),
+    
+    # 技術情報関連の新しいURL
+    path('technical/edit/<int:pk>/', views_technical.technical_edit_view, name='technical_edit'),
 ] 

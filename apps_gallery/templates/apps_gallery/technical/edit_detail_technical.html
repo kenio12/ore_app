@@ -1,0 +1,428 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{# ナビバーを完全に非表示にする #}
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<!-- サイバーパンク風の装飾 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<!-- タブナビゲーション -->
+<div id="technicalTabs" class="app-tabs">
+    <div class="container py-1">
+        <nav class="nav nav-pills nav-fill mt-0">
+            <!-- ホームへ戻るボタン -->
+            <a href="{% url 'home:home' %}" class="nav-link" title="ホームへ戻る">
+                <span class="fs-4 me-2 cyber-emoji">🤖</span>
+            </a>
+            
+            <!-- 基本情報へのリンク -->
+            <a href="{% url 'apps_gallery:edit' app.id %}" 
+               class="nav-link basic-transition-btn">
+                <i class="bi bi-arrow-left-circle"></i> 基本へ
+            </a>
+            
+            <!-- 技術情報のタブ -->
+            <a class="nav-link text-neon" data-bs-target="#hardware" href="#hardware">
+                <i class="bi bi-cpu"></i> ハードウェア
+            </a>
+            <a class="nav-link text-neon" data-bs-target="#dev_env" href="#dev_env">
+                <i class="bi bi-tools"></i> 開発環境
+            </a>
+            <a class="nav-link text-neon" data-bs-target="#architecture" href="#architecture">
+                <i class="bi bi-diagram-3"></i> アーキテクチャ
+            </a>
+            <a class="nav-link text-neon" data-bs-target="#frontend" href="#frontend">
+                <i class="bi bi-window"></i> フロントエンド
+            </a>
+        </nav>
+    </div>
+</div>
+
+<!-- メインコンテンツ -->
+<div class="container main-content">
+    <!-- ヘッダー部分（編集/詳細で切り替え） -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="color: #00ffff; text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff; font-weight: bold;">
+            {% if readonly %}
+                {{ app.title }}の技術情報詳細
+            {% else %}
+                {{ app.title }}の技術情報を編集
+            {% endif %}
+        </h2>
+    </div>
+
+    <form id="technicalForm" method="post">
+        {% csrf_token %}
+        
+        <!-- ハードウェア要件 -->
+        <section id="hardware" class="mb-5 scroll-margin-top">
+            {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
+        </section>
+        
+        <!-- 開発環境 -->
+        <section id="dev_env" class="mb-5">
+            {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
+        </section>
+        
+        <!-- アーキテクチャ -->
+        <section id="architecture" class="mb-5">
+            {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
+        </section>
+        
+        <!-- フロントエンド -->
+        <section id="frontend" class="mb-5">
+            {% include 'apps_gallery/technical/tabs/07_frontend_tab.html' %}
+        </section>
+        
+        <!-- 下部のボタングループを追加 -->
+        <div class="bottom-button-group">
+            <!-- 左：基本情報へ戻るボタン -->
+            <div class="button-container">
+                <a href="{% url 'apps_gallery:edit' app.id %}" 
+                   class="btn-cyber-mode-switch basic-transition-btn"
+                   data-app-id="{{ app.id }}">
+                    <i class="bi bi-arrow-left-circle"></i> 基本へ
+                    <div class="cyber-glitch-effect"></div>
+                </a>
+            </div>
+
+            <!-- 中央：ステータス表示 -->
+            <div class="button-container">
+                <span class="status-badge editing-status">
+                    <i class="bi bi-tools"></i> 技術情報編集
+                </span>
+            </div>
+
+            <!-- 右：保存ボタン -->
+            <div class="button-container">
+                <button type="submit" form="technicalForm" class="btn-cyber-save">
+                    <i class="bi bi-save"></i> 保存
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- スタイルを追加 -->
+<style>
+/* サイバーパンクな背景 */
+.cyber-background {
+    background: linear-gradient(45deg, #003322, #006644);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,100,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,100,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+/* タブナビゲーションのスタイル */
+.app-tabs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(13, 25, 45, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    z-index: 999;
+    transition: transform 0.3s ease;
+}
+
+/* ボタングループのスタイル */
+.bottom-button-group {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+.button-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 250px;
+}
+
+.button-container:first-child {
+    justify-content: flex-start;
+}
+
+.button-container:last-child {
+    justify-content: flex-end;
+}
+
+/* ステータスバッジ */
+.status-badge {
+    display: inline-block;
+    padding: 8px 25px;
+    border-radius: 25px;
+    font-weight: bold;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.status-badge.editing-status {
+    color: #00ff9f;
+    border: 2px solid #00ff9f;
+    background: rgba(0, 255, 159, 0.1);
+    text-shadow: 0 0 5px #00ff9f;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+/* 保存ボタン */
+.btn-cyber-save {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--cyber-yellow);
+    border: 2px solid var(--cyber-yellow);
+    text-shadow: 0 0 5px var(--cyber-yellow);
+    padding: 10px 30px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border-radius: 25px;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    font-size: 1.1rem;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.btn-cyber-save:hover {
+    background: rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+/* メインコンテンツのマージン */
+.main-content {
+    margin-top: 8rem !important;
+}
+
+/* スクロールマージン */
+.scroll-margin-top {
+    scroll-margin-top: 120px;
+}
+
+/* タブのスタイル改善 */
+.nav-link {
+    color: #00ffff !important;
+    text-shadow: 0 0 10px #00ffff;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: rgba(0, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background: rgba(0, 255, 255, 0.2) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    color: #ffffff !important;
+    text-shadow: 0 0 15px #00ffff;
+}
+
+/* 各タブのアイコンをより目立たせる */
+.nav-link i {
+    filter: drop-shadow(0 0 5px currentColor);
+    margin-right: 0.5rem;
+}
+
+/* 共通のカードスタイル */
+.card {
+    background: rgba(13, 25, 45, 0.8) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.1) !important;
+}
+
+/* 共通のラベルスタイル */
+.form-label {
+    font-weight: bold !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* 入力フィールドの基本スタイル */
+.form-control {
+    border-width: 2px !important;
+    background: rgba(0, 20, 50, 0.5) !important;
+    font-weight: bold !important;
+}
+
+/* 各タブのスタイル */
+#hardware .form-control {
+    color: var(--cyber-blue) !important;
+    border-color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
+}
+
+#hardware .form-label {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
+}
+
+#dev_env .form-control {
+    color: var(--cyber-purple) !important;
+    border-color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple) !important;
+}
+
+#dev_env .form-label {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple) !important;
+}
+
+#architecture .form-control {
+    color: var(--cyber-green) !important;
+    border-color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green) !important;
+}
+
+#architecture .form-label {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green) !important;
+}
+
+#frontend .form-control {
+    color: var(--cyber-pink) !important;
+    border-color: var(--cyber-pink) !important;
+    text-shadow: 0 0 5px var(--cyber-pink) !important;
+}
+
+#frontend .form-label {
+    color: var(--cyber-pink) !important;
+    text-shadow: 0 0 5px var(--cyber-pink) !important;
+}
+
+/* プレースホルダーのスタイル */
+#hardware ::placeholder { color: rgba(0, 255, 255, 0.5) !important; }
+#dev_env ::placeholder { color: rgba(147, 51, 234, 0.5) !important; }
+#architecture ::placeholder { color: rgba(0, 255, 159, 0.5) !important; }
+#frontend ::placeholder { color: rgba(236, 72, 153, 0.5) !important; }
+
+/* フォーカス時のスタイル */
+#hardware .form-control:focus { box-shadow: 0 0 15px var(--cyber-blue) !important; }
+#dev_env .form-control:focus { box-shadow: 0 0 15px var(--cyber-purple) !important; }
+#architecture .form-control:focus { box-shadow: 0 0 15px var(--cyber-green) !important; }
+#frontend .form-control:focus { box-shadow: 0 0 15px var(--cyber-pink) !important; }
+
+/* チェックボックスのスタイル */
+.form-check-input:checked {
+    background-color: currentColor !important;
+    border-color: currentColor !important;
+}
+
+#architecture .form-check-input:checked {
+    background-color: var(--cyber-green) !important;
+    border-color: var(--cyber-green) !important;
+}
+
+/* 変数の定義 */
+:root {
+    --cyber-blue: #00ffff;
+    --cyber-purple: #9333ea;
+    --cyber-green: #00ff9f;
+    --cyber-pink: #ec4899;
+    --cyber-yellow: #ffd700;
+}
+
+/* 基本へボタンの特別なスタイル */
+.basic-transition-btn {
+    background: rgba(255, 215, 0, 0.1) !important;
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow) !important;
+    border: 1px solid var(--cyber-yellow) !important;
+    margin: 0 10px;
+    border-radius: 20px !important;
+}
+
+.basic-transition-btn:hover {
+    background: rgba(255, 215, 0, 0.2) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.basic-transition-btn i {
+    color: var(--cyber-yellow) !important;
+    filter: drop-shadow(0 0 5px var(--cyber-yellow)) !important;
+}
+</style>
+
+<!-- スクロール制御のJavaScript -->
+<script>
+let lastScrollTop = 0;
+const appTabs = document.getElementById('technicalTabs');
+
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (scrollTop > lastScrollTop) {
+        appTabs.style.transform = 'translateY(-100%)';
+    } else {
+        appTabs.style.transform = 'translateY(0)';
+    }
+    lastScrollTop = scrollTop;
+});
+
+// フォームの変更を検知するフラグ
+let formChanged = false;
+
+// DOMContentLoadedイベントを追加
+document.addEventListener('DOMContentLoaded', function() {
+    // フォームの変更を検知
+    const form = document.getElementById('technicalForm');
+    if (form) {
+        form.addEventListener('input', function() {
+            formChanged = true;
+        });
+    }
+
+    // 基本情報へ戻るボタンの処理
+    document.querySelectorAll('.basic-transition-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            if (formChanged) {
+                const result = confirm('保存されていない変更があります。保存してから移動することをお勧めします。\n\nこのまま移動しますか？');
+                if (!result) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        });
+    });
+
+    // ページを離れる前の確認
+    window.addEventListener('beforeunload', function(e) {
+        if (formChanged) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+});
+</script>
+{% endblock %} 

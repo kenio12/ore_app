@@ -42,6 +42,16 @@
             <a class="nav-link text-neon" data-bs-target="#appeal" href="#appeal">
                 <i class="bi bi-stars"></i> アプリの魅力
             </a>
+            
+            <!-- 技術基盤編へのリンク（編集モードの時のみ表示） -->
+            {% if not readonly and app.id %}
+                <a href="{% url 'apps_gallery:technical_edit' app.id %}" 
+                   class="nav-link technical-transition-btn" 
+                   onclick="return confirmUnsavedChanges(event)">
+                    <i class="bi bi-arrow-right-circle"></i> 
+                    技術へ
+                </a>
+            {% endif %}
         </nav>
     </div>
 </div>
@@ -606,6 +616,59 @@ html {
     color: #00ff9f;
     transform: translateY(-2px);
 }
+
+/* 技術基盤編タブ */
+.nav-link[href*="technical_edit"] {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue), 0 0 10px var(--cyber-blue);
+}
+
+.nav-link[href*="technical_edit"]:hover {
+    background-color: rgba(0, 255, 255, 0.1) !important;
+}
+
+/* 技術基盤編への遷移ボタン */
+.technical-transition-btn {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
+    transition: all 0.3s ease;
+    background: rgba(0, 255, 255, 0.1) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+.technical-transition-btn:hover {
+    background: rgba(0, 255, 255, 0.2) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+/* グリッチエフェクトを削除 */
+.cyber-glitch-effect {
+    display: none;
+}
+
+/* アイコンのアニメーション */
+.technical-transition-btn i {
+    margin-right: 0.5rem;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(3px);
+    }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .technical-transition-btn {
+        margin-top: 0.5rem !important;
+        margin-left: 0 !important;
+    }
+}
 </style>
 
 <script>
@@ -792,6 +855,35 @@ document.addEventListener('DOMContentLoaded', function() {
             // ... existing upload code ...
         });
     }
+});
+
+// フォームの変更を検知するフラグ
+let formChanged = false;
+
+// フォームの変更を検知
+document.getElementById('appForm').addEventListener('input', function() {
+    formChanged = true;
+});
+
+// ページを離れる前の確認
+window.addEventListener('beforeunload', function(e) {
+    if (formChanged) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// 技術情報へ進むボタンの処理
+document.querySelectorAll('.technical-transition-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        if (formChanged) {
+            const result = confirm('保存されていない変更があります。保存してから移動することをお勧めします。\n\nこのまま移動しますか？');
+            if (!result) {
+                e.preventDefault();
+                return false;
+            }
+        }
+    });
 });
 </script>
 {% endblock %} 
