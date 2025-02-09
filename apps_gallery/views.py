@@ -23,34 +23,10 @@ from django.urls import reverse
 @login_required  # ログインが必要
 def create_view(request):
     """アプリの新規作成ビュー"""
-    # デバッグ出力を追加
-    print("\n==== セッション状態のデバッグ情報 ====")
-    temp_screenshots = request.session.get('temp_screenshots', [])
-    print(f"セッション内の画像数: {len(temp_screenshots)}")
-    for i, shot in enumerate(temp_screenshots, 1):
-        print(f"\n画像 {i}:")
-        print(f"Public ID: {shot.get('public_id')}")
-        print(f"URL: {shot.get('url')}")
+    print("\n==== Create View Debug Info ====")
+    print(f"Session screenshots: {request.session.get('temp_screenshots', [])}")
+    print(f"Session thumbnail_index: {request.session.get('temp_thumbnail_index')}")
     
-    # 3枚より多い場合は、古い画像を削除
-    if len(temp_screenshots) > 3:
-        print("\n3枚を超える画像を削除します...")
-        # 古い画像をCloudinaryから削除（4枚目以降）
-        for old_shot in temp_screenshots[3:]:
-            if 'public_id' in old_shot:
-                try:
-                    cloudinary.uploader.destroy(old_shot['public_id'])
-                    print(f"削除: {old_shot['public_id']}")
-                except Exception as e:
-                    logging.error(f"Failed to delete image from Cloudinary: {e}")
-                    print(f"削除失敗: {e}")
-        
-        # セッションには最新3枚だけを残す
-        temp_screenshots = temp_screenshots[:3]
-        request.session['temp_screenshots'] = temp_screenshots
-        request.session.modified = True
-        print(f"\n更新後のセッション内画像数: {len(temp_screenshots)}")
-
     if request.method == 'POST':
         try:
             form = AppForm(request.POST)
@@ -140,20 +116,33 @@ def create_view(request):
                 'error_trace': str(e.__traceback__)
             }, status=500)
     
-    form = AppForm()
+    # セッションの状態を確認
+    screenshots = request.session.get('temp_screenshots', [])
+    thumbnail_index = request.session.get('temp_thumbnail_index', 0)
     
     context = {
         'hide_navbar': True,
+        'screenshots': screenshots,
+        'thumbnail_index': thumbnail_index,
+        'is_new': True,
         'readonly': False,
         'APP_TYPES': dict(APP_TYPES),
         'APP_STATUS': dict(APP_STATUS),
         'PUBLISH_STATUS': dict(PUBLISH_STATUS),
         'GENRES': dict(GENRES),
         'is_edit': False,
-        'is_create': True,  # 新規作成フラグを追加
-        'form': form,
-        'app': {'screenshots': request.session.get('temp_screenshots', [])}  # 辞書として渡す
+        'is_create': True,
+        'form': AppForm(),
+        'app': {
+            'screenshots': screenshots,
+            'thumbnail_index': thumbnail_index  # ここも追加
+        }
     }
+    
+    print("\nContext data:")
+    print(f"Screenshots: {context['screenshots']}")
+    print(f"Thumbnail index: {context['thumbnail_index']}")
+    
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
 @login_required
@@ -219,18 +208,17 @@ def edit_app(request, pk):
 
 @login_required
 def handle_app_form(request, app=None, context=None):
-    """アプリの作成・編集を処理する共通関数"""
-    try:
-        if context is None:
-            context = {}
+    if context is None:
+        context = {}
+    
+    # デバッグ用：POSTデータの内容を確認
+    if request.method == 'POST':
+        print("受信したPOSTデータ:", request.POST)
         
-        if app and app.author != request.user:
-            raise PermissionDenied("このアプリを編集する権限がありません。")
+        try:
+            if app and app.author != request.user:
+                raise PermissionDenied("このアプリを編集する権限がありません。")
 
-        if 'readonly' not in context:
-            context['readonly'] = False
-
-        if request.method == 'POST':
             form = AppForm(request.POST, instance=app)
             if form.is_valid():
                 app = form.save(commit=False)
@@ -241,23 +229,51 @@ def handle_app_form(request, app=None, context=None):
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return JsonResponse({
                         'success': True,
+                        'message': '保存しました',
                         'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': app.pk})
                     })
                 return redirect('apps_gallery:detail', pk=app.pk)
             else:
+                # フォームのエラー内容をログに出力
+                print("フォームバリデーションエラー:", form.errors)
+                
+                # エラーメッセージを整形
+                error_messages = []
+                for field, errors in form.errors.items():
+                    field_name = {
+                        'title': 'タイトル',
+                        'overview': '概要',
+                        'motivation': '開発動機',
+                        'dev_status': '開発状況',
+                        'status': '公開状態',
+                    }.get(field, field)
+                    
+                    for error in errors:
+                        error_messages.append(f"{field_name}：{error}")
+                
+                error_text = '以下の項目を確認してください：\n' + '\n'.join(error_messages)
+                print("送信するエラーメッセージ:", error_text)
+
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return JsonResponse({
                         'success': False,
-                        'errors': form.errors
+                        'error': error_text
                     }, status=400)
-    except Exception as e:
-        print(f"Error in handle_app_form: {str(e)}")
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({
-                'success': False,
-                'error': '保存に失敗しました'
-            }, status=500)
-        messages.error(request, '保存に失敗しました')
+                
+                messages.error(request, error_text)
+                
+        except Exception as e:
+            print(f"予期せぬエラー: {str(e)}")
+            import traceback
+            print(f"エラーの詳細:\n{traceback.format_exc()}")
+            
+            error_message = f'エラーが発生しました：{str(e)}'
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'error': error_message
+                }, status=500)
+            messages.error(request, error_message)
 
     context.update({
         'app': app,
@@ -502,44 +518,39 @@ def delete_screenshot(request):
         }, status=500)
 
 @login_required
-@require_http_methods(["POST"])
 def set_thumbnail(request):
-    """サムネイル画像の設定処理"""
-    try:
-        data = json.loads(request.body)
-        app_id = data.get('app_id')
-        index = int(data.get('index', 0))
-
-        if app_id:
-            app = get_object_or_404(AppGallery, pk=app_id)
-            if app.author != request.user:
-                return JsonResponse({'error': '権限がありません'}, status=403)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            app_id = data.get('app_id')
+            index = int(data.get('index', 0))
             
-            screenshots = app.screenshots or []
-            if 0 <= index < len(screenshots):
-                # 選択された画像をサムネイルとして設定
-                selected = screenshots[index]
-                app.thumbnail = selected
-                app.save()
-        else:
-            # 新規作成時（セッションの画像を設定）
-            screenshots = request.session.get('temp_screenshots', [])
-            if 0 <= index < len(screenshots):
-                selected = screenshots[index]
-                request.session['temp_thumbnail'] = selected
-                request.session.modified = True
-
-        return JsonResponse({
-            'status': 'success',
-            'message': 'サムネイルを設定しました'
-        })
-
-    except Exception as e:
-        print(f"Error in set_thumbnail: {str(e)}")
-        return JsonResponse({
-            'error': 'サムネイル設定中にエラーが発生しました',
-            'details': str(e)
-        }, status=500)
+            if app_id:
+                app = AppGallery.objects.get(id=app_id, author=request.user)
+                if app.screenshots:
+                    # スクリーンショットの順序変更
+                    screenshots = app.screenshots
+                    selected_screenshot = screenshots.pop(index)
+                    screenshots.insert(0, selected_screenshot)
+                    app.screenshots = screenshots
+                    
+                    # thumbnailフィールドも更新
+                    app.thumbnail = {
+                        'public_id': selected_screenshot['public_id'],
+                        'url': selected_screenshot['url']
+                    }
+                    
+                    app.save()
+                
+            return JsonResponse({'success': True})
+            
+        except Exception as e:
+            return JsonResponse({
+                'error': str(e),
+                'details': 'サムネイル設定中にエラーが発生しました'
+            }, status=400)
+            
+    return JsonResponse({'error': '不正なリクエストです'}, status=400)
 
 @login_required
 def reset_screenshots(request, pk):

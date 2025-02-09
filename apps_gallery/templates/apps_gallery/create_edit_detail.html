@@ -115,7 +115,7 @@
         <div class="button-container">
             {% if app.id %}
                 {% if not readonly %}
-                    <a href="{% url 'apps_gallery:detail' app.id %}" class="btn-cyber-mode-switch" id="btn-to-detail">
+                    <a href="{% url 'apps_gallery:detail' app.id %}" class="btn-cyber-mode-switch" id="btn-to-detail" onclick="return confirmUnsavedChanges(event)">
                         <i class="bi bi-eye"></i> 詳細へ
                     </a>
                 {% else %}
@@ -623,37 +623,66 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
-// フォーム送信処理
-document.addEventListener('DOMContentLoaded', function() {
-    // 保存ボタンのイベントリスナーのみ残す
-    const form = document.getElementById('appForm');
-    if (form && !document.body.classList.contains('readonly')) {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            try {
-                const formData = new FormData(this);
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': getCookie('csrftoken'),
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-                
-                const data = await response.json();
-                if (data.success) {
-                    // 保存成功時はトースト通知のみ（遷移なし）
-                    showToast('保存しました', 'success');
-                } else {
-                    showToast('保存に失敗しました', 'error');
-                }
-            } catch (error) {
-                showToast('保存中にエラーが発生しました', 'error');
-            }
-        });
+// 保存確認のダイアログを表示する関数
+function confirmUnsavedChanges(event) {
+    event.preventDefault();
+    if (confirm('保存ボタンを押しましたか？\n保存せずに移動すると、変更内容が失われます。')) {
+        window.location.href = event.target.href;
     }
+    return false;
+}
+
+// フォーム送信の処理
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('appForm');
+    if (!form) return;
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        try {
+            const formData = new FormData(this);
+            const titleInput = formData.get('title');
+            
+            // タイトルのバリデーション
+            if (!titleInput || titleInput.trim() === '') {
+                showToast('アプリ名（タイトル）を入力してください。これは必須項目です。', 'error');
+                const titleElement = document.getElementById('title');
+                if (titleElement) {
+                    titleElement.focus();
+                    document.querySelector('[data-bs-target="#basic"]')?.click();
+                }
+                return;
+            }
+            
+            // 保存処理
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                showToast(data.error || 'エラーが発生しました。', 'error');
+                return;
+            }
+
+            // 保存成功時のトースト表示のみ
+            showToast('保存しました！', 'success');
+            
+            // リダイレクトは削除
+            // 保存後はその場に留まる
+
+        } catch (error) {
+            console.error('エラー:', error);
+            showToast('ネットワークエラーが発生しました。', 'error');
+        }
+    });
 });
 
 // タブナビゲーションの初期化を削除
