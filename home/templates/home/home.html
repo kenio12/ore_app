@@ -171,7 +171,7 @@ function checkImageOrientation(img, appId) {
         // 横長画像の場合：カードの上に配置するように変更
         cardContent.innerHTML = `
             <div class="col-12">
-                <div class="screenshot-wrapper mb-4">
+                <div class="screenshot-wrapper">
                     <div class="screenshot-card">
                         <div class="screenshot-image">
                             <img src="${img.src}" 
@@ -402,7 +402,7 @@ function getCardBody(appId, title, overview, types, genres) {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 0 1rem 1rem 1rem;
+    padding: 0.75rem;  /* パディングを1.5remから0.75remに減らす */
 }
 
 .screenshot-card {
@@ -413,12 +413,14 @@ function getCardBody(appId, title, overview, types, genres) {
     overflow: hidden;
     transition: all 0.3s ease;
     width: 100%;
+    margin: 0.25rem 0;  /* マージンを0.5remから0.25remに減らす */
 }
 
 .screenshot-image {
     position: relative;
     overflow: hidden;
     text-align: center;
+    padding: 0.5rem;
 }
 
 .screenshot-image img {
@@ -429,6 +431,7 @@ function getCardBody(appId, title, overview, types, genres) {
     max-height: 400px;
     display: block;
     margin: 0 auto;
+    border-radius: 4px;
 }
 
 /* サイバーピンクテキスト */
