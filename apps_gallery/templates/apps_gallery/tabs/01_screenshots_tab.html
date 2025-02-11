@@ -530,20 +530,116 @@ function getCookie(name) {
 // グローバル変数で送信中フラグを管理
 let isSubmitting = false;
 
+// トースト通知を表示する関数を追加
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `cyber-toast ${type}`;
+    toast.innerHTML = `
+        <div class="toast-header">
+            <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle'}"></i>
+            ${message}
+        </div>
+    `;
+    document.body.appendChild(toast);
+
+    // 3秒後に消える
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            document.body.removeChild(toast);
+        }, 300);
+    }, 3000);
+}
+
+// スクリーンショットの最大数を定義
+const MAX_SCREENSHOTS = 3;
+
+// スクリーンショット数をチェックしてアップロードエリアの表示を制御する関数
+function updateUploadAreaVisibility() {
+    const screenshotsCount = document.querySelectorAll('.screenshot-wrapper').length;
+    const uploadForm = document.querySelector('.upload-form');
+    
+    if (screenshotsCount >= MAX_SCREENSHOTS) {
+        if (uploadForm) {
+            uploadForm.style.display = 'none';
+        }
+    } else {
+        if (uploadForm) {
+            uploadForm.style.display = 'block';
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const isEditMode = {% if app.id %}true{% else %}false{% endif %};
     const appId = {% if app.id %}{{ app.id }}{% else %}null{% endif %};
     
+    // 初期表示時にアップロードエリアの表示を制御
+    updateUploadAreaVisibility();
+    
+    // プレビュー表示の処理を追加
+    function showPreview(file) {
+        const previewArea = document.querySelector('.upload-preview-area');
+        const previewPlaceholder = previewArea.querySelector('.preview-placeholder');
+        const previewWrapper = previewArea.querySelector('.preview-wrapper');
+        const imagePreview = document.getElementById('imagePreview');
+        const cancelButton = document.getElementById('cancelPreview');
+
+        // FileReaderでファイルを読み込む
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreview.classList.remove('d-none');
+            previewWrapper.style.display = 'block';
+            previewPlaceholder.style.display = 'none';
+            cancelButton.classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
+    }
+
+    // キャンセルボタンの処理を追加
+    const cancelButton = document.getElementById('cancelPreview');
+    if (cancelButton) {
+        cancelButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            resetPreview();
+        });
+    }
+
+    // プレビューをリセットする関数
+    function resetPreview() {
+        const previewArea = document.querySelector('.upload-preview-area');
+        const previewPlaceholder = previewArea.querySelector('.preview-placeholder');
+        const previewWrapper = previewArea.querySelector('.preview-wrapper');
+        const imagePreview = document.getElementById('imagePreview');
+        const cancelButton = document.getElementById('cancelPreview');
+        const fileInput = document.getElementById('screenshotInput');
+
+        imagePreview.src = '';
+        imagePreview.classList.add('d-none');
+        previewWrapper.style.display = 'none';
+        previewPlaceholder.style.display = 'block';
+        cancelButton.classList.add('d-none');
+        fileInput.value = '';
+    }
+
     // アップロード処理の共通化
     async function handleUpload(file) {
-        const formData = new FormData();
-        formData.append('image', file);
-        if (appId) formData.append('app_id', appId);
+        const screenshotsCount = document.querySelectorAll('.screenshot-wrapper').length;
+        
+        if (screenshotsCount >= MAX_SCREENSHOTS) {
+            showToast('スクリーンショットは最大3枚までです', 'error');
+            return;
+        }
 
         const uploadLoader = document.getElementById('uploadLoader');
         uploadLoader.style.display = 'flex';
 
         try {
+            const formData = new FormData();
+            formData.append('image', file);
+            if (appId) formData.append('app_id', appId);
+
             const response = await fetch('/apps_gallery/upload-screenshot/', {
                 method: 'POST',
                 body: formData,
@@ -555,8 +651,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!response.ok) throw new Error('アップロードに失敗しました');
             
             const result = await response.json();
-            showToast('画像をアップロードしました', 'success');
-            setTimeout(() => window.location.reload(), 1000);
+            
+            if (result.status === 'success') {
+                showToast('画像をアップロードしました', 'success');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                window.location.reload();
+            } else {
+                throw new Error(result.message || 'アップロードに失敗しました');
+            }
 
         } catch (error) {
             showToast(error.message, 'error');
@@ -594,6 +696,9 @@ document.addEventListener('DOMContentLoaded', function() {
     async function handleDelete(index) {
         if (!confirm('このスクリーンショットを削除してもよろしいですか？')) return;
 
+        const uploadLoader = document.getElementById('uploadLoader');
+        uploadLoader.style.display = 'flex';
+
         try {
             const response = await fetch('/apps_gallery/delete-screenshot/', {
                 method: 'POST',
@@ -607,13 +712,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             });
 
-            if (!response.ok) throw new Error('削除に失敗しました');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || '削除に失敗しました');
+            }
+
+            const result = await response.json();
             
-            showToast('スクリーンショットを削除しました', 'success');
-            setTimeout(() => window.location.reload(), 1000);
+            if (result.status === 'success') {
+                showToast('スクリーンショットを削除しました', 'success');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                window.location.reload();
+            } else {
+                throw new Error(result.message || '削除に失敗しました');
+            }
 
         } catch (error) {
+            console.error('削除エラー:', error);
             showToast(error.message, 'error');
+        } finally {
+            uploadLoader.style.display = 'none';
         }
     }
 
@@ -631,7 +749,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('screenshotInput');
 
     if (dropZone && fileInput) {
+        // クリックでのファイル選択
         dropZone.addEventListener('click', () => fileInput.click());
+        
+        // ファイル選択時の処理
         fileInput.addEventListener('change', e => {
             if (e.target.files[0]) handleUpload(e.target.files[0]);
         });
@@ -644,11 +765,21 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        dropZone.addEventListener('dragover', () => dropZone.classList.add('dragover'));
-        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        // ドラッグオーバー時のスタイル
+        dropZone.addEventListener('dragover', () => {
+            dropZone.classList.add('dragover');
+        });
+
+        // ドラッグ離脱時のスタイル
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        // ドロップ時の処理
         dropZone.addEventListener('drop', e => {
             dropZone.classList.remove('dragover');
-            if (e.dataTransfer.files[0]) handleUpload(e.dataTransfer.files[0]);
+            const file = e.dataTransfer.files[0];
+            if (file) handleUpload(file);
         });
     }
 });
