@@ -100,6 +100,18 @@
     </div>
 </div>
 
+<!-- トースト要素を追加 -->
+<div class="toast-container position-fixed top-50 start-50 translate-middle" style="z-index: 9999;">
+    <div class="toast align-items-center text-bg-success border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                保存しました！
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 <!-- 画面左側の基本へボタン -->
 {% if app.id %}
     <div class="side-nav-button left-nav">
@@ -120,15 +132,15 @@
 
 <!-- タブナビゲーション -->
 <div id="technicalTabs" class="app-tabs">
-    <div class="container py-1">
-        <nav class="nav nav-pills nav-fill mt-0">
+    <div class="container p-0">
+        <nav class="nav nav-pills nav-fill m-0">
             <!-- ホームへ戻るボタン -->
-            <a href="{% url 'home:home' %}" class="nav-link cyber-home" title="ホームへ戻る">
+            <a href="/" class="nav-link cyber-home" title="ホームへ戻る">
                 <span class="fs-4 me-2 cyber-emoji">🤖</span>
             </a>
             
             <!-- 技術情報のタブ -->
-            <a class="nav-link text-cyber-blue" data-bs-target="#hardware" href="#hardware">
+            <a class="nav-link text-cyber-blue active" data-bs-target="#hardware" href="#hardware">
                 <i class="bi bi-cpu"></i> ハードウェア
             </a>
             <a class="nav-link text-cyber-purple" data-bs-target="#dev_env" href="#dev_env">
@@ -239,7 +251,7 @@
     100% { opacity: 0.5; }
 }
 
-/* タブナビゲーションのスタイル */
+/* タブナビゲーション */
 .app-tabs {
     position: fixed;
     top: 0;
@@ -250,7 +262,94 @@
     -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     z-index: 999;
-    transition: transform 0.3s ease;
+}
+
+/* スマートフォン対応のマージン調整 */
+@media (max-width: 768px) {
+    .app-tabs .container {
+        padding: 10px 0 !important;  /* 上下に10pxのパディング */
+    }
+
+    .nav-pills {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 8px !important;  /* リンク自体にも適度なパディング */
+    }
+}
+
+/* さらに小さい画面サイズの場合 */
+@media (max-width: 480px) {
+    .app-tabs .container {
+        padding: 8px 0 !important;  /* より小さい画面では8pxに */
+    }
+
+    .nav-link {
+        font-size: 0.8rem;
+        padding: 6px !important;
+    }
+}
+
+/* スクロール時のスムーズな動き */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 60px; /* タブの高さに合わせて調整 */
+}
+
+/* アクティブなタブのスタイル */
+.nav-pills .nav-link.active {
+    border: none !important;  /* 枠を削除 */
+}
+
+/* 元々設定されていた色を維持 */
+.nav-link.text-cyber-blue {
+    color: var(--cyber-blue) !important;
+}
+
+.nav-link.text-cyber-purple {
+    color: var(--cyber-purple) !important;
+}
+
+.nav-link.text-cyber-green {
+    color: var(--cyber-green) !important;
+}
+
+.nav-link.text-cyber-pink {
+    color: var(--cyber-pink) !important;
+}
+
+/* ホバー時のスタイル */
+.nav-pills .nav-link:hover {
+    background: rgba(0, 255, 255, 0.15);
+    color: #fff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .nav-pills {
+        padding: 6px 0 !important;  /* モバイルでは少し小さく */
+    }
+    
+    .nav-link {
+        font-size: 0.9rem;  /* フォントサイズを少し小さく */
+        padding: 5px 8px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-pills {
+        padding: 4px 0 !important;  /* さらに小さく */
+    }
+    
+    .nav-link {
+        font-size: 0.8rem;
+        padding: 4px 6px !important;
+    }
 }
 
 /* ボタングループのスタイル */
@@ -362,54 +461,6 @@
     --cyber-green: #00ff9f;
     --cyber-pink: #ec4899;
     --cyber-yellow: #ffd700;
-}
-
-/* 各タブの色設定 */
-.nav-link.text-cyber-blue {
-    color: var(--cyber-blue) !important;
-    text-shadow: 0 0 10px var(--cyber-blue);
-    background: transparent !important;
-    border: none !important;
-}
-
-.nav-link.text-cyber-purple {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 10px var(--cyber-purple);
-}
-
-.nav-link.text-cyber-green {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 10px var(--cyber-green);
-}
-
-.nav-link.text-cyber-pink {
-    color: var(--cyber-pink) !important;
-    text-shadow: 0 0 10px var(--cyber-pink);
-}
-
-/* アクティブ状態 */
-.nav-link.active {
-    background: transparent !important;
-}
-
-.nav-link.text-cyber-blue.active {
-    color: var(--cyber-blue) !important;
-    text-shadow: 0 0 15px var(--cyber-blue);
-}
-
-.nav-link.text-cyber-purple.active {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 15px var(--cyber-purple);
-}
-
-.nav-link.text-cyber-green.active {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 15px var(--cyber-green);
-}
-
-.nav-link.text-cyber-pink.active {
-    color: var(--cyber-pink) !important;
-    text-shadow: 0 0 15px var(--cyber-pink);
 }
 
 /* ホバー効果 */
@@ -688,60 +739,6 @@
     box-shadow: 0 0 15px rgba(128, 128, 128, 0.3);
 }
 
-/* スマートフォン対応のマージン調整 */
-@media (max-width: 768px) {
-    .container {
-        margin-top: 80px;  /* タブの高さを考慮して上部マージンを増やす */
-        padding-top: 2rem;
-    }
-
-    /* フォーム要素のマージンも調整 */
-    #technicalForm {
-        margin-top: 2rem;
-    }
-
-    /* タブナビゲーションの固定位置も調整 */
-    .nav-tabs {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        background: var(--cyber-bg);
-        padding: 10px 5px;
-        margin-bottom: 20px;
-    }
-
-    /* コンテンツエリアの余白調整 */
-    .tab-content {
-        padding-top: 1rem;
-    }
-
-    /* 各セクションの余白調整 */
-    .section {
-        margin-top: 2rem;
-        padding-top: 1rem;
-    }
-}
-
-/* さらに小さい画面サイズの場合 */
-@media (max-width: 480px) {
-    .container {
-        margin-top: 100px;  /* より小さい画面ではさらにマージンを増やす */
-    }
-
-    /* タブの表示調整 */
-    .nav-tabs {
-        padding: 15px 5px;
-    }
-
-    /* タブ内のテキストサイズ調整 */
-    .nav-link {
-        font-size: 0.9rem;
-        padding: 8px 12px;
-    }
-}
-
 /* サイドナビゲーションボタンのスタイル */
 .side-nav-button {
     position: fixed;
@@ -857,139 +854,98 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- フォーム送信とダイアログ表示のJavaScript -->
 <script>
+// グローバル変数
+let isSaving = false;
+let formChanged = false;
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('technicalForm');
-    const messageDialog = document.getElementById('messageDialog');
-    const closeButton = document.querySelector('.close-dialog');
-
+    const toastEl = document.getElementById('liveToast');
+    
+    // Bootstrapトーストの初期化
+    const toast = new bootstrap.Toast(toastEl, {
+        delay: 3000,
+        animation: true
+    });
+    
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // フォームをAjaxで送信
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    // 成功メッセージをダイアログに表示
-                    messageDialog.style.display = 'flex';
-                } else {
-                    // エラーメッセージをダイアログに表示
-                    messageDialog.style.display = 'flex';
-                }
-            });
-        });
-    }
-});
-</script>
-
-<!-- 未保存変更の確認とダイアログ表示のJavaScript -->
-<script>
-// 未保存変更の確認とダイアログ表示
-function confirmUnsavedChanges(event) {
-    const dialog = document.getElementById('messageDialog');
-    dialog.style.display = 'flex';  // 直接表示
-    return false;  // 遷移を防ぐ
-}
-</script>
-
-<!-- フォームの変更を検知するフラグ -->
-<script>
-let formChanged = false;
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded - Initializing...');
-    
-    // フォームの変更検知の初期化
-    const form = document.getElementById('technicalForm');
-    if (form) {
-        // 初期状態のフォームデータを保存
-        const initialFormData = new FormData(form);
-        const initialState = Array.from(initialFormData.entries());
-        console.log('Initial form state:', initialState);
-
-        // フォームの変更を監視
-        ['input', 'change'].forEach(eventType => {
-            form.addEventListener(eventType, function() {
-                const currentFormData = new FormData(form);
-                const currentState = Array.from(currentFormData.entries());
-                formChanged = JSON.stringify(initialState) !== JSON.stringify(currentState);
-                console.log('Form changed:', formChanged);
-            });
-        });
-    }
-
-    // 詳細へボタンのイベントリスナー
-    const toDetailBtn = document.getElementById('toDetailButton');
-    if (toDetailBtn) {
-        console.log('Detail button found');
-        toDetailBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Detail button clicked, formChanged:', formChanged);
-            
-            if (formChanged) {
-                showDetailDialog();
-            } else {
-                window.location.href = this.getAttribute('href');
+            if (!isSaving) {
+                isSaving = true;
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // トースト表示
+                        toast.show();
+                        
+                        // フォーム変更フラグをリセット
+                        formChanged = false;
+                        
+                        // 現在のページをリロードして最新の値を表示
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('保存エラー:', error);
+                })
+                .finally(() => {
+                    isSaving = false;
+                });
             }
         });
     }
+
+    // 保存ボタンのクリックイベント
+    const saveBtn = document.querySelector('.btn-cyber-save');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (form) {
+                form.dispatchEvent(new Event('submit'));
+            }
+        });
+    }
+
+    // フォームの変更を検知
+    form.addEventListener('input', function() {
+        formChanged = true;
+    });
 });
 
-// ダイアログ関連の関数
-function showDetailDialog() {
-    const dialog = document.getElementById('detailDialog');
-    if (dialog) {
-        dialog.style.display = 'flex';
-    }
-}
-
-function closeDialog() {
-    const dialogs = document.querySelectorAll('.cyber-dialog-overlay');
-    dialogs.forEach(dialog => {
-        dialog.style.display = 'none';
-    });
-}
-
-function closeDetailDialog() {
-    const dialog = document.getElementById('detailDialog');
-    if (dialog) {
-        dialog.style.display = 'none';
-    }
-}
-
-function closeBasicDialog() {
-    const dialog = document.getElementById('basicDialog');
-    if (dialog) {
-        dialog.style.display = 'none';
-    }
-}
-
-// 保存と移動の関数
-function saveAndRedirect(url) {
+// 保存と移動の関数を修正
+function saveAndGoToBasic(event) {
+    event.preventDefault();
     const form = document.getElementById('technicalForm');
+    const basicUrl = event.target.closest('a').href;
+    
     if (form) {
-        form.submit();
-        closeDialog();
-        setTimeout(() => {
-            window.location.href = url;
-        }, 100);
-    }
-}
-
-// 保存のみを行う関数
-function saveForm() {
-    const form = document.getElementById('technicalForm');
-    if (form) {
-        form.submit();
-        alert('技術情報を保存しました！');
-        closeDialog();
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = basicUrl + (basicUrl.includes('?') ? '&' : '?') + 'toast_message=保存処理をしました。基本編集画面に遷移しました。';
+            } else {
+                alert('保存に失敗しました。');
+            }
+        })
+        .catch(error => {
+            console.error('保存エラー:', error);
+            alert('保存に失敗しました。');
+        });
     }
 }
 </script>
