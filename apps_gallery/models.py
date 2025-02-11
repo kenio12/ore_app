@@ -84,12 +84,21 @@ class AppGallery(models.Model):
     # 開発のきっかけ
     motivation = models.TextField('開発のきっかけ', blank=True)
     
-    # キャッチコピー（最大3つ）
-    catchphrases = models.JSONField(
-        'キャッチコピー',
-        default=list,
-        validators=[validate_catchphrases],
-        help_text='最大3つまで、各100文字以内'
+    # キャッチコピーを3つのフィールドに分割
+    catchphrase_1 = models.CharField(
+        verbose_name='キャッチコピー1',
+        max_length=100,
+        blank=True
+    )
+    catchphrase_2 = models.CharField(
+        verbose_name='キャッチコピー2',
+        max_length=100,
+        blank=True
+    )
+    catchphrase_3 = models.CharField(
+        verbose_name='キャッチコピー3',
+        max_length=100,
+        blank=True
     )
     
     # ターゲットユーザー

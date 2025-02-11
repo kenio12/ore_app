@@ -217,7 +217,7 @@ def edit_app(request, pk):
         if app.author != request.user:
             logger.warning(f"Unauthorized access attempt by user {request.user} for app {pk}")
             messages.error(request, '権限がありません')
-            return redirect('apps_gallery:list')
+            return redirect('home:home')  # ホーム画面にリダイレクト
         
         if request.method == 'POST':
             logger.info("Processing POST request")
@@ -340,21 +340,17 @@ def handle_app_form(request, app=None, context=None):
     
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
-def app_list(request):
-    # とりあえず仮の実装
-    return render(request, 'apps_gallery/list.html')
-
 def app_detail(request, pk):
     app = get_object_or_404(AppGallery, pk=pk)
     
-    print("\n=== Catchphrases Raw Data ===")
-    print(f"Type: {type(app.catchphrases)}")
-    print(f"Length: {len(app.catchphrases)}")
-    print(f"Content:")
-    for i, phrase in enumerate(app.catchphrases):
-        print(f"{i+1}. Type: {type(phrase)}")
-        print(f"   Size: {len(str(phrase)):,} bytes")
-        print(f"   Content: {phrase[:100]}...")  # 最初の100文字だけ表示
+    print("\n=== Catchphrases Data ===")
+    print(f"Catchphrase 1: {app.catchphrase_1}")
+    print(f"Catchphrase 2: {app.catchphrase_2}")
+    print(f"Catchphrase 3: {app.catchphrase_3}")
+    
+    print("\n=== Debug Info ===")
+    print(f"App ID: {app.id}")
+    print(f"Title: {app.title}")
     
     template_path = 'apps_gallery/create_edit_detail.html'
     context = get_common_context(app=app, readonly=True)
@@ -622,14 +618,15 @@ class HomeView(ListView):
 def detail_view(request, pk):
     app = get_object_or_404(AppGallery, pk=pk)
     
-    print("\n=== Catchphrases Raw Data ===")
-    print(f"Type: {type(app.catchphrases)}")
-    print(f"Length: {len(app.catchphrases)}")
-    print(f"Content:")
-    for i, phrase in enumerate(app.catchphrases):
-        print(f"{i+1}. Type: {type(phrase)}")
-        print(f"   Size: {len(str(phrase)):,} bytes")
-        print(f"   Content: {phrase[:100]}...")  # 最初の100文字だけ表示
+    print("\n=== Catchphrases Data ===")
+    print(f"Catchphrase 1: {app.catchphrase_1}")
+    print(f"Catchphrase 2: {app.catchphrase_2}")
+    print(f"Catchphrase 3: {app.catchphrase_3}")
+    
+    # デバッグ情報を追加
+    print("\n=== Debug Info ===")
+    print(f"App ID: {app.id}")
+    print(f"Title: {app.title}")
     
     context = get_common_context(app=app, readonly=True)
     return render(request, 'apps_gallery/create_edit_detail.html', context)

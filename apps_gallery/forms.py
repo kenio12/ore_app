@@ -59,13 +59,6 @@ class AppForm(forms.ModelForm):
         choices=[(k, v) for k, v in PUBLISH_STATUS.items()],
         required=False
     )
-    catchphrases = forms.CharField(
-        required=False,
-        widget=forms.Textarea(attrs={
-            'class': 'form-control cyber-green-focus',
-            'rows': '8'
-        })
-    )
 
     class Meta:
         model = AppGallery
@@ -82,7 +75,9 @@ class AppForm(forms.ModelForm):
             'target_users',
             'problems',
             'final_appeal',
-            'catchphrases'
+            'catchphrase_1',
+            'catchphrase_2',
+            'catchphrase_3'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -98,38 +93,24 @@ class AppForm(forms.ModelForm):
         # タイトルのみ必須フィールドに設定
         self.fields['title'].required = True
 
-        # キャッチフレーズの初期値を設定
-        if 'instance' in kwargs and kwargs['instance']:
-            if kwargs['instance'].catchphrases:
-                try:
-                    # JSON文字列をパースしてリストに変換
-                    catchphrases = json.loads(kwargs['instance'].catchphrases)
-                    if isinstance(catchphrases, list):
-                        self.initial['catchphrases'] = catchphrases
-                    else:
-                        self.initial['catchphrases'] = []
-                except (json.JSONDecodeError, TypeError):
-                    self.initial['catchphrases'] = []
-                print(f"Initial catchphrases: {self.initial['catchphrases']}")  # デバッグ出力
-
         # フィールドのカスタマイズ
         self.fields['title'].widget.attrs.update({
-            'class': 'form-control cyber-yellow-focus',
+            'class': 'form-control cyber-green-focus',
             'placeholder': 'アプリの名前を入力してください'
         })
 
         self.fields['app_url'].widget.attrs.update({
-            'class': 'form-control cyber-yellow-focus',
+            'class': 'form-control cyber-green-focus',
             'placeholder': 'https://example.com'
         })
 
         self.fields['github_url'].widget.attrs.update({
-            'class': 'form-control cyber-yellow-focus',
+            'class': 'form-control cyber-green-focus',
             'placeholder': 'https://github.com/username/repository'
         })
 
         # テキストエリアのカスタマイズ
-        text_areas = ['overview', 'motivation', 'catchphrases', 
+        text_areas = ['overview', 'motivation', 
                      'target_users', 'problems', 'final_appeal']
         for field in text_areas:
             if field in self.fields:  # フィールドが存在する場合のみ更新
@@ -150,49 +131,9 @@ class AppForm(forms.ModelForm):
             return [genres]
         return genres
 
-    def clean_catchphrases(self):
-        """キャッチフレーズのバリデーションと変換"""
-        catchphrases = self.cleaned_data.get('catchphrases', '')
-        
-        # デバッグ出力
-        print(f"Cleaning catchphrases: {catchphrases}")
-        print(f"Type: {type(catchphrases)}")
-
-        # 空の場合は空リストを返す
-        if not catchphrases:
-            return []
-
-        # 文字列の場合はJSONとしてパース
-        if isinstance(catchphrases, str):
-            try:
-                parsed = json.loads(catchphrases)
-                if isinstance(parsed, list):
-                    return parsed
-                return []
-            except json.JSONDecodeError:
-                # 単一の文字列の場合は1要素のリストとして扱う
-                if catchphrases.strip():
-                    return [catchphrases.strip()]
-                return []
-
-        # リストの場合はそのまま返す
-        if isinstance(catchphrases, list):
-            return catchphrases
-
-        # その他の型の場合は空リストを返す
-        return []
-
     def clean(self):
         """フォーム全体のバリデーション"""
         cleaned_data = super().clean()
-        
-        # キャッチフレーズが存在しない場合は空リストを設定
-        if 'catchphrases' not in cleaned_data:
-            cleaned_data['catchphrases'] = []
-            
-        # デバッグ出力
-        print(f"Final cleaned data: {cleaned_data}")
-        
         return cleaned_data
 
     def save(self, commit=True):

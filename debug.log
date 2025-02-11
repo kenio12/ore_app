@@ -261,3 +261,455 @@ INFO 2025-02-11 22:46:08,515 views 241 140546303821504 Request method: GET
 INFO 2025-02-11 22:46:08,515 views 241 140546303821504 Request method: GET
 INFO 2025-02-11 22:46:08,526 views 241 140546303821504 App found: けにおアプリや
 INFO 2025-02-11 22:46:08,526 views 241 140546303821504 App found: けにおアプリや
+INFO 2025-02-11 22:47:03,518 views 241 140546303821504 Request method: POST
+INFO 2025-02-11 22:47:03,518 views 241 140546303821504 Request method: POST
+INFO 2025-02-11 22:47:03,533 views 241 140546303821504 App found: けにおアプリや
+INFO 2025-02-11 22:47:03,533 views 241 140546303821504 App found: けにおアプリや
+INFO 2025-02-11 22:47:03,539 views 241 140546303821504 Processing POST request
+INFO 2025-02-11 22:47:03,539 views 241 140546303821504 Processing POST request
+DEBUG 2025-02-11 22:47:03,548 views 241 140546303821504 POST data: <QueryDict: {'csrfmiddlewaretoken': ['s3XIf6euKUzLYGSQPcPOvYf4TxRMyQXVIYPOPJSe16yIEkmJsXi8iLVHzVA2Lxfk', 's3XIf6euKUzLYGSQPcPOvYf4TxRMyQXVIYPOPJSe16yIEkmJsXi8iLVHzVA2Lxfk'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrases': ['あれえ', 'きえた', 'ここ'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/edit/13/technical/']}>
+DEBUG 2025-02-11 22:47:03,548 views 241 140546303821504 POST data: <QueryDict: {'csrfmiddlewaretoken': ['s3XIf6euKUzLYGSQPcPOvYf4TxRMyQXVIYPOPJSe16yIEkmJsXi8iLVHzVA2Lxfk', 's3XIf6euKUzLYGSQPcPOvYf4TxRMyQXVIYPOPJSe16yIEkmJsXi8iLVHzVA2Lxfk'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrases': ['あれえ', 'きえた', 'ここ'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/edit/13/technical/']}>
+INFO 2025-02-11 22:47:03,563 views 241 140546303821504 Form is valid, saving...
+INFO 2025-02-11 22:47:03,563 views 241 140546303821504 Form is valid, saving...
+INFO 2025-02-11 22:47:03,611 views 241 140546303821504 App 13 saved successfully
+INFO 2025-02-11 22:47:03,611 views 241 140546303821504 App 13 saved successfully
+INFO 2025-02-11 22:47:03,616 views 241 140546303821504 Redirecting to technical edit: /apps_gallery/edit/13/technical/
+INFO 2025-02-11 22:47:03,616 views 241 140546303821504 Redirecting to technical edit: /apps_gallery/edit/13/technical/
+INFO 2025-02-11 22:47:05,189 views 241 140546303821504 Request method: GET
+INFO 2025-02-11 22:47:05,189 views 241 140546303821504 Request method: GET
+INFO 2025-02-11 22:47:05,202 views 241 140546303821504 App found: けにおアプリや
+INFO 2025-02-11 22:47:05,202 views 241 140546303821504 App found: けにおアプリや
+INFO 2025-02-11 22:51:50,837 views 319 139895917070016 Request method: GET
+INFO 2025-02-11 22:51:50,837 views 319 139895917070016 Request method: GET
+INFO 2025-02-11 22:51:50,857 views 319 139895917070016 App found: けにおアプリや
+INFO 2025-02-11 22:51:50,857 views 319 139895917070016 App found: けにおアプリや
+ERROR 2025-02-11 22:51:50,866 views 319 139895917070016 Error in edit_app: 'AppGallery' object has no attribute 'catchphrases'
+Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 250, in edit_app
+    form = AppForm(instance=app)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 103, in __init__
+    if kwargs['instance'].catchphrases:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppGallery' object has no attribute 'catchphrases'
+ERROR 2025-02-11 22:51:50,866 views 319 139895917070016 Error in edit_app: 'AppGallery' object has no attribute 'catchphrases'
+Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 250, in edit_app
+    form = AppForm(instance=app)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 103, in __init__
+    if kwargs['instance'].catchphrases:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppGallery' object has no attribute 'catchphrases'
+INFO 2025-02-11 23:07:51,809 views 239 140446849242816 Request method: GET
+INFO 2025-02-11 23:07:51,809 views 239 140446849242816 Request method: GET
+INFO 2025-02-11 23:07:51,812 views 239 140446857635520 Request method: GET
+INFO 2025-02-11 23:07:51,812 views 239 140446857635520 Request method: GET
+INFO 2025-02-11 23:07:51,821 views 239 140446849242816 App found: けにおアプリや
+INFO 2025-02-11 23:07:51,821 views 239 140446849242816 App found: けにおアプリや
+ERROR 2025-02-11 23:07:51,828 views 239 140446849242816 Error in edit_app: 'AppGallery' object has no attribute 'catchphrases'
+Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 250, in edit_app
+    form = AppForm(instance=app)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 103, in __init__
+    if kwargs['instance'].catchphrases:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppGallery' object has no attribute 'catchphrases'
+INFO 2025-02-11 23:07:51,829 views 239 140446857635520 App found: けにおアプリや
+ERROR 2025-02-11 23:07:51,828 views 239 140446849242816 Error in edit_app: 'AppGallery' object has no attribute 'catchphrases'
+Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 250, in edit_app
+    form = AppForm(instance=app)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 103, in __init__
+    if kwargs['instance'].catchphrases:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppGallery' object has no attribute 'catchphrases'
+INFO 2025-02-11 23:07:51,829 views 239 140446857635520 App found: けにおアプリや
+ERROR 2025-02-11 23:07:51,851 views 239 140446857635520 Error in edit_app: 'AppGallery' object has no attribute 'catchphrases'
+Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 250, in edit_app
+    form = AppForm(instance=app)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 103, in __init__
+    if kwargs['instance'].catchphrases:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppGallery' object has no attribute 'catchphrases'
+ERROR 2025-02-11 23:07:51,851 views 239 140446857635520 Error in edit_app: 'AppGallery' object has no attribute 'catchphrases'
+Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 250, in edit_app
+    form = AppForm(instance=app)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 103, in __init__
+    if kwargs['instance'].catchphrases:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppGallery' object has no attribute 'catchphrases'
+INFO 2025-02-11 23:08:02,065 views 239 140446849242816 Request method: GET
+INFO 2025-02-11 23:08:02,065 views 239 140446849242816 Request method: GET
+INFO 2025-02-11 23:08:02,096 views 239 140446849242816 App found: けにおアプリや
+INFO 2025-02-11 23:08:02,096 views 239 140446849242816 App found: けにおアプリや
+ERROR 2025-02-11 23:08:02,102 views 239 140446849242816 Error in edit_app: 'AppGallery' object has no attribute 'catchphrases'
+Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 250, in edit_app
+    form = AppForm(instance=app)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 103, in __init__
+    if kwargs['instance'].catchphrases:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppGallery' object has no attribute 'catchphrases'
+ERROR 2025-02-11 23:08:02,102 views 239 140446849242816 Error in edit_app: 'AppGallery' object has no attribute 'catchphrases'
+Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 250, in edit_app
+    form = AppForm(instance=app)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 103, in __init__
+    if kwargs['instance'].catchphrases:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'AppGallery' object has no attribute 'catchphrases'
+INFO 2025-02-11 23:09:08,637 views 290 140272070018752 Request method: GET
+INFO 2025-02-11 23:09:08,637 views 290 140272070018752 Request method: GET
+INFO 2025-02-11 23:09:08,644 views 290 140272070018752 App found: けにおアプリや
+INFO 2025-02-11 23:09:08,644 views 290 140272070018752 App found: けにおアプリや
+INFO 2025-02-11 23:16:40,847 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:16:40,847 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:16:40,865 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:16:40,865 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:16:50,988 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:16:50,988 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:16:50,998 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:16:50,998 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:17:53,113 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:17:53,113 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:17:53,127 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:17:53,127 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:18:25,931 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:18:25,931 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:18:26,026 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:18:26,026 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:19:14,546 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:19:14,546 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:19:14,571 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:19:14,571 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:20:09,089 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:20:09,089 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:20:09,110 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:20:09,110 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:20:10,669 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:20:10,669 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:20:10,678 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:20:10,678 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:21:00,281 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:21:00,281 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:21:00,290 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:21:00,290 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:21:08,853 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:21:08,853 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:21:08,862 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:21:08,862 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:21:58,635 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:21:58,635 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:21:58,647 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:21:58,647 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:22:57,363 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:22:57,363 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:22:57,403 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:22:57,403 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:23:42,577 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:23:42,577 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:23:42,594 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:23:42,594 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:23:49,140 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:23:49,140 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:23:49,150 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:23:49,150 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:24:58,723 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:24:58,723 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:24:58,734 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:24:58,734 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:25:45,438 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:25:45,438 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:25:45,451 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:25:45,451 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:27:24,673 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:27:24,673 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:27:24,684 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:27:24,684 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:28:12,590 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:28:12,590 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:28:12,608 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:28:12,608 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:29:18,837 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:29:18,837 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:29:18,858 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:29:18,858 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:29:59,963 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:29:59,963 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:29:59,976 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:29:59,976 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:30:53,649 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:30:53,649 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:30:53,658 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:30:53,658 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:31:04,037 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:31:04,037 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:31:04,045 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:31:04,045 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:31:51,946 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:31:51,946 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:31:51,956 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:31:51,956 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:32:01,084 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:32:01,084 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:32:01,094 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:32:01,094 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:33:07,033 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:33:07,033 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:33:07,046 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:33:07,046 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:33:17,516 views 290 140272061626048 Request method: POST
+INFO 2025-02-11 23:33:17,516 views 290 140272061626048 Request method: POST
+INFO 2025-02-11 23:33:17,529 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:33:17,529 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:33:17,538 views 290 140272061626048 Processing POST request
+INFO 2025-02-11 23:33:17,538 views 290 140272061626048 Processing POST request
+DEBUG 2025-02-11 23:33:17,547 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['VATmGlw67qVOtpWIxD6LO1RFUhCxG9GfbvLsgYaQoCUL93qBaoz5BOxiAFlNTQYE', 'VATmGlw67qVOtpWIxD6LO1RFUhCxG9GfbvLsgYaQoCUL93qBaoz5BOxiAFlNTQYE'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-11 23:33:17,547 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['VATmGlw67qVOtpWIxD6LO1RFUhCxG9GfbvLsgYaQoCUL93qBaoz5BOxiAFlNTQYE', 'VATmGlw67qVOtpWIxD6LO1RFUhCxG9GfbvLsgYaQoCUL93qBaoz5BOxiAFlNTQYE'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-11 23:33:17,606 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-11 23:33:17,606 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-11 23:33:17,656 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-11 23:33:17,656 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-11 23:33:17,660 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-11 23:33:17,660 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-11 23:33:20,787 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:33:20,787 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:33:20,800 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:33:20,800 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:33:36,116 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:33:36,116 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:33:36,125 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:33:36,125 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:34:16,065 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:34:16,065 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:34:16,084 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:34:16,084 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:35:20,632 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:35:20,632 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:35:20,649 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:35:20,649 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:35:25,933 views 290 140272061626048 Request method: POST
+INFO 2025-02-11 23:35:25,933 views 290 140272061626048 Request method: POST
+INFO 2025-02-11 23:35:25,944 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:35:25,944 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:35:25,948 views 290 140272061626048 Processing POST request
+INFO 2025-02-11 23:35:25,948 views 290 140272061626048 Processing POST request
+DEBUG 2025-02-11 23:35:25,953 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['o0Q5Ar3t1fSvmy2NeM10lMZVJ6JDhS7bEVIba4HdirRs2cwGRxuk8zFypusTuzpA', 'o0Q5Ar3t1fSvmy2NeM10lMZVJ6JDhS7bEVIba4HdirRs2cwGRxuk8zFypusTuzpA'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-11 23:35:25,953 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['o0Q5Ar3t1fSvmy2NeM10lMZVJ6JDhS7bEVIba4HdirRs2cwGRxuk8zFypusTuzpA', 'o0Q5Ar3t1fSvmy2NeM10lMZVJ6JDhS7bEVIba4HdirRs2cwGRxuk8zFypusTuzpA'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-11 23:35:25,959 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-11 23:35:25,959 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-11 23:35:26,002 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-11 23:35:26,002 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-11 23:35:26,006 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-11 23:35:26,006 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-11 23:44:01,986 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:44:01,986 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:44:02,009 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:44:02,009 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:45:33,923 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:45:33,923 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:45:33,936 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:45:33,936 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:46:30,033 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:46:30,033 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:46:30,080 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:46:30,080 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:46:59,482 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:46:59,482 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:46:59,493 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:46:59,493 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:50:08,049 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:50:08,049 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:50:08,061 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:50:08,061 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:50:11,575 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:50:11,575 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:50:11,592 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:50:11,592 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:51:15,906 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:51:15,906 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:51:15,922 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:51:15,922 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:52:17,345 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:52:17,345 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:52:17,358 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:52:17,358 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:52:30,278 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:52:30,278 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:52:30,289 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:52:30,289 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:52:43,570 views 290 140272061626048 Request method: POST
+INFO 2025-02-11 23:52:43,570 views 290 140272061626048 Request method: POST
+INFO 2025-02-11 23:52:43,582 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:52:43,582 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:52:43,589 views 290 140272061626048 Processing POST request
+INFO 2025-02-11 23:52:43,589 views 290 140272061626048 Processing POST request
+DEBUG 2025-02-11 23:52:43,595 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['hBQzhwsmFyGAqPIsjNLCqNcF43Cqj0OIxwIFR966WKFx6tclWyeWdASiKrlGwH67', 'hBQzhwsmFyGAqPIsjNLCqNcF43Cqj0OIxwIFR966WKFx6tclWyeWdASiKrlGwH67'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-11 23:52:43,595 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['hBQzhwsmFyGAqPIsjNLCqNcF43Cqj0OIxwIFR966WKFx6tclWyeWdASiKrlGwH67', 'hBQzhwsmFyGAqPIsjNLCqNcF43Cqj0OIxwIFR966WKFx6tclWyeWdASiKrlGwH67'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-11 23:52:43,605 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-11 23:52:43,605 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-11 23:52:43,643 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-11 23:52:43,643 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-11 23:52:43,646 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-11 23:52:43,646 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-11 23:52:45,765 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:52:45,765 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:52:45,777 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:52:45,777 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:53:43,182 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:53:43,182 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:53:43,194 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:53:43,194 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:54:59,112 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:54:59,112 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:54:59,123 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:54:59,123 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:55:42,977 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:55:42,977 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:55:42,985 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:55:42,985 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:55:52,549 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:55:52,549 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:55:52,559 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:55:52,559 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:56:53,996 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:56:53,996 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:56:54,004 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:56:54,004 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:57:26,277 views 290 140272061626048 Request method: POST
+INFO 2025-02-11 23:57:26,277 views 290 140272061626048 Request method: POST
+INFO 2025-02-11 23:57:26,288 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:57:26,288 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:57:26,292 views 290 140272061626048 Processing POST request
+INFO 2025-02-11 23:57:26,292 views 290 140272061626048 Processing POST request
+DEBUG 2025-02-11 23:57:26,295 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['sJY4oJj8yiV2Ur4XLU9pLOELOl7tU463IEQaYmXSPuUZA5yQoFCJyBkouJQJ7Los', 'sJY4oJj8yiV2Ur4XLU9pLOELOl7tU463IEQaYmXSPuUZA5yQoFCJyBkouJQJ7Los'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-11 23:57:26,295 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['sJY4oJj8yiV2Ur4XLU9pLOELOl7tU463IEQaYmXSPuUZA5yQoFCJyBkouJQJ7Los', 'sJY4oJj8yiV2Ur4XLU9pLOELOl7tU463IEQaYmXSPuUZA5yQoFCJyBkouJQJ7Los'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-11 23:57:26,306 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-11 23:57:26,306 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-11 23:57:26,347 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-11 23:57:26,347 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-11 23:57:26,359 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-11 23:57:26,359 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-11 23:57:28,088 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:57:28,088 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:57:28,096 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:57:28,096 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:57:44,252 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:57:44,252 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:57:44,276 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:57:44,276 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:58:48,660 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:58:48,660 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:58:48,675 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:58:48,675 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:59:33,810 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:59:33,810 views 290 140272061626048 Request method: GET
+INFO 2025-02-11 23:59:33,819 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-11 23:59:33,819 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:00:20,375 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:00:20,375 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:00:20,386 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:00:20,386 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:01:13,489 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:01:13,489 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:01:13,500 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:01:13,500 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:02:21,647 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:02:21,647 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:02:21,662 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:02:21,662 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:02:47,341 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:02:47,341 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:02:47,355 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:02:47,355 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:03:09,261 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:03:09,261 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:03:09,298 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:03:09,298 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:04:27,728 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:04:27,728 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:04:27,738 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:04:27,738 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:04:44,035 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:04:44,035 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:04:44,045 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:04:44,045 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:05:12,086 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:05:12,086 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:05:12,100 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:05:12,100 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:05:24,964 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:05:24,964 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:05:24,971 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:05:24,971 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:06:35,136 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:06:35,136 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:06:35,146 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:06:35,146 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:06:49,674 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:06:49,674 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:06:49,691 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:06:49,691 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:06:55,728 views 290 140272061626048 Request method: POST
+INFO 2025-02-12 00:06:55,728 views 290 140272061626048 Request method: POST
+INFO 2025-02-12 00:06:55,740 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:06:55,740 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:06:55,745 views 290 140272061626048 Processing POST request
+INFO 2025-02-12 00:06:55,745 views 290 140272061626048 Processing POST request
+DEBUG 2025-02-12 00:06:55,751 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['iF8ztTegxLfNBkWdCmVg9ClcNiT6bIAwyA0F3wS0OXeKhYq6f7oAWp1PtGCmopSV', 'iF8ztTegxLfNBkWdCmVg9ClcNiT6bIAwyA0F3wS0OXeKhYq6f7oAWp1PtGCmopSV'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-12 00:06:55,751 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['iF8ztTegxLfNBkWdCmVg9ClcNiT6bIAwyA0F3wS0OXeKhYq6f7oAWp1PtGCmopSV', 'iF8ztTegxLfNBkWdCmVg9ClcNiT6bIAwyA0F3wS0OXeKhYq6f7oAWp1PtGCmopSV'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['["\\u3053\\u3053"]'], 'catchphrase_2': [''], 'catchphrase_3': [''], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-12 00:06:55,762 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-12 00:06:55,762 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-12 00:06:55,814 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-12 00:06:55,814 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-12 00:06:55,819 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 00:06:55,819 views 290 140272061626048 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 00:06:57,625 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:06:57,625 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:06:57,634 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:06:57,634 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:07:20,334 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:07:20,334 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:07:20,346 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:07:20,346 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:08:04,727 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:08:04,727 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:08:04,737 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:08:04,737 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:09:12,102 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:09:12,102 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:09:12,112 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:09:12,112 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:09:19,246 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:09:19,246 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:09:19,253 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:09:19,253 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:10:05,768 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:10:05,768 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:10:05,781 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:10:05,781 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:10:29,549 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:10:29,549 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:10:29,564 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:10:29,564 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:10:33,981 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:10:33,981 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:10:33,991 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:10:33,991 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:11:02,088 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:11:02,088 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:11:02,101 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:11:02,101 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:11:49,298 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:11:49,298 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:11:49,314 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:11:49,314 views 290 140272061626048 App found: けにおアプリや

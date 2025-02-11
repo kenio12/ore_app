@@ -128,23 +128,80 @@
         </div>
     </div>
 
-    <!-- 画面右側の技術へボタン -->
-    {% if app.id %}  <!-- 新規作成時は表示しない -->
-        <div class="side-nav-button right-nav">
-            {% if not readonly %}
-                <a href="{% url 'apps_gallery:technical_edit' app.id %}" 
-                   class="btn-cyber-nav"
-                   onclick="saveAndGoToTechnical(event)">
-                    技術へ <i class="bi bi-arrow-right-circle ms-2"></i>
-                </a>
-            {% else %}
-                <a href="{% url 'apps_gallery:technical_detail' app.id %}" 
-                   class="btn-cyber-nav">
-                    技術へ <i class="bi bi-arrow-right-circle ms-2"></i>
-                </a>
-            {% endif %}
+    <!-- 矢印アイコンボタン -->
+    <div class="position-fixed" style="top: 50%; right: 0; transform: translateY(-50%); z-index: 1000;">
+        <a href="#" 
+           onclick="confirmTechTransition(event)"
+           class="btn btn-cyber-secondary d-flex align-items-center"
+           style="opacity: 0.7; 
+                  transition: all 0.3s;
+                  margin-right: -10px;
+                  border-radius: 60px 0 0 60px;
+                  padding: 15px;
+                  background-color: rgba(0, 0, 0, 0.7);
+                  border: 2px solid var(--cyber-green);">
+            <span class="d-none d-md-inline me-2" 
+                  style="color: var(--cyber-green);
+                         text-shadow: 0 0 5px var(--cyber-green);">
+                技術へ
+            </span>
+            <i class="bi bi-arrow-right-circle-fill" 
+               style="color: var(--cyber-green); 
+                      font-size: 28px;
+                      filter: drop-shadow(0 0 5px var(--cyber-green));">
+            </i>
+        </a>
+    </div>
+
+    <!-- モバイル用ツールチップ -->
+    <div id="mobileTooltip" 
+         style="display: none; 
+                position: fixed; 
+                background: rgba(0, 0, 0, 0.8);
+                color: var(--cyber-green);
+                border: 1px solid var(--cyber-green);
+                padding: 8px 12px;
+                border-radius: 4px;
+                z-index: 1100;
+                box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);">
+        保存して技術情報の編集へ
+    </div>
+
+    <!-- 確認ダイアログ -->
+    <div class="modal fade" id="techConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark" style="border: 1px solid var(--cyber-green);">
+                <div class="modal-body text-center p-4">
+                    <h5 class="mb-3" id="techConfirmModalLabel" 
+                        style="color: var(--cyber-green); 
+                               text-shadow: 0 0 10px var(--cyber-green);">
+                        確認
+                    </h5>
+                    <p style="color: var(--cyber-green); margin-bottom: 20px;">
+                        保存して、技術情報の編集画面へ移動しますか？
+                    </p>
+                    <div class="mt-4">
+                        <button type="button" 
+                                class="btn btn-outline-cyber me-2 cancel-btn" 
+                                style="color: var(--cyber-green); 
+                                       border-color: var(--cyber-green);"
+                                aria-label="キャンセル">
+                            キャンセル
+                        </button>
+                        <button type="button" 
+                                class="btn btn-cyber-green" 
+                                id="saveTechButton"
+                                style="background-color: var(--cyber-green); 
+                                       color: #000; 
+                                       font-weight: bold;"
+                                aria-label="OK">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endif %}
+    </div>
 </div>
 
 <!-- トースト要素を修正 -->
@@ -850,6 +907,109 @@ html {
     80% { transform: translate(2px, -2px); }
     100% { transform: translate(0); }
 }
+
+/* 新しいボタンのホバースタイル */
+.btn-cyber-secondary:hover {
+    opacity: 1 !important;
+    box-shadow: 0 0 20px var(--cyber-green);
+    border-color: var(--cyber-green) !important;
+    background-color: rgba(0, 255, 159, 0.1) !important;
+}
+
+/* PCでのみテキストを表示 */
+@media (min-width: 768px) {
+    .btn-cyber-secondary {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+}
+
+/* アニメーション効果 */
+.btn-cyber-secondary {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-cyber-secondary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(0, 255, 159, 0.1),
+        transparent,
+        rgba(0, 255, 159, 0.1)
+    );
+    transform: rotate(45deg);
+    animation: cyber-shine 3s infinite;
+}
+
+@keyframes cyber-shine {
+    0% {
+        transform: translateX(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) rotate(45deg);
+    }
+}
+
+/* ツールチップのカスタマイズ */
+.tooltip {
+    position: fixed !important;
+}
+
+.tooltip .tooltip-inner {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--cyber-green);
+    color: var(--cyber-green);
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+    font-size: 14px;
+    padding: 8px 12px;
+    max-width: 200px;  /* 幅を制限 */
+    margin-right: 10px;  /* 右側の余白を追加 */
+}
+
+/* スマホ向けの調整 */
+@media (max-width: 768px) {
+    .tooltip {
+        margin-right: 70px !important;  /* スマホでは右側により大きな余白 */
+    }
+}
+
+/* モーダルのスタイル */
+.modal-content {
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.3);
+}
+
+.btn-cyber-green:hover {
+    background-color: rgba(0, 255, 159, 0.8) !important;
+    box-shadow: 0 0 15px var(--cyber-green);
+}
+
+.btn-outline-cyber:hover {
+    background-color: rgba(0, 255, 159, 0.2);
+    color: var(--cyber-green) !important;
+    border-color: var(--cyber-green) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+/* モーダルのアニメーション */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: scale(0.9);
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+/* モーダルの背景をより暗く */
+.modal-backdrop.show {
+    opacity: 0.8;
+}
 </style>
 
 <script>
@@ -986,9 +1146,92 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof bootstrap === 'undefined') {
         console.error('Bootstrapが読み込まれていません！');
-    } else {
-        console.log('Bootstrap読み込み完了');
+        return;
     }
+
+    // モーダル要素を取得
+    const modalEl = document.getElementById('techConfirmModal');
+    
+    // モーダルインスタンスを作成
+    const modal = new bootstrap.Modal(modalEl);
+    
+    // キャンセルボタンのイベントリスナー
+    document.querySelector('.cancel-btn').addEventListener('click', function() {
+        modal.hide();
+    });
+
+    // OKボタンのイベントリスナー
+    document.getElementById('saveTechButton').addEventListener('click', function() {
+        const form = document.getElementById('appForm');
+        if (form) {
+            const techUrl = "{% url 'apps_gallery:technical_edit' app.id %}";
+            form.action = window.location.pathname;
+            let nextUrlInput = document.createElement('input');
+            nextUrlInput.type = 'hidden';
+            nextUrlInput.name = 'next_url';
+            nextUrlInput.value = techUrl;
+            form.appendChild(nextUrlInput);
+            form.submit();
+        }
+    });
+
+    // グローバルスコープに関数を追加
+    window.confirmTechTransition = function(event) {
+        event.preventDefault();
+        modal.show();
+    };
+});
+</script>
+
+<!-- ツールチップを有効化するスクリプト -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const techBtn = document.querySelector('.btn-cyber-secondary');
+    let pressTimer;
+    let tooltipInstance;
+
+    // PCの場合はツールチップなし
+    if (!('ontouchstart' in window)) {
+        return;
+    }
+
+    // タッチ開始
+    techBtn.addEventListener('touchstart', function(e) {
+        pressTimer = setTimeout(() => {
+            tooltipInstance = new bootstrap.Tooltip(techBtn, {
+                title: '保存して技術情報の編集へ',
+                placement: 'left',
+                trigger: 'manual'
+            });
+            tooltipInstance.show();
+        }, 500); // 500ms（0.5秒）の長押しで表示
+    });
+
+    // タッチ終了
+    techBtn.addEventListener('touchend', function(e) {
+        clearTimeout(pressTimer);
+        if (tooltipInstance) {
+            tooltipInstance.dispose();
+            tooltipInstance = null;
+        }
+    });
+
+    // タッチがキャンセルされた場合
+    techBtn.addEventListener('touchcancel', function(e) {
+        clearTimeout(pressTimer);
+        if (tooltipInstance) {
+            tooltipInstance.dispose();
+            tooltipInstance = null;
+        }
+    });
+
+    // 画面から指が離れた時
+    document.addEventListener('touchend', function(e) {
+        if (tooltipInstance) {
+            tooltipInstance.dispose();
+            tooltipInstance = null;
+        }
+    });
 });
 </script>
 {% endblock %} 

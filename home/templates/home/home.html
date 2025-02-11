@@ -610,5 +610,32 @@ function getCardBody(appId, title, overview, types, genres) {
     }
 }
 /* =============================================================== */
+
+/* メッセージのスタイル */
+.alert-cyber {
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid #00ff9f !important;
+    color: #00ff9f !important;
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
+    backdrop-filter: blur(5px);
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.alert-cyber:hover {
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.7);
+    transform: translateY(-2px);
+}
+
+.alert-cyber .btn-close {
+    filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(100deg);
+    opacity: 0.8;
+}
+
+.alert-cyber .btn-close:hover {
+    opacity: 1;
+}
 </style>
 {% endblock %} 
