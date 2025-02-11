@@ -158,3 +158,48 @@ ACCOUNT_EMAIL_REQUIRED = True  # メールアドレスを必須に
 
 # カスタムユーザーモデルの設定
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# ロギング設定を追加
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'level': 'DEBUG',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'debug.log',
+            'formatter': 'verbose',
+            'level': 'DEBUG',
+        },
+    },
+    'loggers': {
+        '': {  # ルートロガー
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'apps_gallery': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

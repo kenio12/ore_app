@@ -92,10 +92,26 @@ class AppForm(forms.ModelForm):
 
     def clean_catchphrases(self):
         catchphrases = self.cleaned_data.get('catchphrases', '')
+        if not catchphrases:
+            return []
+        
+        # 文字列の場合（フォームからの入力）
         if isinstance(catchphrases, str):
-            # カンマで区切られた文字列として処理
-            return [phrase.strip() for phrase in catchphrases.split(',') if phrase.strip()]
-        return catchphrases if isinstance(catchphrases, list) else []
+            # カンマで分割して重複を除去
+            phrases = list(dict.fromkeys([
+                p.strip() 
+                for p in catchphrases.split(',') 
+                if p.strip()
+            ]))
+            return phrases[:3]  # 最大3つまで
+        
+        # リストの場合（既存データ）
+        if isinstance(catchphrases, list):
+            # 重複を除去
+            phrases = list(dict.fromkeys(catchphrases))
+            return phrases[:3]  # 最大3つまで
+        
+        return []  # その他の場合は空リスト
 
     def clean(self):
         cleaned_data = super().clean()

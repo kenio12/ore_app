@@ -4,6 +4,19 @@ from cloudinary.models import CloudinaryField
 from django.conf import settings
 from .constants import *  # 全ての定数をインポート
 
+def validate_catchphrases(value):
+    if not isinstance(value, list):
+        raise ValidationError('キャッチフレーズはリスト形式で指定してください')
+    if len(value) > 3:
+        raise ValidationError('キャッチフレーズは最大3つまでです')
+    for phrase in value:
+        if not isinstance(phrase, str):
+            raise ValidationError('キャッチフレーズは文字列で指定してください')
+        if len(phrase) > 100:  # 100文字制限
+            raise ValidationError('キャッチフレーズは100文字以内で指定してください')
+        if value.count(phrase) > 1:  # 重複チェック
+            raise ValidationError('同じキャッチフレーズが複数回指定されています')
+
 class AppGallery(models.Model):
     """アプリギャラリーモデル"""
     
@@ -72,7 +85,12 @@ class AppGallery(models.Model):
     motivation = models.TextField('開発のきっかけ', blank=True)
     
     # キャッチコピー（最大3つ）
-    catchphrases = models.JSONField('キャッチコピー', default=list)
+    catchphrases = models.JSONField(
+        'キャッチコピー',
+        default=list,
+        validators=[validate_catchphrases],
+        help_text='最大3つまで、各100文字以内'
+    )
     
     # ターゲットユーザー
     target_users = models.TextField('ターゲットユーザー', blank=True)

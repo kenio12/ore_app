@@ -4,7 +4,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from .models import AppGallery
 from .forms import AppForm
-from .constants import *
+from .constants import (
+    APP_TYPES,
+    APP_STATUS,
+    PUBLISH_STATUS,
+    GENRES
+)
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 import json
@@ -16,16 +21,82 @@ import logging
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-from django.urls import reverse
-from .constants.hardware import CPU_TYPES, MEMORY_SIZES, STORAGE_TYPES
-from .constants.development import (
-    EDITORS,
-    VERSION_CONTROL,
-    CI_CD,
-    VIRTUALIZATION_TOOLS
-)
+from django.templatetags.static import static
+from django.conf import settings
+from django.template.loader import render_to_string
+import re
+from unittest.mock import patch
+import os
+from bs4 import BeautifulSoup
+import sys
+from django.core.signals import request_started, request_finished
+from django.dispatch import receiver
+
+print("\n============= START DEBUG =============")  # ここに配置！
 
 # Create your views here.
+
+logger = logging.getLogger('apps_gallery')  # apps_gallery用のロガーを取得
+
+# ロガーの設定を追加
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.StreamHandler()]
+)
+
+# シグナルハンドラーを設定
+@receiver(request_started)
+def on_request_started(sender, **kwargs):
+    print("Request started", file=sys.stderr)
+
+@receiver(request_finished)
+def on_request_finished(sender, **kwargs):
+    print("Request finished", file=sys.stderr)
+
+def get_common_context(app=None, readonly=False, is_edit=False):
+    context = {
+        'readonly': readonly,
+        'APP_TYPES': dict(APP_TYPES),
+        'APP_STATUS': dict(APP_STATUS),
+        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
+        'GENRES': dict(GENRES),
+        'is_edit': is_edit,
+        'hide_navbar': True
+    }
+    
+    # appから必要な情報のみを抽出
+    if app:
+        context['app'] = {
+            'id': app.id,
+            'title': app.title,
+            'app_types': app.app_types,
+            'genres': app.genres,
+            'dev_status': app.dev_status,
+            'status': app.status,
+            'app_url': app.app_url,
+            'github_url': app.github_url,
+            'overview': app.overview,
+            'motivation': app.motivation,
+            'catchphrases': app.catchphrases,
+            'target_users': app.target_users,
+            'problems': app.problems,
+            'final_appeal': app.final_appeal,
+        }
+        
+        # スクリーンショットは必要な情報のみ
+        if getattr(app, 'screenshots', None):
+            context['app']['screenshots'] = [
+                {'url': s['url']} for s in app.screenshots
+            ]
+        
+        # サムネイルも必要な情報のみ
+        if getattr(app, 'thumbnail', None):
+            context['app']['thumbnail'] = {
+                'url': app.thumbnail.get('url')
+            }
+    
+    return context
 
 @login_required  # ログインが必要
 def create_view(request):
@@ -127,28 +198,34 @@ def create_view(request):
     screenshots = request.session.get('temp_screenshots', [])
     thumbnail_index = request.session.get('temp_thumbnail_index', 0)
     
-    context = {
-        'hide_navbar': True,
-        'screenshots': screenshots,
-        'thumbnail_index': thumbnail_index,
+    context = get_common_context()
+    context.update({
         'is_new': True,
-        'readonly': False,
-        'APP_TYPES': dict(APP_TYPES),
-        'APP_STATUS': dict(APP_STATUS),
-        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
-        'GENRES': dict(GENRES),
-        'is_edit': False,
         'is_create': True,
         'form': AppForm(),
+        'screenshots': screenshots,
+        'thumbnail_index': thumbnail_index,
         'app': {
             'screenshots': screenshots,
-            'thumbnail_index': thumbnail_index  # ここも追加
+            'thumbnail_index': thumbnail_index
         }
-    }
+    })
     
-    print("\nContext data:")
-    print(f"Screenshots: {context['screenshots']}")
-    print(f"Thumbnail index: {context['thumbnail_index']}")
+    # デバッグ情報を追加
+    print("\n=== Debug Info ===")
+    print(f"Template Size: {len(str(context))}")
+    
+    # 各テンプレートのサイズを確認
+    for template in ['create_edit_detail.html', 'tabs/01_screenshots_tab.html', 
+                    'tabs/02_basic_tab.html', 'tabs/03_appeal_tab.html']:
+        content = render_to_string(f'apps_gallery/{template}', context)
+        print(f"\nTemplate {template}:")
+        print(f"Size: {len(content)} bytes")
+        if len(content) > 100000:  # 100KB以上のテンプレートを詳しく調査
+            print("Large content found in:", template)
+            print("First 200 chars:", content[:200])
+    
+    print("\n=== End Debug Info ===\n")
     
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
@@ -201,16 +278,7 @@ def edit_app(request, pk):
                 }, status=500)
             messages.error(request, f'保存中にエラーが発生しました: {str(e)}')
     
-    context = {
-        'app': app,
-        'readonly': False,
-        'APP_TYPES': dict(APP_TYPES),
-        'APP_STATUS': dict(APP_STATUS),
-        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
-        'GENRES': dict(GENRES),
-        'is_edit': True,
-        'hide_navbar': True
-    }
+    context = get_common_context(app=app, readonly=False, is_edit=True)
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
 @login_required
@@ -300,34 +368,20 @@ def app_list(request):
     return render(request, 'apps_gallery/list.html')
 
 def app_detail(request, pk):
-    """アプリの詳細ビュー"""
     app = get_object_or_404(AppGallery, pk=pk)
     
-    # デバッグ用の詳細なログ出力
-    print("\n==== 画像表示デバッグ情報 ====")
-    print(f"App ID: {app.id}")
-    print(f"App Title: {app.title}")
-    print("Screenshots Data Type:", type(app.screenshots))
-    print("Screenshots Raw Data:", app.screenshots)
+    print("\n=== Catchphrases Raw Data ===")
+    print(f"Type: {type(app.catchphrases)}")
+    print(f"Length: {len(app.catchphrases)}")
+    print(f"Content:")
+    for i, phrase in enumerate(app.catchphrases):
+        print(f"{i+1}. Type: {type(phrase)}")
+        print(f"   Size: {len(str(phrase)):,} bytes")
+        print(f"   Content: {phrase[:100]}...")  # 最初の100文字だけ表示
     
-    if app.screenshots:
-        print("\n個別のスクリーンショット情報:")
-        for i, screenshot in enumerate(app.screenshots, 1):
-            print(f"\nスクリーンショット {i}:")
-            print(f"データ型: {type(screenshot)}")
-            for key, value in screenshot.items():
-                print(f"{key}: {value}")
-    
-    context = {
-        'app': app,
-        'readonly': True,
-        'APP_TYPES': dict(APP_TYPES),
-        'APP_STATUS': dict(APP_STATUS),
-        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
-        'GENRES': dict(GENRES),
-        'hide_navbar': True
-    }
-    return render(request, 'apps_gallery/create_edit_detail.html', context)
+    template_path = 'apps_gallery/create_edit_detail.html'
+    context = get_common_context(app=app, readonly=True)
+    return render(request, template_path, context)
 
 @login_required
 def delete_app(request, pk):
@@ -363,10 +417,7 @@ def delete_app(request, pk):
             messages.error(request, f'削除中にエラーが発生しました: {str(e)}')
             return redirect('apps_gallery:detail', pk=pk)
     
-    context = {
-        'app': app,
-        'hide_navbar': True
-    }
+    context = get_common_context(app=app, readonly=True)
     return render(request, 'dashboard/delete.html', context)
 
 @login_required
@@ -590,3 +641,18 @@ class HomeView(ListView):
             'og_image': static('home/images/ogp.png'),
         }
         return context
+
+def detail_view(request, pk):
+    app = get_object_or_404(AppGallery, pk=pk)
+    
+    print("\n=== Catchphrases Raw Data ===")
+    print(f"Type: {type(app.catchphrases)}")
+    print(f"Length: {len(app.catchphrases)}")
+    print(f"Content:")
+    for i, phrase in enumerate(app.catchphrases):
+        print(f"{i+1}. Type: {type(phrase)}")
+        print(f"   Size: {len(str(phrase)):,} bytes")
+        print(f"   Content: {phrase[:100]}...")  # 最初の100文字だけ表示
+    
+    context = get_common_context(app=app, readonly=True)
+    return render(request, 'apps_gallery/create_edit_detail.html', context)
