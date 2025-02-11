@@ -189,7 +189,7 @@
             <div class="button-container">
                 {% if not readonly %}
                     <span class="status-badge editing-status">
-                        <i class="bi bi-pencil-square"></i> 編集
+                        <i class="bi bi-pencil-square"></i> 編集中
                     </span>
                 {% else %}
                     <span class="status-badge viewing-status">
@@ -282,25 +282,22 @@
 
 /* ステータスバッジ */
 .status-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 20px;
-    border-radius: 50px;  /* 完全な円形に */
+    display: inline-flex;  /* インラインフレックスに変更 */
+    align-items: center;   /* アイコンと文字を中央揃え */
+    padding: 8px 25px;
+    border-radius: 25px;
     font-weight: bold;
-    font-size: 0.9rem;
-    margin: 0 10px;
-    background: rgba(0, 0, 0, 0.8);  /* 黒地に変更 */
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    background: rgba(0, 255, 159, 0.1);  /* スケルトン背景 */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
-/* 編集状態のバッジ */
-.editing-status {
-    color: var(--cyber-green);
-    border: 2px solid var(--cyber-green);
-    text-shadow: 0 0 10px var(--cyber-green);
-    box-shadow: 0 0 15px rgba(0, 255, 159, 0.2);
+/* 編集モード時のステータス表示 */
+.status-badge.editing-status {
+    color: #00ff9f;
+    border: 2px solid #00ff9f;
+    text-shadow: 0 0 5px #00ff9f;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
 }
 
 /* 詳細表示状態のバッジ */
@@ -311,10 +308,9 @@
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
 }
 
-/* アイコンのスタイル調整 */
+/* アイコンのスタイル */
 .status-badge i {
-    margin-right: 8px;
-    font-size: 1rem;
+    margin-right: 8px;  /* アイコンと文字の間隔を調整 */
 }
 
 /* 保存ボタン */
@@ -766,19 +762,21 @@
     display: inline-flex;
     align-items: center;
     padding: 10px 20px;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid #00ff9f;
+    background: rgba(0, 255, 159, 0.1);  /* スケルトン背景 */
+    border: 2px solid #00ff9f;  /* ボーダーを少し太く */
     color: #00ff9f;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 25px;  /* より丸みを持たせる */
     transition: all 0.3s ease;
     box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-weight: bold;  /* テキストを太く */
+    text-shadow: 0 0 5px #00ff9f;  /* テキストを光らせる */
 }
 
 .btn-cyber-nav:hover {
-    background: rgba(0, 255, 159, 0.1);
+    background: rgba(0, 255, 159, 0.2);
     color: #fff;
     box-shadow: 0 0 20px rgba(0, 255, 159, 0.5);
     transform: scale(1.05);
