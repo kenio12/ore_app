@@ -205,62 +205,52 @@ def create_view(request):
 @login_required
 def edit_app(request, pk):
     """アプリの編集ビュー"""
-    app = get_object_or_404(AppGallery, pk=pk)
+    print(f"\n===== Edit App Debug =====")
+    print(f"Request Method: {request.method}")
+    print(f"User: {request.user}")
+    print(f"PK: {pk}")
     
-    if app.author != request.user:
-        raise PermissionDenied("このアプリを編集する権限がありません。")
-    
-    if request.method == 'POST':
-        try:
-            form_data = request.POST
+    try:
+        app = get_object_or_404(AppGallery, pk=pk)
+        print(f"Found App: {app.title}")
+        
+        # 権限チェック
+        if app.author != request.user:
+            print(f"Permission Denied: {app.author} != {request.user}")
+            raise PermissionDenied("このアプリを編集する権限がありません。")
+        
+        if request.method == 'POST':
+            print("\n=== POST Data Debug ===")
+            print("POST data:", request.POST)
+            print("Catchphrases:", request.POST.getlist('catchphrases'))  # 実際のデータを確認
             
-            # フォームデータで更新
-            app.title = form_data.get('title', app.title)
-            app.app_types = form_data.getlist('types', app.app_types)
-            app.genres = form_data.getlist('genres', app.genres)
-            app.dev_status = form_data.get('dev_status', app.dev_status)
-            app.status = form_data.get('status', app.status)
-            app.app_url = form_data.get('app_url', app.app_url)
-            app.github_url = form_data.get('github_url', app.github_url)
-            app.overview = form_data.get('overview', '')
-            app.motivation = form_data.get('motivation', '')
-            app.catchphrases = form_data.getlist('catchphrases') or []
-            app.target_users = form_data.get('target_users', '')
-            app.problems = form_data.get('problems', '')
-            app.final_appeal = form_data.get('final_appeal', '')
-            
-            app.save()
-            
-            # nextパラメータがある場合は、保存後にそのURLへリダイレクト
-            next_url = request.GET.get('next')
-            if next_url:
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({
-                        'success': True,
-                        'redirect_url': next_url
-                    })
-                return redirect(next_url)
-            
-            # nextパラメータがない場合は通常の遷移
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': True,
-                    'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': pk})
-                })
-            
-            return redirect('apps_gallery:detail', kwargs={'pk': pk})
-            
-        except Exception as e:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'success': False,
-                    'error': str(e)
-                }, status=500)
-            messages.error(request, f'エラーが発生しました: {str(e)}')
-            return redirect('apps_gallery:edit', pk=pk)
-    
-    context = get_common_context(app=app, readonly=False, is_edit=True)
-    return render(request, 'apps_gallery/create_edit_detail.html', context)
+            form = AppForm(request.POST, instance=app)
+            if form.is_valid():
+                print("Form is valid")
+                print("Cleaned catchphrases:", form.cleaned_data.get('catchphrases'))
+                form.save()
+                messages.success(request, '保存しました！')
+                return redirect('apps_gallery:edit', pk=pk)
+            else:
+                print("Form errors:", form.errors)  # エラーがあれば表示
+        else:
+            form = AppForm(instance=app)
+        
+        context = get_common_context(app=app, is_edit=True)
+        context['form'] = form
+        
+        print("Context keys:", context.keys())
+        print("Template:", 'apps_gallery/create_edit_detail.html')
+        
+        return render(request, 'apps_gallery/create_edit_detail.html', context)
+        
+    except Exception as e:
+        print(f"Error in edit_app: {str(e)}")
+        print(f"Error type: {type(e)}")
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")
+        messages.error(request, f'エラーが発生しました: {str(e)}')
+        return redirect('apps_gallery:list')
 
 @login_required
 def handle_app_form(request, app=None, context=None):

@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-(kjbp$@^)&ft&m3h$ur9z24vfx*d326=m)dc5-c4iiz4^yh(^-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -203,3 +203,19 @@ LOGGING = {
         },
     },
 }
+
+# CSRF設定
+CSRF_COOKIE_SECURE = False  # 開発環境ではFalse、本番環境ではTrue
+CSRF_COOKIE_HTTPONLY = False  # 開発環境ではFalse、本番環境ではTrue
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']  # 開発環境用
+
+# セッション設定
+SESSION_COOKIE_SECURE = False  # 開発環境ではFalse、本番環境ではTrue
+
+# CORS設定
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True  # 開発環境のみ。本番環境では具体的なオリジンを指定する
+
+# セキュリティ設定
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True

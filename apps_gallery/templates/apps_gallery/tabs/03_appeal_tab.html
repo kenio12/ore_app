@@ -48,7 +48,7 @@
                 {% if readonly %}
                     <!-- 詳細表示用 -->
                     <div class="catchphrase-container">
-                        {% for phrase in app.catchphrases|slice:":3" %}  {# 3つまでに制限 #}
+                        {% for phrase in app.catchphrases %}  {# 3つまでに制限 #}
                             {% if phrase %}  {# 空の値は表示しない #}
                                 <div class="mb-3">
                                     <div class="input-group">
@@ -67,22 +67,20 @@
                 {% else %}
                     <!-- 編集用 -->
                     <div class="catchphrase-container">
-                        {% with phrases=app.catchphrases|slice:":3" %}  {# 3つまでに制限 #}
-                            {% for i in "123"|make_list %}
-                                <div class="mb-3">
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-cyber-green">
-                                            <span class="text-cyber-green">{{ forloop.counter }}</span>
-                                        </span>
-                                        <input type="text" 
-                                               name="catchphrases" 
-                                               class="form-control form-control-lg cyber-green-focus"
-                                               placeholder="このアプリの売りを一言で！"
-                                               value="{{ phrases|get_item:forloop.counter0|default:'' }}">
-                                    </div>
+                        {% for i in "123"|make_list %}
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-cyber-green">
+                                        <span class="text-cyber-green">{{ forloop.counter }}</span>
+                                    </span>
+                                    <input type="text" 
+                                           name="catchphrases" 
+                                           class="form-control form-control-lg cyber-green-focus"
+                                           placeholder="このアプリの売りを一言で！"
+                                           value="{{ app.catchphrases|json_decode|get_item:forloop.counter0|default:'' }}">
                                 </div>
-                            {% endfor %}
-                        {% endwith %}
+                            </div>
+                        {% endfor %}
                     </div>
                 {% endif %}
             </div>

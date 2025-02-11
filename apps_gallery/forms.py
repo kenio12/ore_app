@@ -1,16 +1,42 @@
 from django import forms
 import json
 from .models import AppGallery
-from .constants.app_info import APP_TYPES, GENRES, APP_STATUS, PUBLISH_STATUS  # 正しいパスからインポート
+from .constants.app_info import (
+    APP_TYPES,
+    GENRES,
+    APP_STATUS,
+    PUBLISH_STATUS
+)
+from .constants.tech_stack import (
+    FRONTEND_LANGUAGES,
+    FRONTEND_FRAMEWORKS,
+    BACKEND_LANGUAGES,
+    BACKEND_FRAMEWORKS,
+    DATABASE_TYPES
+)
+from .constants.development import (
+    TEAM_SIZES,
+    VIRTUALIZATION_TOOLS,
+    INFRASTRUCTURE
+)
+from .constants.development_period import (
+    DEVELOPMENT_PERIODS,
+    DEVELOPMENT_PHASES
+)
+from .constants.architecture import (
+    ARCHITECTURE_PATTERNS,
+    DESIGN_PATTERNS,
+    SECURITY_MEASURES
+)
 
 class AppForm(forms.ModelForm):
     # フィールド名をPOSTデータに合わせる
-    types = forms.MultipleChoiceField(
-        choices=[(k, v) for k, v in APP_TYPES.items()],  # タプルのリストに変換
+    app_types = forms.MultipleChoiceField(
+        choices=[(k, v) for k, v in APP_TYPES.items()],
         required=False
     )
     genres = forms.MultipleChoiceField(
-        choices=[(k, v) for k, v in GENRES.items()],  # タプルのリストに変換
+        choices=[(k, v) for k, v in GENRES.items()],
         required=False
     )
     dev_status = forms.ChoiceField(
@@ -26,39 +52,53 @@ class AppForm(forms.ModelForm):
     class Meta:
         model = AppGallery
         fields = [
-            'title',           # アプリ名
-            'types',          # app_types から types に変更
-            'genres',          # ジャンル
-            'dev_status',      # 開発状況
-            'status',          # 公開状態
-            'app_url',         # アプリのURL
-            'github_url',      # GitHubリポジトリURL
-            'overview',        # アプリの説明
-            'motivation',      # 開発のきっかけ
-            'catchphrases',    # キャッチコピー（03_appeal_tabで使用）
-            'target_users',    # ターゲットユーザー
-            'problems',        # 問題点
-            'final_appeal',    # 最後のアピール
+            'title',
+            'app_types',
+            'genres',
+            'dev_status',
+            'status',
+            'app_url',
+            'github_url',
+            'overview',
+            'motivation',
+            'catchphrases',
+            'target_users',
+            'problems',
+            'final_appeal'
         ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
+        # チェックボックスにサイバーパンクなスタイルを適用
+        checkbox_fields = ['app_types', 'genres']
+        
+        for field_name in checkbox_fields:
+            if field_name in self.fields:
+                self.fields[field_name].widget.attrs['class'] = 'cyber-checkbox'
+        
+        # タイトルのみ必須フィールドに設定
+        self.fields['title'].required = True
+
+        # キャッチフレーズの初期値を設定
+        if 'instance' in kwargs and kwargs['instance']:
+            if kwargs['instance'].catchphrases:
+                try:
+                    # JSON文字列をパースしてリストに変換
+                    catchphrases = json.loads(kwargs['instance'].catchphrases)
+                    if isinstance(catchphrases, list):
+                        self.initial['catchphrases'] = catchphrases
+                    else:
+                        self.initial['catchphrases'] = []
+                except (json.JSONDecodeError, TypeError):
+                    self.initial['catchphrases'] = []
+                print(f"Initial catchphrases: {self.initial['catchphrases']}")  # デバッグ出力
+
         # フィールドのカスタマイズ
         self.fields['title'].widget.attrs.update({
             'class': 'form-control cyber-yellow-focus',
             'placeholder': 'アプリの名前を入力してください'
         })
-
-        # 必須フィールドの設定
-        self.fields['title'].required = True
-        # self.fields['overview'].required = True  # この行をコメントアウトまたは削除
-
-        # その他のフィールドは任意に
-        optional_fields = ['app_url', 'github_url', 'motivation', 'catchphrases', 
-                         'target_users', 'problems', 'final_appeal']
-        for field in optional_fields:
-            self.fields[field].required = False
 
         self.fields['app_url'].widget.attrs.update({
             'class': 'form-control cyber-yellow-focus',
@@ -71,18 +111,20 @@ class AppForm(forms.ModelForm):
         })
 
         # テキストエリアのカスタマイズ
-        text_areas = ['overview', 'motivation', 'target_users', 'problems', 'final_appeal']
+        text_areas = ['overview', 'motivation', 'catchphrases', 
+                     'target_users', 'problems', 'final_appeal']
         for field in text_areas:
-            self.fields[field].widget.attrs.update({
-                'class': 'form-control cyber-green-focus',
-                'rows': '8'
-            })
+            if field in self.fields:  # フィールドが存在する場合のみ更新
+                self.fields[field].widget.attrs.update({
+                    'class': 'form-control cyber-green-focus',
+                    'rows': '8'
+                })
 
-    def clean_types(self):  # app_types から types に変更
-        types = self.cleaned_data.get('types', [])
-        if isinstance(types, str):
-            return [types]
-        return types
+    def clean_app_types(self):
+        app_types = self.cleaned_data.get('app_types', [])
+        if isinstance(app_types, str):
+            return [app_types]
+        return app_types
 
     def clean_genres(self):
         genres = self.cleaned_data.get('genres', [])
@@ -91,35 +133,23 @@ class AppForm(forms.ModelForm):
         return genres
 
     def clean_catchphrases(self):
-        catchphrases = self.cleaned_data.get('catchphrases', '')
-        if not catchphrases:
-            return []
+        # POSTデータから直接配列として取得
+        catchphrases = self.data.getlist('catchphrases')
+        print(f"Received catchphrases: {catchphrases}")  # デバッグ出力
         
-        # 文字列の場合（フォームからの入力）
-        if isinstance(catchphrases, str):
-            # カンマで分割して重複を除去（最大3つまで）
-            phrases = [
-                p.strip() 
-                for p in catchphrases.split(',') 
-                if p.strip()
-            ][:3]  # 最初から3つまでに制限
-            return list(dict.fromkeys(phrases))  # 重複を除去
+        # 空の要素を除去
+        cleaned = [phrase.strip() for phrase in catchphrases if phrase and phrase.strip()]
+        print(f"Cleaned catchphrases: {cleaned}")  # デバッグ出力
         
-        # リストの場合（既存データ）
-        if isinstance(catchphrases, list):
-            return list(dict.fromkeys(catchphrases))[:3]  # 重複を除去して3つまでに制限
-        
-        return []  # その他の場合は空リスト
+        # JSON文字列に変換して返す（モデルの要件）
+        return json.dumps(cleaned[:3])
 
     def clean(self):
         cleaned_data = super().clean()
-        print("クリーニング後のデータ:", cleaned_data)  # デバッグ用
         return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        # types を app_types にマッピング
-        instance.app_types = self.cleaned_data.get('types', [])
         if commit:
             instance.save()
         return instance 

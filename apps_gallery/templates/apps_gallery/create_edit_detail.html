@@ -10,15 +10,6 @@
 {{ hide_navbar|default:"not set" }}
 
 {% block content %}
-<!-- メッセージ表示 -->
-{% if messages %}
-    {% for message in messages %}
-        <div class="cyber-message position-fixed top-50 start-50 translate-middle" style="z-index: 1100;">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
-
 <!-- サイバーパンク風の装飾 -->
 <div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
     <div class="cyber-grid"></div>
@@ -156,12 +147,12 @@
     {% endif %}
 </div>
 
-<!-- トースト要素 -->
+<!-- トースト要素を修正 -->
 <div class="toast-container position-fixed top-50 start-50 translate-middle" style="z-index: 9999;">
-    <div class="toast align-items-center text-bg-success border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast align-items-center text-white bg-success border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
-                保存しました！
+                <i class="bi bi-check-circle me-2"></i>保存しました！
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
@@ -862,160 +853,54 @@ html {
 </style>
 
 <script>
-// アップロード関連のコードを全て削除し、必要なスタイルだけを残す
-(function() {
-    // スタイル関連のコードのみ残す
-    const initializeStyles = () => {
-        // スタイルの初期化処理（必要な場合）
-    };
-
-    // DOMContentLoaded時に初期化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeStyles);
-    } else {
-        initializeStyles();
-    }
-})();
-
-// グローバル変数
-let isSaving = false;
-let formChanged = false;
-
 document.addEventListener('DOMContentLoaded', function() {
-    // フォームの参照を取得
     const form = document.getElementById('appForm');
     const toastEl = document.getElementById('liveToast');
     
+    // トーストのオプションを設定
+    const toastOptions = {
+        animation: true,
+        autohide: true,  // 自動で非表示
+        delay: 2000      // 2秒後に消える
+    };
+    
     // Bootstrapトーストの初期化
-    const toast = new bootstrap.Toast(toastEl, {
-        delay: 3000,
-        animation: true
-    });
+    const toast = new bootstrap.Toast(toastEl, toastOptions);
 
-    // フォームのsubmitイベントをハンドル
+    // 成功メッセージのパラメータがURLにある場合のみトーストを表示
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('success')) {
+        // トーストを表示
+        toast.show();
+        
+        // URLからsuccess=trueパラメータを削除
+        window.history.replaceState({}, '', window.location.pathname);
+        
+        // 2秒後に強制的に非表示
+        setTimeout(() => {
+            toast.hide();
+            // DOMからトースト要素を完全に削除
+            toastEl.remove();
+        }, 2000);
+    }
+
     if (form) {
         form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!isSaving) {
-                isSaving = true;
-                
-                fetch(form.action, {
-                    method: 'POST',
-                    body: new FormData(form),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // トースト表示
-                        toast.show();
-                        
-                        // フォーム変更フラグをリセット
-                        formChanged = false;
-                        
-                        // 現在のページをリロードして最新の値を表示
-                        window.location.reload();
-                    }
-                })
-                .catch(error => {
-                    console.error('保存エラー:', error);
-                })
-                .finally(() => {
-                    isSaving = false;
-                });
-            }
-        });
-    }
-
-    // 保存ボタンのクリックイベント
-    const saveBtn = document.querySelector('.btn-cyber-save');
-    if (saveBtn) {
-        saveBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (form) {
-                form.dispatchEvent(new Event('submit'));
-            }
-        });
-    }
-
-    // フォームの変更を検知
-    form.addEventListener('input', function() {
-        formChanged = true;
-    });
-    
-    // 技術へボタンのイベントリスナーを追加（セレクタを修正）
-    const technicalBtn = document.querySelector('.btn-cyber-nav');  // ← ここを修正
-    if (technicalBtn) {
-        technicalBtn.addEventListener('click', function(event) {
-            saveAndGoToTechnical(event);
+            // フォームの通常の送信を許可
+            return true;
         });
     }
 });
 
+// saveAndGoToTechnical関数
 function saveAndGoToTechnical(event) {
-    console.log('saveAndGoToTechnical called');
-    event.preventDefault();
-    
-    // フォームの取得方法を修正
-    const forms = document.getElementsByTagName('form');
-    const form = forms[0];  // 最初のフォームを使用
-    
-    console.log('Forms found:', forms.length);  // デバッグ用
-    const technicalUrl = event.target.closest('a').href;
-    
+    const form = document.getElementById('appForm');
     if (form) {
-        fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => {
-            console.log('Response:', response);
-            if (response.ok) {
-                window.location.href = technicalUrl + (technicalUrl.includes('?') ? '&' : '?') + 'toast_message=保存処理をしました。技術編集画面に遷移しました。';
-            } else {
-                alert('保存に失敗しました。');
-            }
-        })
-        .catch(error => {
-            console.error('保存エラー:', error);
-            alert('保存に失敗しました。');
-        });
-    } else {
-        console.error('Form not found');  // デバッグ用
+        form.action = event.target.closest('a').href;
+        form.submit();
     }
+    event.preventDefault();
 }
-
-// 遷移後のトースト表示用の処理を追加
-document.addEventListener('DOMContentLoaded', function() {
-    // URLからトーストメッセージを取得
-    const urlParams = new URLSearchParams(window.location.search);
-    const toastMessage = urlParams.get('toast_message');
-    
-    if (toastMessage) {
-        const toastEl = document.getElementById('liveToast');
-        if (toastEl) {
-            // トーストのメッセージを設定
-            toastEl.querySelector('.toast-body').textContent = toastMessage;
-            
-            // トーストを表示
-            const toast = new bootstrap.Toast(toastEl, {
-                delay: 3000,
-                animation: true
-            });
-            toast.show();
-            
-            // URLからトーストメッセージパラメータを削除
-            urlParams.delete('toast_message');
-            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
-            window.history.replaceState({}, '', newUrl);
-        }
-    }
-});
 </script>
 
 <!-- Bootstrapのスクリプトが読み込まれていることを確認 -->

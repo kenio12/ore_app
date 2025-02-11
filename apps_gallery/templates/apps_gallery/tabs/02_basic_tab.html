@@ -29,22 +29,24 @@
                        {% if readonly %}readonly{% endif %}>
             </div>
 
-            <!-- アプリの種類 -->
-            <div class="form-group mb-4">
-                <label class="form-label">
-                    <i class="bi bi-gear-fill text-cyber-purple"></i> アプリの種類
-                </label>
-                <div class="cyber-checkbox-group">
-                    {% for value, label in APP_TYPES.items %}
-                        <div class="form-check">
-                            <input type="checkbox" 
-                                   name="types" 
-                                   value="{{ value }}"
-                                   class="form-check-input cyber-checkbox" 
-                                   id="type_{{ value }}"
-                                   {% if value in app.app_types %}checked{% endif %}
-                                   {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label" for="type_{{ value }}">{{ label }}</label>
+            <!-- アプリの種類（チェックボックス） -->
+            <div class="mb-4">
+                <label class="form-label">アプリの種類</label>
+                <div class="row g-3">
+                    {% for value, label in form.types.field.choices %}
+                        <div class="col-md-3 col-sm-6">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       name="types" 
+                                       value="{{ value }}"
+                                       id="type_{{ value }}"
+                                       class="form-check-input cyber-checkbox"
+                                       {% if value in app.types %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="type_{{ value }}">
+                                    {{ label }}
+                                </label>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
@@ -53,22 +55,24 @@
             <!-- 区切り線を追加 -->
             <hr class="cyber-divider my-4">
 
-            <!-- ジャンル -->
-            <div class="form-group mb-4">
-                <label class="form-label">
-                    <i class="bi bi-tags-fill text-cyber-purple"></i> ジャンル
-                </label>
-                <div class="cyber-checkbox-group">
-                    {% for value, label in GENRES.items %}
-                        <div class="form-check">
-                            <input type="checkbox" 
-                                   name="genres" 
-                                   value="{{ value }}"
-                                   class="form-check-input cyber-checkbox" 
-                                   id="genre_{{ value }}"
-                                   {% if value in app.genres %}checked{% endif %}
-                                   {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label" for="genre_{{ value }}">{{ label }}</label>
+            <!-- ジャンル（チェックボックス） -->
+            <div class="mb-4">
+                <label class="form-label">ジャンル</label>
+                <div class="row g-3">
+                    {% for value, label in form.genres.field.choices %}
+                        <div class="col-md-3 col-sm-6">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       name="genres" 
+                                       value="{{ value }}"
+                                       id="genre_{{ value }}"
+                                       class="form-check-input cyber-checkbox"
+                                       {% if value in app.genres %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="genre_{{ value }}">
+                                    {{ label }}
+                                </label>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>

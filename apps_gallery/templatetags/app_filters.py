@@ -1,4 +1,5 @@
 from django import template
+import json
 
 register = template.Library()
 
@@ -31,3 +32,11 @@ def subtract(value, arg):
         return value - arg
     except (ValueError, TypeError):
         return value 
+
+@register.filter(name='json_decode')
+def json_decode(value):
+    """JSON文字列をデコードするフィルター"""
+    try:
+        return json.loads(value) if value else []
+    except (json.JSONDecodeError, TypeError):
+        return [] 

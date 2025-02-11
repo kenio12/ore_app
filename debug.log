@@ -1,0 +1,4 @@
+DEBUG 2025-02-11 21:05:27,879 connectionpool 283 140711062922944 Starting new HTTPS connection (1): api.cloudinary.com:443
+DEBUG 2025-02-11 21:05:30,311 connectionpool 283 140711062922944 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+DEBUG 2025-02-11 21:06:15,552 connectionpool 283 140711062922944 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/destroy HTTP/1.1" 200 None
+DEBUG 2025-02-11 21:06:29,365 connectionpool 283 140711062922944 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
