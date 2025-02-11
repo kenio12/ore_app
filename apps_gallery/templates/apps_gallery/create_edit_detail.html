@@ -890,17 +890,95 @@ document.addEventListener('DOMContentLoaded', function() {
             return true;
         });
     }
+
+    // ページロード時にキャッシュをクリア
+    if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+        window.location.reload(true);  // 強制的にページを再読み込み
+    }
 });
 
-// saveAndGoToTechnical関数
+// バックフォワードキャッシュ対策を強化
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted || 
+        (window.performance && 
+         window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD)) {
+        window.location.reload(true);  // キャッシュを無視して再読み込み
+    }
+});
+
+// フォーム送信処理を同期的な方法に変更
 function saveAndGoToTechnical(event) {
+    event.preventDefault();
+    console.log('saveAndGoToTechnical開始');
+    
+    const form = document.getElementById('appForm');
+    if (!form) {
+        console.error('フォームが見つかりません');
+        return;
+    }
+
+    // 現在のURLから正しいパスを構築
+    const currentPath = window.location.pathname;
+    const appId = currentPath.split('/')[3];  // /apps_gallery/edit/13/ から13を取得
+    const technicalUrl = `/apps_gallery/edit/${appId}/technical/`;
+    
+    console.log('遷移先URL:', technicalUrl);
+
+    // フォームの設定
+    form.action = currentPath;  // 現在のURLを使用
+    form.method = 'POST';
+
+    // 遷移先URLをhiddenフィールドとして追加
+    const nextUrlInput = document.createElement('input');
+    nextUrlInput.type = 'hidden';
+    nextUrlInput.name = 'next_url';
+    nextUrlInput.value = technicalUrl;
+    form.appendChild(nextUrlInput);
+
+    // デバッグ出力
+    console.log('フォーム送信先:', form.action);
+    console.log('遷移先URL:', technicalUrl);
+
+    // フォームを送信
+    form.submit();
+}
+
+// CSRFトークン取得
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// バックフォワードキャッシュ対策
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+
+// フォームの初期化
+document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('appForm');
     if (form) {
-        form.action = event.target.closest('a').href;
-        form.submit();
+        // フォームのデフォルトの送信をキャンセル
+        form.addEventListener('submit', function(e) {
+            if (!e.submitter || !e.submitter.classList.contains('save-and-continue')) {
+                return true;  // 通常の送信は許可
+            }
+            e.preventDefault();  // save-and-continueの場合のみ preventDefault
+        });
     }
-    event.preventDefault();
-}
+});
 </script>
 
 <!-- Bootstrapのスクリプトが読み込まれていることを確認 -->

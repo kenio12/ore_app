@@ -31,6 +31,7 @@ from bs4 import BeautifulSoup
 import sys
 from django.core.signals import request_started, request_finished
 from django.dispatch import receiver
+import time
 
 print("\n============= START DEBUG =============")  # ここに配置！
 
@@ -205,50 +206,55 @@ def create_view(request):
 @login_required
 def edit_app(request, pk):
     """アプリの編集ビュー"""
-    print(f"\n===== Edit App Debug =====")
-    print(f"Request Method: {request.method}")
-    print(f"User: {request.user}")
-    print(f"PK: {pk}")
+    logger.info(f"Request method: {request.method}")
     
     try:
-        app = get_object_or_404(AppGallery, pk=pk)
-        print(f"Found App: {app.title}")
+        # 毎回DBから最新データを取得（キャッシュを使わない）
+        app = get_object_or_404(AppGallery.objects.select_related(), pk=pk)
+        logger.info(f"App found: {app.title}")
         
         # 権限チェック
         if app.author != request.user:
-            print(f"Permission Denied: {app.author} != {request.user}")
-            raise PermissionDenied("このアプリを編集する権限がありません。")
+            logger.warning(f"Unauthorized access attempt by user {request.user} for app {pk}")
+            messages.error(request, '権限がありません')
+            return redirect('apps_gallery:list')
         
         if request.method == 'POST':
-            print("\n=== POST Data Debug ===")
-            print("POST data:", request.POST)
-            print("Catchphrases:", request.POST.getlist('catchphrases'))  # 実際のデータを確認
+            logger.info("Processing POST request")
+            logger.debug(f"POST data: {request.POST}")
             
             form = AppForm(request.POST, instance=app)
             if form.is_valid():
-                print("Form is valid")
-                print("Cleaned catchphrases:", form.cleaned_data.get('catchphrases'))
-                form.save()
-                messages.success(request, '保存しました！')
-                return redirect('apps_gallery:edit', pk=pk)
+                logger.info("Form is valid, saving...")
+                try:
+                    app = form.save()
+                    logger.info(f"App {pk} saved successfully")
+                    
+                    # 遷移先URLの取得と検証
+                    next_url = request.POST.get('next_url')
+                    if next_url and 'technical' in next_url:
+                        logger.info(f"Redirecting to technical edit: {next_url}")
+                        return redirect('apps_gallery:technical_edit', pk=pk)
+                    
+                    messages.success(request, '保存しました')
+                    # キャッシュを無視して最新データを表示するためにクエリパラメータを追加
+                    return redirect(f"{reverse('apps_gallery:edit', kwargs={'pk': pk})}?t={time.time()}")
+                    
+                except Exception as save_error:
+                    logger.error(f"Error saving app {pk}: {str(save_error)}", exc_info=True)
+                    messages.error(request, f'保存中にエラーが発生しました: {str(save_error)}')
             else:
-                print("Form errors:", form.errors)  # エラーがあれば表示
-        else:
-            form = AppForm(instance=app)
+                logger.warning(f"Form validation failed: {form.errors}")
+        
+        # GETリクエスト時も最新のデータでフォームを初期化
+        form = AppForm(instance=app)
         
         context = get_common_context(app=app, is_edit=True)
         context['form'] = form
-        
-        print("Context keys:", context.keys())
-        print("Template:", 'apps_gallery/create_edit_detail.html')
-        
         return render(request, 'apps_gallery/create_edit_detail.html', context)
         
     except Exception as e:
-        print(f"Error in edit_app: {str(e)}")
-        print(f"Error type: {type(e)}")
-        import traceback
-        print(f"Traceback: {traceback.format_exc()}")
+        logger.error(f"Error in edit_app: {str(e)}", exc_info=True)
         messages.error(request, f'エラーが発生しました: {str(e)}')
         return redirect('apps_gallery:list')
 

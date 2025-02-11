@@ -26,7 +26,19 @@ from .constants.development_period import (
 from .constants.architecture import (
     ARCHITECTURE_PATTERNS,
     DESIGN_PATTERNS,
-    SECURITY_MEASURES
+    SECURITY_MEASURES,
+    TESTING_TOOLS,
+    CODE_QUALITY_TOOLS
+)
+from .constants.hardware import (
+    DEVICE_TYPES,
+    OS_TYPES,
+    CPU_TYPES,
+    MEMORY_SIZES,
+    STORAGE_TYPES,
+    MONITOR_COUNTS,
+    MONITOR_SIZES,
+    MONITOR_RESOLUTIONS
 )
 
 class AppForm(forms.ModelForm):
@@ -47,24 +59,30 @@ class AppForm(forms.ModelForm):
         choices=[(k, v) for k, v in PUBLISH_STATUS.items()],
         required=False
     )
-    catchphrases = forms.CharField(required=False)
+    catchphrases = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control cyber-green-focus',
+            'rows': '8'
+        })
+    )
 
     class Meta:
         model = AppGallery
         fields = [
             'title',
-            'app_types',
             'genres',
+            'app_types',
             'dev_status',
             'status',
             'app_url',
             'github_url',
             'overview',
             'motivation',
-            'catchphrases',
             'target_users',
             'problems',
-            'final_appeal'
+            'final_appeal',
+            'catchphrases'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -133,23 +151,61 @@ class AppForm(forms.ModelForm):
         return genres
 
     def clean_catchphrases(self):
-        # POSTデータから直接配列として取得
-        catchphrases = self.data.getlist('catchphrases')
-        print(f"Received catchphrases: {catchphrases}")  # デバッグ出力
+        """キャッチフレーズのバリデーションと変換"""
+        catchphrases = self.cleaned_data.get('catchphrases', '')
         
-        # 空の要素を除去
-        cleaned = [phrase.strip() for phrase in catchphrases if phrase and phrase.strip()]
-        print(f"Cleaned catchphrases: {cleaned}")  # デバッグ出力
-        
-        # JSON文字列に変換して返す（モデルの要件）
-        return json.dumps(cleaned[:3])
+        # デバッグ出力
+        print(f"Cleaning catchphrases: {catchphrases}")
+        print(f"Type: {type(catchphrases)}")
+
+        # 空の場合は空リストを返す
+        if not catchphrases:
+            return []
+
+        # 文字列の場合はJSONとしてパース
+        if isinstance(catchphrases, str):
+            try:
+                parsed = json.loads(catchphrases)
+                if isinstance(parsed, list):
+                    return parsed
+                return []
+            except json.JSONDecodeError:
+                # 単一の文字列の場合は1要素のリストとして扱う
+                if catchphrases.strip():
+                    return [catchphrases.strip()]
+                return []
+
+        # リストの場合はそのまま返す
+        if isinstance(catchphrases, list):
+            return catchphrases
+
+        # その他の型の場合は空リストを返す
+        return []
 
     def clean(self):
+        """フォーム全体のバリデーション"""
         cleaned_data = super().clean()
+        
+        # キャッチフレーズが存在しない場合は空リストを設定
+        if 'catchphrases' not in cleaned_data:
+            cleaned_data['catchphrases'] = []
+            
+        # デバッグ出力
+        print(f"Final cleaned data: {cleaned_data}")
+        
         return cleaned_data
 
     def save(self, commit=True):
+        """保存前の処理"""
         instance = super().save(commit=False)
+        
+        # キャッチフレーズをJSON文字列に変換
+        if hasattr(instance, 'catchphrases'):
+            if isinstance(instance.catchphrases, list):
+                instance.catchphrases = json.dumps(instance.catchphrases)
+            elif not instance.catchphrases:
+                instance.catchphrases = '[]'
+                
         if commit:
             instance.save()
         return instance 
