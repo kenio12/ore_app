@@ -65,36 +65,9 @@ def get_common_context(app=None, readonly=False, is_edit=False):
         'hide_navbar': True
     }
     
-    # appから必要な情報のみを抽出
+    # appをそのまま渡す（拡張性を保つ）
     if app:
-        context['app'] = {
-            'id': app.id,
-            'title': app.title,
-            'app_types': app.app_types,
-            'genres': app.genres,
-            'dev_status': app.dev_status,
-            'status': app.status,
-            'app_url': app.app_url,
-            'github_url': app.github_url,
-            'overview': app.overview,
-            'motivation': app.motivation,
-            'catchphrases': app.catchphrases,
-            'target_users': app.target_users,
-            'problems': app.problems,
-            'final_appeal': app.final_appeal,
-        }
-        
-        # スクリーンショットは必要な情報のみ
-        if getattr(app, 'screenshots', None):
-            context['app']['screenshots'] = [
-                {'url': s['url']} for s in app.screenshots
-            ]
-        
-        # サムネイルも必要な情報のみ
-        if getattr(app, 'thumbnail', None):
-            context['app']['thumbnail'] = {
-                'url': app.thumbnail.get('url')
-            }
+        context['app'] = app
     
     return context
 
@@ -258,25 +231,33 @@ def edit_app(request, pk):
             
             app.save()
             
-            print(f"保存後のスクリーンショット数: {len(app.screenshots)}")
-            print(f"保存後のサムネイル: {app.thumbnail}")
+            # nextパラメータがある場合は、保存後にそのURLへリダイレクト
+            next_url = request.GET.get('next')
+            if next_url:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True,
+                        'redirect_url': next_url
+                    })
+                return redirect(next_url)
             
+            # nextパラメータがない場合は通常の遷移
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': True,
                     'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': pk})
                 })
             
-            return redirect('apps_gallery:detail', pk=pk)
+            return redirect('apps_gallery:detail', kwargs={'pk': pk})
             
         except Exception as e:
-            print(f"編集保存エラー: {str(e)}")
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'success': False,
                     'error': str(e)
                 }, status=500)
-            messages.error(request, f'保存中にエラーが発生しました: {str(e)}')
+            messages.error(request, f'エラーが発生しました: {str(e)}')
+            return redirect('apps_gallery:edit', pk=pk)
     
     context = get_common_context(app=app, readonly=False, is_edit=True)
     return render(request, 'apps_gallery/create_edit_detail.html', context)

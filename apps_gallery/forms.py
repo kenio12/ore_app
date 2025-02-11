@@ -35,7 +35,7 @@ class AppForm(forms.ModelForm):
             'github_url',      # GitHubリポジトリURL
             'overview',        # アプリの説明
             'motivation',      # 開発のきっかけ
-            'catchphrases',    # キャッチコピー
+            'catchphrases',    # キャッチコピー（03_appeal_tabで使用）
             'target_users',    # ターゲットユーザー
             'problems',        # 問題点
             'final_appeal',    # 最後のアピール
@@ -97,19 +97,17 @@ class AppForm(forms.ModelForm):
         
         # 文字列の場合（フォームからの入力）
         if isinstance(catchphrases, str):
-            # カンマで分割して重複を除去
-            phrases = list(dict.fromkeys([
+            # カンマで分割して重複を除去（最大3つまで）
+            phrases = [
                 p.strip() 
                 for p in catchphrases.split(',') 
                 if p.strip()
-            ]))
-            return phrases[:3]  # 最大3つまで
+            ][:3]  # 最初から3つまでに制限
+            return list(dict.fromkeys(phrases))  # 重複を除去
         
         # リストの場合（既存データ）
         if isinstance(catchphrases, list):
-            # 重複を除去
-            phrases = list(dict.fromkeys(catchphrases))
-            return phrases[:3]  # 最大3つまで
+            return list(dict.fromkeys(catchphrases))[:3]  # 重複を除去して3つまでに制限
         
         return []  # その他の場合は空リスト
 

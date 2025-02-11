@@ -42,22 +42,6 @@
             <a class="nav-link text-neon" data-bs-target="#appeal" href="#appeal">
                 <i class="bi bi-stars"></i> アプリの魅力
             </a>
-            
-            <!-- 技術情報へのリンク -->
-            {% if app.id %}  <!-- 新規作成時は表示しない -->
-                {% if not readonly %}
-                    <a href="{% url 'apps_gallery:technical_edit' app.id %}" 
-                       class="nav-link technical-transition-btn"
-                       onclick="showTechnicalDialog(event, '{% url 'apps_gallery:technical_edit' app.id %}')">
-                        <i class="bi bi-arrow-right-circle"></i> 技術へ
-                    </a>
-                {% else %}
-                    <a href="{% url 'apps_gallery:technical_detail' app.id %}" 
-                       class="nav-link technical-transition-btn">
-                        <i class="bi bi-arrow-right-circle"></i> 技術へ
-                    </a>
-                {% endif %}
-            {% endif %}
         </nav>
     </div>
 </div>
@@ -130,26 +114,6 @@
 
     <!-- 下部のボタングループ -->
     <div class="bottom-button-group">
-        <!-- 左：切り替えボタン -->
-        <div class="button-container">
-            {% if app.id %}
-                {% if not readonly %}
-                    <a href="{% url 'apps_gallery:detail' app.id %}" 
-                       class="btn-cyber-mode-switch" 
-                       id="btn-to-detail" 
-                       onclick="showDetailDialog(event, '{% url 'apps_gallery:detail' app.id %}')">
-                        <i class="bi bi-eye"></i> 詳細へ
-                    </a>
-                {% else %}
-                    <a href="{% url 'apps_gallery:edit' app.id %}" 
-                       class="btn-cyber-mode-switch" 
-                       id="btn-to-edit">
-                        <i class="bi bi-pencil-square"></i> 編集へ
-                    </a>
-                {% endif %}
-            {% endif %}
-        </div>
-
         <!-- 中央：ステータス表示 -->
         <div class="button-container">
             {% if not readonly and app.id %}
@@ -172,62 +136,24 @@
             {% endif %}
         </div>
     </div>
-</div>
 
-<!-- 技術情報への移動確認ダイアログ -->
-<div class="cyber-dialog-overlay" id="technicalDialog" style="display: none;">
-    <div class="cyber-message">
-        <div class="message-icon">
-            <i class="bi bi-exclamation-triangle"></i>
+    <!-- 画面右側の技術へボタン -->
+    {% if app.id %}  <!-- 新規作成時は表示しない -->
+        <div class="side-nav-button right-nav">
+            {% if not readonly %}
+                <a href="{% url 'apps_gallery:technical_edit' app.id %}" 
+                   class="btn-cyber-nav"
+                   onclick="saveAndGoToTechnical(event)">
+                    技術へ <i class="bi bi-arrow-right-circle ms-2"></i>
+                </a>
+            {% else %}
+                <a href="{% url 'apps_gallery:technical_detail' app.id %}" 
+                   class="btn-cyber-nav">
+                    技術へ <i class="bi bi-arrow-right-circle ms-2"></i>
+                </a>
+            {% endif %}
         </div>
-        <div class="message-content">
-            <div class="message-text">
-                編集が確認できます。編集を保存せずに、技術画面に移動すると、データが失われます。
-            </div>
-        </div>
-        <div class="cyber-dialog-buttons">
-            <button class="cyber-button cancel-dialog" onclick="closeTechnicalDialog()">
-                <span class="button-text">キャンセル</span>
-                <span class="button-glitch"></span>
-            </button>
-            <button class="cyber-button save-dialog" onclick="saveFormOnly()">
-                <span class="button-text">保存する</span>
-                <span class="button-glitch"></span>
-            </button>
-            <a href="/apps_gallery/technical/edit/13/" id="toTechnicalLink" class="cyber-button close-dialog">
-                <span class="button-text">技術へ移動</span>
-                <span class="button-glitch"></span>
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- 詳細への移動確認ダイアログ -->
-<div class="cyber-dialog-overlay" id="detailDialog" style="display: none;">
-    <div class="cyber-message">
-        <div class="message-icon">
-            <i class="bi bi-exclamation-triangle"></i>
-        </div>
-        <div class="message-content">
-            <div class="message-text">
-                編集が確認できます。編集を保存せずに、詳細画面に移動すると、データが失われます。
-            </div>
-        </div>
-        <div class="cyber-dialog-buttons">
-            <button class="cyber-button cancel-dialog" onclick="closeDetailDialog()">
-                <span class="button-text">キャンセル</span>
-                <span class="button-glitch"></span>
-            </button>
-            <button class="cyber-button save-dialog" onclick="saveFormOnly()">
-                <span class="button-text">保存する</span>
-                <span class="button-glitch"></span>
-            </button>
-            <a href="" id="toDetailLink" class="cyber-button close-dialog">
-                <span class="button-text">詳細へ移動</span>
-                <span class="button-glitch"></span>
-            </a>
-        </div>
-    </div>
+    {% endif %}
 </div>
 
 <!-- トースト要素 -->
@@ -585,23 +511,23 @@ html {
 
 /* 保存ボタンのスタイル */
 .btn-cyber-save {
-    background: rgba(255, 215, 0, 0.1);  /* スケルトン背景 */
-    color: var(--cyber-yellow);  /* サイバー黄色のテキスト */
-    border: 2px solid var(--cyber-yellow);  /* 黄色のボーダー */
-    text-shadow: 0 0 5px var(--cyber-yellow);  /* テキストの光る効果 */
+    background: rgba(0, 255, 159, 0.1);  /* 緑色のスケルトン背景 */
+    color: #00ff9f;  /* サイバー緑色のテキスト */
+    border: 2px solid #00ff9f;  /* 緑色のボーダー */
+    text-shadow: 0 0 5px #00ff9f;  /* テキストの光る効果 */
     padding: 10px 30px;
     font-weight: bold;
     transition: all 0.3s ease;
     border-radius: 25px;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);  /* 黄色の光る効果 */
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);  /* 緑色の光る効果 */
     font-size: 1.1rem;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
 
 .btn-cyber-save:hover {
-    background: rgba(255, 215, 0, 0.2);  /* ホバー時は少し濃く */
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);  /* ホバー時は光をより強く */
+    background: rgba(0, 255, 159, 0.2);  /* ホバー時は少し濃く */
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5);  /* ホバー時は光をより強く */
     transform: translateY(-2px);
 }
 
@@ -864,6 +790,66 @@ html {
     80% { transform: translate(2px, -2px); }
     100% { transform: translate(0); }
 }
+
+/* サイドナビゲーションボタンのスタイル */
+.side-nav-button {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+
+.left-nav {
+    left: 20px;
+}
+
+.right-nav {
+    right: 20px;
+}
+
+.btn-cyber-nav {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #00ff9f;  /* 緑色に変更 */
+    color: #00ff9f;  /* 緑色に変更 */
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);  /* 緑色に変更 */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.btn-cyber-nav:hover {
+    background: rgba(0, 255, 159, 0.1);  /* 緑色に変更 */
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5);  /* 緑色に変更 */
+    transform: scale(1.05);
+    text-decoration: none;
+}
+
+/* ホバー時のグリッチエフェクト */
+.btn-cyber-nav:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 255, 159, 0.2);  /* 緑色に変更 */
+    animation: glitch 0.3s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
 </style>
 
 <script>
@@ -960,91 +946,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const technicalBtn = document.querySelector('.technical-transition-btn');
     if (technicalBtn) {
         technicalBtn.addEventListener('click', function(event) {
-            const targetUrl = this.getAttribute('href');
-            showTechnicalDialog(event, targetUrl);
+            saveAndGoToTechnical(event);
         });
     }
 });
 
-// 技術情報への移動確認ダイアログを表示
-function showTechnicalDialog(event, targetUrl) {
+function saveAndGoToTechnical(event) {
     event.preventDefault();
-    
-    // フォームに変更がある場合のみダイアログを表示
-    if (formChanged) {
-        const dialog = document.getElementById('technicalDialog');
-        if (dialog) {
-            // 技術情報へのリンクを更新
-            document.getElementById('toTechnicalLink').href = targetUrl;
-            dialog.style.display = 'flex';
-        }
-    } else {
-        // 変更がない場合は直接遷移
-        window.location.href = targetUrl;
-    }
-}
-
-// 詳細への移動確認ダイアログを表示
-function showDetailDialog(event, targetUrl) {
-    event.preventDefault();
-    
-    // フォームに変更がある場合のみダイアログを表示
-    if (formChanged) {
-        const dialog = document.getElementById('detailDialog');
-        if (dialog) {
-            // 詳細へのリンクを更新
-            document.getElementById('toDetailLink').href = targetUrl;
-            dialog.style.display = 'flex';
-        }
-    } else {
-        // 変更がない場合は直接遷移
-        window.location.href = targetUrl;
-    }
-}
-
-// ダイアログを閉じる関数
-function closeDialog(dialogId) {
-    const dialog = document.getElementById(dialogId);
-    if (dialog) {
-        dialog.style.display = 'none';
-    }
-}
-
-// 技術情報ダイアログを閉じる
-function closeTechnicalDialog() {
-    const dialog = document.getElementById('technicalDialog');
-    if (dialog) {
-        dialog.style.display = 'none';
-    }
-}
-
-// 詳細ダイアログを閉じる
-function closeDetailDialog() {
-    const dialog = document.getElementById('detailDialog');
-    if (dialog) {
-        dialog.style.display = 'none';
-    }
-}
-
-// 保存のみを行う関数（ダイアログからの呼び出し用）
-function saveFormOnly() {
     const form = document.getElementById('appForm');
-    if (form && !isSaving) {
-        form.dispatchEvent(new Event('submit'));
-        closeDialog();
+    const technicalUrl = event.target.closest('a').href;  // リンクのURLを取得
+    
+    if (form) {
+        // フォームの送信先URLはそのままに、nextパラメータだけ追加
+        const separator = form.action.includes('?') ? '&' : '?';
+        form.action = form.action + separator + 'next=' + encodeURIComponent(technicalUrl);
+        form.submit();
     }
 }
-
-// トースト要素の初期化
-document.addEventListener('DOMContentLoaded', function() {
-    const toastEl = document.getElementById('liveToast');
-    if (toastEl) {
-        const toast = new bootstrap.Toast(toastEl, {
-            delay: 3000,
-            animation: true
-        });
-    }
-});
 </script>
 
 <!-- Bootstrapのスクリプトが読み込まれていることを確認 -->

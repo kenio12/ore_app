@@ -100,6 +100,24 @@
     </div>
 </div>
 
+<!-- 画面左側の基本へボタン -->
+{% if app.id %}
+    <div class="side-nav-button left-nav">
+        {% if not readonly %}
+            <a href="{% url 'apps_gallery:edit' app.id %}" 
+               class="btn-cyber-nav"
+               onclick="saveAndGoToBasic(event)">
+                <i class="bi bi-arrow-left-circle me-2"></i> 基本へ
+            </a>
+        {% else %}
+            <a href="{% url 'apps_gallery:detail' app.id %}" 
+               class="btn-cyber-nav">
+                <i class="bi bi-arrow-left-circle me-2"></i> 基本へ
+            </a>
+        {% endif %}
+    </div>
+{% endif %}
+
 <!-- タブナビゲーション -->
 <div id="technicalTabs" class="app-tabs">
     <div class="container py-1">
@@ -108,23 +126,6 @@
             <a href="{% url 'home:home' %}" class="nav-link cyber-home" title="ホームへ戻る">
                 <span class="fs-4 me-2 cyber-emoji">🤖</span>
             </a>
-            
-            <!-- 基本情報へのリンク -->
-            <div class="nav-item">
-                {% if not readonly %}
-                    <a href="{% url 'apps_gallery:edit' app.id %}" 
-                       class="nav-link cyber-back" 
-                       id="backToBasicBtn">
-                        <i class="bi bi-arrow-left-circle"></i> 基本へ
-                    </a>
-                {% else %}
-                    <a href="{% url 'apps_gallery:detail' app.id %}" 
-                       class="nav-link cyber-back" 
-                       id="backToBasicBtn">
-                        <i class="bi bi-arrow-left-circle"></i> 基本へ
-                    </a>
-                {% endif %}
-            </div>
             
             <!-- 技術情報のタブ -->
             <a class="nav-link text-cyber-blue" data-bs-target="#hardware" href="#hardware">
@@ -184,19 +185,6 @@
         
         <!-- 下部のボタングループ -->
         <div class="bottom-button-group">
-            <!-- 左：切り替えボタン -->
-            <div class="button-container">
-                {% if not readonly %}
-                    <a href="{% url 'apps_gallery:technical_detail' app.id %}" class="btn-cyber-mode-switch" id="btn-to-detail" onclick="return confirmUnsavedChanges(event)">
-                        <i class="bi bi-eye"></i> 詳細へ移動
-                    </a>
-                {% else %}
-                    <a href="{% url 'apps_gallery:technical_edit' app.id %}" class="btn-cyber-mode-switch" id="btn-to-edit">
-                        <i class="bi bi-pencil-square"></i> 編集へ
-                    </a>
-                {% endif %}
-            </div>
-
             <!-- 中央：ステータス表示 -->
             <div class="button-container">
                 {% if not readonly %}
@@ -331,23 +319,23 @@
 
 /* 保存ボタン */
 .btn-cyber-save {
-    background: rgba(255, 215, 0, 0.1);
-    color: var(--cyber-yellow);
-    border: 2px solid var(--cyber-yellow);
-    text-shadow: 0 0 5px var(--cyber-yellow);
+    background: rgba(0, 255, 159, 0.1);  /* 緑色のスケルトン背景 */
+    color: #00ff9f;  /* サイバー緑色のテキスト */
+    border: 2px solid #00ff9f;  /* 緑色のボーダー */
+    text-shadow: 0 0 5px #00ff9f;  /* テキストの光る効果 */
     padding: 10px 30px;
     font-weight: bold;
     transition: all 0.3s ease;
     border-radius: 25px;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);  /* 緑色の光る効果 */
     font-size: 1.1rem;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
 }
 
 .btn-cyber-save:hover {
-    background: rgba(255, 215, 0, 0.2);
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    background: rgba(0, 255, 159, 0.2);  /* ホバー時は少し濃く */
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5);  /* ホバー時は光をより強く */
     transform: translateY(-2px);
 }
 
@@ -591,23 +579,45 @@
 }
 
 .cyber-button {
-    background: transparent;
+    background: rgba(0, 255, 255, 0.1);
     border: 2px solid var(--cyber-blue);
     color: var(--cyber-blue);
     padding: 10px 30px;
-    font-size: 16px;
-    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border-radius: 25px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    text-decoration: none;
+    display: inline-block;
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
-    text-shadow: 0 0 5px var(--cyber-blue);
-    margin-top: 10px;
-    width: 100%;
 }
 
 .cyber-button:hover {
-    background: rgba(0, 255, 255, 0.1);
-    box-shadow: 0 0 15px var(--cyber-blue);
+    background: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    transform: translateY(-2px);
+    color: var(--cyber-blue);
+}
+
+.button-text {
+    position: relative;
+    z-index: 1;
+}
+
+.button-glitch {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: rgba(0, 255, 255, 0.2);
+    display: none;
+}
+
+.cyber-button:hover .button-glitch {
+    display: block;
+    animation: glitch 0.3s ease infinite;
 }
 
 @keyframes glitch {
@@ -644,66 +654,6 @@
 .cyber-button.save-dialog:hover {
     background: rgba(255, 215, 0, 0.2);
     box-shadow: 0 0 15px var(--cyber-yellow);
-}
-
-/* 詳細へのリンク囲み */
-.detail-link-container {
-    background: rgba(13, 25, 45, 0.8);
-    border: 2px solid var(--cyber-blue);
-    border-radius: 15px;
-    padding: 20px;
-    margin: 20px 0;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-.detail-link-container::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border: 2px solid var(--cyber-blue);
-    border-radius: 15px;
-    animation: borderGlow 2s ease-in-out infinite;
-    pointer-events: none;
-}
-
-/* 詳細へのリンクスタイル */
-.btn-cyber-detail {
-    background: rgba(0, 255, 255, 0.1) !important;
-    color: var(--cyber-blue) !important;
-    border: 2px solid var(--cyber-blue) !important;
-    text-shadow: 0 0 5px var(--cyber-blue);
-    padding: 10px 30px !important;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    border-radius: 25px !important;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    font-size: 1.1rem;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    text-decoration: none;
-    display: inline-block;
-    margin: 10px 0;
-}
-
-.btn-cyber-detail:hover {
-    background: rgba(0, 255, 255, 0.2) !important;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-    transform: translateY(-2px);
-    color: var(--cyber-blue) !important;
-}
-
-.btn-cyber-detail:active {
-    transform: translateY(1px);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-}
-
-.btn-cyber-detail i {
-    margin-right: 8px;
 }
 
 /* モード切り替えボタン */
@@ -794,6 +744,66 @@
         font-size: 0.9rem;
         padding: 8px 12px;
     }
+}
+
+/* サイドナビゲーションボタンのスタイル */
+.side-nav-button {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+
+.left-nav {
+    left: 20px;
+}
+
+.right-nav {
+    right: 20px;
+}
+
+.btn-cyber-nav {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #00ff9f;
+    color: #00ff9f;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.btn-cyber-nav:hover {
+    background: rgba(0, 255, 159, 0.1);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5);
+    transform: scale(1.05);
+    text-decoration: none;
+}
+
+/* ホバー時のグリッチエフェクト */
+.btn-cyber-nav:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 255, 159, 0.2);
+    animation: glitch 0.3s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
 }
 </style>
 
@@ -891,48 +901,36 @@ function confirmUnsavedChanges(event) {
 }
 </script>
 
-<!-- フォームの変更を検知するフラグ
+<!-- フォームの変更を検知するフラグ -->
+<script>
 let formChanged = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Initial formChanged:', formChanged);
-
-    // フォームの変更検知
+    console.log('DOM Content Loaded - Initializing...');
+    
+    // フォームの変更検知の初期化
     const form = document.getElementById('technicalForm');
     if (form) {
         // 初期状態のフォームデータを保存
         const initialFormData = new FormData(form);
-        const initialState = {};
-        for (let [key, value] of initialFormData.entries()) {
-            if (!initialState[key]) {
-                initialState[key] = [];
-            }
-            initialState[key].push(value);
-        }
-        
+        const initialState = Array.from(initialFormData.entries());
         console.log('Initial form state:', initialState);
 
         // フォームの変更を監視
-        form.addEventListener('change', function() {
-            const currentFormData = new FormData(form);
-            const currentState = {};
-            for (let [key, value] of currentFormData.entries()) {
-                if (!currentState[key]) {
-                    currentState[key] = [];
-                }
-                currentState[key].push(value);
-            }
-
-            // 初期状態と現在の状態を比較
-            formChanged = JSON.stringify(initialState) !== JSON.stringify(currentState);
-            console.log('Form changed:', formChanged);
-            console.log('Current state:', currentState);
+        ['input', 'change'].forEach(eventType => {
+            form.addEventListener(eventType, function() {
+                const currentFormData = new FormData(form);
+                const currentState = Array.from(currentFormData.entries());
+                formChanged = JSON.stringify(initialState) !== JSON.stringify(currentState);
+                console.log('Form changed:', formChanged);
+            });
         });
     }
 
     // 詳細へボタンのイベントリスナー
-    const toDetailBtn = document.querySelector('.btn-to-detail');
+    const toDetailBtn = document.getElementById('toDetailButton');
     if (toDetailBtn) {
+        console.log('Detail button found');
         toDetailBtn.addEventListener('click', function(e) {
             e.preventDefault();
             console.log('Detail button clicked, formChanged:', formChanged);
@@ -944,56 +942,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // 基本へボタンのイベントリスナー
-    const backToBasicBtn = document.getElementById('backToBasicBtn');
-    if (backToBasicBtn) {
-        backToBasicBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('Basic button clicked, formChanged:', formChanged);
-            
-            if (formChanged) {
-                showBasicDialog();
-            } else {
-                window.location.href = this.getAttribute('href');
-            }
-        });
-    }
 });
 
-// ダイアログ表示関数にもログを追加
+// ダイアログ関連の関数
 function showDetailDialog() {
-    console.log('Attempting to show detail dialog');
     const dialog = document.getElementById('detailDialog');
     if (dialog) {
         dialog.style.display = 'flex';
-        console.log('Detail dialog displayed');
-    } else {
-        console.log('Detail dialog element not found');
-    }
-}
-
-function showBasicDialog() {
-    console.log('Attempting to show basic dialog');
-    const dialog = document.getElementById('basicDialog');
-    if (dialog) {
-        dialog.style.display = 'flex';
-        console.log('Basic dialog displayed');
-    } else {
-        console.log('Basic dialog element not found');
-    }
-}
-</script>
-
-<script>
-function saveAndRedirect(url) {
-    const form = document.getElementById('technicalForm');
-    if (form) {
-        form.submit();
-        closeDialog();  // ダイアログを閉じる
-        setTimeout(() => {
-            window.location.href = url;
-        }, 100);
     }
 }
 
@@ -1017,8 +972,31 @@ function closeBasicDialog() {
         dialog.style.display = 'none';
     }
 }
+
+// 保存と移動の関数
+function saveAndRedirect(url) {
+    const form = document.getElementById('technicalForm');
+    if (form) {
+        form.submit();
+        closeDialog();
+        setTimeout(() => {
+            window.location.href = url;
+        }, 100);
+    }
+}
+
+// 保存のみを行う関数
+function saveForm() {
+    const form = document.getElementById('technicalForm');
+    if (form) {
+        form.submit();
+        alert('技術情報を保存しました！');
+        closeDialog();
+    }
+}
 </script>
 
+<!-- 詳細へのリンク部分 -->
 <!-- 詳細へのリンク部分 -->
 <div class="detail-link-container position-relative">
     <a href="{% url 'apps_gallery:detail' app.id %}" class="btn-cyber-detail">
@@ -1026,88 +1004,5 @@ function closeBasicDialog() {
     </a>
 </div>
 
-<script>
-// 保存だけを行う新しい関数
-function saveForm() {
-    const form = document.getElementById('technicalForm');
-    if (form) {
-        form.submit();
-        alert('技術情報を保存しました！');
-        closeDialog();  // ダイアログを閉じる
-    }
-}
-</script>
-
-<!-- 詳細へボタンのイベントリスナーを追加 -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 詳細へボタンのイベントリスナー
-    const toDetailBtn = document.querySelector('.btn-to-detail');
-    if (toDetailBtn) {
-        toDetailBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (formChanged) {
-                showDetailDialog();
-            } else {
-                // 変更がない場合は直接遷移
-                window.location.href = this.getAttribute('href');
-            }
-            return false;
-        });
-    }
-});
-
-// 詳細へ移動用のダイアログ表示関数
-function showDetailDialog() {
-    const dialog = document.getElementById('detailDialog');
-    if (dialog) {
-        dialog.style.display = 'flex';
-    }
-}
-</script>
-
-<!-- ダイアログを閉じる関数群 -->
-<script>
-function closeDialog() {
-    const dialogs = document.querySelectorAll('.cyber-dialog-overlay');
-    dialogs.forEach(dialog => {
-        dialog.style.display = 'none';
-    });
-}
-
-function closeDetailDialog() {
-    const dialog = document.getElementById('detailDialog');
-    if (dialog) {
-        dialog.style.display = 'none';
-    }
-}
-
-function closeBasicDialog() {
-    const dialog = document.getElementById('basicDialog');
-    if (dialog) {
-        dialog.style.display = 'none';
-    }
-}
-
-// 保存して移動する関数
-function saveAndRedirect(url) {
-    const form = document.getElementById('technicalForm');
-    if (form) {
-        form.submit();
-        closeDialog();  // ダイアログを閉じる
-        setTimeout(() => {
-            window.location.href = url;
-        }, 100);
-    }
-}
-
-// 保存だけを行う関数
-function saveFormOnly() {
-    const form = document.getElementById('technicalForm');
-    if (form) {
-        form.submit();
-        closeDialog();  // ダイアログを閉じる
-    }
-}
-</script>
+<!-- 重複するスクリプトを削除 -->
 {% endblock %} 
