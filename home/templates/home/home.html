@@ -66,33 +66,18 @@
             {% for app in apps %}
                 <div class="col-12 mb-4">
                     <div class="card cyber-card">
-                        <!-- サムネイルまたはスクリーンショットの表示 -->
-                        {% if app.thumbnail %}
-                            <img src="{{ app.thumbnail.url }}" 
-                                 class="d-none image-checker" 
-                                 onload="checkImageOrientation(this, '{{ app.id }}')"
-                                 data-title="{{ app.title }}"
-                                 data-overview="{{ app.overview }}"
-                                 data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                 data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                        {% elif app.screenshots %}
-                            <img src="{{ app.screenshots.0.url }}" 
-                                 class="d-none image-checker" 
-                                 onload="checkImageOrientation(this, '{{ app.id }}')"
-                                 data-title="{{ app.title }}"
-                                 data-overview="{{ app.overview }}"
-                                 data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                 data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                        {% endif %}
-                        
-                        <!-- 初期表示用のカード内容 -->
                         <div class="row g-0" id="card-content-{{ app.id }}">
                             {% if app.thumbnail %}
                                 <div class="col-md-4">
                                     <div class="h-100">
                                         <img src="{{ app.thumbnail.url }}" 
                                              class="img-fluid cyber-image rounded-start h-100"
-                                             style="object-fit: cover;">
+                                             style="object-fit: cover;"
+                                             onload="checkImageOrientation(this, '{{ app.id }}')"
+                                             data-title="{{ app.title }}"
+                                             data-overview="{{ app.overview }}"
+                                             data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                             data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
                                     </div>
                                 </div>
                             {% elif app.screenshots %}
@@ -100,7 +85,12 @@
                                     <div class="h-100">
                                         <img src="{{ app.screenshots.0.url }}" 
                                              class="img-fluid cyber-image rounded-start h-100"
-                                             style="object-fit: cover;">
+                                             style="object-fit: cover;"
+                                             onload="checkImageOrientation(this, '{{ app.id }}')"
+                                             data-title="{{ app.title }}"
+                                             data-overview="{{ app.overview }}"
+                                             data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                             data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
                                     </div>
                                 </div>
                             {% endif %}
@@ -150,6 +140,18 @@
 </div>
 
 <script>
+// JavaScriptの変数を定義して、アプリデータを保持
+const apps_data = [
+    {% for app in apps %}
+    {
+        id: {{ app.id }},
+        is_author: {% if request.user == app.author %}true{% else %}false{% endif %},
+        detail_url: "{% url 'apps_gallery:detail' app.id %}",
+        edit_url: "{% url 'apps_gallery:edit' app.id %}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+
 function checkImageOrientation(img, appId) {
     const isPortrait = img.naturalHeight > img.naturalWidth;
     const cardContent = document.getElementById(`card-content-${appId}`);
@@ -174,12 +176,12 @@ function checkImageOrientation(img, appId) {
             </div>
         `;
     } else {
-        // 横長画像の場合：カードの上に配置するように変更
+        // 横長画像の場合：カードの上に配置、余白を調整
         cardContent.innerHTML = `
             <div class="col-12">
-                <div class="screenshot-wrapper">
-                    <div class="screenshot-card">
-                        <div class="screenshot-image">
+                <div class="screenshot-wrapper" style="padding-bottom: 0;">
+                    <div class="screenshot-card" style="margin-bottom: 0;">
+                        <div class="screenshot-image" style="padding-bottom: 0;">
                             <img src="${img.src}" 
                                  class="img-fluid screenshot-preview">
                         </div>
@@ -423,7 +425,8 @@ document.addEventListener('DOMContentLoaded', function() {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 0.75rem;
+    padding: 0.5rem;
+    padding-bottom: 0;  /* 下部の余白を削除 */
 }
 
 .screenshot-card {
@@ -434,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
     overflow: hidden;
     transition: all 0.3s ease;
     width: 100%;
-    margin: 0.25rem 0;
+    margin: 0.25rem 0 0 0;  /* 下部のマージンを削除 */
 }
 
 .screenshot-image {
@@ -442,6 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
     overflow: hidden;
     text-align: center;
     padding: 0.5rem;
+    padding-bottom: 0;  /* 下部のパディングを削除 */
 }
 
 .screenshot-image img {
@@ -462,7 +466,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     .screenshot-wrapper {
-        padding: 0.5rem;
+        padding: 0.5rem 0.5rem 0 0.5rem;  /* 下部のパディングを削除 */
+    }
+
+    /* カードボディの上部余白を調整 */
+    .card-body {
+        padding-top: 0.5rem;  /* 上部のパディングを小さく */
     }
 }
 
