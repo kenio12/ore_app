@@ -130,27 +130,29 @@
 
     <!-- 矢印アイコンボタン -->
     <div class="position-fixed" style="top: 50%; right: 0; transform: translateY(-50%); z-index: 1000;">
-        <a href="#" 
-           onclick="confirmTechTransition(event)"
-           class="btn btn-cyber-secondary d-flex align-items-center"
-           style="opacity: 0.7; 
-                  transition: all 0.3s;
-                  margin-right: -10px;
-                  border-radius: 60px 0 0 60px;
-                  padding: 15px;
-                  background-color: rgba(0, 0, 0, 0.7);
-                  border: 2px solid var(--cyber-green);">
-            <span class="d-none d-md-inline me-2" 
-                  style="color: var(--cyber-green);
-                         text-shadow: 0 0 5px var(--cyber-green);">
-                技術へ
-            </span>
-            <i class="bi bi-arrow-right-circle-fill" 
-               style="color: var(--cyber-green); 
-                      font-size: 28px;
-                      filter: drop-shadow(0 0 5px var(--cyber-green));">
-            </i>
-        </a>
+        {% if app.id %}  {# app.idが存在する場合のみ表示 #}
+            <a href="#" 
+               onclick="confirmTechTransition(event)"
+               class="btn btn-cyber-secondary d-flex align-items-center"
+               style="opacity: 0.7; 
+                      transition: all 0.3s;
+                      margin-right: -10px;
+                      border-radius: 60px 0 0 60px;
+                      padding: 15px;
+                      background-color: rgba(0, 0, 0, 0.7);
+                      border: 2px solid var(--cyber-green);">
+                <span class="d-none d-md-inline me-2" 
+                      style="color: var(--cyber-green);
+                             text-shadow: 0 0 5px var(--cyber-green);">
+                    技術へ
+                </span>
+                <i class="bi bi-arrow-right-circle-fill" 
+                   style="color: var(--cyber-green); 
+                          font-size: 28px;
+                          filter: drop-shadow(0 0 5px var(--cyber-green));">
+                </i>
+            </a>
+        {% endif %}
     </div>
 
     <!-- モバイル用ツールチップ -->
@@ -1125,14 +1127,16 @@ document.addEventListener('DOMContentLoaded', function() {
         saveButton.addEventListener('click', (e) => handleFormSubmit(e));
     }
 
-    // 技術へボタンの処理
-    const saveTechButton = document.getElementById('saveTechButton');
-    if (saveTechButton) {
-        saveTechButton.addEventListener('click', function() {
-            const techUrl = "{% url 'apps_gallery:technical_edit' app.id %}";
-            handleFormSubmit(event, techUrl);
-        });
-    }
+    // app.idが存在する場合のみ技術へボタンの処理を追加
+    {% if app.id %}
+        const saveTechButton = document.getElementById('saveTechButton');
+        if (saveTechButton) {
+            saveTechButton.addEventListener('click', function() {
+                const techUrl = "{% url 'apps_gallery:technical_edit' app.id %}";
+                handleFormSubmit(event, techUrl);
+            });
+        }
+    {% endif %}
 
     // モーダルの設定
     const modalEl = document.getElementById('techConfirmModal');
@@ -1146,11 +1150,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// 技術へボタンのクリック時の確認モーダル表示
+// 技術へボタンのクリック時の確認モーダル表示も条件分岐
 function confirmTechTransition(event) {
     event.preventDefault();
-    const modal = new bootstrap.Modal(document.getElementById('techConfirmModal'));
-    modal.show();
+    {% if app.id %}
+        const modal = new bootstrap.Modal(document.getElementById('techConfirmModal'));
+        modal.show();
+    {% endif %}
 }
 </script>
 
@@ -1162,37 +1168,39 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // モーダル要素を取得
-    const modalEl = document.getElementById('techConfirmModal');
-    
-    // モーダルインスタンスを作成
-    const modal = new bootstrap.Modal(modalEl);
-    
-    // キャンセルボタンのイベントリスナー
-    document.querySelector('.cancel-btn').addEventListener('click', function() {
-        modal.hide();
-    });
+    {% if app.id %}  // app.idが存在する場合のみモーダル関連の処理を実行
+        // モーダル要素を取得
+        const modalEl = document.getElementById('techConfirmModal');
+        
+        // モーダルインスタンスを作成
+        const modal = new bootstrap.Modal(modalEl);
+        
+        // キャンセルボタンのイベントリスナー
+        document.querySelector('.cancel-btn').addEventListener('click', function() {
+            modal.hide();
+        });
 
-    // OKボタンのイベントリスナー
-    document.getElementById('saveTechButton').addEventListener('click', function() {
-        const form = document.getElementById('appForm');
-        if (form) {
-            const techUrl = "{% url 'apps_gallery:technical_edit' app.id %}";
-            form.action = window.location.pathname;
-            let nextUrlInput = document.createElement('input');
-            nextUrlInput.type = 'hidden';
-            nextUrlInput.name = 'next_url';
-            nextUrlInput.value = techUrl;
-            form.appendChild(nextUrlInput);
-            form.submit();
-        }
-    });
+        // OKボタンのイベントリスナー
+        document.getElementById('saveTechButton').addEventListener('click', function() {
+            const form = document.getElementById('appForm');
+            if (form) {
+                const techUrl = "{% url 'apps_gallery:technical_edit' app.id %}";
+                form.action = window.location.pathname;
+                let nextUrlInput = document.createElement('input');
+                nextUrlInput.type = 'hidden';
+                nextUrlInput.name = 'next_url';
+                nextUrlInput.value = techUrl;
+                form.appendChild(nextUrlInput);
+                form.submit();
+            }
+        });
 
-    // グローバルスコープに関数を追加
-    window.confirmTechTransition = function(event) {
-        event.preventDefault();
-        modal.show();
-    };
+        // グローバルスコープに関数を追加
+        window.confirmTechTransition = function(event) {
+            event.preventDefault();
+            modal.show();
+        };
+    {% endif %}
 });
 </script>
 
