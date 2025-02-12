@@ -125,9 +125,14 @@
                                     
                                     <!-- アクションボタン -->
                                     <div class="d-flex justify-content-end gap-2">
-                                        <a href="/apps_gallery/{{ app.id }}/" class="btn btn-cyber-secondary">
+                                        <a href="{% url 'apps_gallery:detail' app.id %}" class="btn btn-cyber-secondary">
                                             <i class="bi bi-search"></i> 詳細を見る
                                         </a>
+                                        {% if request.user == app.author %}
+                                            <a href="{% url 'apps_gallery:edit' app.id %}" class="btn btn-cyber-edit">
+                                                <i class="bi bi-pencil-square"></i> 編集する
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -187,6 +192,9 @@ function checkImageOrientation(img, appId) {
 }
 
 function getCardBody(appId, title, overview, types, genres) {
+    const app = apps_data.find(a => a.id === parseInt(appId));
+    if (!app) return '';
+
     const typesBadges = types.map(type => 
         `<span class="badge cyber-type me-2">${type}</span>`
     ).join('');
@@ -195,12 +203,16 @@ function getCardBody(appId, title, overview, types, genres) {
         `<span class="badge cyber-genre me-2">${genre}</span>`
     ).join('');
 
+    const editButton = app.is_author ? 
+        `<a href="${app.edit_url}" class="btn btn-cyber-edit">
+            <i class="bi bi-pencil-square"></i> 編集する
+        </a>` : '';
+
     return `
         <div class="card-body">
             <h3 class="card-title cyber-title">${title}</h3>
             <p class="card-text cyber-description">${overview}</p>
             
-            <!-- アプリの種類とジャンル -->
             <div class="mb-3">
                 <div class="mb-2">
                     ${typesBadges}
@@ -210,11 +222,11 @@ function getCardBody(appId, title, overview, types, genres) {
                 </div>
             </div>
             
-            <!-- アクションボタン -->
             <div class="d-flex justify-content-end gap-2">
-                <a href="/apps_gallery/${appId}/" class="btn btn-cyber-secondary">
+                <a href="${app.detail_url}" class="btn btn-cyber-secondary">
                     <i class="bi bi-search"></i> 詳細を見る
                 </a>
+                ${editButton}
             </div>
         </div>
     `;
@@ -656,6 +668,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .alert-cyber .btn-close:hover {
     opacity: 1;
+}
+
+/* 編集ボタンのスタイル */
+.btn-cyber-edit {
+    background: rgba(0, 255, 159, 0.1);
+    color: #00ff9f;
+    border: 1px solid #00ff9f;
+    text-shadow: 0 0 5px rgba(0, 255, 159, 0.5);
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-edit:hover {
+    background: rgba(0, 255, 159, 0.2);
+    color: #00ff9f;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+    transform: translateY(-2px);
 }
 </style>
 {% endblock %} 

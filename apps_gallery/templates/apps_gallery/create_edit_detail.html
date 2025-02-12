@@ -104,24 +104,58 @@
     {% endif %}
 
     <!-- 下部のボタングループ -->
-    <div class="bottom-button-group">
+    <div class="position-fixed d-flex justify-content-between align-items-center" 
+         style="bottom: 20px; left: 20px; right: 20px; z-index: 1000; pointer-events: none;">
+        
+        <!-- 左：空き -->
+        <div style="width: 33%;"></div>
+        
         <!-- 中央：ステータス表示 -->
-        <div class="button-container">
+        <div style="width: 33%; display: flex; justify-content: center;">
             {% if not readonly and app.id %}
-                <span class="status-badge editing-status">
+                <span class="status-badge editing-status"
+                      style="opacity: 0.7;
+                             transition: all 0.3s;
+                             background-color: rgba(0, 0, 0, 0.7);
+                             border: 2px solid var(--cyber-green);
+                             padding: 10px 25px;
+                             border-radius: 30px;
+                             pointer-events: auto;
+                             backdrop-filter: blur(8px);
+                             -webkit-backdrop-filter: blur(8px);">
                     <i class="bi bi-pencil-square"></i> 編集中
                 </span>
             {% elif readonly and app.id %}
-                <span class="status-badge viewing-status">
+                <span class="status-badge viewing-status"
+                      style="opacity: 0.7;
+                             transition: all 0.3s;
+                             background-color: rgba(0, 0, 0, 0.7);
+                             border: 2px solid var(--cyber-blue);
+                             padding: 10px 25px;
+                             border-radius: 30px;
+                             pointer-events: auto;
+                             backdrop-filter: blur(8px);
+                             -webkit-backdrop-filter: blur(8px);">
                     <i class="bi bi-eye"></i> 詳細
                 </span>
             {% endif %}
         </div>
-
+        
         <!-- 右：保存ボタン -->
-        <div class="button-container">
+        <div style="width: 33%; display: flex; justify-content: flex-end;">
             {% if not readonly %}
-                <button type="submit" form="appForm" class="btn-cyber-save">
+                <button type="submit" 
+                        form="appForm" 
+                        class="btn-cyber-save"
+                        style="opacity: 0.7;
+                               transition: all 0.3s;
+                               background-color: rgba(0, 0, 0, 0.7);
+                               border: 2px solid var(--cyber-green);
+                               padding: 10px 25px;
+                               border-radius: 30px;
+                               pointer-events: auto;
+                               backdrop-filter: blur(8px);
+                               -webkit-backdrop-filter: blur(8px);">
                     <i class="bi bi-save"></i> 保存
                 </button>
             {% endif %}
@@ -1011,6 +1045,37 @@ html {
 /* モーダルの背景をより暗く */
 .modal-backdrop.show {
     opacity: 0.8;
+}
+
+/* ステータスバッジのホバーエフェクト */
+.status-badge {
+    transition: all 0.3s ease;
+}
+
+.status-badge:hover {
+    box-shadow: 0 0 15px var(--cyber-green);
+}
+
+/* 保存ボタンのホバーエフェクト */
+.btn-cyber-save {
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-save:hover {
+    box-shadow: 0 0 15px var(--cyber-green);
+    transform: translateY(-2px);
+}
+
+/* 詳細表示時のスタイル */
+.viewing-status {
+    color: var(--cyber-blue);
+    text-shadow: 0 0 5px var(--cyber-blue);
+}
+
+/* 編集中表示時のスタイル */
+.editing-status {
+    color: var(--cyber-green);
+    text-shadow: 0 0 5px var(--cyber-green);
 }
 </style>
 

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib import messages
+from django.urls import reverse
 from apps_gallery.models import AppGallery
 from apps_gallery.constants import *  # __init__.pyから全ての定数をインポート
 
@@ -9,6 +10,28 @@ def home(request):
         status='public',
         dev_status='completed'  # 完成品のみ
     ).order_by('-created_at')
+    
+    # アプリの情報を拡張
+    apps_data = []
+    for app in apps:
+        # JSONFieldからデータを取得
+        thumbnail_url = app.thumbnail.get('url') if app.thumbnail else None
+        screenshots_urls = [s.get('url') for s in app.screenshots] if app.screenshots else []
+
+        app_data = {
+            'id': app.pk,
+            'title': app.title,
+            'overview': app.overview,
+            'thumbnail': thumbnail_url,
+            'screenshots': screenshots_urls,
+            'app_types': [APP_TYPES[t] for t in app.app_types],
+            'genres': [GENRES[g] for g in app.genres],
+            'detail_url': reverse('apps_gallery:detail', args=[app.pk]),
+            'edit_url': reverse('apps_gallery:edit', args=[app.pk]),
+            'is_author': request.user == app.author,
+            'author': str(app.author)  # 文字列に変換
+        }
+        apps_data.append(app_data)
     
     # デバッグ出力を追加
     print("=== Debug Output ===")
@@ -21,6 +44,7 @@ def home(request):
     
     context = {
         'apps': apps,
+        'apps_data': apps_data,
         'APP_TYPES': dict(APP_TYPES),
         'GENRES': dict(GENRES),
     }
