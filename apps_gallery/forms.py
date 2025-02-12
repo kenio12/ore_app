@@ -90,13 +90,13 @@ class AppForm(forms.ModelForm):
             if field_name in self.fields:
                 self.fields[field_name].widget.attrs['class'] = 'cyber-checkbox'
         
-        # タイトルのみ必須フィールドに設定
-        self.fields['title'].required = True
+        # タイトルを必須から任意に変更
+        self.fields['title'].required = False
 
         # フィールドのカスタマイズ
         self.fields['title'].widget.attrs.update({
             'class': 'form-control cyber-green-focus',
-            'placeholder': 'アプリの名前を入力してください'
+            'placeholder': 'アプリの名前を入力してください（任意）'
         })
 
         self.fields['app_url'].widget.attrs.update({
