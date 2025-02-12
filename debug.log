@@ -713,3 +713,244 @@ INFO 2025-02-12 00:11:49,298 views 290 140272061626048 Request method: GET
 INFO 2025-02-12 00:11:49,298 views 290 140272061626048 Request method: GET
 INFO 2025-02-12 00:11:49,314 views 290 140272061626048 App found: けにおアプリや
 INFO 2025-02-12 00:11:49,314 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:13:43,836 views 290 140272061626048 Request method: POST
+INFO 2025-02-12 00:13:43,836 views 290 140272061626048 Request method: POST
+INFO 2025-02-12 00:13:43,846 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:13:43,846 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:13:43,849 views 290 140272061626048 Processing POST request
+INFO 2025-02-12 00:13:43,849 views 290 140272061626048 Processing POST request
+DEBUG 2025-02-12 00:13:43,851 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['tNVd118h1vxLZPBG5OjbE68cNIcUBgOFJINjBEM1iHwIFt5zIzMvrTOPt6VaOX64', 'tNVd118h1vxLZPBG5OjbE68cNIcUBgOFJINjBEM1iHwIFt5zIzMvrTOPt6VaOX64'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ']}>
+DEBUG 2025-02-12 00:13:43,851 views 290 140272061626048 POST data: <QueryDict: {'csrfmiddlewaretoken': ['tNVd118h1vxLZPBG5OjbE68cNIcUBgOFJINjBEM1iHwIFt5zIzMvrTOPt6VaOX64', 'tNVd118h1vxLZPBG5OjbE68cNIcUBgOFJINjBEM1iHwIFt5zIzMvrTOPt6VaOX64'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ']}>
+INFO 2025-02-12 00:13:43,856 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-12 00:13:43,856 views 290 140272061626048 Form is valid, saving...
+INFO 2025-02-12 00:13:43,894 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-12 00:13:43,894 views 290 140272061626048 App 13 saved successfully
+INFO 2025-02-12 00:13:43,926 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:13:43,926 views 290 140272061626048 Request method: GET
+INFO 2025-02-12 00:13:43,934 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 00:13:43,934 views 290 140272061626048 App found: けにおアプリや
+INFO 2025-02-12 18:47:47,798 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:47:47,798 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:47:47,811 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:47:47,811 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:47:50,632 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:47:50,632 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:47:50,639 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:47:50,639 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:47:50,643 views 25 140700914022080 Processing POST request
+INFO 2025-02-12 18:47:50,643 views 25 140700914022080 Processing POST request
+DEBUG 2025-02-12 18:47:50,650 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['0WofSUmPlVzDwwpKG4r0JTZ4TfggalPrgRglsx0zC7yAcaTDjPUkwGFHzDZwn27Q', '0WofSUmPlVzDwwpKG4r0JTZ4TfggalPrgRglsx0zC7yAcaTDjPUkwGFHzDZwn27Q'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-12 18:47:50,650 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['0WofSUmPlVzDwwpKG4r0JTZ4TfggalPrgRglsx0zC7yAcaTDjPUkwGFHzDZwn27Q', '0WofSUmPlVzDwwpKG4r0JTZ4TfggalPrgRglsx0zC7yAcaTDjPUkwGFHzDZwn27Q'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-12 18:47:50,697 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:47:50,697 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:47:50,733 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:47:50,733 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:47:50,735 views 25 140700914022080 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 18:47:50,735 views 25 140700914022080 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 18:49:55,898 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:49:55,898 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:49:55,929 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:49:55,929 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:04,807 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:50:04,807 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:50:04,820 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:04,820 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:04,823 views 25 140700914022080 Processing POST request
+INFO 2025-02-12 18:50:04,823 views 25 140700914022080 Processing POST request
+DEBUG 2025-02-12 18:50:04,826 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['qI2qznFikY5n9NW6Vq42LgCefnWamowEGDUw90j2Ba4kPrqZybxmy3iRVLFqz5O3', 'qI2qznFikY5n9NW6Vq42LgCefnWamowEGDUw90j2Ba4kPrqZybxmy3iRVLFqz5O3'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-12 18:50:04,826 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['qI2qznFikY5n9NW6Vq42LgCefnWamowEGDUw90j2Ba4kPrqZybxmy3iRVLFqz5O3', 'qI2qznFikY5n9NW6Vq42LgCefnWamowEGDUw90j2Ba4kPrqZybxmy3iRVLFqz5O3'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-12 18:50:04,836 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:50:04,836 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:50:04,881 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:50:04,881 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:50:04,885 views 25 140700914022080 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 18:50:04,885 views 25 140700914022080 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 18:50:06,177 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:50:06,177 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:50:06,187 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:06,187 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:35,906 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:50:35,906 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:50:35,918 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:35,918 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:35,924 views 25 140700914022080 Processing POST request
+INFO 2025-02-12 18:50:35,924 views 25 140700914022080 Processing POST request
+DEBUG 2025-02-12 18:50:35,930 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['zr3nLcjb6QEKMAby9RnU5cswH5YYWqwcPmVtlPXVn2DHseFrMCQeSZ89ntHe97OB', 'zr3nLcjb6QEKMAby9RnU5cswH5YYWqwcPmVtlPXVn2DHseFrMCQeSZ89ntHe97OB'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-12 18:50:35,930 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['zr3nLcjb6QEKMAby9RnU5cswH5YYWqwcPmVtlPXVn2DHseFrMCQeSZ89ntHe97OB', 'zr3nLcjb6QEKMAby9RnU5cswH5YYWqwcPmVtlPXVn2DHseFrMCQeSZ89ntHe97OB'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-12 18:50:35,936 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:50:35,936 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:50:35,983 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:50:35,983 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:50:35,986 views 25 140700914022080 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 18:50:35,986 views 25 140700914022080 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 18:50:39,011 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:50:39,011 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:50:39,023 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:39,023 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:50,687 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:50:50,687 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:50:50,703 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:50,703 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:50,707 views 25 140700914022080 Processing POST request
+INFO 2025-02-12 18:50:50,707 views 25 140700914022080 Processing POST request
+DEBUG 2025-02-12 18:50:50,710 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['IzCpFXvl98IHexWhaquBnadywXsN30nnYuuvfA95qkHEUbqaNbXVaXTbclb3gHFM', 'IzCpFXvl98IHexWhaquBnadywXsN30nnYuuvfA95qkHEUbqaNbXVaXTbclb3gHFM'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ']}>
+DEBUG 2025-02-12 18:50:50,710 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['IzCpFXvl98IHexWhaquBnadywXsN30nnYuuvfA95qkHEUbqaNbXVaXTbclb3gHFM', 'IzCpFXvl98IHexWhaquBnadywXsN30nnYuuvfA95qkHEUbqaNbXVaXTbclb3gHFM'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ']}>
+INFO 2025-02-12 18:50:50,719 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:50:50,719 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:50:50,763 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:50:50,763 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:50:50,807 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:50:50,807 views 25 140700914022080 Request method: GET
+INFO 2025-02-12 18:50:50,816 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:50:50,816 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:51:03,330 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:51:03,330 views 25 140700914022080 Request method: POST
+INFO 2025-02-12 18:51:03,343 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:51:03,343 views 25 140700914022080 App found: けにおアプリや
+INFO 2025-02-12 18:51:03,348 views 25 140700914022080 Processing POST request
+INFO 2025-02-12 18:51:03,348 views 25 140700914022080 Processing POST request
+DEBUG 2025-02-12 18:51:03,353 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['Hh289XrGC6SDtKSw94v9Mrls41Aux0mEXcUeJA5qTiRA9ompMPYtze15KpjKKHE3', 'Hh289XrGC6SDtKSw94v9Mrls41Aux0mEXcUeJA5qTiRA9ompMPYtze15KpjKKHE3'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-12 18:51:03,353 views 25 140700914022080 POST data: <QueryDict: {'csrfmiddlewaretoken': ['Hh289XrGC6SDtKSw94v9Mrls41Aux0mEXcUeJA5qTiRA9ompMPYtze15KpjKKHE3', 'Hh289XrGC6SDtKSw94v9Mrls41Aux0mEXcUeJA5qTiRA9ompMPYtze15KpjKKHE3'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-12 18:51:03,364 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:51:03,364 views 25 140700914022080 Form is valid, saving...
+INFO 2025-02-12 18:51:03,417 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:51:03,417 views 25 140700914022080 App 13 saved successfully
+INFO 2025-02-12 18:51:03,421 views 25 140700914022080 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 18:51:03,421 views 25 140700914022080 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 19:14:25,720 views 25 140700991776448 Request method: GET
+INFO 2025-02-12 19:14:25,720 views 25 140700991776448 Request method: GET
+INFO 2025-02-12 19:14:25,730 views 25 140700991776448 App found: けにおアプリや
+INFO 2025-02-12 19:14:25,730 views 25 140700991776448 App found: けにおアプリや
+INFO 2025-02-12 19:14:35,607 views 25 140700991776448 Request method: POST
+INFO 2025-02-12 19:14:35,607 views 25 140700991776448 Request method: POST
+INFO 2025-02-12 19:14:35,619 views 25 140700991776448 App found: けにおアプリや
+INFO 2025-02-12 19:14:35,619 views 25 140700991776448 App found: けにおアプリや
+INFO 2025-02-12 19:14:35,623 views 25 140700991776448 Processing POST request
+INFO 2025-02-12 19:14:35,623 views 25 140700991776448 Processing POST request
+DEBUG 2025-02-12 19:14:35,626 views 25 140700991776448 POST data: <QueryDict: {'csrfmiddlewaretoken': ['7O6JI37LPMsfxMg4Ff5UcQLLMmBtlGEcnJYPiGLv6YrcdqKXi0yeZDrosKkJynWB', '7O6JI37LPMsfxMg4Ff5UcQLLMmBtlGEcnJYPiGLv6YrcdqKXi0yeZDrosKkJynWB'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+DEBUG 2025-02-12 19:14:35,626 views 25 140700991776448 POST data: <QueryDict: {'csrfmiddlewaretoken': ['7O6JI37LPMsfxMg4Ff5UcQLLMmBtlGEcnJYPiGLv6YrcdqKXi0yeZDrosKkJynWB', '7O6JI37LPMsfxMg4Ff5UcQLLMmBtlGEcnJYPiGLv6YrcdqKXi0yeZDrosKkJynWB'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': [''], 'status': [''], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd'], 'motivation': ['がおおおおお'], 'catchphrase_1': ['なんやああ'], 'catchphrase_2': ['くわああ'], 'catchphrase_3': ['すぼおお'], 'target_users': ['むっほおおおう'], 'problems': ['ほんまかあ'], 'final_appeal': ['こいやあああ'], 'next_url': ['/apps_gallery/technical/edit/13/']}>
+INFO 2025-02-12 19:14:35,634 views 25 140700991776448 Form is valid, saving...
+INFO 2025-02-12 19:14:35,634 views 25 140700991776448 Form is valid, saving...
+INFO 2025-02-12 19:14:35,687 views 25 140700991776448 App 13 saved successfully
+INFO 2025-02-12 19:14:35,687 views 25 140700991776448 App 13 saved successfully
+INFO 2025-02-12 19:14:35,690 views 25 140700991776448 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 19:14:35,690 views 25 140700991776448 Redirecting to technical edit: /apps_gallery/technical/edit/13/
+INFO 2025-02-12 19:14:39,916 views 25 140700991776448 Request method: GET
+INFO 2025-02-12 19:14:39,916 views 25 140700991776448 Request method: GET
+INFO 2025-02-12 19:14:39,926 views 25 140700991776448 App found: けにおアプリや
+INFO 2025-02-12 19:14:39,926 views 25 140700991776448 App found: けにおアプリや
+INFO 2025-02-12 19:24:41,931 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:24:41,931 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:24:41,977 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:24:41,977 views 566 140139762349760 App found: けにおアプリや
+DEBUG 2025-02-12 19:24:53,664 connectionpool 566 140139762349760 Starting new HTTPS connection (1): api.cloudinary.com:443
+DEBUG 2025-02-12 19:24:54,795 connectionpool 566 140139762349760 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/destroy HTTP/1.1" 200 None
+INFO 2025-02-12 19:24:55,913 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:24:55,913 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:24:55,928 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:24:55,928 views 566 140139762349760 App found: けにおアプリや
+DEBUG 2025-02-12 19:25:04,330 connectionpool 566 140139762349760 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-02-12 19:25:05,472 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:25:05,472 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:25:05,492 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:25:05,492 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:25:08,985 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:25:08,985 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:25:08,993 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:25:08,993 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:25:51,255 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:25:51,255 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:25:51,262 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:25:51,262 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:25:51,270 views 566 140139762349760 Processing POST request
+INFO 2025-02-12 19:25:51,270 views 566 140139762349760 Processing POST request
+DEBUG 2025-02-12 19:25:51,273 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo', 'SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['in_development'], 'status': ['public'], 'app_url': ['https://www.sss4.life/！'], 'github_url': ['https://github.com/kenio12/sss4！'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+DEBUG 2025-02-12 19:25:51,273 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo', 'SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['in_development'], 'status': ['public'], 'app_url': ['https://www.sss4.life/！'], 'github_url': ['https://github.com/kenio12/sss4！'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+INFO 2025-02-12 19:25:51,323 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:25:51,323 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:25:51,394 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:25:51,394 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:26:14,351 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:26:14,351 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:26:14,362 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:26:14,362 views 566 140139762349760 App found: けにおアプリや
+INFO 2025-02-12 19:26:14,365 views 566 140139762349760 Processing POST request
+INFO 2025-02-12 19:26:14,365 views 566 140139762349760 Processing POST request
+DEBUG 2025-02-12 19:26:14,368 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo', 'SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['in_development'], 'status': ['public'], 'app_url': ['https://www.sss4.life/！'], 'github_url': ['https://github.com/kenio12/sss4！'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+DEBUG 2025-02-12 19:26:14,368 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo', 'SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['in_development'], 'status': ['public'], 'app_url': ['https://www.sss4.life/！'], 'github_url': ['https://github.com/kenio12/sss4！'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+INFO 2025-02-12 19:26:14,371 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:26:14,371 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:26:14,417 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:26:14,417 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:26:42,471 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:26:42,471 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:26:42,484 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:26:42,484 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:26:42,486 views 566 140139762349760 Processing POST request
+INFO 2025-02-12 19:26:42,486 views 566 140139762349760 Processing POST request
+DEBUG 2025-02-12 19:26:42,489 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo', 'SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'education', 'music', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['completed'], 'status': ['draft'], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+DEBUG 2025-02-12 19:26:42,489 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo', 'SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'education', 'music', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['completed'], 'status': ['draft'], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+INFO 2025-02-12 19:26:42,499 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:26:42,499 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:26:42,535 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:26:42,535 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:26:57,639 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:26:57,639 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:26:57,651 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:26:57,651 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:26:57,653 views 566 140139762349760 Processing POST request
+INFO 2025-02-12 19:26:57,653 views 566 140139762349760 Processing POST request
+DEBUG 2025-02-12 19:26:57,655 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo', 'SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'education', 'music', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['in_development'], 'status': ['draft'], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+DEBUG 2025-02-12 19:26:57,655 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo', 'SpiBA2HuqMeScmpIjsSySFKkKdafE5lZ8kaHaFleHYdPS0TBWdlSFsqXqBTvRMDo'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'education', 'music', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['in_development'], 'status': ['draft'], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+INFO 2025-02-12 19:26:57,664 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:26:57,664 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:26:57,704 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:26:57,704 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:33:24,805 views 566 140139682592448 Request method: GET
+INFO 2025-02-12 19:33:24,805 views 566 140139682592448 Request method: GET
+INFO 2025-02-12 19:33:24,814 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:33:24,816 views 566 140139682592448 App found: けにおアプリや！
+INFO 2025-02-12 19:33:24,816 views 566 140139682592448 App found: けにおアプリや！
+INFO 2025-02-12 19:33:24,814 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:33:24,830 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:33:24,830 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:33:34,394 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:33:34,394 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:33:34,414 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:33:34,414 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:33:52,386 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:33:52,386 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:33:52,395 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:33:52,395 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:33:52,402 views 566 140139762349760 Processing POST request
+INFO 2025-02-12 19:33:52,402 views 566 140139762349760 Processing POST request
+DEBUG 2025-02-12 19:33:52,406 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['bc0yyD3Lr6eVy7vkfs3NowlF6WZlpw5Er7SE8gHvIidSeLZdSdw7bj1iMkIBCdn3', 'bc0yyD3Lr6eVy7vkfs3NowlF6WZlpw5Er7SE8gHvIidSeLZdSdw7bj1iMkIBCdn3'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'education', 'music', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['completed'], 'status': ['public'], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+DEBUG 2025-02-12 19:33:52,406 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['bc0yyD3Lr6eVy7vkfs3NowlF6WZlpw5Er7SE8gHvIidSeLZdSdw7bj1iMkIBCdn3', 'bc0yyD3Lr6eVy7vkfs3NowlF6WZlpw5Er7SE8gHvIidSeLZdSdw7bj1iMkIBCdn3'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'education', 'music', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['completed'], 'status': ['public'], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+INFO 2025-02-12 19:33:52,416 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:33:52,416 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:33:52,481 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:33:52,481 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:34:38,737 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:34:38,737 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:34:38,750 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:34:38,750 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:34:50,525 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:34:50,525 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:34:50,530 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:34:50,530 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:36:49,514 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:36:49,514 views 566 140139762349760 Request method: GET
+INFO 2025-02-12 19:36:49,524 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:36:49,524 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:36:55,114 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:36:55,114 views 566 140139762349760 Request method: POST
+INFO 2025-02-12 19:36:55,124 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:36:55,124 views 566 140139762349760 App found: けにおアプリや！
+INFO 2025-02-12 19:36:55,128 views 566 140139762349760 Processing POST request
+INFO 2025-02-12 19:36:55,128 views 566 140139762349760 Processing POST request
+DEBUG 2025-02-12 19:36:55,134 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['jMuBgjhtOKfp6pyEo5eIyuenrMWti3EwzHmHQWVd5WemM32x1QH2lhU07aFJvKWV', 'jMuBgjhtOKfp6pyEo5eIyuenrMWti3EwzHmHQWVd5WemM32x1QH2lhU07aFJvKWV'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'app_types': ['web_app'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'education', 'music', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['completed'], 'status': ['public'], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+DEBUG 2025-02-12 19:36:55,134 views 566 140139762349760 POST data: <QueryDict: {'csrfmiddlewaretoken': ['jMuBgjhtOKfp6pyEo5eIyuenrMWti3EwzHmHQWVd5WemM32x1QH2lhU07aFJvKWV', 'jMuBgjhtOKfp6pyEo5eIyuenrMWti3EwzHmHQWVd5WemM32x1QH2lhU07aFJvKWV'], 'active_tab': [''], 'app_id': ['13', '13'], 'image': [''], 'title': ['けにおアプリや！'], 'app_types': ['web_app'], 'genres': ['netshop', 'matching', 'learning_service', 'work', 'entertainment', 'daily_life', 'communication', 'food', 'education', 'music', 'pet', 'development_tool', 'portfolio'], 'dev_status': ['completed'], 'status': ['public'], 'app_url': ['https://www.sss4.life/'], 'github_url': ['https://github.com/kenio12/sss4'], 'overview': ['どうっっっd！'], 'motivation': ['がおおおおお！'], 'catchphrase_1': ['なんやああ！'], 'catchphrase_2': ['くわああ！'], 'catchphrase_3': ['すぼおお！'], 'target_users': ['むっほおおおう！'], 'problems': ['ほんまかあ！'], 'final_appeal': ['こいやあああ！']}>
+INFO 2025-02-12 19:36:55,140 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:36:55,140 views 566 140139762349760 Form is valid, saving...
+INFO 2025-02-12 19:36:55,179 views 566 140139762349760 App 13 saved successfully
+INFO 2025-02-12 19:36:55,179 views 566 140139762349760 App 13 saved successfully

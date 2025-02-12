@@ -209,15 +209,16 @@ def edit_app(request, pk):
     logger.info(f"Request method: {request.method}")
     
     try:
-        # 毎回DBから最新データを取得（キャッシュを使わない）
         app = get_object_or_404(AppGallery.objects.select_related(), pk=pk)
         logger.info(f"App found: {app.title}")
         
         # 権限チェック
         if app.author != request.user:
             logger.warning(f"Unauthorized access attempt by user {request.user} for app {pk}")
-            messages.error(request, '権限がありません')
-            return redirect('home:home')  # ホーム画面にリダイレクト
+            return JsonResponse({
+                'success': False,
+                'error': '権限がありません'
+            }, status=403)
         
         if request.method == 'POST':
             logger.info("Processing POST request")
@@ -230,33 +231,41 @@ def edit_app(request, pk):
                     app = form.save()
                     logger.info(f"App {pk} saved successfully")
                     
-                    # 遷移先URLの取得と検証
+                    # 遷移先URLの取得
                     next_url = request.POST.get('next_url')
-                    if next_url and 'technical' in next_url:
-                        logger.info(f"Redirecting to technical edit: {next_url}")
-                        return redirect('apps_gallery:technical_edit', pk=pk)
                     
-                    messages.success(request, '保存しました')
-                    # キャッシュを無視して最新データを表示するためにクエリパラメータを追加
-                    return redirect(f"{reverse('apps_gallery:edit', kwargs={'pk': pk})}?t={time.time()}")
+                    return JsonResponse({
+                        'success': True,
+                        'message': '保存しました',
+                        'redirect_url': next_url if next_url else reverse('apps_gallery:edit', kwargs={'pk': pk})
+                    })
                     
                 except Exception as save_error:
                     logger.error(f"Error saving app {pk}: {str(save_error)}", exc_info=True)
-                    messages.error(request, f'保存中にエラーが発生しました: {str(save_error)}')
+                    return JsonResponse({
+                        'success': False,
+                        'error': f'保存中にエラーが発生しました: {str(save_error)}'
+                    }, status=500)
             else:
                 logger.warning(f"Form validation failed: {form.errors}")
+                return JsonResponse({
+                    'success': False,
+                    'errors': form.errors,
+                    'error_details': {field: errors[0] for field, errors in form.errors.items()}
+                }, status=400)
         
-        # GETリクエスト時も最新のデータでフォームを初期化
+        # GETリクエスト時
         form = AppForm(instance=app)
-        
         context = get_common_context(app=app, is_edit=True)
         context['form'] = form
         return render(request, 'apps_gallery/create_edit_detail.html', context)
         
     except Exception as e:
         logger.error(f"Error in edit_app: {str(e)}", exc_info=True)
-        messages.error(request, f'エラーが発生しました: {str(e)}')
-        return redirect('apps_gallery:list')
+        return JsonResponse({
+            'success': False,
+            'error': f'エラーが発生しました: {str(e)}'
+        }, status=500)
 
 @login_required
 def handle_app_form(request, app=None, context=None):

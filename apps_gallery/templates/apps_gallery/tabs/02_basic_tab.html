@@ -33,15 +33,15 @@
             <div class="mb-4">
                 <label class="form-label">アプリの種類</label>
                 <div class="row g-3">
-                    {% for value, label in form.types.field.choices %}
+                    {% for value, label in form.app_types.field.choices %}
                         <div class="col-md-3 col-sm-6">
                             <div class="form-check">
                                 <input type="checkbox" 
-                                       name="types" 
+                                       name="app_types" 
                                        value="{{ value }}"
                                        id="type_{{ value }}"
                                        class="form-check-input cyber-checkbox"
-                                       {% if value in app.types %}checked{% endif %}
+                                       {% if value in app.app_types %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label" for="type_{{ value }}">
                                     {{ label }}

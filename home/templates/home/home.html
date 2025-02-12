@@ -50,10 +50,17 @@
 
     <!-- フラッシュメッセージ -->
     {% if messages %}
-        <div class="container mb-4">
+        <!-- トースト通知 -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
             {% for message in messages %}
-                <div class="alert alert-cyber-success">
-                    {{ message }}
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                    <div class="toast-header">
+                        <strong class="me-auto">通知</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
                 </div>
             {% endfor %}
         </div>
@@ -218,6 +225,14 @@ function getCardBody(appId, title, overview, types, genres) {
         </div>
     `;
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+    var toastList = toastElList.map(function(toastEl) {
+        return new bootstrap.Toast(toastEl);
+    });
+    toastList.forEach(toast => toast.show());
+});
 </script>
 
 <style>
@@ -402,7 +417,7 @@ function getCardBody(appId, title, overview, types, genres) {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 0.75rem;  /* パディングを1.5remから0.75remに減らす */
+    padding: 0.75rem;
 }
 
 .screenshot-card {
@@ -413,7 +428,7 @@ function getCardBody(appId, title, overview, types, genres) {
     overflow: hidden;
     transition: all 0.3s ease;
     width: 100%;
-    margin: 0.25rem 0;  /* マージンを0.5remから0.25remに減らす */
+    margin: 0.25rem 0;
 }
 
 .screenshot-image {
@@ -428,10 +443,21 @@ function getCardBody(appId, title, overview, types, genres) {
     max-width: 100%;
     height: auto;
     object-fit: contain;
-    max-height: 400px;
+    max-height: 300px;
     display: block;
     margin: 0 auto;
     border-radius: 4px;
+}
+
+/* PC画面用の追加設定 */
+@media (min-width: 992px) {
+    .screenshot-image img {
+        max-height: 250px;
+    }
+    
+    .screenshot-wrapper {
+        padding: 0.5rem;
+    }
 }
 
 /* サイバーピンクテキスト */
