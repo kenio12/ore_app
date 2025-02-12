@@ -174,16 +174,33 @@
                       border-radius: 60px 0 0 60px;
                       padding: 15px;
                       background-color: rgba(0, 0, 0, 0.7);
+                      {% if readonly %}
+                      border: 2px solid var(--cyber-blue) !important;">
+                      {% else %}
                       border: 2px solid var(--cyber-green);">
+                      {% endif %}
                 <span class="d-none d-md-inline me-2" 
-                      style="color: var(--cyber-green);
-                             text-shadow: 0 0 5px var(--cyber-green);">
+                      style="{% if readonly %}
+                         color: var(--cyber-blue);
+                         text-shadow: 0 0 5px var(--cyber-blue);
+                         {% else %}
+                         color: var(--cyber-green);
+                         text-shadow: 0 0 5px var(--cyber-green);
+                         {% endif %}">
                     技術へ
                 </span>
                 <i class="bi bi-arrow-right-circle-fill" 
-                   style="color: var(--cyber-green); 
+                   style="{% if readonly %}
+                          color: var(--cyber-blue); 
+                          {% else %}
+                          color: var(--cyber-green);
+                          {% endif %}
                           font-size: 28px;
-                          filter: drop-shadow(0 0 5px var(--cyber-green));">
+                          {% if readonly %}
+                          filter: drop-shadow(0 0 5px var(--cyber-blue));
+                          {% else %}
+                          filter: drop-shadow(0 0 5px var(--cyber-green));
+                          {% endif %}">
                 </i>
             </a>
         {% endif %}
@@ -206,28 +223,33 @@
     <!-- 確認ダイアログ -->
     <div class="modal fade" id="techConfirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark" style="border: 1px solid var(--cyber-green);">
+            <div class="modal-content bg-dark" style="border: 1px solid var(--cyber-blue);">
                 <div class="modal-body text-center p-4">
                     <h5 class="mb-3" id="techConfirmModalLabel" 
-                        style="color: var(--cyber-green); 
-                               text-shadow: 0 0 10px var(--cyber-green);">
+                        style="color: var(--cyber-blue); 
+                               text-shadow: 0 0 10px var(--cyber-blue);">
                         確認
                     </h5>
-                    <p style="color: var(--cyber-green); margin-bottom: 20px;">
-                        保存して、技術情報の編集画面へ移動しますか？
+                    <p style="color: var(--cyber-blue); margin-bottom: 20px;">
+                        {% if readonly %}
+                        技術情報の詳細画面へ移動しますか？
+                        {% else %}
+                        保存して、技術情報の詳細画面へ移動しますか？
+                        {% endif %}
                     </p>
                     <div class="mt-4">
                         <button type="button" 
                                 class="btn btn-outline-cyber me-2 cancel-btn" 
-                                style="color: var(--cyber-green); 
-                                       border-color: var(--cyber-green);"
+                                data-bs-dismiss="modal"
+                                style="color: var(--cyber-blue); 
+                                       border-color: var(--cyber-blue);"
                                 aria-label="キャンセル">
                             キャンセル
                         </button>
                         <button type="button" 
-                                class="btn btn-cyber-green" 
+                                class="btn btn-cyber-blue" 
                                 id="saveTechButton"
-                                style="background-color: var(--cyber-green); 
+                                style="background-color: var(--cyber-blue); 
                                        color: #000; 
                                        font-weight: bold;"
                                 aria-label="OK">
@@ -1206,43 +1228,53 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // app.idが存在する場合のみモーダル関連の処理を実行
     const saveTechButton = document.getElementById('saveTechButton');
-    if (saveTechButton && '{{ app.id }}') {  // ← app.idの存在確認を追加
+    if (saveTechButton && '{{ app.id }}') {
         const modalEl = document.getElementById('techConfirmModal');
         const modal = new bootstrap.Modal(modalEl);
         
+        // キャンセルボタンのイベントリスナー
         document.querySelector('.cancel-btn').addEventListener('click', function() {
             modal.hide();
         });
 
         saveTechButton.addEventListener('click', async function() {
             const form = document.getElementById('appForm');
-            if (form) {
-                const formData = new FormData(form);
-                const techUrl = "{% if app.id %}{% url 'apps_gallery:technical_edit' app.id %}{% endif %}";
-                
-                try {
-                    const response = await fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRFToken': getCookie('csrftoken'),
-                            'X-Requested-With': 'XMLHttpRequest'
+            const isReadOnly = {% if readonly %}true{% else %}false{% endif %};
+            const techUrl = "{% if app.id %}{% url 'apps_gallery:technical_detail' app.id %}{% endif %}";
+            
+            if (isReadOnly) {
+                // 詳細表示モードの場合は直接遷移
+                window.location.href = techUrl;
+            } else {
+                // 編集モードの場合は保存してから遷移
+                if (form) {
+                    const formData = new FormData(form);
+                    
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken'),
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            showToast('保存しました', 'success');
+                            // 技術情報詳細ページへ遷移
+                            window.location.href = techUrl;
+                        } else {
+                            throw new Error(data.error || '保存に失敗しました');
                         }
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        showToast('保存しました', 'success');
-                        // 技術情報編集ページへ遷移
-                        window.location.href = techUrl;
-                    } else {
-                        throw new Error(data.error || '保存に失敗しました');
+                    } catch (error) {
+                        showToast(error.message, 'error');
                     }
-                } catch (error) {
-                    showToast(error.message, 'error');
                 }
             }
+            modal.hide();
         });
     }
 });
