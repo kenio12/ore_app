@@ -37,7 +37,12 @@ class AppGallery(models.Model):
     )
     
     # ==================== 基本情報タブ ====================
-    title = models.CharField('アプリ名', max_length=100)
+    title = models.CharField(
+        'アプリ名', 
+        max_length=100,
+        null=True,
+        blank=True
+    )
     
     app_types = models.JSONField(
         'アプリの種類',

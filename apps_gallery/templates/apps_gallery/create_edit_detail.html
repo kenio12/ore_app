@@ -1068,21 +1068,17 @@ window.addEventListener('pageshow', function(event) {
     }
 });
 
-// 共通の非同期保存処理
-async function handleFormSubmit(event, nextUrl = null) {
+// フォームの非同期保存処理
+async function handleFormSubmit(event) {
     event.preventDefault();
     
-    // 保存中は保存ボタンを無効化
-    const submitButton = document.querySelector('.btn-cyber-save');
-    if (submitButton) {
-        submitButton.disabled = true;
-    }
-
     const form = document.getElementById('appForm');
     const formData = new FormData(form);
+    const submitButton = document.querySelector('.btn-cyber-save');
     
-    if (nextUrl) {
-        formData.append('next_url', nextUrl);
+    // 保存ボタンを無効化
+    if (submitButton) {
+        submitButton.disabled = true;
     }
 
     try {
@@ -1090,28 +1086,25 @@ async function handleFormSubmit(event, nextUrl = null) {
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRFToken': getCookie('csrftoken')
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
             }
         });
 
-        if (response.ok) {
-            // トースト表示
-            const toast = new bootstrap.Toast(document.getElementById('liveToast'));
-            toast.show();
+        const data = await response.json();
 
-            // 技術へボタンからの遷移の場合は、保存成功後に指定URLへ移動
-            if (nextUrl) {
-                setTimeout(() => {
-                    window.location.href = nextUrl;
-                }, 500); // トーストが見えるよう少し待つ
+        if (response.ok) {
+            showToast('保存しました', 'success');
+            
+            // 新規作成時はeditページへリダイレクト
+            if (!formData.get('app_id') && data.app_id) {
+                window.location.href = `/apps_gallery/edit/${data.app_id}/`;
             }
         } else {
-            console.error('保存に失敗しました');
-            alert('保存に失敗しました。もう一度お試しください。');
+            throw new Error(data.error || '保存に失敗しました');
         }
     } catch (error) {
-        console.error('エラーが発生しました:', error);
-        alert('エラーが発生しました。もう一度お試しください。');
+        showToast(error.message, 'error');
     } finally {
         // 保存ボタンを再度有効化
         if (submitButton) {
@@ -1120,33 +1113,11 @@ async function handleFormSubmit(event, nextUrl = null) {
     }
 }
 
-// 通常の保存ボタンのイベントリスナー
+// イベントリスナーの設定
 document.addEventListener('DOMContentLoaded', function() {
-    const saveButton = document.querySelector('.btn-cyber-save');
-    if (saveButton) {
-        saveButton.addEventListener('click', (e) => handleFormSubmit(e));
-    }
-
-    // app.idが存在する場合のみ技術へボタンの処理を追加
-    {% if app.id %}
-        const saveTechButton = document.getElementById('saveTechButton');
-        if (saveTechButton) {
-            saveTechButton.addEventListener('click', function() {
-                const techUrl = "{% url 'apps_gallery:technical_edit' app.id %}";
-                handleFormSubmit(event, techUrl);
-            });
-        }
-    {% endif %}
-
-    // モーダルの設定
-    const modalEl = document.getElementById('techConfirmModal');
-    if (modalEl) {
-        const modal = new bootstrap.Modal(modalEl);
-        
-        // キャンセルボタンの処理
-        document.querySelector('.cancel-btn').addEventListener('click', function() {
-            modal.hide();
-        });
+    const form = document.getElementById('appForm');
+    if (form) {
+        form.addEventListener('submit', handleFormSubmit);
     }
 });
 
@@ -1168,39 +1139,47 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    {% if app.id %}  // app.idが存在する場合のみモーダル関連の処理を実行
-        // モーダル要素を取得
+    // app.idが存在する場合のみモーダル関連の処理を実行
+    const saveTechButton = document.getElementById('saveTechButton');
+    if (saveTechButton && '{{ app.id }}') {  // ← app.idの存在確認を追加
         const modalEl = document.getElementById('techConfirmModal');
-        
-        // モーダルインスタンスを作成
         const modal = new bootstrap.Modal(modalEl);
         
-        // キャンセルボタンのイベントリスナー
         document.querySelector('.cancel-btn').addEventListener('click', function() {
             modal.hide();
         });
 
-        // OKボタンのイベントリスナー
-        document.getElementById('saveTechButton').addEventListener('click', function() {
+        saveTechButton.addEventListener('click', async function() {
             const form = document.getElementById('appForm');
             if (form) {
-                const techUrl = "{% url 'apps_gallery:technical_edit' app.id %}";
-                form.action = window.location.pathname;
-                let nextUrlInput = document.createElement('input');
-                nextUrlInput.type = 'hidden';
-                nextUrlInput.name = 'next_url';
-                nextUrlInput.value = techUrl;
-                form.appendChild(nextUrlInput);
-                form.submit();
+                const formData = new FormData(form);
+                const techUrl = "{% if app.id %}{% url 'apps_gallery:technical_edit' app.id %}{% endif %}";
+                
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        showToast('保存しました', 'success');
+                        // 技術情報編集ページへ遷移
+                        window.location.href = techUrl;
+                    } else {
+                        throw new Error(data.error || '保存に失敗しました');
+                    }
+                } catch (error) {
+                    showToast(error.message, 'error');
+                }
             }
         });
-
-        // グローバルスコープに関数を追加
-        window.confirmTechTransition = function(event) {
-            event.preventDefault();
-            modal.show();
-        };
-    {% endif %}
+    }
 });
 </script>
 

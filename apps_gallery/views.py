@@ -209,63 +209,40 @@ def edit_app(request, pk):
     logger.info(f"Request method: {request.method}")
     
     try:
-        app = get_object_or_404(AppGallery.objects.select_related(), pk=pk)
-        logger.info(f"App found: {app.title}")
+        # select_relatedを削除し、シンプルに取得
+        app = get_object_or_404(AppGallery, pk=pk)
         
         # 権限チェック
         if app.author != request.user:
             logger.warning(f"Unauthorized access attempt by user {request.user} for app {pk}")
-            return JsonResponse({
-                'success': False,
-                'error': '権限がありません'
-            }, status=403)
+            raise PermissionDenied
+        
+        logger.info(f"App found: {app.title}")
+        logger.info(f"Screenshots: {app.screenshots}")
         
         if request.method == 'POST':
-            logger.info("Processing POST request")
-            logger.debug(f"POST data: {request.POST}")
-            
             form = AppForm(request.POST, instance=app)
             if form.is_valid():
-                logger.info("Form is valid, saving...")
-                try:
-                    app = form.save()
-                    logger.info(f"App {pk} saved successfully")
-                    
-                    # 遷移先URLの取得
-                    next_url = request.POST.get('next_url')
-                    
-                    return JsonResponse({
-                        'success': True,
-                        'message': '保存しました',
-                        'redirect_url': next_url if next_url else reverse('apps_gallery:edit', kwargs={'pk': pk})
-                    })
-                    
-                except Exception as save_error:
-                    logger.error(f"Error saving app {pk}: {str(save_error)}", exc_info=True)
-                    return JsonResponse({
-                        'success': False,
-                        'error': f'保存中にエラーが発生しました: {str(save_error)}'
-                    }, status=500)
+                app = form.save()
+                messages.success(request, '保存しました')
+                return JsonResponse({'success': True})
             else:
-                logger.warning(f"Form validation failed: {form.errors}")
-                return JsonResponse({
-                    'success': False,
-                    'errors': form.errors,
-                    'error_details': {field: errors[0] for field, errors in form.errors.items()}
-                }, status=400)
+                return JsonResponse({'success': False, 'errors': form.errors})
         
-        # GETリクエスト時
-        form = AppForm(instance=app)
         context = get_common_context(app=app, is_edit=True)
-        context['form'] = form
+        context['form'] = AppForm(instance=app)
+        
         return render(request, 'apps_gallery/create_edit_detail.html', context)
         
     except Exception as e:
-        logger.error(f"Error in edit_app: {str(e)}", exc_info=True)
-        return JsonResponse({
-            'success': False,
-            'error': f'エラーが発生しました: {str(e)}'
-        }, status=500)
+        logger.error(f"Error in edit_app: {str(e)}")
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+        messages.error(request, 'エラーが発生しました')
+        return redirect('apps_gallery:list')
 
 @login_required
 def handle_app_form(request, app=None, context=None):
@@ -405,12 +382,9 @@ def delete_app(request, pk):
 @login_required
 @require_http_methods(["POST"])
 def upload_screenshot(request):
-    """スクリーンショットのアップロード処理"""
+    """スクリーンショットのアップロードのみを処理"""
     try:
-        print("\n==== アップロード処理開始 ====")
-        print(f"リクエストメソッド: {request.method}")
-        print(f"FILES: {request.FILES}")
-        print(f"POST データ: {request.POST}")
+        print("\n==== スクリーンショットアップロード処理開始 ====")
         
         if 'image' not in request.FILES:
             return JsonResponse({'error': '画像ファイルが必要です'}, status=400)
@@ -418,15 +392,24 @@ def upload_screenshot(request):
         image = request.FILES['image']
         app_id = request.POST.get('app_id')
         
-        print(f"アプリID: {app_id}")
+        # 新規作成時の処理
+        if not app_id or app_id == 'undefined':
+            app = AppGallery.objects.create(
+                author=request.user,
+                status='draft',
+                title='無題'  # 仮のタイトル
+            )
+            app_id = app.id
+        else:
+            app = get_object_or_404(AppGallery, pk=app_id)
+            if app.author != request.user:
+                return JsonResponse({'error': '権限がありません'}, status=403)
 
         # Cloudinaryにアップロード
         upload_result = cloudinary.uploader.upload(
             image,
-            folder='app_screenshots/temp' if not app_id else f'app_screenshots/app_{app_id}'
+            folder=f'app_screenshots/app_{app_id}'
         )
-        
-        print(f"Cloudinaryアップロード結果: {upload_result}")
 
         screenshot_data = {
             'public_id': upload_result['public_id'],
@@ -434,38 +417,30 @@ def upload_screenshot(request):
             'description': ''
         }
 
-        if app_id:
-            # 既存アプリの場合
-            app = get_object_or_404(AppGallery, pk=app_id)
-            screenshots = app.screenshots if app.screenshots else []
-            screenshots.append(screenshot_data)
-            app.screenshots = screenshots  # リストを明示的に再代入
-            app.save()
-            print(f"アプリに画像を追加: {screenshot_data}")
-            print(f"保存後のスクリーンショット数: {len(app.screenshots)}")
-        else:
-            # 新規作成の場合
-            temp_screenshots = request.session.get('temp_screenshots', [])
-            temp_screenshots.append(screenshot_data)
-            request.session['temp_screenshots'] = temp_screenshots
-            request.session.modified = True
-            print(f"セッションに画像を追加: {screenshot_data}")
-            print(f"セッション内の画像数: {len(request.session['temp_screenshots'])}")
+        # スクリーンショットの保存
+        screenshots = app.screenshots if app.screenshots else []
+        screenshots.append(screenshot_data)
+        app.screenshots = screenshots
+
+        # サムネイルが未設定の場合、最初のスクリーンショットをサムネイルに設定
+        if not app.thumbnail:
+            app.thumbnail = screenshot_data
+
+        app.save()
 
         return JsonResponse({
             'status': 'success',
             'screenshot': screenshot_data,
-            'message': '画像をアップロードしました'
+            'message': 'スクリーンショットをアップロードしました',
+            'app_id': app.id,
+            'redirect_url': reverse('apps_gallery:edit', kwargs={'pk': app.id})
         })
 
     except Exception as e:
         print(f"アップロードエラー: {str(e)}")
-        print(f"エラーの詳細: {e.__class__.__name__}")
-        import traceback
-        print(f"スタックトレース: {traceback.format_exc()}")
         return JsonResponse({
-            'error': 'アップロード中にエラーが発生しました',
-            'details': str(e)
+            'error': str(e),
+            'details': 'アップロード中にエラーが発生しました'
         }, status=500)
 
 @login_required

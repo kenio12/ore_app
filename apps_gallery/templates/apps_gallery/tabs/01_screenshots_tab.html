@@ -632,14 +632,62 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        const formData = new FormData();
+        
+        // スクリーンショットの追加
+        formData.append('image', file);
+        
+        // app_idの取得と追加
+        const appId = document.querySelector('input[name="app_id"]')?.value;
+        if (appId) {
+            formData.append('app_id', appId);
+        }
+        
+        // フォームの全データを取得して追加（セレクトとチェックボックスに特に注意）
+        const mainForm = document.getElementById('appForm');
+        if (mainForm) {
+            // タイトル
+            const titleInput = mainForm.querySelector('input[name="title"]');
+            if (titleInput) formData.append('title', titleInput.value);
+            
+            // 説明
+            const descriptionInput = mainForm.querySelector('textarea[name="description"]');
+            if (descriptionInput) formData.append('description', descriptionInput.value);
+            
+            // アプリタイプ（複数選択可能）
+            const appTypes = mainForm.querySelectorAll('input[name="app_types"]:checked');
+            appTypes.forEach(type => {
+                formData.append('app_types', type.value);
+            });
+            
+            // ジャンル（複数選択可能）
+            const genres = mainForm.querySelectorAll('input[name="genres"]:checked');
+            genres.forEach(genre => {
+                formData.append('genres', genre.value);
+            });
+            
+            // キャッチフレーズ
+            ['catchphrase_1', 'catchphrase_2', 'catchphrase_3'].forEach(field => {
+                const input = mainForm.querySelector(`input[name="${field}"]`);
+                if (input) formData.append(field, input.value);
+            });
+            
+            // その他のフィールド
+            ['github_url', 'demo_url', 'status', 'publish_status'].forEach(field => {
+                const input = mainForm.querySelector(`[name="${field}"]`);
+                if (input) formData.append(field, input.value);
+            });
+        }
+
+        // フォームデータの内容をログ出力（デバッグ用）
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+
         const uploadLoader = document.getElementById('uploadLoader');
         uploadLoader.style.display = 'flex';
 
         try {
-            const formData = new FormData();
-            formData.append('image', file);
-            if (appId) formData.append('app_id', appId);
-
             const response = await fetch('/apps_gallery/upload-screenshot/', {
                 method: 'POST',
                 body: formData,
@@ -654,8 +702,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (result.status === 'success') {
                 showToast('画像をアップロードしました', 'success');
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                window.location.reload();
+                
+                // 新規作成時はeditページへリダイレクト
+                if (!appId && result.app_id) {
+                    window.location.href = `/apps_gallery/edit/${result.app_id}/`;
+                } else {
+                    // 既存のアプリの場合は現在のページをリロード
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    window.location.reload();
+                }
             } else {
                 throw new Error(result.message || 'アップロードに失敗しました');
             }
