@@ -162,9 +162,9 @@
         </div>
     </div>
 
-    <!-- 矢印アイコンボタン -->
+    <!-- 画面右側の技術へボタン -->
     <div class="position-fixed" style="top: 50%; right: 0; transform: translateY(-50%); z-index: 1000;">
-        {% if app.id %}  {# app.idが存在する場合のみ表示 #}
+        {% if app.id %}
             <a href="#" 
                onclick="confirmTechTransition(event)"
                class="btn btn-cyber-secondary d-flex align-items-center"
@@ -174,34 +174,19 @@
                       border-radius: 60px 0 0 60px;
                       padding: 15px;
                       background-color: rgba(0, 0, 0, 0.7);
-                      {% if readonly %}
-                      border: 2px solid var(--cyber-green) !important;">
-                      {% else %}
                       border: 2px solid var(--cyber-green);">
-                      {% endif %}
                 <span class="d-none d-md-inline me-2" 
-                      style="{% if readonly %}
-                         color: var(--cyber-green);
-                         text-shadow: 0 0 5px var(--cyber-green);
-                         {% else %}
-                         color: var(--cyber-green);
-                         text-shadow: 0 0 5px var(--cyber-green);
-                         {% endif %}">
+                      style="color: var(--cyber-green);
+                             text-shadow: 0 0 5px var(--cyber-green);">
                     技術へ
                 </span>
-                <i class="bi bi-arrow-right-circle-fill" 
-                   style="{% if readonly %}
-                          color: var(--cyber-green); 
-                          {% else %}
-                          color: var(--cyber-green);
-                          {% endif %}
-                          font-size: 28px;
-                          {% if readonly %}
-                          filter: drop-shadow(0 0 5px var(--cyber-green));
-                          {% else %}
-                          filter: drop-shadow(0 0 5px var(--cyber-green));
-                          {% endif %}">
-                </i>
+                <span class="d-md-none" 
+                      style="color: var(--cyber-green);
+                             text-shadow: 0 0 5px var(--cyber-green);
+                             font-weight: bold;
+                             font-size: 20px;">
+                    技
+                </span>
             </a>
         {% endif %}
     </div>
@@ -1271,9 +1256,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         const data = await response.json();
 
                         if (response.ok) {
-                            showToast('保存しました', 'success');
-                            // 技術情報編集ページへ遷移
-                            window.location.href = techUrl;
+                            // 技術情報編集ページへ遷移（トーストメッセージ付き）
+                            window.location.href = techUrl + (techUrl.includes('?') ? '&' : '?') + 'toast_message=保存し、技術情報の編集画面に移動しました。';
                         } else {
                             throw new Error(data.error || '保存に失敗しました');
                         }

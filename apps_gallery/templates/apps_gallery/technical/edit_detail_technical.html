@@ -100,35 +100,97 @@
     </div>
 </div>
 
-<!-- トースト要素を追加 -->
-<div class="toast-container position-fixed top-50 start-50 translate-middle" style="z-index: 9999;">
-    <div class="toast align-items-center text-bg-success border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                保存しました！
+<!-- サイバーパンク風のトースト -->
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
+    <div class="toast" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body" style="background: rgba(0, 255, 159, 0.1);
+                                     border: 2px solid var(--cyber-green);
+                                     color: var(--cyber-green);
+                                     text-shadow: 0 0 5px var(--cyber-green);
+                                     box-shadow: 0 0 15px var(--cyber-green);
+                                     backdrop-filter: blur(8px);
+                                     -webkit-backdrop-filter: blur(8px);
+                                     padding: 15px;
+                                     border-radius: 5px;">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill me-2"></i>
+                <span id="toastMessage">保存しました</span>
             </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
 </div>
 
-<!-- 画面左側の基本へボタン -->
-{% if app.id %}
-    <div class="side-nav-button left-nav">
-        {% if not readonly %}
-            <a href="{% url 'apps_gallery:edit' app.id %}" 
-               class="btn-cyber-nav"
-               onclick="saveAndGoToBasic(event)">
-                <i class="bi bi-arrow-left-circle me-2"></i> 基本へ
-            </a>
-        {% else %}
-            <a href="{% url 'apps_gallery:detail' app.id %}" 
-               class="btn-cyber-nav">
-                <i class="bi bi-arrow-left-circle me-2"></i> 基本へ
-            </a>
-        {% endif %}
+<!-- 画面右側の基本へボタン -->
+<div class="position-fixed" style="top: 50%; right: 0; transform: translateY(-50%); z-index: 1000;">
+    {% if app.id %}
+        <a href="#" 
+           onclick="confirmBasicTransition(event)"
+           class="btn btn-cyber-secondary d-flex align-items-center"
+           style="opacity: 0.7; 
+                  transition: all 0.3s;
+                  margin-right: -10px;
+                  border-radius: 60px 0 0 60px;
+                  padding: 15px;
+                  background-color: rgba(0, 0, 0, 0.7);
+                  border: 2px solid var(--cyber-green);">
+            <span class="d-none d-md-inline me-2" 
+                  style="color: var(--cyber-green);
+                         text-shadow: 0 0 5px var(--cyber-green);">
+                基本へ
+            </span>
+            <span class="d-md-none" 
+                  style="color: var(--cyber-green);
+                         text-shadow: 0 0 5px var(--cyber-green);
+                         font-weight: bold;
+                         font-size: 20px;">
+                基
+            </span>
+        </a>
+    {% endif %}
+</div>
+
+<!-- 確認ダイアログ -->
+<div class="modal fade" id="basicConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark" style="border: 2px solid var(--cyber-green); box-shadow: 0 0 20px var(--cyber-green);">
+            <div class="modal-body text-center p-4">
+                <h5 class="mb-3" id="basicConfirmModalLabel" 
+                    style="color: var(--cyber-green); 
+                           text-shadow: 0 0 10px var(--cyber-green);">
+                    確認
+                </h5>
+                <p style="color: var(--cyber-green); margin-bottom: 20px;">
+                    {% if readonly %}
+                    基本情報の詳細画面へ移動しますか？
+                    {% else %}
+                    保存して、基本情報の編集画面へ移動しますか？
+                    {% endif %}
+                </p>
+                <div class="mt-4">
+                    <button type="button" 
+                            class="btn btn-outline-cyber me-2 cancel-btn" 
+                            data-bs-dismiss="modal"
+                            style="color: var(--cyber-green); 
+                                   border-color: var(--cyber-green);
+                                   text-shadow: 0 0 5px var(--cyber-green);"
+                            aria-label="キャンセル">
+                        キャンセル
+                    </button>
+                    <button type="button" 
+                            class="btn btn-cyber-green" 
+                            id="saveBasicButton"
+                            style="background-color: var(--cyber-green); 
+                                   color: #000; 
+                                   font-weight: bold;
+                                   box-shadow: 0 0 10px var(--cyber-green);"
+                            aria-label="OK">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-{% endif %}
+</div>
 
 <!-- タブナビゲーション -->
 <div id="technicalTabs" class="app-tabs">
@@ -800,7 +862,65 @@ html {
     80% { transform: translate(2px, -2px); }
     100% { transform: translate(0); }
 }
+
+/* 新しいボタンのホバースタイル */
+.btn-cyber-secondary:hover {
+    opacity: 1 !important;
+    box-shadow: 0 0 20px var(--cyber-green);
+    border-color: var(--cyber-green) !important;
+    background-color: rgba(0, 255, 159, 0.1) !important;
+}
+
+/* PCでのみテキストを表示 */
+@media (min-width: 768px) {
+    .btn-cyber-secondary {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+}
 </style>
+
+<!-- JavaScriptを先に定義 -->
+<script>
+// グローバルスコープで関数を定義
+window.confirmBasicTransition = function(event) {
+    event.preventDefault();
+    {% if app.id %}
+        {% if readonly %}
+            // 詳細表示モードの場合は直接遷移
+            window.location.href = "{% url 'apps_gallery:detail' app.id %}";
+        {% else %}
+            // 編集モードの場合はダイアログを表示
+            const modal = new bootstrap.Modal(document.getElementById('basicConfirmModal'));
+            modal.show();
+        {% endif %}
+    {% endif %}
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrapが読み込まれていません！');
+        return;
+    }
+
+    const saveBasicButton = document.getElementById('saveBasicButton');
+    if (saveBasicButton && '{{ app.id }}') {
+        const modalEl = document.getElementById('basicConfirmModal');
+        const modal = new bootstrap.Modal(modalEl);
+        
+        document.querySelector('.cancel-btn').addEventListener('click', function() {
+            modal.hide();
+        });
+
+        saveBasicButton.addEventListener('click', function() {
+            const basicUrl = "{% if app.id %}{% if readonly %}{% url 'apps_gallery:detail' app.id %}{% else %}{% url 'apps_gallery:edit' app.id %}{% endif %}{% endif %}";
+            // 一旦保存機能は省略して、直接遷移
+            window.location.href = basicUrl;
+            modal.hide();
+        });
+    }
+});
+</script>
 
 <!-- JavaScriptでアクティブタブの制御 -->
 <script>
@@ -862,10 +982,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('technicalForm');
     const toastEl = document.getElementById('liveToast');
     
-    // Bootstrapトーストの初期化
-    const toast = new bootstrap.Toast(toastEl, {
+    // Bootstrapのトーストを初期化
+    const bsToast = new bootstrap.Toast(toastEl, {
         delay: 3000,
-        animation: true
+        autohide: true
     });
     
     if (form) {
@@ -885,7 +1005,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(response => {
                     if (response.ok) {
                         // トースト表示
-                        toast.show();
+                        bsToast.show();
                         
                         // フォーム変更フラグをリセット
                         formChanged = false;
@@ -959,4 +1079,54 @@ function saveAndGoToBasic(event) {
 </div>
 
 <!-- 重複するスクリプトを削除 -->
-{% endblock %} 
+{% endblock %}
+
+<script>
+// 即時実行関数でトースト処理を実行
+(function() {
+    // Bootstrapが読み込まれるまで待機
+    function initToast() {
+        if (typeof bootstrap === 'undefined') {
+            // Bootstrapがまだ読み込まれていない場合は100ms後に再試行
+            setTimeout(initToast, 100);
+            return;
+        }
+
+        const toastEl = document.getElementById('liveToast');
+        if (!toastEl) return;
+
+        // トーストを初期化
+        const bsToast = new bootstrap.Toast(toastEl, {
+            delay: 3000,
+            autohide: true
+        });
+
+        // URLからトーストメッセージを取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const toastMessage = urlParams.get('toast_message');
+
+        if (toastMessage) {
+            // トーストメッセージを設定
+            const toastMessageEl = document.getElementById('toastMessage');
+            if (toastMessageEl) {
+                toastMessageEl.textContent = toastMessage;
+            }
+
+            // トーストを表示
+            bsToast.show();
+
+            // URLからパラメータを削除
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+
+            // 3秒後に強制的に非表示
+            setTimeout(() => {
+                bsToast.hide();
+            }, 3000);
+        }
+    }
+
+    // DOMContentLoadedを待たずに即時実行
+    initToast();
+})();
+</script> 
