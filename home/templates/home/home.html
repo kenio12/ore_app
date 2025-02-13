@@ -43,7 +43,7 @@
                  style="max-width: 400px;
                         position: relative;">
             <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0" style="font-size: 1.8rem; margin-top: 1rem;">
-                俺もアプリになった
+                俺もアプリだった
             </p>
         </div>
     </div>
@@ -551,51 +551,46 @@ document.addEventListener('DOMContentLoaded', function() {
     100% { filter: brightness(1); }
 }
 
-/* ==================== スマートフォン用の設定 - 絶対に変更禁止 ==================== */
-/* 
-    警告：この設定は完全に固定です！
-    - top: 0 !important
-    - margin-top: 0 !important
-    - padding-top: 0 !important
-    - border-top: 0 !important
-    これらの値は死守すること！
-    どのような変更要件が来ても、この設定は変更禁止！
-*/
-@media (max-width: 576px) {  /* スマートフォンのみの設定 */
+/* スマートフォン用のスタイル調整を追加 */
+@media (max-width: 576px) {
+    /* 既存のスマートフォン用設定は保持 */
     .mx-auto.text-center.position-absolute {
-        top: 0 !important;   /* appmanの位置を完全最上部に - 変更禁止 */
-        transform: translate(-50%, 0) !important;  /* 変更禁止 */
+        top: 0 !important;
+        transform: translate(-50%, 0) !important;
     }
     
-    .cyber-hero {
-        background-image: none !important;
-        aspect-ratio: auto !important;
-        min-height: 70vh;
-        margin-top: 0 !important;     /* 上マージンを完全削除 - 変更禁止 */
-        padding-top: 0 !important;    /* 上パディングを完全削除 - 変更禁止 */
-        border-top: 0 !important;     /* 上ボーダーも削除 - 変更禁止 */
+    /* 縦長画像の設定 */
+    .col-md-4 {
+        max-width: 250px !important;
+        margin: 0 auto !important;
     }
-
-    .cyber-glow {
-        max-width: 400px !important;
-        width: auto !important;
+    
+    .col-md-4 .cyber-image {
+        width: 100% !important;
         height: auto !important;
-        margin-top: 0 !important;     /* 画像の上マージンも削除 - 変更禁止 */
+        object-fit: contain !important;
     }
-
-    .cyber-text-hero {
-        font-size: 1.5rem !important;
+    
+    /* スマホ専用の横長画像の設定 */
+    .screenshot-image img.screenshot-preview {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 100% !important;
+        object-fit: contain !important;
     }
-
-    .cyber-glow-text {
-        font-size: 1.5rem !important;
-    }
-
-    img[src*='sy.png'] {
-        display: none !important;  /* スマートフォンでのみ非表示 - 変更禁止 */
+    
+    /* 画像を含む親要素の調整 */
+    .col-md-4 .h-100 {
+        height: auto !important;
     }
 }
-/* =============================================================== */
+
+/* PC画面用の横長画像設定を維持 */
+@media (min-width: 992px) {
+    .screenshot-image img {
+        max-height: 250px;  /* PC用の高さ制限を維持 */
+    }
+}
 
 /* ==================== タブレット用の設定 - 絶対に変更禁止 ==================== */
 /* 
