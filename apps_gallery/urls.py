@@ -15,5 +15,5 @@ urlpatterns = [
     
     # 技術情報関連の新しいURL
     path('technical/edit/<int:pk>/', views_technical.technical_edit_view, name='technical_edit'),
-    path('technical/<int:pk>/', views_technical.technical_detail_view, name='technical_detail'),  # 追加
+    path('technical/detail/<int:pk>/', views_technical.technical_detail_view, name='technical_detail'),
 ] 

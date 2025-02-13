@@ -92,6 +92,121 @@
                         {% endfor %}
                     </div>
                 </div>
+
+                <!-- チームサイズ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">チームサイズ</label>
+                    <div class="row g-3">
+                        {% for key, value in team_sizes.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="team-size-{{ key }}"
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[team_size]"
+                                       value="{{ key }}"
+                                       {% if key == app.development_environment.team_size %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple" for="team-size-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- コミュニケーションツール -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">コミュニケーションツール</label>
+                    <div class="row g-3">
+                        {% for key, value in communication_tools.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       id="comm-tool-{{ key }}"
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[communication_tools][]"
+                                       value="{{ key }}"
+                                       {% if key in app.development_environment.communication_tools %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple" for="comm-tool-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- インフラストラクチャ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">インフラストラクチャ</label>
+                    <div class="row g-3">
+                        {% for key, value in infrastructure.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       id="infra-{{ key }}"
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[infrastructure][]"
+                                       value="{{ key }}"
+                                       {% if key in app.development_environment.infrastructure %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple" for="infra-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- APIツール -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">APIツール</label>
+                    <div class="row g-3">
+                        {% for key, value in api_tools.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       id="api-tool-{{ key }}"
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[api_tools][]"
+                                       value="{{ key }}"
+                                       {% if key in app.development_environment.api_tools %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple" for="api-tool-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- モニタリングツール -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">モニタリングツール</label>
+                    <div class="row g-3">
+                        {% for key, value in monitoring_tools.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       id="monitoring-{{ key }}"
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[monitoring_tools][]"
+                                       value="{{ key }}"
+                                       {% if key in app.development_environment.monitoring_tools %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple" for="monitoring-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </form>
         </div>
     </div>

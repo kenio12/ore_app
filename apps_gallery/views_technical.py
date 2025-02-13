@@ -3,9 +3,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import AppGallery
 from .constants.hardware import (
+    PC_TYPES,
+    DEVICE_TYPES,
+    OS_TYPES,
     CPU_TYPES,
     MEMORY_SIZES,
     STORAGE_TYPES,
+    MONITOR_COUNTS,
+    MONITOR_SIZES,
+    MAKER_EXAMPLES,
+    INTERNET_TYPES
 )
 from .constants.development import (
     EDITORS,
@@ -40,9 +47,16 @@ def technical_edit_view(request, pk):
             'readonly': False,
             'is_edit': True,
             # ハードウェア関連
+            'pc_types': PC_TYPES,
+            'device_types': DEVICE_TYPES,
+            'os_types': OS_TYPES,
             'cpu_types': CPU_TYPES,
             'memory_sizes': MEMORY_SIZES,
             'storage_types': STORAGE_TYPES,
+            'monitor_counts': MONITOR_COUNTS,
+            'monitor_sizes': MONITOR_SIZES,
+            'maker_examples': MAKER_EXAMPLES,
+            'internet_types': INTERNET_TYPES,
             # 開発環境関連
             'editors': EDITORS,
             'version_control': VERSION_CONTROL,

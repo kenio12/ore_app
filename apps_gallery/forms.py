@@ -7,39 +7,6 @@ from .constants.app_info import (
     APP_STATUS,
     PUBLISH_STATUS
 )
-from .constants.tech_stack import (
-    FRONTEND_LANGUAGES,
-    FRONTEND_FRAMEWORKS,
-    BACKEND_LANGUAGES,
-    BACKEND_FRAMEWORKS,
-    DATABASE_TYPES
-)
-from .constants.development import (
-    TEAM_SIZES,
-    VIRTUALIZATION_TOOLS,
-    INFRASTRUCTURE
-)
-from .constants.development_period import (
-    DEVELOPMENT_PERIODS,
-    DEVELOPMENT_PHASES
-)
-from .constants.architecture import (
-    ARCHITECTURE_PATTERNS,
-    DESIGN_PATTERNS,
-    SECURITY_MEASURES,
-    TESTING_TOOLS,
-    CODE_QUALITY_TOOLS
-)
-from .constants.hardware import (
-    DEVICE_TYPES,
-    OS_TYPES,
-    CPU_TYPES,
-    MEMORY_SIZES,
-    STORAGE_TYPES,
-    MONITOR_COUNTS,
-    MONITOR_SIZES,
-    MONITOR_RESOLUTIONS
-)
 
 class AppForm(forms.ModelForm):
     # フィールド名をPOSTデータに合わせる

@@ -1,39 +1,52 @@
 """
-ハードウェア環境に関する定数
+開発環境（ハードウェア）に関する定数
 """
 
-# デバイスタイプ
+# パソコンタイプ
+PC_TYPES = {
+    'laptop': 'ノートパソコン',
+    'desktop': 'デスクトップパソコン',
+    'other': 'その他'
+}
+
+# デバイスタイプ（OS）
 DEVICE_TYPES = {
     'windows': 'Windows PC',
     'mac': 'Mac',
     'linux': 'Linux PC',
-    'chrome_os': 'Chrome OS',
-    'tablet': 'タブレット',
-    'smartphone': 'スマートフォン',
     'other': 'その他'
 }
 
+# メーカー名は自由入力（例）
+MAKER_EXAMPLES = [
+    'Apple（MacBook Pro/Airなど）',
+    'Lenovo（ThinkPadなど）',
+    'Dell（XPS/Inspironなど）',
+    'HP（Pavilion/Spectre/Envyなど）',
+    'ASUS（ZenBook/ROGなど）',
+    'Microsoft（Surfaceシリーズ）',
+    '自作PC',
+    'その他'
+]
+
 # OSタイプ
 OS_TYPES = {
-    'ios': 'iOS',
-    'android': 'Android',
-    'windows': 'Windows',
+    'windows': 'Windows（10/11）',
     'macos': 'macOS',
-    'linux': 'Linux',
+    'linux': 'Linux（Ubuntu/CentOSなど）',
     'other': 'その他'
 }
 
 # CPUタイプ
 CPU_TYPES = {
-    'x86': 'x86/x64',
-    'arm': 'ARM',
-    'apple_silicon': 'Apple Silicon',
+    'intel': 'Intel CPU搭載（Core i3/i5/i7/i9など）',
+    'amd': 'AMD CPU搭載（Ryzen 3/5/7/9など）',
+    'apple_silicon': 'Apple Silicon搭載（M1/M2/M3など）',
     'other': 'その他'
 }
 
 # メモリサイズ
 MEMORY_SIZES = {
-    '2gb': '2GB以下',
     '4gb': '4GB',
     '8gb': '8GB',
     '16gb': '16GB',
@@ -43,23 +56,22 @@ MEMORY_SIZES = {
 # ストレージタイプ
 STORAGE_TYPES = {
     'hdd': 'HDD',
-    'ssd': 'SSD',
-    'nvme': 'NVMe SSD',
-    'emmc': 'eMMC',
+    'ssd': 'SSD（SATA接続）',
+    'nvme': 'NVMe SSD（高速）',
     'other': 'その他'
 }
 
-# モニター数
+# モニター数（開発効率に重要）
 MONITOR_COUNTS = {
-    '1': '1台',
-    '2': '2台',
-    '3': '3台',
-    '4+': '4台以上'
+    '1': 'ノートPCの画面のみ',
+    '2': 'ノートPC + 外部モニター1台',
+    '3': 'ノートPC + 外部モニター2台',
+    '4+': '3台以上の外部モニター使用'
 }
 
-# モニターサイズ
+# モニターサイズ（メインの外部モニター）
 MONITOR_SIZES = {
-    '24': '24インチ以下',
+    '24': '24インチ',
     '27': '27インチ',
     '32': '32インチ',
     '34': '34インチウルトラワイド',
@@ -68,11 +80,11 @@ MONITOR_SIZES = {
     'other': 'その他'
 }
 
-# モニター解像度
-MONITOR_RESOLUTIONS = {
-    'fhd': 'FHD (1920x1080)',
-    '2k': '2K (2560x1440)',
-    '4k': '4K (3840x2160)',
-    '5k': '5K以上',
+# インターネット回線
+INTERNET_TYPES = {
+    'fiber': '光回線（1Gbps以上）',
+    'catv': 'ケーブルテレビ回線',
+    'adsl': 'ADSL',
+    'mobile': 'モバイル回線（4G/5G）',
     'other': 'その他'
 } 

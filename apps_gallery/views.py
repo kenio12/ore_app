@@ -8,7 +8,16 @@ from .constants import (
     APP_TYPES,
     APP_STATUS,
     PUBLISH_STATUS,
-    GENRES
+    GENRES,
+    EDITORS,
+    VERSION_CONTROL,
+    CI_CD,
+    VIRTUALIZATION_TOOLS,
+    TEAM_SIZES,
+    COMMUNICATION_TOOLS,
+    INFRASTRUCTURE,
+    API_TOOLS,
+    MONITORING_TOOLS,
 )
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -63,10 +72,18 @@ def get_common_context(app=None, readonly=False, is_edit=False):
         'PUBLISH_STATUS': dict(PUBLISH_STATUS),
         'GENRES': dict(GENRES),
         'is_edit': is_edit,
-        'hide_navbar': True
+        'hide_navbar': True,
+        'editors': dict(EDITORS),
+        'version_control': dict(VERSION_CONTROL),
+        'ci_cd': dict(CI_CD),
+        'virtualization_tools': dict(VIRTUALIZATION_TOOLS),
+        'team_sizes': dict(TEAM_SIZES),
+        'communication_tools': dict(COMMUNICATION_TOOLS),
+        'infrastructure': dict(INFRASTRUCTURE),
+        'api_tools': dict(API_TOOLS),
+        'monitoring_tools': dict(MONITORING_TOOLS),
     }
     
-    # appをそのまま渡す（拡張性を保つ）
     if app:
         context['app'] = app
     

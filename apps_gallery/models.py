@@ -119,6 +119,24 @@ class AppGallery(models.Model):
     # スクリーンショット（複数枚）
     screenshots = models.JSONField('スクリーンショット', default=list)
     
+    # ==================== ハードウェア環境タブ ====================
+    hardware_specs = models.JSONField(
+        '開発環境のスペック',
+        default=dict,
+        blank=True,
+        help_text='開発時に使用したパソコンのスペック情報（タイプ、メーカー、OS、CPU、メモリ、ストレージ、モニター構成、ネット環境）'
+    )
+    
+    # ==================== 開発環境タブ ====================
+    development_environment = models.JSONField(
+        '開発環境',
+        default=dict,
+        blank=True,
+        help_text='開発環境の情報（エディタ、バージョン管理、CI/CD、仮想化ツール、'
+                 'チームサイズ、コミュニケーションツール、インフラ、APIツール、'
+                 'モニタリングツール）'
+    )
+    
     # ==================== 管理用フィールド ====================
     created_at = models.DateTimeField('作成日時', auto_now_add=True)
     updated_at = models.DateTimeField('更新日時', auto_now=True)
