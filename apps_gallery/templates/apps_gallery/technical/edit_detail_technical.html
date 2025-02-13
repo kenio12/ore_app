@@ -193,7 +193,7 @@
 </div>
 
 <!-- タブナビゲーション -->
-<div id="technicalTabs" class="app-tabs">
+<div id="technicalTabs" class="app-tabs technical-tabs">
     <div class="container p-0">
         <nav class="nav nav-pills nav-fill m-0">
             <!-- ホームへ戻るボタン -->
@@ -314,22 +314,27 @@
 }
 
 /* タブナビゲーション */
-.app-tabs {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: rgba(13, 25, 45, 0.9);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-    z-index: 999;
+#technicalTabs {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: rgba(13, 25, 45, 0.9) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+    z-index: 999 !important;
+    transition: transform 0.3s ease !important;
+}
+
+#technicalTabs.hidden {
+    transform: translateY(-100%) !important;
 }
 
 /* スマートフォン対応のマージン調整 */
 @media (max-width: 768px) {
     .app-tabs .container {
-        padding: 10px 0 !important;  /* 上下に10pxのパディング */
+        padding: 10px 0 !important;
     }
 
     .nav-pills {
@@ -339,7 +344,7 @@
 
     .nav-link {
         font-size: 0.9rem;
-        padding: 8px !important;  /* リンク自体にも適度なパディング */
+        padding: 8px !important;
     }
 }
 
@@ -1078,55 +1083,29 @@ function saveAndGoToBasic(event) {
     </a>
 </div>
 
-<!-- 重複するスクリプトを削除 -->
-{% endblock %}
-
-<script>
-// 即時実行関数でトースト処理を実行
-(function() {
-    // Bootstrapが読み込まれるまで待機
-    function initToast() {
-        if (typeof bootstrap === 'undefined') {
-            // Bootstrapがまだ読み込まれていない場合は100ms後に再試行
-            setTimeout(initToast, 100);
-            return;
-        }
-
-        const toastEl = document.getElementById('liveToast');
-        if (!toastEl) return;
-
-        // トーストを初期化
-        const bsToast = new bootstrap.Toast(toastEl, {
-            delay: 3000,
-            autohide: true
+<!-- 全てのコンテンツの後、endblockの直前に配置 -->
+<script type="text/javascript">
+    (function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabsElement = document.getElementById('technicalTabs');
+            if (!tabsElement) return;
+            
+            let lastScrollTop = 0;
+            
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const isScrollingUp = scrollTop < lastScrollTop;
+                
+                if (scrollTop > 100 && !isScrollingUp) {
+                    tabsElement.classList.add('hidden');
+                } else {
+                    tabsElement.classList.remove('hidden');
+                }
+                
+                lastScrollTop = scrollTop;
+            });
         });
+    })();
+</script>
 
-        // URLからトーストメッセージを取得
-        const urlParams = new URLSearchParams(window.location.search);
-        const toastMessage = urlParams.get('toast_message');
-
-        if (toastMessage) {
-            // トーストメッセージを設定
-            const toastMessageEl = document.getElementById('toastMessage');
-            if (toastMessageEl) {
-                toastMessageEl.textContent = toastMessage;
-            }
-
-            // トーストを表示
-            bsToast.show();
-
-            // URLからパラメータを削除
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
-
-            // 3秒後に強制的に非表示
-            setTimeout(() => {
-                bsToast.hide();
-            }, 3000);
-        }
-    }
-
-    // DOMContentLoadedを待たずに即時実行
-    initToast();
-})();
-</script> 
+{% endblock %} 

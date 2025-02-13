@@ -297,9 +297,12 @@ section.mb-5 {
     -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     z-index: 999;
-    padding-top: 0 !important;  /* 上部のパディングを0に */
-    margin-top: 0 !important;   /* 上部のマージンを0に */
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease; /* スムーズな表示/非表示のためのトランジション */
+}
+
+/* タブが隠れる時のスタイル */
+.app-tabs.hidden {
+    transform: translateY(-100%);
 }
 
 .app-tabs .container {
@@ -1321,6 +1324,29 @@ document.addEventListener('DOMContentLoaded', function() {
             tooltipInstance = null;
         }
     });
+});
+</script>
+
+<script>
+// スクロール制御のための変数
+let lastScrollTop = 0;
+const tabsElement = document.getElementById('appTabs');
+
+// スクロールイベントのリスナー
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // スクロール方向を判定（上:true, 下:false）
+    const isScrollingUp = scrollTop < lastScrollTop;
+    
+    // スクロール位置が100px以上で、かつ下にスクロール中
+    if (scrollTop > 100 && !isScrollingUp) {
+        tabsElement.classList.add('hidden');
+    } else {
+        tabsElement.classList.remove('hidden');
+    }
+    
+    lastScrollTop = scrollTop;
 });
 </script>
 {% endblock %} 
