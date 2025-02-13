@@ -1208,12 +1208,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// 技術へボタンのクリック時の確認モーダル表示も条件分岐
+// 技術へボタンのクリック時の処理を条件分岐
 function confirmTechTransition(event) {
     event.preventDefault();
     {% if app.id %}
-        const modal = new bootstrap.Modal(document.getElementById('techConfirmModal'));
-        modal.show();
+        {% if readonly %}
+            // 詳細表示モードの場合は直接遷移
+            window.location.href = "{% url 'apps_gallery:technical_detail' app.id %}";
+        {% else %}
+            // 編集モードの場合はダイアログを表示
+            const modal = new bootstrap.Modal(document.getElementById('techConfirmModal'));
+            modal.show();
+        {% endif %}
     {% endif %}
 }
 </script>
