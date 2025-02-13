@@ -1297,3 +1297,38 @@ INFO 2025-02-13 00:25:22,012 views 4832 140624031213248 App found: 無題
 INFO 2025-02-13 00:25:22,012 views 4832 140624031213248 App found: 無題
 INFO 2025-02-13 00:25:22,085 views 4832 140624031213248 Screenshots: [{'public_id': 'app_screenshots/app_16/uad8ernqdh6szubbtfcg', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739373081/app_screenshots/app_16/uad8ernqdh6szubbtfcg.png', 'description': ''}]
 INFO 2025-02-13 00:25:22,085 views 4832 140624031213248 Screenshots: [{'public_id': 'app_screenshots/app_16/uad8ernqdh6szubbtfcg', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739373081/app_screenshots/app_16/uad8ernqdh6szubbtfcg.png', 'description': ''}]
+DEBUG 2025-02-13 19:45:36,441 connectionpool 95 140567770035904 Starting new HTTPS connection (1): api.cloudinary.com:443
+DEBUG 2025-02-13 19:45:38,805 connectionpool 95 140567770035904 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+DEBUG 2025-02-13 19:49:13,466 connectionpool 95 140567770035904 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-02-13 19:49:13,585 views 95 140567770035904 Request method: GET
+INFO 2025-02-13 19:49:13,585 views 95 140567770035904 Request method: GET
+INFO 2025-02-13 19:49:13,599 views 95 140567770035904 App found: うおおおおお
+INFO 2025-02-13 19:49:13,599 views 95 140567770035904 App found: うおおおおお
+INFO 2025-02-13 19:49:13,601 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_18/rhnrpdbquzjvv0srvv9f', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443752/app_screenshots/app_18/rhnrpdbquzjvv0srvv9f.png', 'description': ''}]
+INFO 2025-02-13 19:49:13,601 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_18/rhnrpdbquzjvv0srvv9f', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443752/app_screenshots/app_18/rhnrpdbquzjvv0srvv9f.png', 'description': ''}]
+INFO 2025-02-13 19:50:17,954 views 95 140567770035904 Request method: GET
+INFO 2025-02-13 19:50:17,954 views 95 140567770035904 Request method: GET
+INFO 2025-02-13 19:50:17,974 views 95 140567770035904 App found: うおおおおお
+INFO 2025-02-13 19:50:17,974 views 95 140567770035904 App found: うおおおおお
+INFO 2025-02-13 19:50:17,978 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_18/rhnrpdbquzjvv0srvv9f', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443752/app_screenshots/app_18/rhnrpdbquzjvv0srvv9f.png', 'description': ''}]
+INFO 2025-02-13 19:50:17,978 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_18/rhnrpdbquzjvv0srvv9f', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443752/app_screenshots/app_18/rhnrpdbquzjvv0srvv9f.png', 'description': ''}]
+DEBUG 2025-02-13 19:50:42,879 connectionpool 95 140567770035904 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-02-13 19:50:44,021 views 95 140567770035904 Request method: GET
+INFO 2025-02-13 19:50:44,021 views 95 140567770035904 Request method: GET
+INFO 2025-02-13 19:50:44,040 views 95 140567770035904 App found: どやあああ
+INFO 2025-02-13 19:50:44,040 views 95 140567770035904 App found: どやあああ
+INFO 2025-02-13 19:50:44,043 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_19/hcznlorlokjc6tzz7dqg', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443842/app_screenshots/app_19/hcznlorlokjc6tzz7dqg.png', 'description': ''}]
+INFO 2025-02-13 19:50:44,043 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_19/hcznlorlokjc6tzz7dqg', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443842/app_screenshots/app_19/hcznlorlokjc6tzz7dqg.png', 'description': ''}]
+INFO 2025-02-13 19:51:59,991 views 95 140567770035904 Request method: POST
+INFO 2025-02-13 19:51:59,991 views 95 140567770035904 Request method: POST
+INFO 2025-02-13 19:52:00,045 views 95 140567770035904 App found: どやあああ
+INFO 2025-02-13 19:52:00,045 views 95 140567770035904 App found: どやあああ
+INFO 2025-02-13 19:52:00,051 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_19/hcznlorlokjc6tzz7dqg', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443842/app_screenshots/app_19/hcznlorlokjc6tzz7dqg.png', 'description': ''}]
+INFO 2025-02-13 19:52:00,051 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_19/hcznlorlokjc6tzz7dqg', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443842/app_screenshots/app_19/hcznlorlokjc6tzz7dqg.png', 'description': ''}]
+DEBUG 2025-02-13 19:52:00,925 connectionpool 95 140567770035904 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-02-13 19:52:02,050 views 95 140567770035904 Request method: GET
+INFO 2025-02-13 19:52:02,050 views 95 140567770035904 Request method: GET
+INFO 2025-02-13 19:52:02,065 views 95 140567770035904 App found: どやあああ
+INFO 2025-02-13 19:52:02,065 views 95 140567770035904 App found: どやあああ
+INFO 2025-02-13 19:52:02,067 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_19/hcznlorlokjc6tzz7dqg', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443842/app_screenshots/app_19/hcznlorlokjc6tzz7dqg.png', 'description': ''}, {'public_id': 'app_screenshots/app_19/acbv9s0xodjtl0cvjvc2', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443920/app_screenshots/app_19/acbv9s0xodjtl0cvjvc2.png', 'description': ''}]
+INFO 2025-02-13 19:52:02,067 views 95 140567770035904 Screenshots: [{'public_id': 'app_screenshots/app_19/hcznlorlokjc6tzz7dqg', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443842/app_screenshots/app_19/hcznlorlokjc6tzz7dqg.png', 'description': ''}, {'public_id': 'app_screenshots/app_19/acbv9s0xodjtl0cvjvc2', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739443920/app_screenshots/app_19/acbv9s0xodjtl0cvjvc2.png', 'description': ''}]

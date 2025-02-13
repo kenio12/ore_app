@@ -85,88 +85,30 @@ def create_view(request):
             if form.is_valid():
                 app = form.save(commit=False)
                 app.author = request.user
-                
-                # セッションから画像情報を取得
-                temp_screenshots = request.session.get('temp_screenshots', [])
-                temp_thumbnail = request.session.get('temp_thumbnail')
-                
-                if temp_screenshots:
-                    # 新しいスクリーンショットリストを作成
-                    new_screenshots = []
-                    
-                    for screenshot in temp_screenshots:
-                        # 一時フォルダから本番フォルダへ画像を移動
-                        try:
-                            # 新しい public_id を生成（app_idを含むパスに）
-                            old_public_id = screenshot['public_id']
-                            new_public_id = old_public_id.replace('app_screenshots/temp', f'app_screenshots/app_{app.id}')
-                            
-                            # Cloudinaryで画像を移動（rename）
-                            result = cloudinary.uploader.rename(old_public_id, new_public_id)
-                            
-                            # 新しい情報でスクリーンショットを更新
-                            new_screenshot = {
-                                'public_id': result['public_id'],
-                                'url': result['secure_url'],
-                                'description': screenshot.get('description', '')
-                            }
-                            new_screenshots.append(new_screenshot)
-                            
-                        except Exception as e:
-                            logging.error(f"Failed to move screenshot: {e}")
-                            # エラーが発生しても処理を継続
-                            continue
-                    
-                    # 新しいスクリーンショットリストを保存
-                    app.screenshots = new_screenshots
-                    
-                    # セッションをクリア
-                    del request.session['temp_screenshots']
-                    request.session.modified = True
-                
-                # サムネイルの処理
-                if temp_thumbnail:
-                    old_public_id = temp_thumbnail['public_id']
-                    new_public_id = old_public_id.replace('app_screenshots/temp', f'app_screenshots/app_{app.id}')
-                    
-                    try:
-                        result = cloudinary.uploader.rename(old_public_id, new_public_id)
-                        app.thumbnail = {
-                            'public_id': result['public_id'],
-                            'url': result['secure_url']
-                        }
-                    except Exception as e:
-                        logging.error(f"Failed to move thumbnail: {e}")
-                
                 app.save()
                 
-                # セッションをクリア
-                if 'temp_screenshots' in request.session:
-                    del request.session['temp_screenshots']
-                if 'temp_thumbnail' in request.session:
-                    del request.session['temp_thumbnail']
-                request.session.modified = True
-                
-                return JsonResponse({
-                    'success': True,
-                    'redirect_url': reverse('apps_gallery:detail', kwargs={'pk': app.pk})
-                })
-            
-            # フォームのエラーをより詳細に記録
-            print("Form validation errors:", form.errors)
-            return JsonResponse({
-                'success': False,
-                'errors': form.errors,
-                'error_details': {field: errors[0] for field, errors in form.errors.items()}
-            }, status=400)
-            
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True,
+                        'app_id': app.id,
+                        'message': '保存しました'
+                    })
+                return redirect('apps_gallery:detail', pk=app.pk)
+            else:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': False,
+                        'error': '入力内容を確認してください',
+                        'errors': form.errors
+                    }, status=400)
+                messages.error(request, '入力内容を確認してください')
         except Exception as e:
-            print(f"全体的なエラー: {e}")
-            return JsonResponse({
-                'success': False,
-                'error': str(e),
-                'error_trace': str(e.__traceback__)
-            }, status=500)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'error': str(e)
+                }, status=500)
+            messages.error(request, f'エラーが発生しました：{str(e)}')
     
     # セッションの状態を確認
     screenshots = request.session.get('temp_screenshots', [])
