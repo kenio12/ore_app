@@ -19,7 +19,7 @@
                 border-radius: 8px;
                 overflow: hidden;">
         <!-- 背景画像を別のdivで設定 -->
-        <div style="position: absolute;
+        <div class="d-none d-sm-block" style="position: absolute;
                     top: 0;
                     left: 0;
                     width: 100%;
@@ -37,14 +37,26 @@
 
         <!-- appmanを最前面に -->
         <div class="mx-auto text-center position-absolute" style="top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 3;">
-            <img src="{% static 'home/images/appman.png' %}" 
-                 alt="アプリマン" 
-                 class="img-fluid cyber-glow" 
-                 style="max-width: 400px;
-                        position: relative;">
-            <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0" style="font-size: 1.8rem; margin-top: 1rem;">
-                俺もアプリだった
-            </p>
+            <div style="position: relative;">
+                <!-- スマホ用のテキスト - 画像の上に重ねて表示 -->
+                <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0 d-block d-sm-none" 
+                   style="position: absolute; 
+                          top: 75%; /* 位置を下に移動 */
+                          left: 50%; 
+                          transform: translateX(-50%); 
+                          z-index: 4; 
+                          width: 100%;">
+                    わたしはアプリ
+                </p>
+                <img src="{% static 'home/images/appman.png' %}" 
+                     alt="アプリマン" 
+                     class="img-fluid cyber-glow" 
+                     style="max-width: 400px;
+                            position: relative;">
+                <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0 d-none d-sm-block" style="font-size: 1.8rem; margin-top: 1rem;">
+                    わたしはアプリ
+                </p>
+            </div>
         </div>
     </div>
 
@@ -553,35 +565,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* スマートフォン用のスタイル調整を追加 */
 @media (max-width: 576px) {
-    /* 既存のスマートフォン用設定は保持 */
+    /* 既存のスマホ用スタイル */
+    .cyber-hero {
+        aspect-ratio: 16 / 16 !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        margin-bottom: 2rem !important;
+        padding-bottom: 0 !important;
+    }
+
     .mx-auto.text-center.position-absolute {
-        top: 0 !important;
+        top: 0% !important;
         transform: translate(-50%, 0) !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
     }
-    
-    /* 縦長画像の設定 */
-    .col-md-4 {
-        max-width: 250px !important;
+
+    /* カード内の縦長画像のサイズと位置調整 */
+    .cyber-image {
+        max-height: 350px !important;     /* 最大高さを350pxに調整 */
+        width: auto !important;
+        object-fit: contain !important;
         margin: 0 auto !important;
+        display: block !important;
     }
-    
-    .col-md-4 .cyber-image {
-        width: 100% !important;
-        height: auto !important;
-        object-fit: contain !important;
-    }
-    
-    /* スマホ専用の横長画像の設定 */
-    .screenshot-image img.screenshot-preview {
-        width: 100% !important;
-        height: auto !important;
-        max-width: 100% !important;
-        object-fit: contain !important;
-    }
-    
-    /* 画像を含む親要素の調整 */
-    .col-md-4 .h-100 {
-        height: auto !important;
+
+    /* 画像を含むコンテナの調整 */
+    .col-md-4 {
+        text-align: center !important;
     }
 }
 
