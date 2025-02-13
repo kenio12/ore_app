@@ -53,26 +53,6 @@
                     </div>
                 </div>
 
-                <!-- CI/CD -->
-                <div class="mb-4">
-                    <label class="form-label text-cyber-purple">CI/CDツール</label>
-                    <div class="row g-3">
-                        {% for key, value in ci_cd.items %}
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" 
-                                       class="form-check-input cyber-purple-focus"
-                                       name="development_environment[ci_cd][]"
-                                       value="{{ key }}"
-                                       {% if key in app.development_environment.ci_cd %}checked{% endif %}
-                                       {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
                 <!-- 仮想化ツール -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">仮想化ツール</label>
@@ -133,6 +113,26 @@
                                 <label class="form-check-label text-cyber-purple" for="comm-tool-{{ key }}">
                                     {{ value }}
                                 </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- CI/CD -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-purple">CI/CDツール</label>
+                    <div class="row g-3">
+                        {% for key, value in ci_cd.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="checkbox" 
+                                       class="form-check-input cyber-purple-focus"
+                                       name="development_environment[ci_cd][]"
+                                       value="{{ key }}"
+                                       {% if key in app.development_environment.ci_cd %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}

@@ -19,6 +19,11 @@ from .constants.development import (
     VERSION_CONTROL,
     CI_CD,
     VIRTUALIZATION_TOOLS,
+    TEAM_SIZES,
+    COMMUNICATION_TOOLS,
+    INFRASTRUCTURE,
+    API_TOOLS,
+    MONITORING_TOOLS,
 )
 from .constants.architecture import (
     ARCHITECTURE_PATTERNS,
@@ -62,6 +67,12 @@ def technical_edit_view(request, pk):
             'version_control': VERSION_CONTROL,
             'ci_cd': CI_CD,
             'virtualization_tools': VIRTUALIZATION_TOOLS,
+            # 追加の開発環境関連コンテキスト
+            'team_sizes': TEAM_SIZES,
+            'communication_tools': COMMUNICATION_TOOLS,
+            'infrastructure': INFRASTRUCTURE,
+            'api_tools': API_TOOLS,
+            'monitoring_tools': MONITORING_TOOLS,
             # アーキテクチャ関連
             'architecture_patterns': ARCHITECTURE_PATTERNS,
             'design_patterns': DESIGN_PATTERNS,
@@ -93,6 +104,12 @@ def technical_detail_view(request, pk):
         'version_control': VERSION_CONTROL,
         'ci_cd': CI_CD,
         'virtualization_tools': VIRTUALIZATION_TOOLS,
+        # 追加の開発環境関連コンテキスト
+        'team_sizes': TEAM_SIZES,
+        'communication_tools': COMMUNICATION_TOOLS,
+        'infrastructure': INFRASTRUCTURE,
+        'api_tools': API_TOOLS,
+        'monitoring_tools': MONITORING_TOOLS,
         # アーキテクチャ関連
         'architecture_patterns': ARCHITECTURE_PATTERNS,
         'design_patterns': DESIGN_PATTERNS,
