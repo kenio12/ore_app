@@ -30,65 +30,49 @@ from .constants.architecture import (
     ARCHITECTURE_PATTERNS,
     DESIGN_PATTERNS,
 )
+from .constants.backend_constants import (
+    BACKEND_STACK,
+    BACKEND_PACKAGE_HINTS
+)
 
 @login_required
 def technical_edit_view(request, pk):
     """技術情報の編集ビュー"""
     try:
-        # デバッグ用ログ追加
+        print("\n=== Debug Info ===")
         print(f"User: {request.user}, App ID: {pk}")
         
         app = get_object_or_404(AppGallery, id=pk, author=request.user)
         
-        # 基本情報チェックを一時的に無効化（デバッグ用）
-        """
-        if not all([app.title, app.overview, app.screenshots]):
-            messages.warning(request, '先に基本情報を入力してください！')
-            return redirect('apps_gallery:edit', pk=pk)
-        """
+        # デバッグ: バックエンドデータの確認
+        print("Current backend data:", app.backend)
+        print("BACKEND_STACK:", BACKEND_STACK)
         
         if request.method == 'POST':
             is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
             
             try:
-                # POSTデータから各フィールドを取得して保存
-                # ハードウェア情報
-                app.pc_type = request.POST.get('pc_type', '')
-                app.device_type = request.POST.get('device_type', '')
-                app.os_type = request.POST.get('os_type', '')
-                app.cpu_type = request.POST.get('cpu_type', '')
-                app.memory_size = request.POST.get('memory_size', '')
-                app.storage_type = request.POST.get('storage_type', '')
-                app.monitor_count = request.POST.get('monitor_count', '')
-                app.monitor_size = request.POST.get('monitor_size', '')
-                app.maker = request.POST.get('maker', '')
-                app.internet_type = request.POST.get('internet_type', '')
-
-                # 開発環境情報
-                app.editor = request.POST.get('editor', '')
-                app.version_control = request.POST.get('version_control', '')
-                app.ci_cd = request.POST.get('ci_cd', '')
-                app.virtualization = request.POST.get('virtualization', '')
-                app.team_size = request.POST.get('team_size', '')
-                app.communication_tool = request.POST.get('communication_tool', '')
-                app.infrastructure = request.POST.get('infrastructure', '')
-                app.api_tool = request.POST.get('api_tool', '')
-                app.monitoring_tool = request.POST.get('monitoring_tool', '')
-
-                # アーキテクチャ情報
-                app.architecture_pattern = request.POST.get('architecture_pattern', '')
-                app.design_pattern = request.POST.get('design_pattern', '')
-                
-                # 保存
-                app.save()
+                # フォームデータの処理
+                if 'backend[main_language]' in request.POST:
+                    # バックエンド情報の更新
+                    app.backend = {
+                        'main_language': request.POST.get('backend[main_language]'),
+                        'framework': request.POST.get('backend[framework]'),
+                        'packages': request.POST.getlist('backend[packages][]')
+                    }
+                    app.save()
                 
                 if is_ajax:
-                    return JsonResponse({'success': True})
+                    return JsonResponse({
+                        'success': True,
+                        'redirect_url': request.POST.get('next_url', None)
+                    })
+                
                 messages.success(request, '技術情報を保存しました！')
                 return redirect('apps_gallery:technical_edit', pk=pk)
                 
             except Exception as e:
-                print(f"Error saving technical info: {str(e)}")  # デバッグ用
+                print(f"Error saving technical info: {str(e)}")
                 if is_ajax:
                     return JsonResponse({'success': False, 'error': str(e)}, status=400)
                 messages.error(request, f'保存中にエラーが発生しました：{str(e)}')
@@ -96,8 +80,10 @@ def technical_edit_view(request, pk):
         context = {
             'app': app,
             'hide_navbar': True,
-            'readonly': False,
-            'is_edit': True,
+            'readonly': False,  # 編集モードを明示的に指定
+            'is_edit': True,   # 編集モードを明示的に指定
+            'BACKEND_STACK': BACKEND_STACK,
+            'BACKEND_PACKAGE_HINTS': BACKEND_PACKAGE_HINTS,
             # ハードウェア関連
             'pc_types': PC_TYPES,
             'device_types': DEVICE_TYPES,
@@ -125,11 +111,11 @@ def technical_edit_view(request, pk):
             'design_patterns': DESIGN_PATTERNS,
         }
         
-        print(f"Rendering technical edit template for app: {app.title}")  # デバッグ用
+        print(f"Rendering technical edit template for app: {app.title}")
         return render(request, 'apps_gallery/technical/edit_detail_technical.html', context)
         
     except Exception as e:
-        print(f"Error in technical_edit_view: {str(e)}")  # デバッグ用
+        print(f"Error in technical_edit_view: {str(e)}")
         messages.error(request, f'エラーが発生しました：{str(e)}')
         return redirect('apps_gallery:edit', pk=pk)
 
@@ -141,6 +127,9 @@ def technical_detail_view(request, pk):
         'app': app,
         'readonly': True,
         'hide_navbar': True,
+        # バックエンド関連（更新）
+        'BACKEND_STACK': BACKEND_STACK,
+        'BACKEND_PACKAGE_HINTS': BACKEND_PACKAGE_HINTS,
         # ハードウェア関連
         'cpu_types': CPU_TYPES,
         'memory_sizes': MEMORY_SIZES,

@@ -1201,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // 技術へボタンのクリック時の処理を条件分岐
 async function confirmTechTransition(event) {
     event.preventDefault();
-    console.log('confirmTechTransition called');  // デバッグ用
+    console.log('confirmTechTransition called');
     
     const link = event.currentTarget;
     const form = document.getElementById('appForm');
@@ -1213,8 +1213,9 @@ async function confirmTechTransition(event) {
         
         document.getElementById('saveTechButton').onclick = async function() {
             try {
-                console.log('Saving form data...');  // デバッグ用
+                console.log('Saving form data...');
                 const formData = new FormData(form);
+                formData.append('next_url', link.href);  // 遷移先URLを追加
                 
                 const response = await fetch(form.action, {
                     method: 'POST',
@@ -1227,11 +1228,10 @@ async function confirmTechTransition(event) {
                 });
 
                 const data = await response.json();
-                console.log('Save response:', data);  // デバッグ用
+                console.log('Save response:', data);
                 
                 if (data.success) {
-                    console.log('Save successful, redirecting to:', link.href);  // デバッグ用
-                    window.location.href = link.href;
+                    window.location.href = data.redirect_url || link.href;
                 } else {
                     throw new Error(data.error || '保存に失敗しました');
                 }
@@ -1242,7 +1242,6 @@ async function confirmTechTransition(event) {
             modal.hide();
         };
     } else {
-        console.log('Direct navigation to:', link.href);  // デバッグ用
         window.location.href = link.href;
     }
 }

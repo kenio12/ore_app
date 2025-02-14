@@ -49,8 +49,7 @@ from .frontend_constants import (
 
 # バックエンド関連
 from .backend_constants import (
-    BACKEND_LANGUAGES,
-    BACKEND_FRAMEWORKS,
+    BACKEND_STACK,
     BACKEND_PACKAGE_HINTS
 )
 
@@ -109,7 +108,8 @@ __all__ = [
     'FRONTEND_LANGUAGES', 'FRONTEND_FRAMEWORKS', 'CSS_FRAMEWORKS',
     
     # バックエンド関連
-    'BACKEND_LANGUAGES', 'BACKEND_FRAMEWORKS', 'BACKEND_PACKAGE_HINTS',
+    'BACKEND_STACK',
+    'BACKEND_PACKAGE_HINTS',
     
     # データベース関連
     'DATABASE_TYPES', 'ORMS',

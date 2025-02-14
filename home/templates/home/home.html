@@ -63,8 +63,8 @@
     <!-- フラッシュメッセージ -->
     {% if messages %}
         {% for message in messages %}
-            {% if 'save' not in message.tags and '保存' not in message|lower %}
-                <!-- アプリの保存に関係ないメッセージのみ表示 -->
+            {% if message.tags != 'info' and message.tags != 'warning' and '入力' not in message|stringformat:"s" %}
+                <!-- アプリの入力チェックに関係ないメッセージのみ表示 -->
                 <div class="alert alert-cyber" role="alert">
                     {{ message }}
                 </div>

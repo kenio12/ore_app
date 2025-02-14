@@ -203,7 +203,7 @@
             
             <!-- 技術情報のタブ -->
             <a class="nav-link text-cyber-blue active" data-bs-target="#hardware" href="#hardware">
-                <i class="bi bi-cpu"></i> ハードウェア
+                <i class="bi bi-cpu"></i> パソコン環境
             </a>
             <a class="nav-link text-cyber-purple" data-bs-target="#dev_env" href="#dev_env">
                 <i class="bi bi-tools"></i> 開発環境
@@ -220,68 +220,80 @@
 
 <!-- メインコンテンツ -->
 <div class="container main-content">
-    <!-- ヘッダー部分（編集/詳細で切り替え） -->
+    <!-- ヘッダー部分 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 style="color: {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
                    text-shadow: 0 0 10px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}, 
                               0 0 20px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
                    font-weight: bold;">
-            {% if readonly %}
-                {{ app.title }}の技術情報詳細
-            {% else %}
-                {{ app.title }}の技術情報を編集
+            {% if app.id %}
+                {% if readonly %}
+                    {{ app.title }}の技術情報
+                {% else %}
+                    {{ app.title }}の技術情報を編集
+                {% endif %}
             {% endif %}
         </h2>
     </div>
 
-    <form id="technicalForm" method="post">
-        {% csrf_token %}
-        
-        <!-- ハードウェア要件 -->
-        <section id="hardware" class="mb-5 scroll-margin-top">
-            {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
-        </section>
-        
-        <!-- 開発環境 -->
-        <section id="dev_env" class="mb-5">
-            {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
-        </section>
-        
-        <!-- アーキテクチャ -->
-        <section id="architecture" class="mb-5">
-            {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
-        </section>
-        
-        <!-- バックエンド -->
-        <section id="backend" class="mb-5">
-            {% include 'apps_gallery/technical/tabs/07_backend_tab.html' %}
-        </section>
-        
-        <!-- 下部のボタングループ -->
-        <div class="bottom-button-group">
-            <!-- 中央：ステータス表示 -->
-            <div class="button-container">
-                {% if not readonly %}
-                    <span class="status-badge editing-status">
-                        <i class="bi bi-pencil-square"></i> 編集中
-                    </span>
-                {% else %}
-                    <span class="status-badge viewing-status">
-                        <i class="bi bi-eye"></i> 詳細
-                    </span>
-                {% endif %}
-            </div>
+    <!-- フォーム開始 -->
+    {% if not readonly %}
+        <form id="technicalForm" 
+              method="post" 
+              action="{% url 'apps_gallery:technical_edit' app.id %}"
+              data-app-id="{{ app.id }}"
+              class="needs-validation" 
+              novalidate>
+            {% csrf_token %}
+    {% endif %}
 
-            <!-- 右：保存ボタン -->
-            <div class="button-container">
-                {% if not readonly %}
-                    <button type="submit" form="technicalForm" class="btn-cyber-save">
-                        <i class="bi bi-save"></i> 保存
-                    </button>
-                {% endif %}
-            </div>
+    <!-- タブコンテンツ -->
+    <div class="row g-4">
+        <!-- ハードウェアタブ -->
+        <div class="col-12">
+            <section id="hardware" class="mb-5">
+                {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
+            </section>
         </div>
-    </form>
+
+        <!-- 開発環境タブ -->
+        <div class="col-12">
+            <section id="dev_env" class="mb-5">
+                {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
+            </section>
+        </div>
+
+        <!-- アーキテクチャタブ -->
+        <div class="col-12">
+            <section id="architecture" class="mb-5">
+                {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
+            </section>
+        </div>
+
+        <!-- バックエンドタブ -->
+        <div class="col-12">
+            <section id="backend" class="mb-5">
+                {% include 'apps_gallery/technical/tabs/07_backend_tab.html' %}
+            </section>
+        </div>
+    </div>
+
+    <!-- フォーム終了 -->
+    {% if not readonly %}
+        </form>
+    {% endif %}
+
+    <!-- 保存ボタン（編集モードの場合のみ） -->
+    {% if not readonly %}
+        <div class="position-fixed" 
+             style="bottom: 20px; right: 20px; z-index: 1000;">
+            <button type="submit" 
+                    form="technicalForm" 
+                    class="btn-cyber-save">
+                <i class="bi bi-save"></i> 保存
+            </button>
+        </div>
+    {% endif %}
 </div>
 
 <!-- スタイルを追加 -->
@@ -893,11 +905,17 @@ window.confirmBasicTransition = function(event) {
     {% if app.id %}
         {% if readonly %}
             // 詳細表示モードの場合は直接遷移
-            window.location.href = "{% url 'apps_gallery:detail' app.id %}";
+            window.location.href = "{% url 'apps_gallery:edit' app.id %}";
         {% else %}
-            // 編集モードの場合はダイアログを表示
-            const modal = new bootstrap.Modal(document.getElementById('basicConfirmModal'));
-            modal.show();
+            // フォームに変更があるかチェック
+            if (formChanged) {
+                // 編集モードの場合はダイアログを表示
+                const modal = new bootstrap.Modal(document.getElementById('basicConfirmModal'));
+                modal.show();
+            } else {
+                // 変更がない場合は直接遷移
+                window.location.href = "{% url 'apps_gallery:edit' app.id %}";
+            }
         {% endif %}
     {% endif %}
 };
@@ -917,10 +935,35 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.hide();
         });
 
-        saveBasicButton.addEventListener('click', function() {
-            const basicUrl = "{% if app.id %}{% if readonly %}{% url 'apps_gallery:detail' app.id %}{% else %}{% url 'apps_gallery:edit' app.id %}{% endif %}{% endif %}";
-            // 一旦保存機能は省略して、直接遷移
-            window.location.href = basicUrl;
+        saveBasicButton.addEventListener('click', async function() {
+            const form = document.getElementById('technicalForm');
+            const basicUrl = "{% url 'apps_gallery:edit' app.id %}";
+            
+            try {
+                if (form) {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        window.location.href = basicUrl;
+                    } else {
+                        throw new Error(data.error || '保存に失敗しました');
+                    }
+                } else {
+                    window.location.href = basicUrl;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('保存中にエラーが発生しました：' + error.message);
+            }
             modal.hide();
         });
     }
@@ -1074,14 +1117,6 @@ function saveAndGoToBasic(event) {
     }
 }
 </script>
-
-<!-- 詳細へのリンク部分 -->
-<!-- 詳細へのリンク部分 -->
-<div class="detail-link-container position-relative">
-    <a href="{% url 'apps_gallery:detail' app.id %}" class="btn-cyber-detail">
-        <i class="bi bi-box-arrow-in-right"></i>詳細へ
-    </a>
-</div>
 
 <!-- 全てのコンテンツの後、endblockの直前に配置 -->
 <script type="text/javascript">

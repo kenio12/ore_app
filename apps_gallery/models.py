@@ -137,6 +137,14 @@ class AppGallery(models.Model):
                  'モニタリングツール）'
     )
     
+    # ==================== バックエンドタブ ====================
+    backend = models.JSONField(
+        'バックエンド情報',
+        default=dict,
+        blank=True,
+        help_text='バックエンド関連の情報（メイン言語、フレームワーク、パッケージなど）'
+    )
+    
     # ==================== 管理用フィールド ====================
     created_at = models.DateTimeField('作成日時', auto_now_add=True)
     updated_at = models.DateTimeField('更新日時', auto_now=True)
