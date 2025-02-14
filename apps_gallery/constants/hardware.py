@@ -14,6 +14,7 @@ DEVICE_TYPES = {
     'windows': 'Windows PC',
     'mac': 'Mac',
     'linux': 'Linux PC',
+    'chrome_os': 'Chrome OS',
     'other': 'その他'
 }
 
@@ -25,6 +26,7 @@ MAKER_EXAMPLES = [
     'HP（Pavilion/Spectre/Envyなど）',
     'ASUS（ZenBook/ROGなど）',
     'Microsoft（Surfaceシリーズ）',
+    'Google（Chromebookシリーズ）',
     '自作PC',
     'その他'
 ]
@@ -34,6 +36,7 @@ OS_TYPES = {
     'windows': 'Windows（10/11）',
     'macos': 'macOS',
     'linux': 'Linux（Ubuntu/CentOSなど）',
+    'chrome_os': 'Chrome OS',
     'other': 'その他'
 }
 
@@ -63,10 +66,15 @@ STORAGE_TYPES = {
 
 # モニター数（開発効率に重要）
 MONITOR_COUNTS = {
-    '1': 'ノートPCの画面のみ',
-    '2': 'ノートPC + 外部モニター1台',
-    '3': 'ノートPC + 外部モニター2台',
-    '4+': '3台以上の外部モニター使用'
+    'laptop_single': 'ノートPCの画面のみ',
+    'laptop_plus_one': 'ノートPC + 外部モニター1台',
+    'laptop_plus_two': 'ノートPC + 外部モニター2台',
+    'laptop_plus_more': 'ノートPC + 外部モニター3台以上',
+    'desktop_single': 'デスクトップPC + モニター1台',
+    'desktop_dual': 'デスクトップPC + モニター2台',
+    'desktop_triple': 'デスクトップPC + モニター3台',
+    'desktop_more': 'デスクトップPC + モニター4台以上',
+    'other': 'その他'
 }
 
 # モニターサイズ（メインの外部モニター）

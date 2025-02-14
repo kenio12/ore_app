@@ -71,6 +71,12 @@
                 <!-- デバイスタイプ -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-blue">使用パソコンの種類</label>
+                    <p class="text-muted small mb-3 text-cyber-blue">
+                        ※使用しているパソコンの種類を選択してください。
+                        WindowsパソコンやMac、ChromebookなどのGoogle製パソコン、
+                        Linuxをメインで使用しているパソコンなど、
+                        開発に使用している主なパソコンを選んでください。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in device_types.items %}
                         <div class="col-md-3">
@@ -94,6 +100,12 @@
                 <!-- CPU -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-blue">搭載CPU</label>
+                    <p class="text-muted small mb-3 text-cyber-blue">
+                        ※CPUはパソコンの処理性能を決める重要な部品です。
+                        Intelの場合はCore i3/i5/i7/i9、
+                        AMDの場合はRyzen 3/5/7/9、
+                        最新のMacの場合はM1/M2/M3シリーズが搭載されています。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in cpu_types.items %}
                         <div class="col-md-3">
@@ -117,6 +129,11 @@
                 <!-- メモリ -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-blue">搭載メモリ</label>
+                    <p class="text-muted small mb-3 text-cyber-blue">
+                        ※メモリ（RAM）は同時に動作するプログラムの数や処理速度に影響します。
+                        一般的な開発では8GB〜16GBあれば十分です。
+                        大規模な開発や仮想環境を使用する場合は32GB以上あると便利です。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in memory_sizes.items %}
                         <div class="col-md-3">
@@ -140,6 +157,12 @@
                 <!-- ストレージ -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-blue">搭載ストレージ</label>
+                    <p class="text-muted small mb-3 text-cyber-blue">
+                        ※ストレージはデータやプログラムを保存する場所です。
+                        HDDは大容量だが遅く、SSDは高速です。
+                        特にNVMe SSDは最も高速で、開発効率が上がります。
+                        容量は256GB以上あると安心です。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in storage_types.items %}
                         <div class="col-md-3">
@@ -163,6 +186,11 @@
                 <!-- モニター数 -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-blue">使用モニター構成</label>
+                    <p class="text-muted small mb-3 text-cyber-blue">
+                        ※開発時のモニター構成を選択してください。
+                        ノートPCの場合は内蔵画面も含めて数えます。
+                        デスクトップPCの場合は接続しているモニターの数を選んでください。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in monitor_counts.items %}
                         <div class="col-md-3">
@@ -227,19 +255,19 @@
 }
 
 /* タイトルとラベルのスタイル改善 */
-.text-cyber-blue {
-    color: var(--cyber-blue) !important;
-    text-shadow: 0 0 5px var(--cyber-blue) !important;
+#hardware .text-cyber-blue {
+    color: #00ffff !important;  /* サイバーブルー（水色）を明示的に指定 */
+    text-shadow: 0 0 5px #00ffff !important;
     font-weight: bold !important;
     letter-spacing: 0.5px !important;
 }
 
 /* 入力フィールドのスタイル改善 */
 #hardware .form-control {
-    border: 2px solid var(--cyber-blue) !important;
-    color: var(--cyber-blue) !important;
+    border: 2px solid #00ffff !important;
+    color: #00ffff !important;
     background: rgba(0, 20, 50, 0.5) !important;
-    text-shadow: 0 0 5px var(--cyber-blue) !important;
+    text-shadow: 0 0 5px #00ffff !important;
     font-weight: bold !important;
 }
 
@@ -251,8 +279,8 @@
 
 /* フォーカス時のスタイル */
 #hardware .form-control:focus {
-    border-color: var(--cyber-blue) !important;
-    box-shadow: 0 0 15px var(--cyber-blue) !important;
+    border-color: #00ffff !important;
+    box-shadow: 0 0 15px #00ffff !important;
     background: rgba(0, 30, 70, 0.7) !important;
 }
 
@@ -261,28 +289,19 @@
     --cyber-blue: #00ffff;
 }
 
-/* チェックボックスとラジオボタンのスタイル改善 */
-.form-check-input.cyber-blue-focus {
-    border-color: var(--cyber-blue) !important;
+/* ハードウェアタブ専用のスタイル */
+#hardware .form-label.text-cyber-blue {
+    color: #00ffff !important;  /* 明示的に水色を指定 */
+    text-shadow: 0 0 5px #00ffff !important;
 }
 
-.form-check-input.cyber-blue-focus:checked {
-    background-color: var(--cyber-blue) !important;
-    border-color: var(--cyber-blue) !important;
+#hardware .cyber-blue-focus:focus {
+    border-color: #00ffff !important;
+    box-shadow: 0 0 10px #00ffff !important;
 }
 
-.form-check-input.cyber-blue-focus:focus {
-    box-shadow: 0 0 10px var(--cyber-blue) !important;
-}
-
-/* ラベルのスタイル改善 */
-.form-check-label.text-cyber-blue {
-    color: var(--cyber-blue) !important;
-    text-shadow: 0 0 5px var(--cyber-blue) !important;
-}
-
-/* 無効化時のスタイル */
-.form-check-input.cyber-blue-focus:disabled {
-    opacity: 0.7;
+#hardware small.text-cyber-blue {
+    color: #00ffff !important;
+    text-shadow: 0 0 5px #00ffff;
 }
 </style> 

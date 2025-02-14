@@ -40,18 +40,30 @@ from .development import (
     MONITORING_TOOLS
 )
 
-# 技術スタック
-from .tech_stack import (
+# フロントエンド関連
+from .frontend_constants import (
     FRONTEND_LANGUAGES,
     FRONTEND_FRAMEWORKS,
-    CSS_FRAMEWORKS,
+    CSS_FRAMEWORKS
+)
+
+# バックエンド関連
+from .backend_constants import (
     BACKEND_LANGUAGES,
     BACKEND_FRAMEWORKS,
-    DATABASE_TYPES,
-    ORMS,
-    CACHES,
-    DATABASE_HOSTING,
     BACKEND_PACKAGE_HINTS
+)
+
+# データベース関連
+from .database_constants import (
+    DATABASE_TYPES,
+    ORMS
+)
+
+# インフラ関連
+from .infrastructure_constants import (
+    CACHES,
+    DATABASE_HOSTING
 )
 
 # アーキテクチャとセキュリティ
@@ -93,10 +105,17 @@ __all__ = [
     'VERSION_CONTROL', 'COMMUNICATION_TOOLS', 'INFRASTRUCTURE',
     'CI_CD', 'API_TOOLS', 'MONITORING_TOOLS',
     
-    # 技術スタック
+    # フロントエンド関連
     'FRONTEND_LANGUAGES', 'FRONTEND_FRAMEWORKS', 'CSS_FRAMEWORKS',
-    'BACKEND_LANGUAGES', 'BACKEND_FRAMEWORKS', 'DATABASE_TYPES',
-    'ORMS', 'CACHES', 'DATABASE_HOSTING', 'BACKEND_PACKAGE_HINTS',
+    
+    # バックエンド関連
+    'BACKEND_LANGUAGES', 'BACKEND_FRAMEWORKS', 'BACKEND_PACKAGE_HINTS',
+    
+    # データベース関連
+    'DATABASE_TYPES', 'ORMS',
+    
+    # インフラ関連
+    'CACHES', 'DATABASE_HOSTING',
     
     # アーキテクチャとセキュリティ
     'ARCHITECTURE_PATTERNS', 'DESIGN_PATTERNS', 'ARCHITECTURE_HINTS',

@@ -10,6 +10,10 @@
                 <!-- IDE/エディタ -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">使用したIDE/エディタ</label>
+                    <p class="text-muted small mb-3 text-cyber-purple">
+                        ※コードを書くための編集ツールです。Visual Studio CodeやPyCharmなど、
+                        好みのエディタを選んでください。初学者の方にはVisual Studio Codeがおすすめです。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in editors.items %}
                         <div class="col-md-4">
@@ -33,6 +37,13 @@
                 <!-- バージョン管理 -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">バージョン管理システム</label>
+                    <p class="text-muted small mb-3 text-cyber-purple">
+                        ※コードの変更履歴を管理するツールです。
+                        Gitは現代の開発ではほぼ必須のツールです。
+                        その上でGitHubやGitLabなどのサービスと組み合わせて使用すると、
+                        コードの共有やバックアップがより便利になります。
+                        個人開発でもGit + GitHubの使用を強くおすすめします。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in version_control.items %}
                         <div class="col-md-4">
@@ -56,6 +67,17 @@
                 <!-- 仮想化ツール -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">仮想化ツール</label>
+                    <p class="text-muted small mb-3 text-cyber-purple">
+                        ※開発環境を簡単に構築・共有するためのツールです。
+                        Dockerが代表的で、複数のコンテナ（アプリ、データベースなど）を
+                        使う場合はDocker Composeと組み合わせて使用します。
+                        メリットは：
+                        1. パソコンのOSが変わっても同じ環境で開発できる
+                        2. 新しいパソコンでも「Docker起動するだけ」で開発再開できる
+                        3. チームメンバー全員が同じ環境で開発できる
+                        
+                        個人開発では必須ではありませんが、使えると便利なツールです。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in virtualization_tools.items %}
                         <div class="col-md-4">
@@ -76,6 +98,10 @@
                 <!-- チームサイズ -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">チームサイズ</label>
+                    <p class="text-muted small mb-3 text-cyber-purple">
+                        ※開発に携わった人数を選択してください。
+                        個人開発の場合は「1人」を選択してください。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in team_sizes.items %}
                         <div class="col-md-4">
@@ -99,6 +125,10 @@
                 <!-- コミュニケーションツール -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">コミュニケーションツール</label>
+                    <p class="text-muted small mb-3 text-cyber-purple">
+                        ※チーム開発時のコミュニケーションに使用するツールです。
+                        SlackやDiscordが一般的です。個人開発の場合は選択不要です。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in communication_tools.items %}
                         <div class="col-md-4">
@@ -122,6 +152,10 @@
                 <!-- CI/CD -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">CI/CDツール</label>
+                    <p class="text-muted small mb-3 text-cyber-purple">
+                        ※CI/CDツールは主に大規模開発で使用されます。自動テストやデプロイを行うためのツールですが、
+                        個人開発や小規模プロジェクトでは必須ではありません。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in ci_cd.items %}
                         <div class="col-md-4">
@@ -142,6 +176,12 @@
                 <!-- インフラストラクチャ -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">インフラストラクチャ</label>
+                    <p class="text-muted small mb-3 text-cyber-purple">
+                        ※インフラストラクチャはアプリケーションを動かすための基盤となる環境のことです。
+                        サーバー、データベース、ホスティングサービス（PythonAnywhere、Heroku、Renderなど）や、
+                        コンテナオーケストレーションツール（Kubernetes）などが含まれます。
+                        個人開発では、シンプルなホスティングサービスを選ぶことが多いです。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in infrastructure.items %}
                         <div class="col-md-4">
@@ -165,6 +205,10 @@
                 <!-- APIツール -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">APIツール</label>
+                    <p class="text-muted small mb-3 text-cyber-purple">
+                        ※APIツールは外部サービスとの連携時に使用します。
+                        シンプルなWebアプリケーションでは必要ない場合が多いです。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in api_tools.items %}
                         <div class="col-md-4">
@@ -188,6 +232,10 @@
                 <!-- モニタリングツール -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">モニタリングツール</label>
+                    <p class="text-muted small mb-3 text-cyber-purple">
+                        ※モニタリングツールはサービスの稼働状況を監視するために使用されます。
+                        大規模サービスでは重要ですが、個人開発では通常必要ありません。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in monitoring_tools.items %}
                         <div class="col-md-4">
@@ -221,112 +269,55 @@
 </div>
 
 <style>
-/* カードのスタイル改善 */
-.card {
-    background: rgba(13, 25, 45, 0.8) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(147, 51, 234, 0.1) !important;
-}
-
-/* 入力フィールドのスタイル改善 */
-#dev_env .form-control {
-    border: 2px solid var(--cyber-purple) !important;
-    color: var(--cyber-purple) !important;
-    background: rgba(0, 20, 50, 0.5) !important;
-    text-shadow: 0 0 5px var(--cyber-purple) !important;
-    font-weight: bold !important;
-}
-
-/* ラベルのスタイル改善 */
-#dev_env .form-label {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 5px var(--cyber-purple) !important;
-    font-weight: bold !important;
-    letter-spacing: 0.5px !important;
-}
-
-/* プレースホルダーのスタイル改善 */
-#dev_env ::placeholder {
-    color: rgba(147, 51, 234, 0.5) !important;
-    text-shadow: none !important;
-}
-
-/* フォーカス時のスタイル */
-#dev_env .form-control:focus {
-    box-shadow: 0 0 15px var(--cyber-purple) !important;
-    background: rgba(0, 30, 70, 0.7) !important;
-}
-
-/* 読み取り専用時のスタイル */
-#dev_env .form-control[readonly],
-#dev_env .form-control:disabled {
-    background-color: rgba(0, 20, 50, 0.5) !important;
-    color: var(--cyber-purple) !important;
-    border-color: var(--cyber-purple) !important;
-    opacity: 1;
-}
-
-/* タイトルのスタイル改善 */
-.cyber-title {
-    color: var(--cyber-purple);
-    text-shadow: 
-        0 0 10px var(--cyber-purple),
-        0 0 20px var(--cyber-purple);
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-
-/* 入力フィールドのスタイル改善 */
-#dev_env .form-control {
-    border: 2px solid var(--cyber-purple) !important;
-    color: var(--cyber-purple) !important;
-    background: rgba(0, 20, 50, 0.5) !important;
-    text-shadow: 0 0 5px var(--cyber-purple) !important;
-    font-weight: bold !important;
-}
-
-/* ラベルのスタイル改善 */
-#dev_env .text-cyber-purple {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 5px var(--cyber-purple) !important;
-}
-
-/* 重複したスタイルを削除 */
-/* 開発環境タブ専用のスタイルを削除（重複していたため） */
-
-#dev_env .cyber-purple-focus:focus {
-    border-color: var(--cyber-purple) !important;
-    box-shadow: 0 0 10px var(--cyber-purple) !important;
-}
-
-/* チェックボックスのスタイル改善 */
-.form-check-input.cyber-purple-focus {
-    border-color: var(--cyber-purple) !important;
-}
-
-.form-check-input.cyber-purple-focus:checked {
-    background-color: var(--cyber-purple) !important;
-    border-color: var(--cyber-purple) !important;
-}
-
-.form-check-input.cyber-purple-focus:focus {
-    box-shadow: 0 0 10px var(--cyber-purple) !important;
-}
-
-/* チェックボックスラベルのスタイル */
-.form-check-label.text-cyber-purple {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 5px var(--cyber-purple) !important;
-}
-
-/* 無効化時のスタイル */
-.form-check-input.cyber-purple-focus:disabled {
-    opacity: 0.7;
-}
-
-/* 変数の定義 */
+/* 基本変数の定義 */
 :root {
     --cyber-purple: #9333ea;
+    --cyber-purple-dim: rgba(147, 51, 234, 0.6); /* 透明度を追加 */
+}
+
+/* カードスタイル */
+#dev_env .card {
+    background: rgba(13, 25, 45, 0.9) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--cyber-purple) !important;  /* ボーダーを細く */
+    box-shadow: 
+        0 0 8px var(--cyber-purple-dim),
+        inset 0 0 5px var(--cyber-purple-dim) !important;  /* さらに光量を抑制 */
+}
+
+/* テキストスタイル */
+#dev_env .text-cyber-purple {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 3px var(--cyber-purple-dim) !important;  /* シャドウを1層だけに */
+    font-weight: bold !important;
+    letter-spacing: 1px !important;
+    animation: cyber-purple-glow 3s ease-in-out infinite alternate !important;  /* アニメーションをさらにゆっくりに */
+}
+
+/* フォームコントロール */
+#dev_env .form-check-input.cyber-purple-focus {
+    border: 1px solid var(--cyber-purple) !important;
+    box-shadow: 0 0 3px var(--cyber-purple-dim) !important;
+}
+
+#dev_env .form-check-input.cyber-purple-focus:checked {
+    background-color: var(--cyber-purple-dim) !important;
+    border-color: var(--cyber-purple) !important;
+    box-shadow: 0 0 5px var(--cyber-purple-dim) !important;
+}
+
+#dev_env .form-check-label.text-cyber-purple {
+    text-shadow: 0 0 2px var(--cyber-purple-dim) !important;
+}
+
+/* アニメーション定義 */
+@keyframes cyber-purple-glow {
+    from {
+        text-shadow: 0 0 2px var(--cyber-purple-dim);
+    }
+    to {
+        text-shadow: 0 0 4px var(--cyber-purple-dim);
+    }
 }
 </style> 

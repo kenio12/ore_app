@@ -165,7 +165,7 @@
     <!-- 画面右側の技術へボタン -->
     <div class="position-fixed" style="top: 50%; right: 0; transform: translateY(-50%); z-index: 1000;">
         {% if app.id %}
-            <a href="#" 
+            <a href="{% if readonly %}{% url 'apps_gallery:technical_detail' app.id %}{% else %}{% url 'apps_gallery:technical_edit' app.id %}{% endif %}" 
                onclick="confirmTechTransition(event)"
                class="btn btn-cyber-secondary d-flex align-items-center"
                style="opacity: 0.7; 
@@ -1199,18 +1199,68 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 技術へボタンのクリック時の処理を条件分岐
-function confirmTechTransition(event) {
+async function confirmTechTransition(event) {
     event.preventDefault();
-    {% if app.id %}
-        {% if readonly %}
-            // 詳細表示モードの場合は直接遷移
-            window.location.href = "{% url 'apps_gallery:technical_detail' app.id %}";
-        {% else %}
-            // 編集モードの場合はダイアログを表示
-            const modal = new bootstrap.Modal(document.getElementById('techConfirmModal'));
-            modal.show();
-        {% endif %}
-    {% endif %}
+    console.log('confirmTechTransition called');  // デバッグ用
+    
+    const link = event.currentTarget;
+    const form = document.getElementById('appForm');
+    const isEdit = form !== null;
+    
+    if (isEdit) {
+        const modal = new bootstrap.Modal(document.getElementById('techConfirmModal'));
+        modal.show();
+        
+        document.getElementById('saveTechButton').onclick = async function() {
+            try {
+                console.log('Saving form data...');  // デバッグ用
+                const formData = new FormData(form);
+                
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
+
+                const data = await response.json();
+                console.log('Save response:', data);  // デバッグ用
+                
+                if (data.success) {
+                    console.log('Save successful, redirecting to:', link.href);  // デバッグ用
+                    window.location.href = link.href;
+                } else {
+                    throw new Error(data.error || '保存に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('保存中にエラーが発生しました：' + error.message);
+            }
+            modal.hide();
+        };
+    } else {
+        console.log('Direct navigation to:', link.href);  // デバッグ用
+        window.location.href = link.href;
+    }
+}
+
+// CSRFトークンを取得する関数
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 </script>
 
@@ -1258,7 +1308,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         const data = await response.json();
 
-                        if (response.ok) {
+                        if (data.success) {
                             // 技術情報編集ページへ遷移（トーストメッセージ付き）
                             window.location.href = techUrl + (techUrl.includes('?') ? '&' : '?') + 'toast_message=保存し、技術情報の編集画面に移動しました。';
                         } else {

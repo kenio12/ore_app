@@ -14,6 +14,7 @@ TEAM_SIZES = {
 
 # 仮想化ツール
 VIRTUALIZATION_TOOLS = {
+    'none': '使用していない',
     'docker': 'Docker',
     'docker_compose': 'Docker Compose',
     'kubernetes': 'Kubernetes',
@@ -27,6 +28,7 @@ VIRTUALIZATION_TOOLS = {
 
 # エディタ
 EDITORS = {
+    'none': '使用していない',
     'vscode': 'Visual Studio Code',
     'sublime': 'Sublime Text',
     'atom': 'Atom',
@@ -46,6 +48,7 @@ EDITORS = {
 
 # バージョン管理
 VERSION_CONTROL = {
+    'none': '使用していない',
     'git': 'Git',
     'github': 'GitHub',
     'gitlab': 'GitLab',
@@ -59,6 +62,7 @@ VERSION_CONTROL = {
 
 # コミュニケーションツール
 COMMUNICATION_TOOLS = {
+    'none': '使用していない',
     'slack': 'Slack',
     'discord': 'Discord',
     'teams': 'Microsoft Teams',
@@ -74,6 +78,7 @@ COMMUNICATION_TOOLS = {
 
 # インフラストラクチャ
 INFRASTRUCTURE = {
+    'none': '使用していない',
     # クラウドプラットフォーム
     'aws': 'Amazon Web Services (AWS)',
     'gcp': 'Google Cloud Platform (GCP)',
@@ -111,6 +116,7 @@ INFRASTRUCTURE = {
 
 # CI/CD
 CI_CD = {
+    'none': '使用していない',
     'github_actions': 'GitHub Actions',
     'gitlab_ci': 'GitLab CI/CD',
     'jenkins': 'Jenkins',
@@ -126,6 +132,7 @@ CI_CD = {
 
 # APIツール
 API_TOOLS = {
+    'none': '使用していない',
     # API開発・テスト
     'postman': 'Postman',
     'insomnia': 'Insomnia',
@@ -155,6 +162,7 @@ API_TOOLS = {
 
 # モニタリングツール
 MONITORING_TOOLS = {
+    'none': '使用していない',
     # APM（アプリケーションパフォーマンスモニタリング）
     'new_relic': 'New Relic',
     'datadog': 'Datadog',

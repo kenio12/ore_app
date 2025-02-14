@@ -6,22 +6,16 @@
                 <span class="text-cyber-green">アーキテクチャ</span>
             </h2>
 
-            <!-- アーキテクチャの説明 -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-green">アーキテクチャの説明</label>
-                <textarea name="architecture[description]"
-                          class="form-control cyber-green-focus"
-                          rows="4"
-                          placeholder="採用したアーキテクチャとその理由を説明してください..."
-                          {% if readonly %}readonly{% endif %}>{{ app.architecture.description|default:'' }}</textarea>
-            </div>
-
             <!-- アーキテクチャパターン -->
             <div class="mb-4">
                 <label class="form-label text-cyber-green">アーキテクチャパターン</label>
+                <p class="text-muted small mb-3 text-cyber-green">
+                    ※アプリケーションの基本構造を示すパターンです。
+                    初学者の方は「特に意識していない」を選んでも問題ありません。
+                </p>
                 <div class="row g-3">
                     {% for key, value in architecture_patterns.items %}
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-check">
                             <input type="checkbox" 
                                    class="form-check-input"
@@ -39,9 +33,14 @@
             <!-- デザインパターン -->
             <div class="mb-4">
                 <label class="form-label text-cyber-green">デザインパターン</label>
+                <p class="text-muted small mb-3 text-cyber-green">
+                    ※プログラムの設計パターンです。
+                    初学者の方は「特に意識していない」を選択してください。
+                    学習が進むにつれて自然と理解できるようになります。
+                </p>
                 <div class="row g-3">
                     {% for key, value in design_patterns.items %}
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-check">
                             <input type="checkbox" 
                                    class="form-check-input"
@@ -55,6 +54,23 @@
                     {% endfor %}
                 </div>
             </div>
+
+            <!-- アーキテクチャの説明（最後に配置） -->
+            <div class="mb-4">
+                <label class="form-label text-cyber-green">アーキテクチャの説明</label>
+                <p class="text-muted small mb-3 text-cyber-green">
+                    ※選択したアーキテクチャについて、なぜそれを選んだのか、
+                    どのように実装したのかを自由に説明してください。
+                    初学者の方は、「シンプルな構成で作りました」といった
+                    簡単な説明で十分です。
+                </p>
+                <textarea name="architecture[description]"
+                          class="form-control cyber-green-focus"
+                          rows="4"
+                          placeholder="採用したアーキテクチャとその理由を説明してください..."
+                          {% if readonly %}readonly{% endif %}>{{ app.architecture.description|default:'' }}</textarea>
+            </div>
+
         </div>
     </div>
 </div>

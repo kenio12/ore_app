@@ -1,39 +1,62 @@
 """
-アーキテクチャとセキュリティに関する定数
+アーキテクチャに関する定数
 """
 
 # アーキテクチャパターン
 ARCHITECTURE_PATTERNS = {
-    'mvc': 'MVC',
-    'mvvm': 'MVVM',
+    # 基本構造
+    'monolithic': 'モノリシック（一枚岩型）',
+    'modular_monolithic': 'モジュラーモノリシック（機能分割型一枚岩）',
+    'modular': 'モジュラー（機能分割型）',
+    'layered': 'レイヤード（層状型）',
+    
+    # クリーン系
     'clean': 'クリーンアーキテクチャ',
-    'ddd': 'ドメイン駆動設計',
-    'layered': 'レイヤードアーキテクチャ',
+    'onion': 'オニオンアーキテクチャ',
+    'hexagonal': 'ヘキサゴナルアーキテクチャ',
+    
+    # 分散系
     'microservices': 'マイクロサービス',
     'serverless': 'サーバーレス',
-    'event_driven': 'イベント駆動',
+    
+    # その他
+    'none': '特に意識していない',
     'other': 'その他'
 }
 
 # デザインパターン
 DESIGN_PATTERNS = {
-    'singleton': 'Singleton',
-    'factory': 'Factory',
-    'observer': 'Observer',
-    'strategy': 'Strategy',
-    'repository': 'Repository',
-    'decorator': 'Decorator',
-    'facade': 'Facade',
+    # 基本パターン
+    'none': '特に意識していない',
+    'mvc_based': 'MVCベース（MVC/MVT/MVVMなど）',
+    'layered': 'レイヤードパターン（層状設計）',
+    
+    # GoFパターン
+    'singleton': 'Singleton（シングルトン）',
+    'factory': 'Factory Method（ファクトリーメソッド）',
+    'repository': 'Repository（リポジトリ）',
+    'strategy': 'Strategy（ストラテジー）',
+    'observer': 'Observer（オブザーバー）',
+    'decorator': 'Decorator（デコレータ）',
+    'facade': 'Facade（ファサード）',
+    
+    # 状態管理
+    'bloc': 'BLoC（Business Logic Component）',
+    'redux': 'Reduxパターン',
+    'provider': 'Providerパターン',
+    
+    # その他
+    'ddd': 'ドメイン駆動設計',
+    'event_driven': 'イベント駆動',
     'other': 'その他'
 }
 
-# アーキテクチャのヒント
+# アーキテクチャの説明項目
 ARCHITECTURE_HINTS = {
-    'architecture_structure': '全体的なアーキテクチャの構成',
-    'adoption_reason': '採用した理由や背景',
-    'design_patterns': '特徴的な設計パターン',
-    'module_dependencies': 'モジュール間の依存関係',
-    'data_flow': 'データフローの概要'
+    'basic_structure': '基本構造',
+    'data_flow': 'データの流れ',
+    'folder_structure': 'フォルダ構成',
+    'reason': '採用した理由'
 }
 
 # セキュリティ対策

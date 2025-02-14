@@ -1,0 +1,81 @@
+<div class="container" style="margin-top: 120px !important;">
+    <div class="card border-0 shadow-lg">
+        <div class="card-body">
+            <h2 class="card-title h3 mb-4">
+                <i class="bi bi-server text-cyber-pink"></i>
+                <span class="cyber-title">バックエンド</span>
+            </h2>
+
+            <!-- 使用言語 -->
+            <div class="mb-4">
+                <label class="form-label text-cyber-pink">使用言語</label>
+                <input type="text" 
+                       name="backend[language]"
+                       class="form-control cyber-pink-focus"
+                       placeholder="例: Python, Ruby, PHP, Node.js"
+                       value="{{ app.backend.language|default:'' }}"
+                       {% if readonly %}readonly{% endif %}>
+            </div>
+
+            <!-- フレームワーク -->
+            <div class="mb-4">
+                <label class="form-label text-cyber-pink">使用フレームワーク</label>
+                <input type="text" 
+                       name="backend[framework]"
+                       class="form-control cyber-pink-focus"
+                       placeholder="例: Django, Ruby on Rails, Laravel"
+                       value="{{ app.backend.framework|default:'' }}"
+                       {% if readonly %}readonly{% endif %}>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* カードのスタイル改善 */
+.card {
+    background: rgba(13, 25, 45, 0.8) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(236, 72, 153, 0.1) !important;
+}
+
+/* 入力フィールドのスタイル改善 */
+.form-control {
+    border: 2px solid var(--cyber-pink) !important;
+    color: var(--cyber-pink) !important;
+    background: rgba(0, 20, 50, 0.5) !important;
+    text-shadow: 0 0 5px var(--cyber-pink) !important;
+    font-weight: bold !important;
+}
+
+/* ラベルのスタイル改善 */
+.form-label {
+    color: var(--cyber-pink) !important;
+    text-shadow: 0 0 5px var(--cyber-pink) !important;
+    font-weight: bold !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* プレースホルダーのスタイル改善 */
+::placeholder {
+    color: rgba(236, 72, 153, 0.5) !important;
+    text-shadow: none !important;
+}
+
+/* フォーカス時のスタイル */
+.form-control:focus {
+    box-shadow: 0 0 15px var(--cyber-pink) !important;
+    background: rgba(0, 30, 70, 0.7) !important;
+}
+
+/* タイトルのスタイル改善 */
+.cyber-title {
+    color: var(--cyber-pink);
+    text-shadow: 
+        0 0 10px var(--cyber-pink),
+        0 0 20px var(--cyber-pink);
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+</style> 
