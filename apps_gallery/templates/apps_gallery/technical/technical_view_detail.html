@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{# ナビバーを完全に非表示にする #}
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<!-- サイバーパンク風の装飾 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<!-- 画面右側の基本へボタン -->
+<div class="position-fixed" style="top: 50%; right: 0; transform: translateY(-50%); z-index: 1000;">
+    {% if app.id %}
+        <a href="{% url 'apps_gallery:detail' app.id %}" 
+           id="basicButton"
+           class="btn btn-cyber-secondary d-flex align-items-center"
+           style="opacity: 0.7; 
+                  transition: all 0.3s;
+                  margin-right: -10px;
+                  border-radius: 60px 0 0 60px;
+                  padding: 15px;
+                  background-color: rgba(0, 0, 0, 0.7);
+                  border: 2px solid var(--cyber-green);">
+            <span class="d-none d-md-inline me-2" 
+                  style="color: var(--cyber-green);
+                         text-shadow: 0 0 5px var(--cyber-green);">
+                基本へ
+            </span>
+            <span class="d-md-none" 
+                  style="color: var(--cyber-green);
+                         text-shadow: 0 0 5px var(--cyber-green);
+                         font-weight: bold;
+                         font-size: 20px;">
+                基
+            </span>
+        </a>
+    {% endif %}
+</div>
+
+<!-- メインコンテンツ -->
+<div class="container mt-4">
+    <!-- ハードウェア情報 -->
+    {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
+    
+    <!-- 開発環境情報 -->
+    {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
+    
+    <!-- アーキテクチャ情報 -->
+    {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
+    
+    <!-- バックエンド情報 -->
+    {% include 'apps_gallery/technical/tabs/07_backend_tab.html' %}
+</div>
+
+<style>
+/* サイバーパンクな背景 */
+.cyber-background {
+    background: linear-gradient(45deg, #001e54, #0066cc);
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+/* カラーバリエーション用の変数定義 */
+:root {
+    --cyber-blue: #00ffff;
+    --cyber-orange: #ff8c00;
+    --cyber-yellow: #ffd700;
+    --cyber-green: #00ff9f;
+    --cyber-red: #ff2d55;
+    --cyber-purple: #bf5fff;
+}
+</style>
+
+{% endblock %} 

@@ -185,7 +185,7 @@ def technical_edit_view(request, pk):
         })
         
         print(f"Rendering technical edit template for app: {app.title}")
-        return render(request, 'apps_gallery/technical/edit_detail_technical.html', context)
+        return render(request, 'apps_gallery/technical/technical_create_edit.html', context)
         
     except Exception as e:
         print(f"\n=== View Error ===")
@@ -227,4 +227,4 @@ def technical_detail_view(request, pk):
     # デバッグ用
     print("Context for technical detail:", context)
     
-    return render(request, 'apps_gallery/technical/edit_detail_technical.html', context) 
+    return render(request, 'apps_gallery/technical/technical_view_detail.html', context) 
