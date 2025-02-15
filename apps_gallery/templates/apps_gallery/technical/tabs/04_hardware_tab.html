@@ -80,10 +80,10 @@
                             <div class="form-check">
                                 <input type="radio" 
                                        id="device-{{ key }}"
-                                       name="device_type"
+                                       name="hardware_specs[device_type]"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware.device_type %}checked{% endif %}
+                                       {% if key == app.hardware_specs.device_type %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="device-{{ key }}">
                                     {{ value }}
@@ -109,10 +109,10 @@
                             <div class="form-check">
                                 <input type="radio" 
                                        id="cpu-{{ key }}"
-                                       name="cpu_type"
+                                       name="hardware_specs[cpu_type]"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware.cpu_type %}checked{% endif %}
+                                       {% if key == app.hardware_specs.cpu_type %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="cpu-{{ key }}">
                                     {{ value }}
@@ -126,21 +126,16 @@
                 <!-- メモリ -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-blue">搭載メモリ</label>
-                    <p class="text-muted small mb-3 text-cyber-blue">
-                        ※メモリ（RAM）は同時に動作するプログラムの数や処理速度に影響します。
-                        一般的な開発では8GB〜16GBあれば十分です。
-                        大規模な開発や仮想環境を使用する場合は32GB以上あると便利です。
-                    </p>
                     <div class="row g-3">
                         {% for key, value in memory_sizes.items %}
                         <div class="col-md-3">
                             <div class="form-check">
                                 <input type="radio" 
                                        id="memory-{{ key }}"
-                                       name="memory_size"
+                                       name="hardware_specs[memory_size]"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware.memory_size %}checked{% endif %}
+                                       {% if key == app.hardware_specs.memory_size %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="memory-{{ key }}">
                                     {{ value }}
@@ -153,23 +148,17 @@
 
                 <!-- ストレージ -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-blue">搭載ストレージ</label>
-                    <p class="text-muted small mb-3 text-cyber-blue">
-                        ※ストレージはデータやプログラムを保存する場所です。
-                        HDDは大容量だが遅く、SSDは高速です。
-                        特にNVMe SSDは最も高速で、開発効率が上がります。
-                        容量は256GB以上あると安心です。
-                    </p>
+                    <label class="form-label text-cyber-blue">ストレージタイプ</label>
                     <div class="row g-3">
                         {% for key, value in storage_types.items %}
                         <div class="col-md-3">
                             <div class="form-check">
                                 <input type="radio" 
                                        id="storage-{{ key }}"
-                                       name="storage_type"
+                                       name="hardware_specs[storage_type]"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware.storage_type %}checked{% endif %}
+                                       {% if key == app.hardware_specs.storage_type %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="storage-{{ key }}">
                                     {{ value }}
@@ -182,24 +171,19 @@
 
                 <!-- モニター数 -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-blue">使用モニター構成</label>
-                    <p class="text-muted small mb-3 text-cyber-blue">
-                        ※開発時のモニター構成を選択してください。
-                        ノートPCの場合は内蔵画面も含めて数えます。
-                        デスクトップPCの場合は接続しているモニターの数を選んでください。
-                    </p>
+                    <label class="form-label text-cyber-blue">使用モニター数</label>
                     <div class="row g-3">
                         {% for key, value in monitor_counts.items %}
                         <div class="col-md-3">
                             <div class="form-check">
                                 <input type="radio" 
-                                       id="monitor-count-{{ key }}"
-                                       name="monitor_count"
+                                       id="monitor-{{ key }}"
+                                       name="hardware_specs[monitor_count]"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware.monitor_count %}checked{% endif %}
+                                       {% if key == app.hardware_specs.monitor_count %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-blue" for="monitor-count-{{ key }}">
+                                <label class="form-check-label text-cyber-blue" for="monitor-{{ key }}">
                                     {{ value }}
                                 </label>
                             </div>
@@ -217,10 +201,10 @@
                             <div class="form-check">
                                 <input type="radio" 
                                        id="internet-{{ key }}"
-                                       name="internet_type"
+                                       name="hardware_specs[internet_type]"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware.internet_type %}checked{% endif %}
+                                       {% if key == app.hardware_specs.internet_type %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="internet-{{ key }}">
                                     {{ value }}

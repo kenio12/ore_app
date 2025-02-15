@@ -1035,6 +1035,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     version_control: [],
                     virtualization: [],
                     team_size: '',
+                    ci_cd: [],
                     communication_tools: [],
                     infrastructure: [],
                     api_tools: [],
@@ -1044,6 +1045,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     main_language: '',
                     framework: '',
                     packages: []
+                },
+                architecture: {
+                    patterns: [],
+                    design_patterns: [],
+                    description: ''
                 }
             };
 
@@ -1063,9 +1069,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             // チーム規模の取得方法を修正
-            const teamSizeRadio = document.querySelector('input[name="team_size"]:checked');
-            if (teamSizeRadio) {
-                formData.development_environment.team_size = teamSizeRadio.value;
+            const teamSizeInput = document.querySelector('input[name="team_size"]:checked');
+            if (teamSizeInput) {
+                formData.development_environment.team_size = teamSizeInput.value;
             }
 
             // 開発環境情報の収集を修正
@@ -1073,6 +1079,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 'editors': 'editors',
                 'version_control': 'version_control',
                 'virtualization': 'virtualization',
+                'team_size': 'team_size',
+                'ci_cd': 'ci_cd',
                 'communication_tools': 'communication_tools',
                 'infrastructure': 'infrastructure',
                 'api_tools': 'api_tools',
@@ -1092,6 +1100,24 @@ document.addEventListener('DOMContentLoaded', function() {
             if (mainLanguageRadio) formData.backend.main_language = mainLanguageRadio.value;
             if (frameworkRadio) formData.backend.framework = frameworkRadio.value;
             formData.backend.packages = Array.from(packageCheckboxes).map(cb => cb.value);
+
+            // アーキテクチャ情報の収集
+            const archFields = {
+                'patterns': 'patterns',
+                'design_patterns': 'design_patterns',
+                'description': 'description'
+            };
+
+            Object.entries(archFields).forEach(([fieldName, key]) => {
+                const checkedInputs = document.querySelectorAll(`input[name="${fieldName}"]:checked`);
+                formData.architecture[key] = Array.from(checkedInputs).map(input => input.value);
+            });
+
+            // 説明文
+            const descriptionInput = document.querySelector('textarea[name="description"]');
+            if (descriptionInput) {
+                formData.architecture.description = descriptionInput.value;
+            }
 
             console.log('Sending data:', formData);
 
@@ -1194,6 +1220,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     version_control: [],
                     virtualization: [],
                     team_size: '',
+                    ci_cd: [],
                     communication_tools: [],
                     infrastructure: [],
                     api_tools: [],
@@ -1203,6 +1230,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     main_language: '',
                     framework: '',
                     packages: []
+                },
+                architecture: {
+                    patterns: [],
+                    design_patterns: [],
+                    description: ''
                 }
             };
 
@@ -1222,9 +1254,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             // チーム規模の取得方法を修正
-            const teamSizeRadio = document.querySelector('input[name="team_size"]:checked');
-            if (teamSizeRadio) {
-                formData.development_environment.team_size = teamSizeRadio.value;
+            const teamSizeInput = document.querySelector('input[name="team_size"]:checked');
+            if (teamSizeInput) {
+                formData.development_environment.team_size = teamSizeInput.value;
             }
 
             // 開発環境情報の収集を修正
@@ -1232,6 +1264,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 'editors': 'editors',
                 'version_control': 'version_control',
                 'virtualization': 'virtualization',
+                'team_size': 'team_size',
+                'ci_cd': 'ci_cd',
                 'communication_tools': 'communication_tools',
                 'infrastructure': 'infrastructure',
                 'api_tools': 'api_tools',
@@ -1251,6 +1285,24 @@ document.addEventListener('DOMContentLoaded', function() {
             if (mainLanguageRadio) formData.backend.main_language = mainLanguageRadio.value;
             if (frameworkRadio) formData.backend.framework = frameworkRadio.value;
             formData.backend.packages = Array.from(packageCheckboxes).map(cb => cb.value);
+
+            // アーキテクチャ情報の収集
+            const archFields = {
+                'patterns': 'patterns',
+                'design_patterns': 'design_patterns',
+                'description': 'description'
+            };
+
+            Object.entries(archFields).forEach(([fieldName, key]) => {
+                const checkedInputs = document.querySelectorAll(`input[name="${fieldName}"]:checked`);
+                formData.architecture[key] = Array.from(checkedInputs).map(input => input.value);
+            });
+
+            // 説明文
+            const descriptionInput = document.querySelector('textarea[name="description"]');
+            if (descriptionInput) {
+                formData.architecture.description = descriptionInput.value;
+            }
 
             console.log('Sending data:', formData);
 
@@ -1315,5 +1367,32 @@ function getCookie(name) {
                {% if field.field.required %}required{% endif %}>
     </div>
 {% endfor %}
+
+<!-- フォームデータを収集する関数 -->
+<script>
+function collectFormData() {
+    const formData = {
+        architecture: {
+            patterns: [],
+            design_patterns: [],
+            description: ''
+        }
+    };
+
+    // アーキテクチャのチェックボックス
+    ['patterns', 'design_patterns'].forEach(field => {
+        const checkedInputs = document.querySelectorAll(`input[name="${field}"]:checked`);
+        formData.architecture[field] = Array.from(checkedInputs).map(input => input.value);
+    });
+
+    // 説明文
+    const descriptionInput = document.querySelector('textarea[name="description"]');
+    if (descriptionInput) {
+        formData.architecture.description = descriptionInput.value;
+    }
+
+    return formData;
+}
+</script>
 
 {% endblock %} 

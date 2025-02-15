@@ -74,8 +74,10 @@ def technical_edit_view(request, pk):
                 
                 # 開発環境データの処理
                 dev_env_data = data.get('development_environment', {}).copy()
-                if not isinstance(dev_env_data, dict):
-                    dev_env_data = {}
+                
+                # team_sizeを配列から単一の値に変換
+                if 'team_size' in dev_env_data and isinstance(dev_env_data['team_size'], list):
+                    dev_env_data['team_size'] = dev_env_data['team_size'][0] if dev_env_data['team_size'] else ''
                 
                 # バックエンドデータの処理
                 backend_data = data.get('backend', {}).copy()
@@ -94,10 +96,14 @@ def technical_edit_view(request, pk):
                             if pkg not in backend_data['packages']:
                                 backend_data['packages'].append(pkg)
                 
+                # アーキテクチャデータの処理を追加
+                architecture_data = data.get('architecture', {}).copy()
+                
                 # データを保存
                 app.hardware_specs = hardware_data
                 app.development_environment = dev_env_data
                 app.backend = backend_data
+                app.architecture = architecture_data
                 app.save()
 
                 # デバッグ用ログ追加
@@ -105,6 +111,7 @@ def technical_edit_view(request, pk):
                 print("Saved hardware:", app.hardware_specs)
                 print("Saved dev env:", app.development_environment)
                 print("Saved backend:", app.backend)
+                print("Saved architecture:", app.architecture)
                 
                 return JsonResponse({
                     'success': True,
@@ -112,7 +119,8 @@ def technical_edit_view(request, pk):
                     'data': {
                         'hardware_specs': app.hardware_specs,
                         'development_environment': app.development_environment,
-                        'backend': app.backend
+                        'backend': app.backend,
+                        'architecture': app.architecture
                     }
                 })
                 
@@ -172,7 +180,8 @@ def technical_edit_view(request, pk):
         print("Context data:", {
             'hardware_specs': app.hardware_specs,
             'development_environment': app.development_environment,
-            'backend': app.backend
+            'backend': app.backend,
+            'architecture': app.architecture
         })
         
         print(f"Rendering technical edit template for app: {app.title}")

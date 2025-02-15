@@ -19,12 +19,13 @@
                         <div class="col-md-4">
                             <div class="form-check">
                                 <input type="checkbox" 
-                                       class="form-check-input"
+                                       id="editor-{{ key }}"
+                                       class="form-check-input cyber-purple-focus"
                                        name="editors"
                                        value="{{ key }}"
-                                       {% if key in app.development_environment.editors %}checked{% endif %}
+                                       {% if app.development_environment and app.development_environment.editors and key in app.development_environment.editors %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
+                                <label class="form-check-label text-cyber-purple" for="editor-{{ key }}">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -46,12 +47,13 @@
                         <div class="col-md-4">
                             <div class="form-check">
                                 <input type="checkbox" 
-                                       class="form-check-input"
+                                       id="vc-{{ key }}"
+                                       class="form-check-input cyber-purple-focus"
                                        name="version_control"
                                        value="{{ key }}"
-                                       {% if key in app.development_environment.version_control %}checked{% endif %}
+                                       {% if app.development_environment and key in app.development_environment.version_control %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
+                                <label class="form-check-label text-cyber-purple" for="vc-{{ key }}">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -77,12 +79,13 @@
                         <div class="col-md-4">
                             <div class="form-check">
                                 <input type="checkbox" 
+                                       id="virt-{{ key }}"
                                        class="form-check-input cyber-purple-focus"
                                        name="virtualization"
                                        value="{{ key }}"
-                                       {% if key in app.development_environment.virtualization %}checked{% endif %}
+                                       {% if app.development_environment and key in app.development_environment.virtualization %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
+                                <label class="form-check-label text-cyber-purple" for="virt-{{ key }}">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -105,7 +108,7 @@
                                        class="form-check-input cyber-purple-focus"
                                        name="team_size"
                                        value="{{ key }}"
-                                       {% if key == app.development_environment.team_size %}checked{% endif %}
+                                       {% if app.development_environment and app.development_environment.team_size == key %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-purple" for="team-size-{{ key }}">
                                     {{ value }}
@@ -128,13 +131,13 @@
                         <div class="col-md-4">
                             <div class="form-check">
                                 <input type="checkbox" 
-                                       id="comm-tool-{{ key }}"
+                                       id="comm-{{ key }}"
                                        class="form-check-input cyber-purple-focus"
                                        name="communication_tools"
                                        value="{{ key }}"
-                                       {% if key in app.development_environment.communication_tools %}checked{% endif %}
+                                       {% if app.development_environment and key in app.development_environment.communication_tools %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple" for="comm-tool-{{ key }}">
+                                <label class="form-check-label text-cyber-purple" for="comm-{{ key }}">
                                     {{ value }}
                                 </label>
                             </div>
@@ -146,21 +149,18 @@
                 <!-- CI/CD -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-purple">CI/CDツール</label>
-                    <p class="text-muted small mb-3 text-cyber-purple">
-                        ※CI/CDツールは主に大規模開発で使用されます。自動テストやデプロイを行うためのツールですが、
-                        個人開発や小規模プロジェクトでは必須ではありません。
-                    </p>
                     <div class="row g-3">
                         {% for key, value in ci_cd.items %}
                         <div class="col-md-4">
                             <div class="form-check">
                                 <input type="checkbox" 
+                                       id="cicd-{{ key }}"
                                        class="form-check-input cyber-purple-focus"
                                        name="ci_cd"
                                        value="{{ key }}"
-                                       {% if key in app.development_environment.ci_cd %}checked{% endif %}
+                                       {% if app.development_environment and app.development_environment.ci_cd and key in app.development_environment.ci_cd %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
+                                <label class="form-check-label text-cyber-purple" for="cicd-{{ key }}">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -188,10 +188,9 @@
                                        class="form-check-input cyber-purple-focus"
                                        name="infrastructure"
                                        value="{{ key }}"
-                                       {% if key in app.development_environment.infrastructure %}checked{% endif %}
+                                       {% if app.development_environment and key in app.development_environment.infrastructure %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple" for="infra-{{ key }}">
-                                    {{ value }}</label>
+                                <label class="form-check-label text-cyber-purple" for="infra-{{ key }}">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -214,11 +213,9 @@
                                        class="form-check-input cyber-purple-focus"
                                        name="api_tools"
                                        value="{{ key }}"
-                                       {% if key in app.development_environment.api_tools %}checked{% endif %}
+                                       {% if app.development_environment and key in app.development_environment.api_tools %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple" for="api-tool-{{ key }}">
-                                    {{ value }}
-                                </label>
+                                <label class="form-check-label text-cyber-purple" for="api-tool-{{ key }}">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -241,11 +238,9 @@
                                        class="form-check-input cyber-purple-focus"
                                        name="monitoring_tools"
                                        value="{{ key }}"
-                                       {% if key in app.development_environment.monitoring_tools %}checked{% endif %}
+                                       {% if app.development_environment and key in app.development_environment.monitoring_tools %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple" for="monitoring-{{ key }}">
-                                    {{ value }}
-                                </label>
+                                <label class="form-check-label text-cyber-purple" for="monitoring-{{ key }}">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}

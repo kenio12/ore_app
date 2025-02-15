@@ -145,6 +145,14 @@ class AppGallery(models.Model):
         blank=True,
         help_text='バックエンド関連の情報（メイン言語、フレームワーク、パッケージなど）'
     )
+
+    # アーキテクチャ情報を追加
+    architecture = models.JSONField(
+        'アーキテクチャ情報',
+        default=dict,
+        blank=True,
+        help_text='アーキテクチャ関連の情報（アーキテクチャパターン、デザインパターン、説明など）'
+    )
     
     # ==================== 管理用フィールド ====================
     created_at = models.DateTimeField('作成日時', auto_now_add=True)
