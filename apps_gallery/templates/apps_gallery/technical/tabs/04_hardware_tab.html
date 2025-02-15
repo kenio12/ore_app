@@ -16,7 +16,7 @@
                                name="maker"
                                class="form-control cyber-blue-focus"
                                placeholder="例: Apple, Lenovo, Dell, HP など"
-                               value="{{ app.hardware.maker }}"
+                               value="{{ app.hardware_specs.maker }}"
                                {% if readonly %}disabled{% endif %}>
                     </div>
                     <!-- メーカー例の表示 -->
@@ -40,7 +40,7 @@
                                name="model"
                                class="form-control cyber-blue-focus"
                                placeholder="例: MacBook Pro (2020), ThinkPad X1 Carbon など"
-                               value="{{ app.hardware.model }}"
+                               value="{{ app.hardware_specs.model }}"
                                {% if readonly %}disabled{% endif %}>
                     </div>
                 </div>
