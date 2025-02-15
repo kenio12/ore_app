@@ -60,18 +60,6 @@
         </div>
     </div>
 
-    <!-- フラッシュメッセージ -->
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.tags != 'info' and message.tags != 'warning' and '入力' not in message|stringformat:"s" %}
-                <!-- アプリの入力チェックに関係ないメッセージのみ表示 -->
-                <div class="alert alert-cyber" role="alert">
-                    {{ message }}
-                </div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-
     <!-- アプリ一覧 -->
     <div class="container mb-5">
         <div class="row">

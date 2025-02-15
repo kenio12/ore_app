@@ -9,25 +9,22 @@
             <form id="dev-env-form">
                 <!-- IDE/エディタ -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-purple">使用したIDE/エディタ</label>
+                    <label class="form-label text-cyber-purple">使用したIDE/エディタ <span class="text-danger">*</span></label>
                     <p class="text-muted small mb-3 text-cyber-purple">
-                        ※コードを書くための編集ツールです。Visual Studio CodeやPyCharmなど、
-                        好みのエディタを選んでください。初学者の方にはVisual Studio Codeがおすすめです。
+                        ※コードを書くための編集ツールです。Visual Studio Code、Cursor、PyCharmなど、
+                        好みのエディタを選んでください。初学者の方にはVisual Studio CodeやCursor（AI支援機能付き）がおすすめです。
                     </p>
                     <div class="row g-3">
                         {% for key, value in editors.items %}
                         <div class="col-md-4">
                             <div class="form-check">
                                 <input type="checkbox" 
-                                       id="editor-{{ key }}"
-                                       class="form-check-input cyber-purple-focus"
-                                       name="development_environment[editors][]"
+                                       class="form-check-input"
+                                       name="editors"
                                        value="{{ key }}"
                                        {% if key in app.development_environment.editors %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple" for="editor-{{ key }}">
-                                    {{ value }}
-                                </label>
+                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -36,7 +33,7 @@
 
                 <!-- バージョン管理 -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-purple">バージョン管理システム</label>
+                    <label class="form-label text-cyber-purple">バージョン管理システム <span class="text-danger">*</span></label>
                     <p class="text-muted small mb-3 text-cyber-purple">
                         ※コードの変更履歴を管理するツールです。
                         Gitは現代の開発ではほぼ必須のツールです。
@@ -49,15 +46,12 @@
                         <div class="col-md-4">
                             <div class="form-check">
                                 <input type="checkbox" 
-                                       id="vcs-{{ key }}"
-                                       class="form-check-input cyber-purple-focus"
-                                       name="development_environment[version_control][]"
+                                       class="form-check-input"
+                                       name="version_control"
                                        value="{{ key }}"
                                        {% if key in app.development_environment.version_control %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-purple" for="vcs-{{ key }}">
-                                    {{ value }}
-                                </label>
+                                <label class="form-check-label text-cyber-purple">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -84,7 +78,7 @@
                             <div class="form-check">
                                 <input type="checkbox" 
                                        class="form-check-input cyber-purple-focus"
-                                       name="development_environment[virtualization][]"
+                                       name="virtualization"
                                        value="{{ key }}"
                                        {% if key in app.development_environment.virtualization %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -109,7 +103,7 @@
                                 <input type="radio" 
                                        id="team-size-{{ key }}"
                                        class="form-check-input cyber-purple-focus"
-                                       name="development_environment[team_size]"
+                                       name="team_size"
                                        value="{{ key }}"
                                        {% if key == app.development_environment.team_size %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -136,7 +130,7 @@
                                 <input type="checkbox" 
                                        id="comm-tool-{{ key }}"
                                        class="form-check-input cyber-purple-focus"
-                                       name="development_environment[communication_tools][]"
+                                       name="communication_tools"
                                        value="{{ key }}"
                                        {% if key in app.development_environment.communication_tools %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -162,7 +156,7 @@
                             <div class="form-check">
                                 <input type="checkbox" 
                                        class="form-check-input cyber-purple-focus"
-                                       name="development_environment[ci_cd][]"
+                                       name="ci_cd"
                                        value="{{ key }}"
                                        {% if key in app.development_environment.ci_cd %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -178,9 +172,12 @@
                     <label class="form-label text-cyber-purple">インフラストラクチャ</label>
                     <p class="text-muted small mb-3 text-cyber-purple">
                         ※インフラストラクチャはアプリケーションを動かすための基盤となる環境のことです。
-                        サーバー、データベース、ホスティングサービス（PythonAnywhere、Heroku、Renderなど）や、
-                        コンテナオーケストレーションツール（Kubernetes）などが含まれます。
-                        個人開発では、シンプルなホスティングサービスを選ぶことが多いです。
+                        サーバー、データベース、ホスティングサービスなどが含まれます。
+                        個人開発では、以下のようなホスティングサービスを選ぶことが多いです：
+                        - PythonAnywhere：Pythonアプリに特化した、初学者に優しいホスティング
+                        - Render：無料枠があり、デプロイが簡単
+                        - Heroku：安定性が高く、多機能（一部有料）
+                        - Vercel：フロントエンド特化で使いやすい
                     </p>
                     <div class="row g-3">
                         {% for key, value in infrastructure.items %}
@@ -189,13 +186,12 @@
                                 <input type="checkbox" 
                                        id="infra-{{ key }}"
                                        class="form-check-input cyber-purple-focus"
-                                       name="development_environment[infrastructure][]"
+                                       name="infrastructure"
                                        value="{{ key }}"
                                        {% if key in app.development_environment.infrastructure %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-purple" for="infra-{{ key }}">
-                                    {{ value }}
-                                </label>
+                                    {{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -216,7 +212,7 @@
                                 <input type="checkbox" 
                                        id="api-tool-{{ key }}"
                                        class="form-check-input cyber-purple-focus"
-                                       name="development_environment[api_tools][]"
+                                       name="api_tools"
                                        value="{{ key }}"
                                        {% if key in app.development_environment.api_tools %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -243,7 +239,7 @@
                                 <input type="checkbox" 
                                        id="monitoring-{{ key }}"
                                        class="form-check-input cyber-purple-focus"
-                                       name="development_environment[monitoring_tools][]"
+                                       name="monitoring_tools"
                                        value="{{ key }}"
                                        {% if key in app.development_environment.monitoring_tools %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -272,7 +268,8 @@
 /* 基本変数の定義 */
 :root {
     --cyber-purple: #9333ea;
-    --cyber-purple-dim: rgba(147, 51, 234, 0.6); /* 透明度を追加 */
+    --cyber-purple-dim: rgba(147, 51, 234, 0.6);
+    --cyber-purple-glow: rgba(147, 51, 234, 0.3);
 }
 
 /* カードスタイル */
@@ -296,19 +293,24 @@
 }
 
 /* フォームコントロール */
-#dev_env .form-check-input.cyber-purple-focus {
+#dev_env .form-check-input {
     border: 1px solid var(--cyber-purple) !important;
     box-shadow: 0 0 3px var(--cyber-purple-dim) !important;
 }
 
-#dev_env .form-check-input.cyber-purple-focus:checked {
-    background-color: var(--cyber-purple-dim) !important;
+#dev_env .form-check-input:checked {
+    background-color: var(--cyber-purple) !important;
     border-color: var(--cyber-purple) !important;
-    box-shadow: 0 0 5px var(--cyber-purple-dim) !important;
+    box-shadow: 0 0 10px var(--cyber-purple) !important;
 }
 
-#dev_env .form-check-label.text-cyber-purple {
-    text-shadow: 0 0 2px var(--cyber-purple-dim) !important;
+/* チェックされた項目のラベルを輝かせる */
+#dev_env .form-check-input:checked + .form-check-label {
+    color: var(--cyber-purple) !important;
+    text-shadow: 
+        0 0 5px var(--cyber-purple),
+        0 0 10px var(--cyber-purple-glow) !important;
+    animation: label-glow 2s ease-in-out infinite alternate !important;
 }
 
 /* アニメーション定義 */
@@ -318,6 +320,19 @@
     }
     to {
         text-shadow: 0 0 4px var(--cyber-purple-dim);
+    }
+}
+
+@keyframes label-glow {
+    from {
+        text-shadow: 
+            0 0 5px var(--cyber-purple),
+            0 0 10px var(--cyber-purple-glow);
+    }
+    to {
+        text-shadow: 
+            0 0 8px var(--cyber-purple),
+            0 0 15px var(--cyber-purple-glow);
     }
 }
 </style> 

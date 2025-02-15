@@ -100,22 +100,14 @@
     </div>
 </div>
 
-<!-- サイバーパンク風のトースト -->
-<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 9999;">
-    <div class="toast" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-body" style="background: rgba(0, 255, 159, 0.1);
-                                     border: 2px solid var(--cyber-green);
-                                     color: var(--cyber-green);
-                                     text-shadow: 0 0 5px var(--cyber-green);
-                                     box-shadow: 0 0 15px var(--cyber-green);
-                                     backdrop-filter: blur(8px);
-                                     -webkit-backdrop-filter: blur(8px);
-                                     padding: 15px;
-                                     border-radius: 5px;">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                <span id="toastMessage">保存しました</span>
+<!-- トースト要素を追加 -->
+<div class="toast-container position-fixed top-50 start-50 translate-middle" style="z-index: 9999;">
+    <div class="toast align-items-center text-white bg-success border-0" id="technicalToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle me-2"></i>保存しました！
             </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -123,8 +115,8 @@
 <!-- 画面右側の基本へボタン -->
 <div class="position-fixed" style="top: 50%; right: 0; transform: translateY(-50%); z-index: 1000;">
     {% if app.id %}
-        <a href="#" 
-           onclick="confirmBasicTransition(event)"
+        <a href="{% url 'apps_gallery:edit' app.id %}" 
+           id="basicButton"
            class="btn btn-cyber-secondary d-flex align-items-center"
            style="opacity: 0.7; 
                   transition: all 0.3s;
@@ -149,31 +141,30 @@
     {% endif %}
 </div>
 
-<!-- 確認ダイアログ -->
-<div class="modal fade" id="basicConfirmModal" tabindex="-1" aria-hidden="true">
+<!-- 確認モーダル -->
+<div class="modal fade" id="basicConfirmModal" tabindex="-1" aria-labelledby="basicConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark" style="border: 2px solid var(--cyber-green); box-shadow: 0 0 20px var(--cyber-green);">
+        <div class="modal-content bg-dark text-light" 
+             style="border: 2px solid var(--cyber-green); 
+                    box-shadow: 0 0 20px var(--cyber-green);">
             <div class="modal-body text-center p-4">
-                <h5 class="mb-3" id="basicConfirmModalLabel" 
+                <h5 class="modal-title mb-3" 
+                    id="basicConfirmModalLabel"
                     style="color: var(--cyber-green); 
                            text-shadow: 0 0 10px var(--cyber-green);">
                     確認
                 </h5>
-                <p style="color: var(--cyber-green); margin-bottom: 20px;">
-                    {% if readonly %}
-                    基本情報の詳細画面へ移動しますか？
-                    {% else %}
+                <p style="color: var(--cyber-green); 
+                          text-shadow: 0 0 5px var(--cyber-green);">
                     保存して、基本情報の編集画面へ移動しますか？
-                    {% endif %}
                 </p>
                 <div class="mt-4">
                     <button type="button" 
-                            class="btn btn-outline-cyber me-2 cancel-btn" 
+                            class="btn btn-outline-cyber me-2" 
                             data-bs-dismiss="modal"
                             style="color: var(--cyber-green); 
                                    border-color: var(--cyber-green);
-                                   text-shadow: 0 0 5px var(--cyber-green);"
-                            aria-label="キャンセル">
+                                   text-shadow: 0 0 5px var(--cyber-green);">
                         キャンセル
                     </button>
                     <button type="button" 
@@ -182,8 +173,7 @@
                             style="background-color: var(--cyber-green); 
                                    color: #000; 
                                    font-weight: bold;
-                                   box-shadow: 0 0 10px var(--cyber-green);"
-                            aria-label="OK">
+                                   box-shadow: 0 0 10px var(--cyber-green);">
                         OK
                     </button>
                 </div>
@@ -245,54 +235,48 @@
               class="needs-validation" 
               novalidate>
             {% csrf_token %}
-    {% endif %}
 
-    <!-- タブコンテンツ -->
-    <div class="row g-4">
-        <!-- ハードウェアタブ -->
-        <div class="col-12">
-            <section id="hardware" class="mb-5">
-                {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
-            </section>
-        </div>
+            <!-- タブコンテンツ -->
+            <div class="row g-4">
+                <!-- ハードウェアタブ -->
+                <div class="col-12">
+                    <section id="hardware" class="mb-5">
+                        {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
+                    </section>
+                </div>
 
-        <!-- 開発環境タブ -->
-        <div class="col-12">
-            <section id="dev_env" class="mb-5">
-                {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
-            </section>
-        </div>
+                <!-- 開発環境タブ -->
+                <div class="col-12">
+                    <section id="dev_env" class="mb-5">
+                        {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
+                    </section>
+                </div>
 
-        <!-- アーキテクチャタブ -->
-        <div class="col-12">
-            <section id="architecture" class="mb-5">
-                {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
-            </section>
-        </div>
+                <!-- アーキテクチャタブ -->
+                <div class="col-12">
+                    <section id="architecture" class="mb-5">
+                        {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
+                    </section>
+                </div>
 
-        <!-- バックエンドタブ -->
-        <div class="col-12">
-            <section id="backend" class="mb-5">
-                {% include 'apps_gallery/technical/tabs/07_backend_tab.html' %}
-            </section>
-        </div>
-    </div>
+                <!-- バックエンドタブ -->
+                <div class="col-12">
+                    <section id="backend" class="mb-5">
+                        {% include 'apps_gallery/technical/tabs/07_backend_tab.html' %}
+                    </section>
+                </div>
+            </div>
 
-    <!-- フォーム終了 -->
-    {% if not readonly %}
+            <!-- 保存ボタン -->
+            <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1000;">
+                <button type="button" 
+                        id="saveButton"
+                        class="btn-cyber-save" 
+                        onclick="saveForm(event)">
+                    <i class="bi bi-save"></i> 保存
+                </button>
+            </div>
         </form>
-    {% endif %}
-
-    <!-- 保存ボタン（編集モードの場合のみ） -->
-    {% if not readonly %}
-        <div class="position-fixed" 
-             style="bottom: 20px; right: 20px; z-index: 1000;">
-            <button type="submit" 
-                    form="technicalForm" 
-                    class="btn-cyber-save">
-                <i class="bi bi-save"></i> 保存
-            </button>
-        </div>
     {% endif %}
 </div>
 
@@ -895,53 +879,67 @@ html {
         padding-right: 20px !important;
     }
 }
+
+/* 保存成功時のアニメーション */
+@keyframes saveSuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.btn-cyber-save.saved {
+    animation: saveSuccess 0.5s ease-in-out;
+    background-color: var(--cyber-green) !important;
+}
+
+/* チェックボックスとラジオボタンのスタイル改善 */
+.form-check-input:checked {
+    background-color: var(--cyber-blue);
+    border-color: var(--cyber-blue);
+    box-shadow: 0 0 10px var(--cyber-blue);
+}
+
+.form-check-label {
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked + .form-check-label {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
+}
 </style>
 
 <!-- JavaScriptを先に定義 -->
 <script>
-// グローバルスコープで関数を定義
-window.confirmBasicTransition = function(event) {
-    event.preventDefault();
-    {% if app.id %}
-        {% if readonly %}
-            // 詳細表示モードの場合は直接遷移
-            window.location.href = "{% url 'apps_gallery:edit' app.id %}";
-        {% else %}
-            // フォームに変更があるかチェック
-            if (formChanged) {
-                // 編集モードの場合はダイアログを表示
-                const modal = new bootstrap.Modal(document.getElementById('basicConfirmModal'));
-                modal.show();
-            } else {
-                // 変更がない場合は直接遷移
-                window.location.href = "{% url 'apps_gallery:edit' app.id %}";
-            }
-        {% endif %}
-    {% endif %}
-};
-
 document.addEventListener('DOMContentLoaded', function() {
     if (typeof bootstrap === 'undefined') {
         console.error('Bootstrapが読み込まれていません！');
         return;
     }
 
-    const saveBasicButton = document.getElementById('saveBasicButton');
-    if (saveBasicButton && '{{ app.id }}') {
+    const basicBtn = document.getElementById('basicButton');
+    if (basicBtn && '{{ app.id }}') {
         const modalEl = document.getElementById('basicConfirmModal');
         const modal = new bootstrap.Modal(modalEl);
         
-        document.querySelector('.cancel-btn').addEventListener('click', function() {
-            modal.hide();
+        basicBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('Basic button clicked');
+            modal.show();
         });
 
-        saveBasicButton.addEventListener('click', async function() {
+        document.getElementById('saveBasicButton').addEventListener('click', async function() {
             const form = document.getElementById('technicalForm');
-            const basicUrl = "{% url 'apps_gallery:edit' app.id %}";
-            
-            try {
-                if (form) {
+            if (form) {
+                try {
+                    console.log('Saving form data...');
                     const formData = new FormData(form);
+
+                    // デバッグ用：送信されるデータを確認
+                    for (let pair of formData.entries()) {
+                        console.log(pair[0] + ': ' + pair[1]);
+                    }
+
                     const response = await fetch(form.action, {
                         method: 'POST',
                         body: formData,
@@ -952,22 +950,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     const data = await response.json();
-                    if (data.success) {
-                        window.location.href = basicUrl;
+                    console.log('Save response:', data);
+                    
+                    if (response.ok) {
+                        window.location.href = basicBtn.href + (basicBtn.href.includes('?') ? '&' : '?') + 'toast_message=保存し、基本情報の編集画面に移動しました。';
                     } else {
                         throw new Error(data.error || '保存に失敗しました');
                     }
-                } else {
-                    window.location.href = basicUrl;
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('保存中にエラーが発生しました：' + error.message);
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('保存中にエラーが発生しました：' + error.message);
             }
             modal.hide();
         });
     }
 });
+
+// CSRFトークン取得用の関数
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 </script>
 
 <!-- JavaScriptでアクティブタブの制御 -->
@@ -1022,99 +1036,128 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- フォーム送信とダイアログ表示のJavaScript -->
 <script>
-// グローバル変数
-let isSaving = false;
-let formChanged = false;
-
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('technicalForm');
-    const toastEl = document.getElementById('liveToast');
+    const saveButton = document.getElementById('saveButton');
     
-    // Bootstrapのトーストを初期化
-    const bsToast = new bootstrap.Toast(toastEl, {
-        delay: 3000,
-        autohide: true
-    });
-    
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!isSaving) {
-                isSaving = true;
-                
-                fetch(form.action, {
-                    method: 'POST',
-                    body: new FormData(form),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // トースト表示
-                        bsToast.show();
-                        
-                        // フォーム変更フラグをリセット
-                        formChanged = false;
-                        
-                        // 現在のページをリロードして最新の値を表示
-                        window.location.reload();
-                    }
-                })
-                .catch(error => {
-                    console.error('保存エラー:', error);
-                })
-                .finally(() => {
-                    isSaving = false;
-                });
-            }
-        });
-    }
+    console.log('Form:', form);
+    console.log('Save button:', saveButton);
 
-    // 保存ボタンのクリックイベント
-    const saveBtn = document.querySelector('.btn-cyber-save');
-    if (saveBtn) {
-        saveBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (form) {
-                form.dispatchEvent(new Event('submit'));
-            }
-        });
-    }
+    window.saveForm = async function(event) {
+        try {
+            const formData = {
+                hardware_specs: {
+                    pc_type: '',
+                    device_type: '',
+                    maker: '',
+                    model: '',
+                    cpu_type: '',
+                    memory_size: '',
+                    storage_type: '',
+                    monitor_count: '',
+                    internet_type: ''
+                },
+                development_environment: {
+                    editors: [],
+                    version_control: [],
+                    virtualization: [],
+                    team_size: '',
+                    communication_tools: [],
+                    infrastructure: [],
+                    api_tools: [],
+                    monitoring_tools: []
+                },
+                backend: {
+                    main_language: '',
+                    framework: '',
+                    packages: []
+                }
+            };
 
-    // フォームの変更を検知
-    form.addEventListener('input', function() {
-        formChanged = true;
-    });
+            // ハードウェア情報の収集
+            // メーカーとモデル（テキスト入力）
+            const makerInput = document.querySelector('#maker');
+            const modelInput = document.querySelector('#model');
+            if (makerInput) formData.hardware_specs.maker = makerInput.value;
+            if (modelInput) formData.hardware_specs.model = modelInput.value;
+
+            // ラジオボタンの値を収集
+            ['pc_type', 'device_type', 'cpu_type', 'memory_size', 'storage_type', 'monitor_count', 'internet_type'].forEach(field => {
+                const selectedRadio = document.querySelector(`input[name="hardware_specs[${field}]"]:checked`);
+                if (selectedRadio) {
+                    formData.hardware_specs[field] = selectedRadio.value;
+                }
+            });
+
+            // 開発環境情報の収集（チェックボックス）
+            ['editors', 'version_control', 'virtualization', 'communication_tools', 'infrastructure', 'api_tools', 'monitoring_tools'].forEach(field => {
+                const checkedInputs = document.querySelectorAll(`input[name="${field}"]:checked`);
+                formData.development_environment[field] = Array.from(checkedInputs).map(input => input.value);
+            });
+
+            // チーム規模（ラジオボタン）
+            const teamSizeRadio = document.querySelector('input[name="team_size"]:checked');
+            if (teamSizeRadio) {
+                formData.development_environment.team_size = teamSizeRadio.value;
+            }
+
+            // バックエンド情報の収集
+            const mainLanguageRadio = document.querySelector('input[name="backend[main_language]"]:checked');
+            const frameworkRadio = document.querySelector('input[name="backend[framework]"]:checked');
+            const packageCheckboxes = document.querySelectorAll('input[name="backend[packages][]"]:checked');
+
+            if (mainLanguageRadio) formData.backend.main_language = mainLanguageRadio.value;
+            if (frameworkRadio) formData.backend.framework = frameworkRadio.value;
+            formData.backend.packages = Array.from(packageCheckboxes).map(cb => cb.value);
+
+            console.log('Sending data:', formData);
+
+            // CSRFトークンの取得
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            // APIリクエスト
+            const response = await fetch(window.location.pathname, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // 成功時の処理
+                const toast = new bootstrap.Toast(document.getElementById('technicalToast'));
+                toast.show();
+            } else {
+                // エラー時の処理
+                console.error('Save failed:', result.error);
+                alert('保存に失敗しました: ' + result.error);
+            }
+
+        } catch (error) {
+            console.error('Error saving form:', error);
+            alert('保存中にエラーが発生しました');
+        }
+    };
 });
 
-// 保存と移動の関数を修正
-function saveAndGoToBasic(event) {
-    event.preventDefault();
-    const form = document.getElementById('technicalForm');
-    const basicUrl = event.target.closest('a').href;
-    
-    if (form) {
-        fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+// CSRFトークン取得関数
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
-        })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = basicUrl + (basicUrl.includes('?') ? '&' : '?') + 'toast_message=保存処理をしました。基本編集画面に遷移しました。';
-            } else {
-                alert('保存に失敗しました。');
-            }
-        })
-        .catch(error => {
-            console.error('保存エラー:', error);
-            alert('保存に失敗しました。');
-        });
+        }
     }
+    return cookieValue;
 }
 </script>
 
@@ -1142,5 +1185,142 @@ function saveAndGoToBasic(event) {
         });
     })();
 </script>
+
+<!-- 新しいJavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    window.saveForm = async function(event) {
+        try {
+            // デフォルトのフォーム送信を防ぐ
+            event.preventDefault();
+
+            const formData = {
+                hardware_specs: {
+                    pc_type: '',
+                    device_type: '',
+                    maker: '',
+                    model: '',
+                    cpu_type: '',
+                    memory_size: '',
+                    storage_type: '',
+                    monitor_count: '',
+                    internet_type: ''
+                },
+                development_environment: {
+                    editors: [],
+                    version_control: [],
+                    virtualization: [],
+                    team_size: '',
+                    communication_tools: [],
+                    infrastructure: [],
+                    api_tools: [],
+                    monitoring_tools: []
+                },
+                backend: {
+                    main_language: '',
+                    framework: '',
+                    packages: []
+                }
+            };
+
+            // ハードウェア情報の収集
+            // メーカーとモデル（テキスト入力）
+            const makerInput = document.querySelector('#maker');
+            const modelInput = document.querySelector('#model');
+            if (makerInput) formData.hardware_specs.maker = makerInput.value;
+            if (modelInput) formData.hardware_specs.model = modelInput.value;
+
+            // ラジオボタンの値を収集
+            ['pc_type', 'device_type', 'cpu_type', 'memory_size', 'storage_type', 'monitor_count', 'internet_type'].forEach(field => {
+                const selectedRadio = document.querySelector(`input[name="hardware_specs[${field}]"]:checked`);
+                if (selectedRadio) {
+                    formData.hardware_specs[field] = selectedRadio.value;
+                }
+            });
+
+            // 開発環境情報の収集（チェックボックス）
+            ['editors', 'version_control', 'virtualization', 'communication_tools', 'infrastructure', 'api_tools', 'monitoring_tools'].forEach(field => {
+                const checkedInputs = document.querySelectorAll(`input[name="${field}"]:checked`);
+                formData.development_environment[field] = Array.from(checkedInputs).map(input => input.value);
+            });
+
+            // チーム規模（ラジオボタン）
+            const teamSizeRadio = document.querySelector('input[name="team_size"]:checked');
+            if (teamSizeRadio) {
+                formData.development_environment.team_size = teamSizeRadio.value;
+            }
+
+            // バックエンド情報の収集
+            const mainLanguageRadio = document.querySelector('input[name="backend[main_language]"]:checked');
+            const frameworkRadio = document.querySelector('input[name="backend[framework]"]:checked');
+            const packageCheckboxes = document.querySelectorAll('input[name="backend[packages][]"]:checked');
+
+            if (mainLanguageRadio) formData.backend.main_language = mainLanguageRadio.value;
+            if (frameworkRadio) formData.backend.framework = frameworkRadio.value;
+            formData.backend.packages = Array.from(packageCheckboxes).map(cb => cb.value);
+
+            console.log('Sending data:', formData);
+
+            // CSRFトークンの取得
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            // APIリクエスト
+            const response = await fetch(window.location.pathname, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // 成功時の処理
+                const toast = new bootstrap.Toast(document.getElementById('technicalToast'));
+                toast.show();
+            } else {
+                // エラー時の処理
+                console.error('Save failed:', result.error);
+                alert('保存に失敗しました: ' + result.error);
+            }
+
+        } catch (error) {
+            console.error('Error saving form:', error);
+            alert('保存中にエラーが発生しました');
+        }
+    };
+});
+
+// CSRFトークン取得関数
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<!-- フォームの各フィールドの値を表示する部分 -->
+{% for field in form %}
+    <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        <input type="{% if field.field.widget.input_type %}{{ field.field.widget.input_type }}{% else %}text{% endif %}"
+               class="form-control"
+               name="{{ field.name }}"
+               id="{{ field.id_for_label }}"
+               value="{% if field.value %}{{ field.value }}{% endif %}"
+               {% if field.field.required %}required{% endif %}>
+    </div>
+{% endfor %}
 
 {% endblock %} 

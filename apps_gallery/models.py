@@ -119,7 +119,8 @@ class AppGallery(models.Model):
     # スクリーンショット（複数枚）
     screenshots = models.JSONField('スクリーンショット', default=list)
     
-    # ==================== ハードウェア環境タブ ====================
+    # ==================== 技術情報タブ ====================
+    # ハードウェア情報
     hardware_specs = models.JSONField(
         '開発環境のスペック',
         default=dict,
@@ -127,7 +128,7 @@ class AppGallery(models.Model):
         help_text='開発時に使用したパソコンのスペック情報（タイプ、メーカー、OS、CPU、メモリ、ストレージ、モニター構成、ネット環境）'
     )
     
-    # ==================== 開発環境タブ ====================
+    # 開発環境情報
     development_environment = models.JSONField(
         '開発環境',
         default=dict,
@@ -137,7 +138,7 @@ class AppGallery(models.Model):
                  'モニタリングツール）'
     )
     
-    # ==================== バックエンドタブ ====================
+    # バックエンド情報
     backend = models.JSONField(
         'バックエンド情報',
         default=dict,

@@ -13,10 +13,10 @@
                     <div class="input-group mb-3">
                         <input type="text" 
                                id="maker"
-                               name="hardware_requirements[maker]"
+                               name="maker"
                                class="form-control cyber-blue-focus"
                                placeholder="例: Apple, Lenovo, Dell, HP など"
-                               value="{{ app.hardware_requirements.maker }}"
+                               value="{{ app.hardware.maker }}"
                                {% if readonly %}disabled{% endif %}>
                     </div>
                     <!-- メーカー例の表示 -->
@@ -37,10 +37,10 @@
                     <div class="input-group">
                         <input type="text" 
                                id="model"
-                               name="hardware_requirements[model]"
+                               name="model"
                                class="form-control cyber-blue-focus"
                                placeholder="例: MacBook Pro (2020), ThinkPad X1 Carbon など"
-                               value="{{ app.hardware_requirements.model }}"
+                               value="{{ app.hardware.model }}"
                                {% if readonly %}disabled{% endif %}>
                     </div>
                 </div>
@@ -50,18 +50,15 @@
                     <label class="form-label text-cyber-blue">使用パソコンのタイプ</label>
                     <div class="row g-3">
                         {% for key, value in pc_types.items %}
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-check">
                                 <input type="radio" 
-                                       id="pc-{{ key }}"
-                                       name="hardware_requirements[pc_type]"
-                                       class="form-check-input cyber-blue-focus"
+                                       class="form-check-input"
+                                       name="hardware_specs[pc_type]"
                                        value="{{ key }}"
-                                       {% if key == app.hardware_requirements.pc_type %}checked{% endif %}
+                                       {% if key == app.hardware_specs.pc_type %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-blue" for="pc-{{ key }}">
-                                    {{ value }}
-                                </label>
+                                <label class="form-check-label text-cyber-blue">{{ value }}</label>
                             </div>
                         </div>
                         {% endfor %}
@@ -83,10 +80,10 @@
                             <div class="form-check">
                                 <input type="radio" 
                                        id="device-{{ key }}"
-                                       name="hardware_requirements[device_type]"
+                                       name="device_type"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware_requirements.device_type %}checked{% endif %}
+                                       {% if key == app.hardware.device_type %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="device-{{ key }}">
                                     {{ value }}
@@ -112,10 +109,10 @@
                             <div class="form-check">
                                 <input type="radio" 
                                        id="cpu-{{ key }}"
-                                       name="hardware_requirements[cpu_type]"
+                                       name="cpu_type"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware_requirements.cpu_type %}checked{% endif %}
+                                       {% if key == app.hardware.cpu_type %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="cpu-{{ key }}">
                                     {{ value }}
@@ -140,10 +137,10 @@
                             <div class="form-check">
                                 <input type="radio" 
                                        id="memory-{{ key }}"
-                                       name="hardware_requirements[memory_size]"
+                                       name="memory_size"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware_requirements.memory_size %}checked{% endif %}
+                                       {% if key == app.hardware.memory_size %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="memory-{{ key }}">
                                     {{ value }}
@@ -169,10 +166,10 @@
                             <div class="form-check">
                                 <input type="radio" 
                                        id="storage-{{ key }}"
-                                       name="hardware_requirements[storage_type]"
+                                       name="storage_type"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware_requirements.storage_type %}checked{% endif %}
+                                       {% if key == app.hardware.storage_type %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="storage-{{ key }}">
                                     {{ value }}
@@ -197,10 +194,10 @@
                             <div class="form-check">
                                 <input type="radio" 
                                        id="monitor-count-{{ key }}"
-                                       name="hardware_requirements[monitor_count]"
+                                       name="monitor_count"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware_requirements.monitor_count %}checked{% endif %}
+                                       {% if key == app.hardware.monitor_count %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="monitor-count-{{ key }}">
                                     {{ value }}
@@ -220,10 +217,10 @@
                             <div class="form-check">
                                 <input type="radio" 
                                        id="internet-{{ key }}"
-                                       name="hardware_requirements[internet_type]"
+                                       name="internet_type"
                                        class="form-check-input cyber-blue-focus"
                                        value="{{ key }}"
-                                       {% if key == app.hardware_requirements.internet_type %}checked{% endif %}
+                                       {% if key == app.hardware.internet_type %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
                                 <label class="form-check-label text-cyber-blue" for="internet-{{ key }}">
                                     {{ value }}

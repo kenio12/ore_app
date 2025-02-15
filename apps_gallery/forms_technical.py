@@ -148,20 +148,80 @@ class TechnicalForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-check-input cyber-checkbox'})
     )
 
-    class Meta:
-        model = AppGallery
-        fields = [
-            'pc_type', 'device_type', 'os_type', 'cpu_type',
-            'memory_size', 'storage_type', 'monitor_count',
-            'monitor_size', 'internet_type', 'maker_model',
-            'editors', 'version_control', 'ci_cd', 'virtualization',
-            'team_size', 'communication_tools', 'infrastructure',
-            'api_tools', 'monitoring_tools'
-        ]
+    # 開発環境関連のフィールドリスト（クラス変数として定義）
+    development_fields = [
+        'editors', 'version_control', 'ci_cd', 'virtualization',
+        'team_size', 'communication_tools', 'infrastructure',
+        'api_tools', 'monitoring_tools'
+    ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        # ハードウェアスペックのバリデーション
+        hardware_specs = {}
+        for field_name in ['pc_type', 'device_type', 'os_type', 'cpu_type',
+                          'memory_size', 'storage_type', 'monitor_count',
+                          'monitor_size', 'internet_type', 'maker_model']:
+            value = cleaned_data.get(field_name)
+            if value:
+                hardware_specs[field_name] = value
+
+        # 最低限必要な情報のチェック
+        if not hardware_specs.get('pc_type'):
+            raise forms.ValidationError('PCタイプは必須項目です。')
+
+        # 開発環境のバリデーション
+        dev_env = {}
+        for field_name in self.development_fields:
+            value = cleaned_data.get(field_name)
+            if value:
+                if isinstance(value, list) and not value:  # 空リストのチェック
+                    continue
+                dev_env[field_name] = value
+
+        # 最低限必要な情報のチェック
+        if not dev_env.get('editors'):
+            raise forms.ValidationError('使用エディタは最低1つ選択してください。')
+        if not dev_env.get('version_control'):
+            raise forms.ValidationError('バージョン管理システムは最低1つ選択してください。')
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        
+        # hardware_specsの保存処理
+        hardware_specs = {}
+        for field_name in [f for f in self.Meta.fields if f not in self.development_fields]:
+            if self.cleaned_data.get(field_name):
+                hardware_specs[field_name] = self.cleaned_data[field_name]
+        instance.hardware_specs = hardware_specs
+        
+        # development_environmentの保存処理
+        dev_env = {}
+        for field_name in self.development_fields:
+            if self.cleaned_data.get(field_name):
+                dev_env[field_name] = self.cleaned_data[field_name]
+        instance.development_environment = dev_env
+        
+        if commit:
+            instance.save()
+        return instance
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         instance = kwargs.get('instance')
+        
+        # フィールドのカスタマイズ
+        for field_name in self.fields:
+            # 必須フィールドの設定
+            if field_name in ['pc_type', 'editors', 'version_control']:
+                self.fields[field_name].required = True
+            
+            # プレースホルダーの設定
+            if field_name == 'maker_model':
+                self.fields[field_name].widget.attrs['placeholder'] = '例: MacBook Pro (2020), ThinkPad X1 Carbon など'
         
         # インスタンスがある場合の初期値設定
         if instance:
@@ -174,31 +234,6 @@ class TechnicalForm(forms.ModelForm):
             # 開発環境の初期値設定
             if hasattr(instance, 'development_environment'):
                 dev_env = instance.development_environment or {}
-                for field_name in ['editors', 'version_control', 'ci_cd', 'virtualization',
-                                 'team_size', 'communication_tools', 'infrastructure',
-                                 'api_tools', 'monitoring_tools']:
+                for field_name in self.development_fields:
                     if field_name in dev_env:
-                        self.fields[field_name].initial = dev_env[field_name]
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        
-        # hardware_specsの保存処理（既存）
-        hardware_specs = instance.hardware_specs or {}
-        for field_name in [f for f in self.Meta.fields if f not in self.development_fields]:
-            if self.cleaned_data.get(field_name):
-                hardware_specs[field_name] = self.cleaned_data[field_name]
-        instance.hardware_specs = hardware_specs
-        
-        # development_environmentの保存処理（新規追加）
-        dev_env = instance.development_environment or {}
-        for field_name in ['editors', 'version_control', 'ci_cd', 'virtualization',
-                          'team_size', 'communication_tools', 'infrastructure',
-                          'api_tools', 'monitoring_tools']:
-            if self.cleaned_data.get(field_name):
-                dev_env[field_name] = self.cleaned_data[field_name]
-        instance.development_environment = dev_env
-        
-        if commit:
-            instance.save()
-        return instance 
+                        self.fields[field_name].initial = dev_env[field_name] 

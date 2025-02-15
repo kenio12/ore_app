@@ -573,3 +573,63 @@ def detail_view(request, pk):
     
     context = get_common_context(app=app, readonly=True)
     return render(request, 'apps_gallery/create_edit_detail.html', context)
+
+@require_http_methods(["POST"])
+def save_technical(request, app_id):
+    try:
+        data = json.loads(request.body)
+        print("Received data:", data)  # デバッグログ追加
+
+        app = get_object_or_404(AppGallery, id=app_id)
+        
+        # ハードウェア情報の保存
+        if 'hardware_specs' in data:
+            app.hardware = data['hardware_specs']
+            print("Saving hardware:", app.hardware)  # デバッグログ追加
+
+        # 開発環境の保存
+        if 'development_environment' in data:
+            app.development_environment = data['development_environment']
+            print("Saving dev env:", app.development_environment)  # デバッグログ追加
+
+        # バックエンド情報の保存
+        if 'backend' in data:
+            app.backend = data['backend']
+            print("Saving backend:", app.backend)  # デバッグログ追加
+
+        app.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': '保存しました',
+            'data': {
+                'hardware_specs': app.hardware,
+                'development_environment': app.development_environment,
+                'backend': app.backend
+            }
+        })
+    except Exception as e:
+        print("Error saving technical data:", str(e))  # エラーログ追加
+        return JsonResponse({
+            'success': False,
+            'message': str(e)
+        }, status=400)
+
+# ==================== 変更部分 ====================
+infrastructure = {
+    'pythonanywhere': 'PythonAnywhere',
+    'render': 'Render',
+    'heroku': 'Heroku',
+    'vercel': 'Vercel',
+    'aws': 'AWS',
+    'gcp': 'Google Cloud',
+    'azure': 'Microsoft Azure',
+    'digitalocean': 'DigitalOcean',
+    'kubernetes': 'Kubernetes',
+    'docker_swarm': 'Docker Swarm',
+    'local_server': 'ローカルサーバー',
+    'shared_hosting': 'レンタルサーバー',
+    'vps': 'VPS',
+    'none': '使用していない'
+}
+# ==================== 変更部分 ====================

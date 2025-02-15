@@ -4,7 +4,7 @@
 
 # チームサイズ
 TEAM_SIZES = {
-    'solo': '個人開発',
+    'solo': '1人',
     'duo': '2人チーム',
     'small': '3-5人チーム',
     'medium': '6-10人チーム',
@@ -29,6 +29,7 @@ VIRTUALIZATION_TOOLS = {
 # エディタ
 EDITORS = {
     'none': '使用していない',
+    'cursor': 'Cursor',
     'vscode': 'Visual Studio Code',
     'sublime': 'Sublime Text',
     'atom': 'Atom',
@@ -87,6 +88,7 @@ INFRASTRUCTURE = {
     'ibm': 'IBM Cloud',
     
     # PaaS
+    'pythonanywhere': 'PythonAnywhere',
     'heroku': 'Heroku',
     'vercel': 'Vercel',
     'netlify': 'Netlify',
@@ -110,6 +112,8 @@ INFRASTRUCTURE = {
     
     # その他
     'on_premise': 'オンプレミス',
+    'shared_hosting': 'レンタルサーバー',
+    'vps': 'VPS',
     'hybrid': 'ハイブリッド',
     'other': 'その他'
 }
