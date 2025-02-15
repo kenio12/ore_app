@@ -227,6 +227,13 @@
 </div>
 
 <style>
+/* 基本変数の定義 */
+:root {
+    --cyber-blue: #00ffff;
+    --cyber-blue-dim: rgba(0, 255, 255, 0.6);
+    --cyber-blue-glow: rgba(0, 255, 255, 0.3);
+}
+
 /* カードのスタイル改善 */
 .card {
     background: rgba(13, 25, 45, 0.8) !important;
@@ -235,24 +242,38 @@
     border: 1px solid rgba(0, 255, 255, 0.1) !important;
 }
 
-/* タイトルとラベルのスタイル改善 */
-#hardware .text-cyber-blue {
-    color: #00ffff !important;  /* サイバーブルー（水色）を明示的に指定 */
-    text-shadow: 0 0 5px #00ffff !important;
-    font-weight: bold !important;
-    letter-spacing: 0.5px !important;
+/* チェックボックスとラジオボタンのスタイル改善 */
+#hardware .form-check-input {
+    width: 1.2em !important;
+    height: 1.2em !important;
+    border: 2px solid var(--cyber-blue) !important;
+    background-color: rgba(0, 20, 50, 0.5) !important;
+    cursor: pointer !important;
 }
 
-/* 入力フィールドのスタイル改善 */
+#hardware .form-check-input:checked {
+    background-color: var(--cyber-blue) !important;
+    border-color: var(--cyber-blue) !important;
+    box-shadow: 0 0 10px var(--cyber-blue) !important;
+}
+
+#hardware .form-check-label {
+    padding-left: 0.5rem !important;
+    cursor: pointer !important;
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
+}
+
+/* 入力フィールドのスタイル */
 #hardware .form-control {
-    border: 2px solid #00ffff !important;
-    color: #00ffff !important;
+    border: 2px solid var(--cyber-blue) !important;
+    color: var(--cyber-blue) !important;
     background: rgba(0, 20, 50, 0.5) !important;
-    text-shadow: 0 0 5px #00ffff !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
     font-weight: bold !important;
 }
 
-/* プレースホルダーのスタイル改善 */
+/* プレースホルダーのスタイル */
 #hardware ::placeholder {
     color: rgba(0, 255, 255, 0.5) !important;
     text-shadow: none !important;
@@ -260,29 +281,39 @@
 
 /* フォーカス時のスタイル */
 #hardware .form-control:focus {
-    border-color: #00ffff !important;
-    box-shadow: 0 0 15px #00ffff !important;
+    border-color: var(--cyber-blue) !important;
+    box-shadow: 0 0 15px var(--cyber-blue) !important;
     background: rgba(0, 30, 70, 0.7) !important;
 }
 
-/* 変数の定義 */
-:root {
-    --cyber-blue: #00ffff;
+/* タイトルとラベルのスタイル */
+#hardware .text-cyber-blue {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
+    font-weight: bold !important;
+    letter-spacing: 0.5px !important;
 }
 
-/* ハードウェアタブ専用のスタイル */
-#hardware .form-label.text-cyber-blue {
-    color: #00ffff !important;  /* 明示的に水色を指定 */
-    text-shadow: 0 0 5px #00ffff !important;
+/* チェックされた項目のラベルを輝かせる */
+#hardware .form-check-input:checked + .form-check-label {
+    color: var(--cyber-blue) !important;
+    text-shadow: 
+        0 0 5px var(--cyber-blue),
+        0 0 10px var(--cyber-blue-glow) !important;
+    animation: label-glow 2s ease-in-out infinite alternate !important;
 }
 
-#hardware .cyber-blue-focus:focus {
-    border-color: #00ffff !important;
-    box-shadow: 0 0 10px #00ffff !important;
-}
-
-#hardware small.text-cyber-blue {
-    color: #00ffff !important;
-    text-shadow: 0 0 5px #00ffff;
+/* アニメーション定義 */
+@keyframes label-glow {
+    from {
+        text-shadow: 
+            0 0 5px var(--cyber-blue),
+            0 0 10px var(--cyber-blue-glow);
+    }
+    to {
+        text-shadow: 
+            0 0 8px var(--cyber-blue),
+            0 0 15px var(--cyber-blue-glow);
+    }
 }
 </style> 

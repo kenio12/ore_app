@@ -18,9 +18,9 @@
 <!-- タブナビゲーション -->
 <div id="appTabs" class="app-tabs">
     <div class="container py-1">
-        <nav class="nav nav-pills nav-fill mt-0">
-            <!-- ホームへ戻るロボットアイコン -->
-            <a href="{% url 'home:home' %}" class="nav-link" title="ホームへ戻る">
+        <nav class="nav nav-pills nav-fill m-0">
+            <!-- ホームへ戻るボタン -->
+            <a href="#" class="nav-link cyber-home" title="ホームへ戻る" onclick="handleHomeClick(event)">
                 <span class="fs-4 me-2 cyber-emoji">🤖</span>
             </a>
             
@@ -253,6 +253,32 @@
                             OK
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ホーム画面移動用のダイアログ -->
+    <div class="cyber-dialog-overlay" id="homeDialog" style="display: none;">
+        <div class="cyber-dialog">
+            <div class="cyber-dialog-content">
+                <div class="cyber-message">
+                    <div class="message-icon">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div class="message-text">
+                        保存して、ホーム画面に移動しますか？
+                    </div>
+                </div>
+                <div class="cyber-dialog-buttons">
+                    <button class="cyber-button cancel-dialog" onclick="closeHomeDialog()">
+                        <span class="button-text">キャンセル</span>
+                        <span class="button-glitch"></span>
+                    </button>
+                    <button class="cyber-button save-dialog" onclick="saveAndRedirectHome()">
+                        <span class="button-text">移動する</span>
+                        <span class="button-glitch"></span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -803,105 +829,98 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
     z-index: 9999;
-    display: flex;
-    justify-content: center;  /* 水平方向の中央揃え */
-    align-items: center;      /* 垂直方向の中央揃え */
+    backdrop-filter: blur(5px);
 }
 
-.cyber-message {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
+.cyber-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: rgba(13, 25, 45, 0.95);
-    border: 2px solid var(--cyber-blue);
-    box-shadow: 0 0 20px var(--cyber-blue);
-    max-width: 500px;        /* 最大幅を設定 */
-    width: 90%;             /* レスポンシブ対応 */
-    position: relative;      /* 位置を相対指定 */
-    margin: auto;           /* 自動マージンで中央揃え */
+    border: 2px solid var(--cyber-yellow);
+    box-shadow: 0 0 20px var(--cyber-yellow);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
 }
 
-.message-icon {
-    font-size: 24px;
-    margin-bottom: 15px;  /* 下部にマージンを追加 */
-    color: var(--cyber-blue);
-    text-shadow: 0 0 10px var(--cyber-blue);
-}
-
-.message-content {
-    margin-bottom: 30px;  /* メッセージとボタンの間隔を広げる */
+.cyber-dialog-content {
+    color: var(--cyber-yellow);
     text-align: center;
 }
 
+.cyber-message {
+    margin-bottom: 20px;
+}
+
+.message-icon {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: var(--cyber-yellow);
+}
+
 .message-text {
-    color: #ffffff;
-    font-size: 16px;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    font-size: 1.1em;
+    line-height: 1.4;
+    text-shadow: 0 0 5px var(--cyber-yellow);
 }
 
 .cyber-dialog-buttons {
     display: flex;
-    gap: 10px;
     justify-content: center;
-    width: 100%;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .cyber-button {
+    padding: 8px 16px;
+    border: 1px solid var(--cyber-yellow);
     background: transparent;
-    border: 2px solid var(--cyber-blue);
-    color: var(--cyber-blue);
-    padding: 10px 30px;
-    font-size: 16px;
+    color: var(--cyber-yellow);
     cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    text-shadow: 0 0 5px var(--cyber-yellow);
     position: relative;
     overflow: hidden;
-    transition: all 0.3s ease;
-    text-shadow: 0 0 5px var(--cyber-blue);
-    margin-top: 10px;
-    text-decoration: none;
-    display: inline-block;
 }
 
 .cyber-button:hover {
-    background: rgba(0, 255, 255, 0.1);
-    box-shadow: 0 0 15px var(--cyber-blue);
+    background: var(--cyber-yellow);
+    color: #000;
+    box-shadow: 0 0 10px var(--cyber-yellow);
 }
 
-.cyber-button.save-dialog {
-    background: rgba(255, 215, 0, 0.1);
-    border-color: var(--cyber-yellow);
-    color: var(--cyber-yellow);
-    text-shadow: 0 0 5px var(--cyber-yellow);
-}
-
-.cyber-button.save-dialog:hover {
-    background: rgba(255, 215, 0, 0.2);
-    box-shadow: 0 0 15px var(--cyber-yellow);
-}
-
-.cyber-button.cancel-dialog {
-    background: rgba(128, 128, 128, 0.1);
-    border-color: #808080;
-    color: #808080;
-    text-shadow: 0 0 5px #808080;
-}
-
-.cyber-button.cancel-dialog:hover {
-    background: rgba(128, 128, 128, 0.2);
-    box-shadow: 0 0 15px rgba(128, 128, 128, 0.3);
+.button-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 1px solid var(--cyber-yellow);
+    animation: glitch 2s infinite;
+    opacity: 0;
+    pointer-events: none;
 }
 
 @keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
-    100% { transform: translate(0); }
+    0% { clip-path: inset(80% -6px 0 0); transform: translate(-10px, -10px); }
+    10% { clip-path: inset(10% -6px 85% 0); transform: translate(10px, 10px); }
+    20% { clip-path: inset(80% -6px 0 0); transform: translate(-10px, 10px); }
+    30% { clip-path: inset(10% -6px 85% 0); transform: translate(0px, -10px); }
+    40% { clip-path: inset(50% -6px 30% 0); transform: translate(-10px, 0px); }
+    50% { clip-path: inset(0% -6px 70% 0); transform: translate(10px, -10px); }
+    60% { clip-path: inset(70% -6px 10% 0); transform: translate(-10px, 10px); }
+    70% { clip-path: inset(20% -6px 60% 0); transform: translate(10px, 0px); }
+    80% { clip-path: inset(60% -6px 20% 0); transform: translate(-10px, -10px); }
+    90% { clip-path: inset(30% -6px 50% 0); transform: translate(0px, 10px); }
+    100% { clip-path: inset(80% -6px 0 0); transform: translate(10px, -10px); }
 }
 
 /* サイドナビゲーションボタンのスタイル */
@@ -1155,58 +1174,47 @@ window.addEventListener('pageshow', function(event) {
     }
 });
 
-// フォームの非同期保存処理
-async function handleFormSubmit(event) {
-    event.preventDefault();
-    
-    const form = document.getElementById('appForm');
-    const formData = new FormData(form);
-    const submitButton = document.querySelector('.btn-cyber-save');
-    
-    // 保存ボタンを無効化
-    if (submitButton) {
-        submitButton.disabled = true;
+// 保存処理の重複実行を防ぐためのフラグを追加
+let isSaving = false;
+
+// 既存のsaveForm関数を修正
+async function saveForm(event) {
+    // すでに保存中なら処理を中断
+    if (isSaving) {
+        console.log('保存処理中です...');
+        return false;  // 重要: falseを返して処理を中断
     }
 
     try {
-        const response = await fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            showToast('保存しました', 'success');
+        isSaving = true;
+        const form = document.getElementById('appForm');
+        if (form) {
+            // フォームのデフォルトの送信を防止
+            event.preventDefault();
             
-            // 新規作成時はeditページへリダイレクト
-            if (!formData.get('app_id') && data.app_id) {
-                window.location.href = `/apps_gallery/edit/${data.app_id}/`;
+            // FormDataを使用してフォームデータを送信
+            const formData = new FormData(form);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('保存に失敗しました');
             }
-        } else {
-            throw new Error(data.error || '保存に失敗しました');
         }
     } catch (error) {
-        showToast(error.message, 'error');
+        console.error('Error during save:', error);
+        alert('保存中にエラーが発生しました');
+        return false;
     } finally {
-        // 保存ボタンを再度有効化
-        if (submitButton) {
-            submitButton.disabled = false;
-        }
+        isSaving = false;
     }
+    return true;  // 保存成功時はtrueを返す
 }
-
-// イベントリスナーの設定
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('appForm');
-    if (form) {
-        form.addEventListener('submit', handleFormSubmit);
-    }
-});
 
 // 技術へボタンのクリック時の処理を条件分岐
 async function confirmTechTransition(event) {
@@ -1271,6 +1279,41 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+function handleHomeClick(event) {
+    event.preventDefault();
+    const homeDialog = document.getElementById('homeDialog');
+    if (homeDialog) {
+        homeDialog.style.display = 'block';
+    } else {
+        console.error('homeDialog element not found');
+    }
+}
+
+function closeHomeDialog() {
+    const homeDialog = document.getElementById('homeDialog');
+    if (homeDialog) {
+        homeDialog.style.display = 'none';
+    }
+}
+
+async function saveAndRedirectHome() {
+    try {
+        await saveForm(new Event('click')); // 既存のsaveForm関数を使用
+        window.location.href = '/';
+    } catch (error) {
+        console.error('Error saving before home redirect:', error);
+        alert('保存中にエラーが発生しました');
+    }
+}
+
+// デバッグ用のコード
+document.addEventListener('DOMContentLoaded', function() {
+    const homeDialog = document.getElementById('homeDialog');
+    if (!homeDialog) {
+        console.error('homeDialog element not found on page load');
+    }
+});
 </script>
 
 <!-- Bootstrapのスクリプトが読み込まれていることを確認 -->
@@ -1407,5 +1450,29 @@ window.addEventListener('scroll', function() {
     
     lastScrollTop = scrollTop;
 });
+</script>
+
+<script>
+let isSaving = false;
+
+async function saveAndRedirectTechnical() {
+    if (isSaving) {
+        console.log('保存処理中です...');
+        return;
+    }
+
+    try {
+        isSaving = true;
+        // saveForm()だけを実行し、form.submit()は実行しない
+        await saveForm(new Event('click'));
+        // 保存成功後に技術編集画面へリダイレクト
+        window.location.href = "{% url 'apps_gallery:technical_edit' app.id %}";
+    } catch (error) {
+        console.error('Error during save:', error);
+        alert('保存中にエラーが発生しました');
+    } finally {
+        isSaving = false;
+    }
+}
 </script>
 {% endblock %} 

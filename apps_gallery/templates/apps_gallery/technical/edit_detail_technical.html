@@ -182,12 +182,38 @@
     </div>
 </div>
 
+<!-- ホーム画面移動用のダイアログを修正 -->
+<div class="cyber-dialog-overlay" id="homeDialog" style="display: none;">
+    <div class="cyber-dialog">
+        <div class="cyber-dialog-content">
+            <div class="cyber-message">
+                <div class="message-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <div class="message-text">
+                    保存して、ホーム画面に移動しますか？
+                </div>
+            </div>
+            <div class="cyber-dialog-buttons">
+                <button class="cyber-button cancel-dialog" onclick="closeHomeDialog()">
+                    <span class="button-text">キャンセル</span>
+                    <span class="button-glitch"></span>
+                </button>
+                <button class="cyber-button save-dialog" onclick="saveAndRedirectHome()">
+                    <span class="button-text">移動する</span>
+                    <span class="button-glitch"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- タブナビゲーション -->
 <div id="technicalTabs" class="app-tabs technical-tabs">
     <div class="container p-0">
         <nav class="nav nav-pills nav-fill m-0">
             <!-- ホームへ戻るボタン -->
-            <a href="/" class="nav-link cyber-home" title="ホームへ戻る">
+            <a href="#" class="nav-link cyber-home" title="ホームへ戻る" onclick="handleHomeClick(event)">
                 <span class="fs-4 me-2 cyber-emoji">🤖</span>
             </a>
             
@@ -616,296 +642,129 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
     z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    backdrop-filter: blur(5px);
 }
 
 .cyber-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: rgba(13, 25, 45, 0.95);
-    border: 2px solid var(--cyber-blue);
-    box-shadow: 0 0 20px var(--cyber-blue);
+    border: 2px solid var(--cyber-yellow);
+    box-shadow: 0 0 20px var(--cyber-yellow);
     padding: 20px;
+    border-radius: 10px;
     max-width: 500px;
     width: 90%;
-    position: relative;
-    animation: glitch 0.3s ease;
 }
 
-.cyber-dialog::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border: 2px solid var(--cyber-blue);
-    animation: borderGlow 2s ease-in-out infinite;
+.cyber-dialog-content {
+    color: var(--cyber-yellow);
+    text-align: center;
 }
 
 .cyber-message {
-    display: flex;
-    align-items: center;
     margin-bottom: 20px;
-    padding: 15px;
-    background: rgba(0, 255, 255, 0.1);
-    border-left: 4px solid var(--cyber-blue);
-}
-
-.cyber-message.success {
-    background: rgba(0, 255, 159, 0.1);
-    border-left-color: var(--cyber-green);
-}
-
-.cyber-message.error {
-    background: rgba(255, 0, 0, 0.1);
-    border-left-color: #ff4444;
 }
 
 .message-icon {
-    font-size: 24px;
-    margin-right: 15px;
-    color: var(--cyber-blue);
-    text-shadow: 0 0 10px var(--cyber-blue);
-}
-
-.cyber-message.success .message-icon {
-    color: var(--cyber-green);
-    text-shadow: 0 0 10px var(--cyber-green);
-}
-
-.cyber-message.error .message-icon {
-    color: #ff4444;
-    text-shadow: 0 0 10px #ff4444;
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: var(--cyber-yellow);
 }
 
 .message-text {
-    color: #ffffff;
-    font-size: 16px;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-}
-
-.cyber-button {
-    background: rgba(0, 255, 255, 0.1);
-    border: 2px solid var(--cyber-blue);
-    color: var(--cyber-blue);
-    padding: 10px 30px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    border-radius: 25px;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    text-decoration: none;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-}
-
-.cyber-button:hover {
-    background: rgba(0, 255, 255, 0.2);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-    transform: translateY(-2px);
-    color: var(--cyber-blue);
-}
-
-.button-text {
-    position: relative;
-    z-index: 1;
-}
-
-.button-glitch {
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: rgba(0, 255, 255, 0.2);
-    display: none;
-}
-
-.cyber-button:hover .button-glitch {
-    display: block;
-    animation: glitch 0.3s ease infinite;
-}
-
-@keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
-    100% { transform: translate(0); }
-}
-
-@keyframes borderGlow {
-    0% { box-shadow: 0 0 10px var(--cyber-blue); }
-    50% { box-shadow: 0 0 20px var(--cyber-blue); }
-    100% { box-shadow: 0 0 10px var(--cyber-blue); }
-}
-
-/* ダイアログのボタン配置 */
-.cyber-dialog-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-/* 保存ボタンのスタイル */
-.cyber-button.save-dialog {
-    background: rgba(255, 215, 0, 0.1);
-    border-color: var(--cyber-yellow);
-    color: var(--cyber-yellow);
+    font-size: 1.1em;
+    line-height: 1.4;
     text-shadow: 0 0 5px var(--cyber-yellow);
 }
 
-.cyber-button.save-dialog:hover {
-    background: rgba(255, 215, 0, 0.2);
-    box-shadow: 0 0 15px var(--cyber-yellow);
+.cyber-dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
 }
 
-/* モード切り替えボタン */
-.btn-cyber-mode-switch {
-    background: rgba(0, 255, 255, 0.1);
-    color: var(--cyber-blue);
-    border: 2px solid var(--cyber-blue);
-    text-shadow: 0 0 5px var(--cyber-blue);
-    padding: 10px 30px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    border-radius: 25px;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+.cyber-button {
+    padding: 8px 16px;
+    border: 1px solid var(--cyber-yellow);
+    background: transparent;
+    color: var(--cyber-yellow);
+    cursor: pointer;
     text-decoration: none;
+    transition: all 0.3s;
+    text-shadow: 0 0 5px var(--cyber-yellow);
 }
 
-.btn-cyber-mode-switch:hover {
-    background: rgba(0, 255, 255, 0.2);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
-    transform: translateY(-2px);
-    color: var(--cyber-blue);
+.cyber-button:hover {
+    background: var(--cyber-yellow);
+    color: #000;
+    box-shadow: 0 0 10px var(--cyber-yellow);
 }
 
-/* キャンセルボタンのスタイル */
-.cyber-button.cancel-dialog {
-    background: rgba(128, 128, 128, 0.1);
-    border-color: #808080;
-    color: #808080;
-    text-shadow: 0 0 5px #808080;
-}
-
-.cyber-button.cancel-dialog:hover {
-    background: rgba(128, 128, 128, 0.2);
-    box-shadow: 0 0 15px rgba(128, 128, 128, 0.3);
-}
-
-/* サイドナビゲーションボタンのスタイル */
-.side-nav-button {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1000;
-}
-
-.left-nav {
-    left: 20px;
-}
-
-.right-nav {
-    right: 20px;
-}
-
-.btn-cyber-nav {
-    display: inline-flex;
-    align-items: center;
-    padding: 10px 20px;
-    background: rgba(0, 255, 255, 0.1);  /* 青色のスケルトン背景に変更 */
-    border: 2px solid #00ffff;  /* 青色のボーダーに変更 */
-    color: #00ffff;  /* 青色のテキストに変更 */
-    text-decoration: none;
-    border-radius: 25px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);  /* 青色の光に変更 */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    font-weight: bold;
-    text-shadow: 0 0 5px #00ffff;  /* 青色の光るテキストに変更 */
-}
-
-.btn-cyber-nav:hover {
-    background: rgba(0, 255, 255, 0.2);  /* 青色のホバー背景に変更 */
-    color: #fff;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);  /* 青色の光を強く */
-    transform: scale(1.05);
-    text-decoration: none;
-}
-
-/* ホバー時のグリッチエフェクト */
-.btn-cyber-nav:hover::before {
-    content: '';
+.button-glitch {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 255, 255, 0.2);  /* 青色のグリッチエフェクトに変更 */
-    animation: glitch 0.3s infinite;
+    background: transparent;
+    border: 1px solid var(--cyber-yellow);
+    animation: glitch 2s infinite;
+    opacity: 0;
+    pointer-events: none;
 }
 
 @keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-2px, 2px); }
-    40% { transform: translate(-2px, -2px); }
-    60% { transform: translate(2px, 2px); }
-    80% { transform: translate(2px, -2px); }
-    100% { transform: translate(0); }
-}
-
-/* 新しいボタンのホバースタイル */
-.btn-cyber-secondary:hover {
-    opacity: 1 !important;
-    box-shadow: 0 0 20px var(--cyber-green);
-    border-color: var(--cyber-green) !important;
-    background-color: rgba(0, 255, 159, 0.1) !important;
-}
-
-/* PCでのみテキストを表示 */
-@media (min-width: 768px) {
-    .btn-cyber-secondary {
-        padding-left: 20px !important;
-        padding-right: 20px !important;
+    0% {
+        clip-path: inset(80% -6px 0 0);
+        transform: translate(-10px, -10px);
     }
-}
-
-/* 保存成功時のアニメーション */
-@keyframes saveSuccess {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-.btn-cyber-save.saved {
-    animation: saveSuccess 0.5s ease-in-out;
-    background-color: var(--cyber-green) !important;
-}
-
-/* チェックボックスとラジオボタンのスタイル改善 */
-.form-check-input:checked {
-    background-color: var(--cyber-blue);
-    border-color: var(--cyber-blue);
-    box-shadow: 0 0 10px var(--cyber-blue);
-}
-
-.form-check-label {
-    transition: all 0.3s ease;
-}
-
-.form-check-input:checked + .form-check-label {
-    color: var(--cyber-blue) !important;
-    text-shadow: 0 0 5px var(--cyber-blue) !important;
+    10% {
+        clip-path: inset(10% -6px 85% 0);
+        transform: translate(10px, 10px);
+    }
+    20% {
+        clip-path: inset(80% -6px 0 0);
+        transform: translate(-10px, 10px);
+    }
+    30% {
+        clip-path: inset(10% -6px 85% 0);
+        transform: translate(0px, -10px);
+    }
+    40% {
+        clip-path: inset(50% -6px 30% 0);
+        transform: translate(-10px, 0px);
+    }
+    50% {
+        clip-path: inset(0% -6px 70% 0);
+        transform: translate(10px, -10px);
+    }
+    60% {
+        clip-path: inset(70% -6px 10% 0);
+        transform: translate(-10px, 10px);
+    }
+    70% {
+        clip-path: inset(20% -6px 60% 0);
+        transform: translate(10px, 0px);
+    }
+    80% {
+        clip-path: inset(60% -6px 20% 0);
+        transform: translate(-10px, -10px);
+    }
+    90% {
+        clip-path: inset(30% -6px 50% 0);
+        transform: translate(0px, 10px);
+    }
+    100% {
+        clip-path: inset(80% -6px 0 0);
+        transform: translate(10px, -10px);
+    }
 }
 </style>
 
@@ -1393,6 +1252,45 @@ function collectFormData() {
 
     return formData;
 }
+</script>
+
+<!-- JavaScriptを追加 -->
+<script>
+function handleHomeClick(event) {
+    event.preventDefault();
+    const homeDialog = document.getElementById('homeDialog');
+    if (homeDialog) {
+        homeDialog.style.display = 'block';
+    } else {
+        console.error('homeDialog element not found');
+    }
+}
+
+function closeHomeDialog() {
+    const homeDialog = document.getElementById('homeDialog');
+    if (homeDialog) {
+        homeDialog.style.display = 'none';
+    }
+}
+
+async function saveAndRedirectHome() {
+    try {
+        await saveForm(new Event('click'));
+        // 保存成功後にホームページへリダイレクト
+        window.location.href = '/';
+    } catch (error) {
+        console.error('Error saving before home redirect:', error);
+        alert('保存中にエラーが発生しました');
+    }
+}
+
+// デバッグ用のコード
+document.addEventListener('DOMContentLoaded', function() {
+    const homeDialog = document.getElementById('homeDialog');
+    if (!homeDialog) {
+        console.error('homeDialog element not found on page load');
+    }
+});
 </script>
 
 {% endblock %} 
