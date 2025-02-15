@@ -1174,47 +1174,58 @@ window.addEventListener('pageshow', function(event) {
     }
 });
 
-// 保存処理の重複実行を防ぐためのフラグを追加
-let isSaving = false;
-
-// 既存のsaveForm関数を修正
-async function saveForm(event) {
-    // すでに保存中なら処理を中断
-    if (isSaving) {
-        console.log('保存処理中です...');
-        return false;  // 重要: falseを返して処理を中断
+// フォームの非同期保存処理
+async function handleFormSubmit(event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('appForm');
+    const formData = new FormData(form);
+    const submitButton = document.querySelector('.btn-cyber-save');
+    
+    // 保存ボタンを無効化
+    if (submitButton) {
+        submitButton.disabled = true;
     }
 
     try {
-        isSaving = true;
-        const form = document.getElementById('appForm');
-        if (form) {
-            // フォームのデフォルトの送信を防止
-            event.preventDefault();
-            
-            // FormDataを使用してフォームデータを送信
-            const formData = new FormData(form);
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error('保存に失敗しました');
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
             }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showToast('保存しました', 'success');
+            
+            // 新規作成時はeditページへリダイレクト
+            if (!formData.get('app_id') && data.app_id) {
+                window.location.href = `/apps_gallery/edit/${data.app_id}/`;
+            }
+        } else {
+            throw new Error(data.error || '保存に失敗しました');
         }
     } catch (error) {
-        console.error('Error during save:', error);
-        alert('保存中にエラーが発生しました');
-        return false;
+        showToast(error.message, 'error');
     } finally {
-        isSaving = false;
+        // 保存ボタンを再度有効化
+        if (submitButton) {
+            submitButton.disabled = false;
+        }
     }
-    return true;  // 保存成功時はtrueを返す
 }
+
+// イベントリスナーの設定
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('appForm');
+    if (form) {
+        form.addEventListener('submit', handleFormSubmit);
+    }
+});
 
 // 技術へボタンのクリック時の処理を条件分岐
 async function confirmTechTransition(event) {
@@ -1450,29 +1461,5 @@ window.addEventListener('scroll', function() {
     
     lastScrollTop = scrollTop;
 });
-</script>
-
-<script>
-let isSaving = false;
-
-async function saveAndRedirectTechnical() {
-    if (isSaving) {
-        console.log('保存処理中です...');
-        return;
-    }
-
-    try {
-        isSaving = true;
-        // saveForm()だけを実行し、form.submit()は実行しない
-        await saveForm(new Event('click'));
-        // 保存成功後に技術編集画面へリダイレクト
-        window.location.href = "{% url 'apps_gallery:technical_edit' app.id %}";
-    } catch (error) {
-        console.error('Error during save:', error);
-        alert('保存中にエラーが発生しました');
-    } finally {
-        isSaving = false;
-    }
-}
 </script>
 {% endblock %} 
