@@ -78,14 +78,14 @@
     <div class="row g-4">
         <div class="col-12">
             <!-- スクリーンショットセクション -->
-            <section id="screenshots" class="mb-5 scroll-margin-top">
+            <section id="screenshots" class="mb-3 scroll-margin-top">
                 {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
             </section>
         </div>
 
         <div class="col-12">
             <!-- 基本情報セクション -->
-            <section id="basic" class="mb-5">
+            <section id="basic" class="mb-3">
                 {% include 'apps_gallery/tabs/02_basic_tab.html' %}
             </section>
         </div>
@@ -94,6 +94,16 @@
             <!-- アプリの魅力セクション -->
             <section id="appeal" class="mb-5">
                 {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
+            </section>
+        </div>
+
+        <div class="col-12">
+            <section id="dev_env" class="mb-5">
+                <div id="dev_env" class="container" style="--bs-gutter-y: 0 !important; margin: 0 !important; padding: 0 !important;">
+                    <div class="card border-0 shadow-lg">
+                        <!-- ... 既存のコード ... -->
+                    </div>
+                </div>
             </section>
         </div>
     </div>
