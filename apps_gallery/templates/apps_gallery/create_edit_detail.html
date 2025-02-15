@@ -20,7 +20,7 @@
     <div class="container py-1">
         <nav class="nav nav-pills nav-fill m-0">
             <!-- ホームへ戻るボタン -->
-            <a href="#" class="nav-link cyber-home" title="ホームへ戻る" onclick="handleHomeClick(event)">
+            <a href="#" onclick="handleHomeClick(event)" class="nav-link cyber-home" title="ホームへ戻る">
                 <span class="fs-4 me-2 cyber-emoji">🤖</span>
             </a>
             
@@ -259,10 +259,10 @@
     </div>
 
     <!-- ホーム画面移動用のダイアログ -->
-    <div class="cyber-dialog-overlay" id="homeDialog" style="display: none;">
-        <div class="cyber-dialog">
-            <div class="cyber-dialog-content">
-                <div class="cyber-message">
+    <div class="basic-dialog-overlay" id="homeDialog" style="display: none;">
+        <div class="basic-dialog">
+            <div class="basic-dialog-content">
+                <div class="basic-message">
                     <div class="message-icon">
                         <i class="bi bi-exclamation-triangle"></i>
                     </div>
@@ -270,13 +270,13 @@
                         保存して、ホーム画面に移動しますか？
                     </div>
                 </div>
-                <div class="cyber-dialog-buttons">
-                    <button class="cyber-button cancel-dialog" onclick="closeHomeDialog()">
-                        <span class="button-text">キャンセル</span>
+                <div class="basic-dialog-buttons">
+                    <button class="basic-button cancel-dialog" onclick="closeHomeDialog()">
+                        <span class="button-text">閉じる</span>
                         <span class="button-glitch"></span>
                     </button>
-                    <button class="cyber-button save-dialog" onclick="saveAndRedirectHome()">
-                        <span class="button-text">移動する</span>
+                    <button class="basic-button save-dialog" onclick="saveAndGoHome()">
+                        <span class="button-text">保存する</span>
                         <span class="button-glitch"></span>
                     </button>
                 </div>
@@ -1118,6 +1118,66 @@ html {
     color: var(--cyber-green);
     text-shadow: 0 0 5px var(--cyber-green);
 }
+
+/* 基本ダイアログ用の独自スタイル */
+.basic-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.basic-dialog {
+    background: rgba(0, 20, 40, 0.9);
+    border: 2px solid #ffd700;  /* 黄色のボーダー */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);  /* 黄色の光る効果 */
+    max-width: 500px;
+    width: 90%;
+    position: absolute;  /* 追加 */
+    top: 50%;           /* 追加 */
+    left: 50%;          /* 追加 */
+    transform: translate(-50%, -50%);  /* 追加 */
+}
+
+.basic-dialog-content {
+    text-align: center;
+}
+
+.basic-message {
+    margin-bottom: 20px;
+    color: #ffd700;  /* 黄色のテキスト */
+    text-shadow: 0 0 5px #ffd700;  /* 黄色の光る効果 */
+}
+
+.basic-dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.basic-button {
+    background: rgba(255, 215, 0, 0.1);  /* 黄色の背景 */
+    border: 2px solid #ffd700;  /* 黄色のボーダー */
+    color: #ffd700;  /* 黄色のテキスト */
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.basic-button:hover {
+    background: rgba(255, 215, 0, 0.2);  /* ホバー時は少し濃い黄色 */
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);  /* 黄色の光る効果 */
+}
 </style>
 
 <script>
@@ -1290,41 +1350,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-function handleHomeClick(event) {
-    event.preventDefault();
-    const homeDialog = document.getElementById('homeDialog');
-    if (homeDialog) {
-        homeDialog.style.display = 'block';
-    } else {
-        console.error('homeDialog element not found');
-    }
-}
-
-function closeHomeDialog() {
-    const homeDialog = document.getElementById('homeDialog');
-    if (homeDialog) {
-        homeDialog.style.display = 'none';
-    }
-}
-
-async function saveAndRedirectHome() {
-    try {
-        await saveForm(new Event('click')); // 既存のsaveForm関数を使用
-        window.location.href = '/';
-    } catch (error) {
-        console.error('Error saving before home redirect:', error);
-        alert('保存中にエラーが発生しました');
-    }
-}
-
-// デバッグ用のコード
-document.addEventListener('DOMContentLoaded', function() {
-    const homeDialog = document.getElementById('homeDialog');
-    if (!homeDialog) {
-        console.error('homeDialog element not found on page load');
-    }
-});
 </script>
 
 <!-- Bootstrapのスクリプトが読み込まれていることを確認 -->
@@ -1461,5 +1486,66 @@ window.addEventListener('scroll', function() {
     
     lastScrollTop = scrollTop;
 });
+</script>
+
+<script>
+// ホームボタンクリック時の処理
+function handleHomeClick(event) {
+    event.preventDefault();
+    
+    // readonlyかどうかをチェック
+    const isReadOnly = {% if readonly %}true{% else %}false{% endif %};
+    
+    if (isReadOnly) {
+        // 詳細画面の場合は直接ホームへ遷移
+        window.location.href = '/';
+    } else {
+        // 編集画面の場合はダイアログを表示
+        const homeDialog = document.getElementById('homeDialog');
+        if (homeDialog) {
+            homeDialog.style.display = 'block';
+        }
+    }
+}
+
+// ダイアログを閉じる処理
+function closeHomeDialog() {
+    const homeDialog = document.getElementById('homeDialog');
+    homeDialog.style.display = 'none';
+}
+
+// ホームへ移動用の新しい保存関数
+function saveAndGoHome() {
+    const form = document.getElementById('appForm');
+    if (form) {
+        // FormDataオブジェクトを作成
+        const formData = new FormData(form);
+        
+        // Fetch APIでPOSTリクエストを送信
+        fetch(form.action + '?redirect=home', {  // URLにパラメータを追加
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 保存成功後にホームページへリダイレクト
+                window.location.href = '/';
+            } else {
+                alert('保存に失敗しました：' + (data.error || '不明なエラー'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('保存中にエラーが発生しました');
+        });
+    } else {
+        console.error('Form not found');
+        alert('フォームが見つかりません');
+    }
+}
 </script>
 {% endblock %} 
