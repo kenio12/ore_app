@@ -10,16 +10,18 @@
 
 <div class="min-vh-100">
     <!-- ヒーローセクション -->
-    <div class="position-relative text-center pt-5 mt-4 mb-4 cyber-hero" 
+    <div id="heroSection" class="position-relative text-center pt-5 mt-4 mb-4 cyber-hero" 
          style="position: relative;
                 width: 100vw;
                 max-width: 100%;
                 aspect-ratio: 16 / 16;
                 margin: 0 auto;
                 border-radius: 8px;
-                overflow: hidden;">
+                overflow: hidden;
+                transition: all 0.3s ease-in-out;">
         <!-- 背景画像を別のdivで設定 -->
-        <div class="d-none d-sm-block" style="position: absolute;
+        <div class="d-none d-sm-block" 
+             style="position: absolute;
                     top: 0;
                     left: 0;
                     width: 100%;
@@ -32,7 +34,9 @@
                         height: 100%;
                         display: block;
                         margin: 0;
-                        padding: 0;">
+                        padding: 0;
+                        cursor: pointer;"
+                 onclick="toggleHeroSection()">
         </div>
 
         <!-- appmanを最前面に -->
@@ -240,6 +244,32 @@ document.addEventListener('DOMContentLoaded', function() {
         return new bootstrap.Toast(toastEl);
     });
     toastList.forEach(toast => toast.show());
+});
+
+function toggleHeroSection() {
+    const heroSection = document.getElementById('heroSection');
+    if (heroSection.style.height === '0px') {
+        // ヒーローセクションを表示
+        heroSection.style.height = '';
+        heroSection.style.opacity = '1';
+        heroSection.style.marginTop = '';
+        heroSection.style.marginBottom = '';
+        heroSection.style.padding = '';
+    } else {
+        // ヒーローセクションを非表示
+        heroSection.style.height = '0px';
+        heroSection.style.opacity = '0';
+        heroSection.style.marginTop = '0';
+        heroSection.style.marginBottom = '0';
+        heroSection.style.padding = '0';
+    }
+}
+
+// 初期状態で表示
+document.addEventListener('DOMContentLoaded', function() {
+    const heroSection = document.getElementById('heroSection');
+    heroSection.style.height = '';
+    heroSection.style.opacity = '1';
 });
 </script>
 
