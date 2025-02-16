@@ -203,4 +203,33 @@
 .action-btn i {
     filter: drop-shadow(0 0 3px currentColor);
 }
+
+/* ナビゲーションのトランジション */
+.navbar {
+    transition: transform 0.3s ease-in-out;
+}
+
+/* 隠れた状態のスタイル */
+.navbar.hidden {
+    transform: translateY(-100%);
+}
 </style>
+
+<!-- スクロール制御用のスクリプト -->
+<script>
+let lastScrollTop = 0;
+const navbarElement = document.querySelector('.navbar');
+
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const isScrollingUp = scrollTop < lastScrollTop;
+    
+    if (scrollTop > 100 && !isScrollingUp) {
+        navbarElement.classList.add('hidden');
+    } else {
+        navbarElement.classList.remove('hidden');
+    }
+    
+    lastScrollTop = scrollTop;
+});
+</script>
