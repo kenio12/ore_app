@@ -121,38 +121,75 @@
 }
 
 /* フォーム要素の共通スタイル */
-.cyber-form-control {
+.form-control,
+.form-select {
+    background-color: rgba(13, 25, 45, 0.8) !important;
+    border: 2px solid currentColor !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 1.1rem !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(0, 30, 70, 0.7) !important;
+    box-shadow: 0 0 15px currentColor !important;
+}
+
+/* 読み取り専用・無効化状態のスタイル */
+.form-control[readonly],
+.form-select[readonly],
+.form-control:disabled,
+.form-select:disabled {
     background-color: rgba(0, 20, 50, 0.5) !important;
     border: 2px solid currentColor !important;
-    color: inherit !important;
-    font-weight: bold !important;
-}
-
-.cyber-form-control:focus {
-    box-shadow: 0 0 15px currentColor !important;
-    background: rgba(0, 30, 70, 0.7) !important;
-}
-
-/* チェックボックス・ラジオボタンの共通スタイル */
-.cyber-form-check-input {
-    width: 1.2em !important;
-    height: 1.2em !important;
-    border: 2px solid currentColor !important;
-    background-color: transparent !important;
-    cursor: pointer !important;
-    position: relative !important;
-}
-
-.cyber-form-check-input:checked {
-    background-color: currentColor !important;
-    box-shadow: 0 0 10px currentColor !important;
+    opacity: 1 !important;
+    cursor: default !important;
 }
 
 /* ラベルの共通スタイル */
-.cyber-form-label {
-    color: currentColor !important;
-    text-shadow: 0 0 5px currentColor !important;
+.form-label {
     font-weight: 500 !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* チェックボックスの共通スタイル */
+.form-check-input {
+    border: 2px solid currentColor !important;
+    background-color: transparent !important;
+}
+
+.form-check-input:checked {
+    background-color: currentColor !important;
+    border-color: currentColor !important;
+}
+
+.form-check-label {
+    color: currentColor !important;
+    font-size: 1.1rem !important;
+    padding-left: 0.5em !important;
+}
+
+/* 入力グループのスタイル */
+.input-group-text {
+    background-color: rgba(13, 25, 45, 0.8) !important;
+    border: 2px solid currentColor !important;
+}
+
+.input-group > :first-child {
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+}
+
+/* フォームテキストのスタイル */
+.form-text {
+    opacity: 0.8 !important;
+}
+
+/* プレースホルダーのスタイル */
+.form-control::placeholder {
+    color: currentColor !important;
+    opacity: 0.5 !important;
 }
 
 /* セクションタイトルの共通スタイル */
@@ -175,4 +212,26 @@
     border-color: currentColor !important;
     cursor: pointer !important;
     box-shadow: 0 0 10px currentColor !important;
+}
+
+/* 基本情報タブ用のスタイル */
+#basic-section .form-control,
+#basic-section .form-select,
+#basic-section .form-label,
+#basic-section .form-check-label,
+#basic-section .input-group-text {
+    color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow) !important;
+}
+
+/* アプリの魅力タブ用のスタイル */
+#appeal-section .form-control,
+#appeal-section .form-select,
+#appeal-section .form-label,
+#appeal-section .form-check-label,
+#appeal-section .input-group-text {
+    color: var(--cyber-green) !important;
+    border-color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green) !important;
 } 
