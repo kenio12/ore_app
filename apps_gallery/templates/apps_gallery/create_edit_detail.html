@@ -86,7 +86,81 @@
         <div class="col-12">
             <!-- 基本情報セクション -->
             <section id="basic" class="mb-3">
-                {% include 'apps_gallery/tabs/02_basic_tab.html' %}
+                <div class="card border-0" id="basic-info-card">
+                    <div class="card-body">
+                        <h2 class="card-title h3 mb-4" style="color: #ffd700 !important;">
+                            <i class="bi bi-info-circle-fill" style="color: #ffd700 !important;"></i> 基本情報
+                        </h2>
+
+                        <!-- 作者名（表示のみ） -->
+                        <div class="mb-4">
+                            <label class="form-label text-cyber-yellow">作者</label>
+                            <input type="text" 
+                                   class="form-control cyber-yellow-focus" 
+                                   value="{{ user.username }}"
+                                   readonly>
+                        </div>
+
+                        <!-- アプリ名 -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-cyber-yellow" for="title">
+                                アプリ名
+                            </label>
+                            <input type="text" 
+                                   id="title" 
+                                   name="title" 
+                                   class="form-control cyber-yellow-focus" 
+                                   value="{{ app.title }}"
+                                   {% if readonly %}readonly{% endif %}>
+                        </div>
+
+                        <!-- アプリの種類（チェックボックス） -->
+                        <div class="mb-4">
+                            <label class="form-label">アプリの種類</label>
+                            <div class="row g-3">
+                                {% for key, label in APP_TYPES.items %}
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="form-check">
+                                            <input type="checkbox" 
+                                                   name="app_types" 
+                                                   value="{{ key }}"
+                                                   id="type_{{ key }}"
+                                                   class="form-check-input cyber-form-check-input"
+                                                   {% if app and key in app.app_types %}checked{% endif %}
+                                                   {% if readonly %}disabled{% endif %}>
+                                            <label class="form-check-label cyber-form-check-label" for="type_{{ key }}">
+                                                {{ label }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- ジャンル（チェックボックス） -->
+                        <div class="mb-4">
+                            <label class="form-label">ジャンル</label>
+                            <div class="row g-3">
+                                {% for key, label in GENRES.items %}
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="form-check">
+                                            <input type="checkbox" 
+                                                   name="genres" 
+                                                   value="{{ key }}"
+                                                   id="genre_{{ key }}"
+                                                   class="form-check-input cyber-checkbox"
+                                                   {% if app and key in app.genres %}checked{% endif %}
+                                                   {% if readonly %}disabled{% endif %}>
+                                            <label class="form-check-label" for="genre_{{ key }}">
+                                                {{ label }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
 
@@ -100,9 +174,7 @@
         <div class="col-12">
             <section id="dev_env" class="mb-5">
                 <div id="dev_env" class="container" style="--bs-gutter-y: 0 !important; margin: 0 !important; padding: 0 !important;">
-                    <div class="card border-0 shadow-lg">
-                        <!-- ... 既存のコード ... -->
-                    </div>
+                    <!-- 不要なdivを削除 -->
                 </div>
             </section>
         </div>
@@ -305,8 +377,8 @@
 
 /* セクション間の余白 */
 section.mb-5 {
-    margin-bottom: 5rem !important;  /* 下の余白を大きく */
-    padding-bottom: 2rem;  /* 下のパディングも追加 */
+    margin-bottom: 2rem !important;  /* 5remから2remに変更 */
+    border-bottom: none !important;  /* 下線を削除 */
 }
 
 /* レスポンシブ対応 */
@@ -413,185 +485,104 @@ html {
     100% { opacity: 0.5; }
 }
 
-/* カラーバリエーション用の変数定義 */
+/* 基本変数の定義 */
 :root {
-    --cyber-blue: #00ffff;
-    --cyber-orange: #ff8c00;
     --cyber-yellow: #ffd700;
     --cyber-green: #00ff9f;
-    --cyber-red: #ff2d55;
+    --cyber-blue: #00ffff;
     --cyber-purple: #bf5fff;
+    --cyber-background: rgba(0, 20, 50, 0.8);
+    --cyber-text: #ffffff;  /* 基本テキストカラー */
 }
 
-/* カード全体のスタイル */
+/* 全体のテキストカラー */
+body {
+    color: var(--cyber-text);
+}
+
+/* 共通のカードスタイル */
 .card {
-    background: rgba(13, 25, 45, 0.8) !important;
+    background-color: var(--cyber-background);
+    border: 2px solid;
+    border-radius: 8px;
+    color: var(--cyber-text);  /* カード内のテキストカラー */
 }
 
-/* フォーム要素のスタイル修正 */
-.form-control,
-.form-select {
-    background-color: rgba(0, 20, 50, 0.5) !important;
-    border: 1px solid rgba(0, 255, 255, 0.3);
+/* フォーム要素の共通スタイル */
+.form-control, 
+.form-select,
+.form-check-input {
+    background-color: rgba(26, 26, 26, 0.95) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    color: var(--cyber-yellow) !important;
 }
 
+/* フォーカス時のスタイル */
 .form-control:focus,
-.form-select:focus {
-    background-color: rgba(0, 30, 70, 0.7);
-    border-color: #0ff;
-    box-shadow: 0 0 15px rgba(0,255,255,0.4);
+.form-select:focus,
+.form-check-input:focus {
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 10px var(--cyber-yellow) !important;
 }
 
-/* 読み取り専用・無効化状態のスタイルを修正 */
-.form-control[readonly],
-.form-select[readonly],
-.form-control:disabled,
-.form-select:disabled {
-    background-color: rgba(0, 20, 50, 0.5) !important;
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    opacity: 1 !important;  /* 透明度を1に設定 */
-    cursor: default;
+/* チェックボックスのスタイル */
+.form-check-input:checked {
+    background-color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
 }
 
-/* プレースホルダーの色も調整 */
-.form-control::placeholder {
+/* 基本情報セクション */
+#basic-info-card.card,
+#basic-info-card.card.border-0 {
+    background-color: var(--cyber-background) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    border-radius: 8px !important;
+    color: var(--cyber-yellow) !important;
+    margin-bottom: 1rem !important;
+}
+
+#basic-section .form-label,
+#basic-section .form-check-label {
+    color: var(--cyber-yellow);
+}
+
+#basic-section .form-control,
+#basic-section .form-select {
+    color: var(--cyber-yellow);
+    border-color: var(--cyber-yellow);
+}
+
+/* アプリの魅力セクション */
+#appeal .card,
+#appeal .card.border-0 {
+    background-color: var(--cyber-background) !important;
+    border: 2px solid var(--cyber-green) !important;
+    border-radius: 8px !important;
+    color: var(--cyber-green) !important;
+}
+
+#appeal .form-control, 
+#appeal .form-select,
+#appeal .form-check-input {
+    background-color: rgba(26, 26, 26, 0.95) !important;
+    border: 2px solid var(--cyber-green) !important;
+    color: var(--cyber-green) !important;
+}
+
+#appeal .form-label,
+#appeal .form-check-label {
+    color: var(--cyber-green) !important;
+}
+
+#appeal .form-control:focus,
+#appeal .form-select:focus {
+    border-color: var(--cyber-green) !important;
+    box-shadow: 0 0 10px var(--cyber-green) !important;
+}
+
+/* プレースホルダーのスタイル */
+::placeholder {
     color: rgba(255, 255, 255, 0.5) !important;
-}
-
-/* 基本情報タブの読み取り専用フィールド */
-#basic .form-control[readonly],
-#basic .form-select[readonly],
-#basic .form-control:disabled,
-#basic .form-select:disabled {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-yellow) !important;
-    font-weight: 500 !important;
-}
-
-/* アプリの魅力タブの読み取り専用フィールド */
-#appeal .form-control[readonly],
-#appeal .form-select[readonly],
-#appeal .form-control:disabled,
-#appeal .form-select:disabled {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green) !important;
-    font-weight: 500 !important;
-}
-
-/* スクリーンショットタブの読み取り専用フィールド */
-#screenshots .form-control[readonly],
-#screenshots .form-select[readonly],
-#screenshots .form-control:disabled,
-#screenshots .form-select:disabled {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 5px var(--cyber-purple) !important;
-    font-weight: 500 !important;
-}
-
-/* タブのネオンテキスト */
-.nav-link.text-neon {
-    color: var(--cyber-blue) !important;
-    text-shadow: 0 0 5px var(--cyber-blue), 0 0 10px var(--cyber-blue);
-}
-
-/* 基本情報タブ */
-.nav-link[data-bs-target="#basic"] {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-yellow), 0 0 10px var(--cyber-yellow);
-}
-
-/* アプリの魅力タブ */
-.nav-link[data-bs-target="#appeal"] {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green), 0 0 10px var(--cyber-green);
-}
-
-/* スクリーンショットタブ */
-.nav-link[data-bs-target="#screenshots"] {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 5px var(--cyber-purple), 0 0 10px var(--cyber-purple);
-}
-
-/* アクティブなタブのスタイル */
-.nav-link.active[data-bs-target="#basic"] {
-    background-color: rgba(255, 215, 0, 0.2) !important;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-}
-
-.nav-link.active[data-bs-target="#appeal"] {
-    background-color: rgba(0, 255, 159, 0.2) !important;
-    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
-}
-
-.nav-link.active[data-bs-target="#screenshots"] {
-    background-color: rgba(191, 95, 255, 0.2) !important;
-    box-shadow: 0 0 15px rgba(191, 95, 255, 0.3);
-}
-
-/* ホバー時のスタイル */
-.nav-link[data-bs-target="#basic"]:hover {
-    background-color: rgba(255, 215, 0, 0.1) !important;
-}
-
-.nav-link[data-bs-target="#appeal"]:hover {
-    background-color: rgba(0, 255, 159, 0.1) !important;
-}
-
-.nav-link[data-bs-target="#screenshots"]:hover {
-    background-color: rgba(191, 95, 255, 0.1) !important;
-}
-
-/* 各タブの見出しの色を明確に */
-#basic .card-title {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-yellow), 0 0 10px var(--cyber-yellow);
-}
-
-#appeal .card-title {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green), 0 0 10px var(--cyber-green);
-}
-
-#screenshots .card-title {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 5px var(--cyber-purple), 0 0 10px var(--cyber-purple);
-}
-
-/* ボタンのスタイル */
-.btn-cyber {
-    background: linear-gradient(45deg, #ff8c00, #ffd700);
-    border: none;
-    color: #fff;
-    text-shadow: 0 0 5px rgba(0,0,0,0.5);
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(255,140,0,0.3);
-}
-
-.btn-cyber:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255,140,0,0.6);
-}
-
-.btn-cyber-danger {
-    background: linear-gradient(45deg, #ff2d55, #ff0044);
-    box-shadow: 0 0 15px rgba(255,45,85,0.3);
-}
-
-/* その他のスタイル（create.htmlとdetail.htmlから必要なものを追加） */
-// ... rest of the styles from create.html and detail.html ...
-
-/* タイトルのスタイルを強化 */
-.cyber-title {
-    color: #fff !important;
-    text-shadow: 
-        0 0 10px #00ffff,
-        0 0 20px #00ffff,
-        0 0 30px #00ffff,
-        0 0 40px #00ffff;
-    font-weight: bold;
-    letter-spacing: 1px;
 }
 
 /* サイバーパンクなスタイル */
@@ -1177,6 +1168,76 @@ html {
     background: rgba(255, 215, 0, 0.2);  /* ホバー時は少し濃い黄色 */
     transform: translateY(-2px);
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);  /* 黄色の光る効果 */
+}
+
+/* アプリの魅力セクション */
+#appeal .input-group-text {
+    background-color: rgba(0, 20, 50, 0.8) !important;
+    color: var(--cyber-green) !important;
+    border: 2px solid var(--cyber-green) !important;
+    border-right: none !important;
+}
+
+#appeal .input-group .form-control {
+    border-left: none !important;
+    border-color: var(--cyber-green) !important;
+    color: var(--cyber-green) !important;
+}
+
+#appeal .card h2,
+#appeal .card i.bi,
+#appeal .form-label,
+#appeal .form-text {
+    color: var(--cyber-green) !important;
+}
+
+#appeal .form-control {
+    border-color: var(--cyber-green) !important;
+    color: var(--cyber-green) !important;
+}
+
+/* 基本情報セクションは黄色のまま */
+#basic-info-card.card,
+#basic-info-card.card.border-0 {
+    background-color: var(--cyber-background) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    border-radius: 8px !important;
+    color: var(--cyber-yellow) !important;
+    margin-bottom: 1rem !important;
+}
+
+/* アプリの魅力セクション */
+#appeal {
+    border-bottom: none !important;  /* 下線を明示的に削除 */
+    padding-bottom: 0 !important;    /* 下部パディングも削除 */
+}
+
+/* タブ内のカード幅を統一 */
+.container {
+    max-width: 1100px !important;  /* 横幅を1100pxに拡大 */
+    margin: 0 auto !important;     /* 中央寄せ */
+    padding: 0 1.5rem !important;  /* 左右の余白も少し広げる */
+}
+
+.container .card {
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+/* カードボディの余白を統一 */
+.card-body {
+    padding: 2rem !important;
+}
+
+/* スクリーンショットタブの調整 */
+.screenshots-container {
+    width: 100% !important;
+}
+
+/* アピールタブの調整 */
+#appeal-section .card,
+#appeal-section .form-control {
+    width: 100% !important;
 }
 </style>
 

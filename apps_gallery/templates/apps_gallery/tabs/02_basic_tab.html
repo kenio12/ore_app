@@ -107,17 +107,17 @@
             <div class="mb-4">
                 <label class="form-label">アプリの種類</label>
                 <div class="row g-3">
-                    {% for value, label in form.app_types.field.choices %}
+                    {% for key, label in APP_TYPES.items %}
                         <div class="col-md-3 col-sm-6">
                             <div class="form-check">
                                 <input type="checkbox" 
                                        name="app_types" 
-                                       value="{{ value }}"
-                                       id="type_{{ value }}"
+                                       value="{{ key }}"
+                                       id="type_{{ key }}"
                                        class="form-check-input cyber-form-check-input"
-                                       {% if value in app.app_types %}checked{% endif %}
+                                       {% if app and key in app.app_types %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label cyber-form-check-label" for="type_{{ value }}">
+                                <label class="form-check-label cyber-form-check-label" for="type_{{ key }}">
                                     {{ label }}
                                 </label>
                             </div>
@@ -133,17 +133,17 @@
             <div class="mb-4">
                 <label class="form-label">ジャンル</label>
                 <div class="row g-3">
-                    {% for value, label in form.genres.field.choices %}
+                    {% for key, label in GENRES.items %}
                         <div class="col-md-3 col-sm-6">
                             <div class="form-check">
                                 <input type="checkbox" 
                                        name="genres" 
-                                       value="{{ value }}"
-                                       id="genre_{{ value }}"
+                                       value="{{ key }}"
+                                       id="genre_{{ key }}"
                                        class="form-check-input cyber-checkbox"
-                                       {% if value in app.genres %}checked{% endif %}
+                                       {% if app and key in app.genres %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label" for="genre_{{ value }}">
+                                <label class="form-check-label" for="genre_{{ key }}">
                                     {{ label }}
                                 </label>
                             </div>

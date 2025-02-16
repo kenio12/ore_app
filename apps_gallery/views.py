@@ -82,12 +82,10 @@ def on_request_finished(sender, **kwargs):
     print("Request finished", file=sys.stderr)
 
 def get_common_context(app=None, readonly=False, is_edit=False):
+    """共通のコンテキストを取得する"""
     context = {
+        'app': app,
         'readonly': readonly,
-        'APP_TYPES': dict(APP_TYPES),
-        'APP_STATUS': dict(APP_STATUS),
-        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
-        'GENRES': dict(GENRES),
         'is_edit': is_edit,
         'hide_navbar': True,
         'editors': dict(EDITORS),
@@ -115,6 +113,10 @@ def get_common_context(app=None, readonly=False, is_edit=False):
         'code_quality_tools': CODE_QUALITY_TOOLS,
         'BACKEND_STACK': BACKEND_STACK,
         'BACKEND_PACKAGE_HINTS': BACKEND_PACKAGE_HINTS,
+        'APP_TYPES': dict(APP_TYPES),
+        'GENRES': dict(GENRES),
+        'APP_STATUS': dict(APP_STATUS),
+        'PUBLISH_STATUS': dict(PUBLISH_STATUS),
     }
     
     if app:
