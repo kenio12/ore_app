@@ -1,4 +1,5 @@
 {% load app_filters %}
+{% include 'apps_gallery/shared/disabled_styles.html' %}
 
 <div class="container">
     <div class="card border-0">
@@ -101,6 +102,187 @@
 </div>
 
 <style>
+/* カスタム変数の定義 */
+:root {
+    --cyber-purple: #e9d5ff !important;
+}
+
+/* タイトル部分 */
+html body .container .card .card-body h2.card-title.h3.mb-4,
+html body .container .card .card-body h2.card-title.h3.mb-4 i.bi-camera-fill,
+html body .container h2.card-title i.bi-camera-fill.text-cyber-purple {
+    color: var(--cyber-purple) !important;
+}
+
+/* サムネイルバッジ */
+.thumbnail-badge {
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    color: #e9d5ff !important;
+    padding: 5px 10px !important;
+    border-radius: 4px !important;
+    font-size: 0.8rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+.thumbnail-badge i {
+    color: #e9d5ff !important;
+    font-size: 0.9rem !important;
+}
+
+/* カード全体 */
+body #screenshots .card,
+body .card {
+    border: 2px solid var(--cyber-purple) !important;
+    background: rgba(30, 41, 59, 0.98) !important;
+}
+
+/* スクリーンショット画像の枠線 - 一番外側のdivにのみ適用 */
+.screenshot-wrapper {
+    border: 2px solid var(--cyber-purple) !important;
+    padding: 10px !important;
+    margin-bottom: 20px !important;
+    border-radius: 8px !important;
+    background: rgba(30, 41, 59, 0.98) !important;
+}
+
+/* 内側の要素の枠線を明示的に削除 */
+.screenshot-card,
+.screenshot-image,
+.screenshot-preview {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* サムネイル関連のスタイルもリセット */
+.is-thumbnail,
+.is-thumbnail .screenshot-image,
+.is-thumbnail img {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* 既存のスタイルは維持 */
+body #screenshots .card-title,
+body #screenshots .card-title span,
+body #screenshots h2.text-cyber-purple,
+body #screenshots .text-cyber-purple,
+body .card-title,
+body .card-title span,
+body h2.text-cyber-purple,
+body .text-cyber-purple {
+    color: #e9d5ff !important;
+    opacity: 1 !important;
+    font-weight: 400 !important;
+}
+
+body #screenshots .btn-action,
+body .btn-action {
+    border: 2px solid #e9d5ff !important;
+    color: #e9d5ff !important;
+}
+
+body #screenshots .btn-set-thumbnail,
+body .btn-set-thumbnail {
+    color: #e9d5ff !important;
+    border-color: #e9d5ff !important;
+}
+
+body #screenshots .btn-delete-screenshot,
+body .btn-delete-screenshot {
+    color: #e9d5ff !important;
+    border-color: #e9d5ff !important;
+}
+
+body #screenshots .btn-cyber-purple,
+body .btn-cyber-purple {
+    background: linear-gradient(45deg, #e9d5ff, #f3e8ff) !important;
+    color: rgba(30, 41, 59, 0.98) !important;
+    border: 1px solid #e9d5ff !important;
+}
+
+body #screenshots .upload-preview-area,
+body .upload-preview-area {
+    border: 2px dashed #e9d5ff !important;
+    color: #e9d5ff !important;
+}
+
+body #screenshots .preview-placeholder,
+body .preview-placeholder {
+    color: #e9d5ff !important;
+}
+
+body #screenshots .is-thumbnail,
+body .is-thumbnail {
+    box-shadow: none !important;
+}
+
+body #screenshots .is-thumbnail img {
+    border: 2px solid var(--cyber-purple) !important;
+}
+
+/* スクリーンショットの画像自体の枠も明るく */
+body #screenshots .screenshot-wrapper img,
+body .screenshot-wrapper img {
+    border: 2px solid var(--cyber-purple) !important;
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* カード全体 */
+body #screenshots .card {
+    background: rgba(30, 41, 59, 0.98) !important;
+    border: 2px solid #e9d5ff !important;
+}
+
+/* すべてのテキストを明るく */
+body #screenshots .form-label,
+body #screenshots label.form-label,
+body #screenshots .text-cyber-purple,
+body #screenshots p.text-muted.small.mb-3,
+body #screenshots div.mb-4 > label.form-label {
+    color: #e9d5ff !important;
+    font-weight: 400 !important;
+    opacity: 1 !important;
+}
+
+/* 説明文も明るく */
+body #screenshots .text-muted {
+    color: #e9d5ff !important;
+    opacity: 0.9 !important;
+}
+
+/* 必須マーク */
+body #screenshots .text-danger {
+    color: #e9d5ff !important;
+}
+
+/* 見出し */
+body #screenshots h2.card-title span,
+body #screenshots h2.card-title i {
+    color: #e9d5ff !important;
+}
+
+/* アップロードエリアのスタイル */
+body #screenshots .upload-preview-area {
+    border: 2px dashed #e9d5ff !important;
+}
+
+/* プレビューエリアのテキスト */
+body #screenshots .preview-placeholder {
+    color: #e9d5ff !important;
+}
+
+/* ボタン類 */
+body #screenshots .btn-cyber-purple:hover:not(:disabled) {
+    background: linear-gradient(45deg, #f3e8ff, #f5f3ff) !important;
+    box-shadow: 0 0 15px rgba(233, 213, 255, 0.5) !important;
+}
+
 /* スクリーンショット関連のスタイル */
 .screenshots-gallery {
     min-height: auto;
@@ -174,8 +356,8 @@
 
 .btn-action {
     background: rgba(13, 25, 45, 0.8);
-    border: 1px solid var(--cyber-purple);
-    color: var(--cyber-purple);
+    border: 2px solid #e9d5ff !important;
+    color: #e9d5ff !important;
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -192,8 +374,8 @@
 }
 
 .btn-set-thumbnail {
-    color: #FFD700;
-    border-color: #FFD700;
+    color: #e9d5ff !important;
+    border-color: #e9d5ff !important;
 }
 
 .btn-set-thumbnail:hover {
@@ -201,8 +383,8 @@
 }
 
 .btn-delete-screenshot {
-    color: #ff4444;
-    border-color: #ff4444;
+    color: #e9d5ff !important;
+    border-color: #e9d5ff !important;
 }
 
 .btn-delete-screenshot:hover {
@@ -215,38 +397,6 @@
     border: 1px solid var(--cyber-purple);
     border-radius: 8px;
     padding: 1.5rem;
-}
-
-.upload-preview-area {
-    border: 2px dashed var(--cyber-purple);
-    border-radius: 8px;
-    padding: 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: rgba(191, 95, 255, 0.1);
-    position: relative;
-    min-height: 200px;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-}
-
-.upload-preview-area:hover {
-    background: rgba(191, 95, 255, 0.2);
-    border-color: #fff;
-}
-
-.preview-placeholder {
-    display: block !important;
-    color: var(--cyber-purple);
-}
-
-.preview-placeholder i {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    display: block;
 }
 
 .preview-wrapper {
@@ -298,46 +448,9 @@
 }
 
 /* サイバーパンクボタン */
-.btn-cyber-purple {
-    background: linear-gradient(45deg, #6f00ff, #bf5fff);
-    color: #fff;
-    border: 1px solid rgba(191, 95, 255, 0.5);
-    text-shadow: 0 0 5px rgba(191, 95, 255, 0.3);
-}
-
-.btn-cyber-purple:hover:not(:disabled) {
-    background: linear-gradient(45deg, #7722ff, #cc77ff);
-    box-shadow: 0 0 15px rgba(191, 95, 255, 0.5);
-    transform: translateY(-2px);
-}
-
 .btn-cyber-purple:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-}
-
-/* スタイルを追加 */
-.is-thumbnail {
-    border: 2px solid var(--cyber-purple) !important;
-    box-shadow: 0 0 15px rgba(191, 95, 255, 0.5);
-}
-
-.thumbnail-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: linear-gradient(45deg, #6f00ff, #bf5fff);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-    z-index: 10;
-}
-
-.thumbnail-badge i {
-    color: #FFD700;
-    margin-right: 5px;
 }
 
 /* デバッグ情報のスタイル */

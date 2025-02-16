@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{# ナビバーを完全に非表示にする #}
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<!-- サイバーパンク風の装飾 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<!-- メインコンテンツ -->
+<div id="app-view-detail" class="container mt-4">
+    <!-- ヘッダー -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="cyber-title" style="color: var(--cyber-purple) !important; 
+                                     text-shadow: 0 0 10px var(--cyber-purple),
+                                                0 0 20px var(--cyber-purple);
+                                     font-weight: bold;">
+            {{ app.title }}の詳細
+        </h2>
+    </div>
+
+    <!-- タブナビゲーション -->
+    <div id="appTabs" class="app-tabs">
+        <div class="container py-1">
+            <nav class="nav nav-pills nav-fill m-0">
+                <!-- ホームへ戻るボタン -->
+                <a href="/" class="nav-link cyber-home" title="ホームへ戻る">
+                    <span class="fs-4 me-2 cyber-emoji">🏠</span>
+                </a>
+                
+                <a class="nav-link text-neon" href="#screenshots-section">
+                    <i class="bi bi-image-fill"></i> スクリーンショット
+                </a>
+                <a class="nav-link text-neon" href="#basic-section">
+                    <i class="bi bi-info-circle-fill"></i> 基本情報
+                </a>
+                <a class="nav-link text-neon" href="#appeal-section">
+                    <i class="bi bi-stars"></i> アプリの魅力
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 各セクション -->
+    <div id="screenshots-section" class="section mb-5">
+        {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
+    </div>
+
+    <div id="basic-section" class="section mb-5">
+        {% include 'apps_gallery/tabs/02_basic_tab.html' %}
+    </div>
+
+    <div id="appeal-section" class="section mb-5">
+        {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
+    </div>
+
+    <!-- ハードウェア情報 -->
+    <div id="hardware-section" class="section mb-5">
+        {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
+    </div>
+
+    <!-- 開発環境 -->
+    <div id="dev-env-section" class="section mb-5">
+        {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
+    </div>
+
+    <!-- アーキテクチャ -->
+    <div id="architecture-section" class="section mb-5">
+        {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
+    </div>
+
+    <!-- バックエンド -->
+    <div id="backend-section" class="section mb-5">
+        {% include 'apps_gallery/technical/tabs/07_backend_tab.html' %}
+    </div>
+
+    <!-- デバッグ用の表示を追加 -->
+    <div style="display: none;">
+        <p>Debug Info:</p>
+        <p>PC Type: {{ app.hardware_specs.pc_type }}</p>
+        <p>Device Type: {{ app.hardware_specs.device_type }}</p>
+        <p>CPU Type: {{ app.hardware_specs.cpu_type }}</p>
+        <p>Memory Size: {{ app.hardware_specs.memory_size }}</p>
+        <p>Storage Type: {{ app.hardware_specs.storage_type }}</p>
+        <p>Monitor Count: {{ app.hardware_specs.monitor_count }}</p>
+        <p>Internet Type: {{ app.hardware_specs.internet_type }}</p>
+    </div>
+
+    <!-- ホームへ戻るボタン -->
+    <div class="position-fixed" style="top: 50%; right: 0; transform: translateY(-50%); z-index: 1000;">
+        <a href="/" class="btn btn-cyber-secondary d-flex align-items-center"
+           style="opacity: 0.7; transition: all 0.3s; margin-right: -10px; border-radius: 60px 0 0 60px; padding: 15px;">
+            <span class="d-none d-md-inline me-2">ホームへ</span>
+            <span class="d-md-none" style="font-weight: bold; font-size: 20px;">🏠</span>
+        </a>
+    </div>
+</div>
+
+<style>
+/* サイバーパンクな背景 */
+.cyber-background {
+    background: linear-gradient(45deg, #001e54, #0066cc);
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+/* 共通の背景スタイル */
+#app-view-detail .section {
+    background-color: rgba(26, 26, 26, 0.95) !important;  /* 明るめの背景 */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  /* 影をつけてセクションを浮き上がらせる */
+}
+
+/* スクリーンショットセクション - サイバーパープル */
+#app-view-detail #screenshots-section .form-label,
+#app-view-detail #screenshots-section .card-title {
+    color: var(--cyber-purple) !important;
+}
+
+#app-view-detail #screenshots-section .form-control {
+    background-color: rgba(0, 20, 50, 0.7) !important;
+    color: var(--cyber-purple) !important;
+    border: 2px solid var(--cyber-purple) !important;
+}
+
+/* 基本情報セクション */
+#app-view-detail #basic-section {
+    background-color: rgba(0, 20, 50, 0.8) !important;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+#app-view-detail #basic-section .form-label,
+#app-view-detail #basic-section .form-check-label {
+    color: #ffd700 !important;
+    opacity: 1 !important;
+}
+
+#app-view-detail #basic-section .form-select,
+#app-view-detail #basic-section .form-control {
+    background-color: #1a1a1a !important;
+    color: #ffd700 !important;
+    border: 2px solid #ffd700 !important;
+}
+
+/* アピールセクション */
+#app-view-detail #appeal-section {
+    background-color: rgba(0, 20, 50, 0.8) !important;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+#app-view-detail #appeal-section .form-label {
+    color: #00ff9f !important;  /* ラベルをサイバーグリーンに */
+    opacity: 1 !important;
+}
+
+#app-view-detail #appeal-section .form-text {
+    color: #00ff9f !important;  /* ヘルプテキストもサイバーグリーンに */
+    opacity: 0.8 !important;
+}
+
+#app-view-detail #appeal-section .form-control {
+    background-color: #1a1a1a !important;
+    color: #00ff9f !important;
+    border: 2px solid #00ff9f !important;
+}
+
+/* ハードウェアセクション - サイバーブルー */
+#app-view-detail #hardware-section .form-label,
+#app-view-detail #hardware-section .card-title {
+    color: var(--cyber-blue) !important;
+}
+
+#app-view-detail #hardware-section .form-control {
+    background-color: #1a1a1a !important;
+    color: var(--cyber-blue) !important;
+    border: 2px solid var(--cyber-blue) !important;
+}
+
+/* 開発環境セクション - サイバーブルー */
+#app-view-detail [id^="dev-env"] .form-label,
+#app-view-detail [id^="dev-env"] .card-title {
+    color: var(--cyber-blue) !important;
+}
+
+#app-view-detail [id^="dev-env"] .form-control {
+    background-color: #1a1a1a !important;
+    color: var(--cyber-blue) !important;
+    border: 2px solid var(--cyber-blue) !important;
+}
+
+/* 共通スタイル */
+#app-view-detail .card {
+    background-color: transparent !important;
+}
+
+#app-view-detail .card-body {
+    background-color: transparent !important;
+}
+
+/* チェックボックスのスタイル */
+#app-view-detail .form-check-input:checked {
+    background-color: #ffd700 !important;
+    border-color: #ffd700 !important;
+}
+
+/* 選択肢の背景色 */
+#app-view-detail .form-select option {
+    background-color: #1a1a1a !important;
+    color: inherit !important;
+}
+
+/* 読み取り専用・無効状態 */
+#app-view-detail .form-control[readonly],
+#app-view-detail .form-select[disabled] {
+    background-color: #1a1a1a !important;
+    opacity: 0.9 !important;
+}
+
+/* セクションタイトル */
+#app-view-detail .card-title {
+    color: #ffd700 !important;  /* 基本情報のタイトル */
+}
+
+#app-view-detail #appeal-section .card-title {
+    color: #00ff9f !important;  /* アピールのタイトル */
+}
+
+/* タブナビゲーション */
+.app-tabs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(13, 25, 45, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    z-index: 999;
+}
+
+.nav-link {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 5px var(--cyber-purple);
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: rgba(191, 95, 255, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background-color: rgba(191, 95, 255, 0.2) !important;
+    box-shadow: 0 0 15px rgba(191, 95, 255, 0.3);
+}
+
+/* メインコンテンツのマージン調整 */
+#app-view-detail {
+    margin-top: 4rem !important;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    #app-view-detail {
+        margin-top: 6rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    #app-view-detail {
+        margin-top: 8rem !important;
+    }
+}
+</style>
+
+<!-- スクロール制御用のスクリプト -->
+<script>
+let lastScrollTop = 0;
+const tabsElement = document.getElementById('appTabs');
+
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const isScrollingUp = scrollTop < lastScrollTop;
+    
+    if (scrollTop > 100 && !isScrollingUp) {
+        tabsElement.classList.add('hidden');
+    } else {
+        tabsElement.classList.remove('hidden');
+    }
+    
+    lastScrollTop = scrollTop;
+});
+</script>
+
+<!-- 既存のスクリプト部分の後に追加 -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ハードウェア情報の展開
+    const hardwareSection = document.getElementById('hardware-section');
+    if (hardwareSection) {
+        console.log('Hardware section found');
+        
+        // デバッグ用：値の確認
+        const specs = {
+            pc_type: "{{ app.hardware_specs.pc_type }}",
+            device_type: "{{ app.hardware_specs.device_type }}",
+            cpu_type: "{{ app.hardware_specs.cpu_type }}",
+            memory_size: "{{ app.hardware_specs.memory_size }}",
+            storage_type: "{{ app.hardware_specs.storage_type }}",
+            monitor_count: "{{ app.hardware_specs.monitor_count }}",
+            internet_type: "{{ app.hardware_specs.internet_type }}"
+        };
+        
+        console.log('Hardware specs:', specs);
+
+        // 各ラジオボタンの設定
+        Object.entries(specs).forEach(([key, value]) => {
+            console.log(`Looking for: ${key} with value: ${value}`);
+            const selector = `input[name="hardware_specs[${key}]"][value="${value}"]`;
+            console.log('Selector:', selector);
+            
+            const radioInput = document.querySelector(selector);
+            if (radioInput) {
+                console.log(`Found radio for ${key}`);
+                radioInput.checked = true;
+            } else {
+                console.log(`Radio not found for ${key}`);
+            }
+        });
+
+        // メーカーと機種名
+        const maker = "{{ app.hardware_specs.maker }}";
+        const model = "{{ app.hardware_specs.model }}";
+        
+        const makerInput = document.getElementById('maker');
+        const modelInput = document.getElementById('model');
+        
+        if (makerInput) makerInput.value = maker;
+        if (modelInput) modelInput.value = model;
+    } else {
+        console.log('Hardware section not found');
+    }
+});
+</script>
+
+{% endblock %}

@@ -2,17 +2,14 @@
 アーキテクチャに関する定数
 """
 
-# アーキテクチャパターン
+# アーキテクチャパターン（アプリケーション全体の構造）
 ARCHITECTURE_PATTERNS = {
     # 基本構造
     'monolithic': 'モノリシック（一枚岩型）',
-    'modular_monolithic': 'モジュラーモノリシック（機能分割型一枚岩）',
     'modular': 'モジュラー（機能分割型）',
-    'layered': 'レイヤード（層状型）',
     
     # クリーン系
     'clean': 'クリーンアーキテクチャ',
-    'onion': 'オニオンアーキテクチャ',
     'hexagonal': 'ヘキサゴナルアーキテクチャ',
     
     # 分散系
@@ -24,30 +21,17 @@ ARCHITECTURE_PATTERNS = {
     'other': 'その他'
 }
 
-# デザインパターン
+# デザインパターン（個別の実装パターン）
 DESIGN_PATTERNS = {
     # 基本パターン
     'none': '特に意識していない',
     'mvc_based': 'MVCベース（MVC/MVT/MVVMなど）',
-    'layered': 'レイヤードパターン（層状設計）',
     
-    # GoFパターン
-    'singleton': 'Singleton（シングルトン）',
-    'factory': 'Factory Method（ファクトリーメソッド）',
-    'repository': 'Repository（リポジトリ）',
-    'strategy': 'Strategy（ストラテジー）',
-    'observer': 'Observer（オブザーバー）',
-    'decorator': 'Decorator（デコレータ）',
-    'facade': 'Facade（ファサード）',
-    
-    # 状態管理
-    'bloc': 'BLoC（Business Logic Component）',
-    'redux': 'Reduxパターン',
-    'provider': 'Providerパターン',
+    # よく使われるパターン
+    'repository': 'Repository（データアクセス）パターン',
+    'factory': 'Factory（オブジェクト生成）パターン',
     
     # その他
-    'ddd': 'ドメイン駆動設計',
-    'event_driven': 'イベント駆動',
     'other': 'その他'
 }
 

@@ -1,12 +1,86 @@
 {% load app_filters %}
+{% include 'apps_gallery/shared/disabled_styles.html' %}
 
 <div class="container">
     <div class="card border-0">
         <div class="card-body">
-            <h2 class="card-title h3 mb-4">
-                <i class="bi bi-info-circle-fill text-cyber-yellow"></i> 基本情報
+            <h2 class="card-title h3 mb-4" style="color: #ffd700 !important; 
+                                                 text-shadow: 0 0 10px #ffd700,
+                                                            0 0 20px #ffd700;
+                                                 font-weight: bold;">
+                <i class="bi bi-info-circle-fill" style="color: #ffd700 !important;"></i> 基本情報
             </h2>
             
+            <!-- 以下のスタイルを追加 -->
+            <style>
+            /* より具体的なセレクタを使用 */
+            #basic-section .card,
+            html body #basic-section .card {
+                background-color: rgba(0, 20, 50, 0.8) !important;
+                border: 2px solid #ffd700 !important;
+                border-radius: 8px !important;
+            }
+
+            /* フォーム要素のスタイル */
+            #basic-section .form-control, 
+            #basic-section .form-select {
+                background-color: rgba(26, 26, 26, 0.95) !important;
+                color: #ffd700 !important;
+                border: 2px solid #ffd700 !important;
+                font-size: 1.1rem !important;
+                padding: 0.5rem 1rem !important;
+            }
+
+            /* ラベルのスタイル */
+            #basic-section .form-label {
+                color: #ffd700 !important;
+                opacity: 1 !important;
+                font-size: 1.2rem !important;
+                font-weight: 500 !important;
+            }
+
+            /* チェックボックスのスタイル */
+            #basic-section .form-check-label {
+                color: #ffd700 !important;
+                font-size: 1.1rem !important;
+                padding-left: 0.5em !important;
+            }
+
+            #basic-section .form-check-input {
+                width: 1.2em !important;
+                height: 1.2em !important;
+                margin-top: 0.3em !important;
+            }
+
+            #basic-section .form-check-input:checked {
+                background-color: #ffd700 !important;
+                border-color: #ffd700 !important;
+            }
+
+            /* セクション間の余白を調整 */
+            #basic-section .mb-4 {
+                margin-bottom: 2rem !important;
+            }
+
+            /* ボタンのスタイルを追加 */
+            .btn-cyber-action {
+                background-color: transparent !important;
+                border: 2px solid #ffd700 !important;
+                color: #ffd700 !important;
+                text-shadow: 0 0 5px #ffd700 !important;
+                padding: 0.375rem 0.75rem !important;
+                border-radius: 4px !important;
+                transition: all 0.3s ease !important;
+            }
+
+            .btn-cyber-action:hover {
+                background-color: #ffd700 !important;
+                color: #000 !important;
+                text-shadow: none !important;
+                box-shadow: 0 0 10px #ffd700 !important;
+            }
+            </style>
+
             <!-- 作者名（表示のみ） -->
             <div class="mb-4">
                 <label class="form-label text-cyber-yellow">作者</label>
@@ -40,10 +114,10 @@
                                        name="app_types" 
                                        value="{{ value }}"
                                        id="type_{{ value }}"
-                                       class="form-check-input cyber-checkbox"
+                                       class="form-check-input cyber-form-check-input"
                                        {% if value in app.app_types %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label" for="type_{{ value }}">
+                                <label class="form-check-label cyber-form-check-label" for="type_{{ value }}">
                                     {{ label }}
                                 </label>
                             </div>
@@ -143,243 +217,4 @@
             </div>
         </div>
     </div>
-</div>
-
-<style>
-/* 基本情報タブ専用のスタイル */
-.text-cyber-yellow {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-yellow);
-}
-
-/* フォーム要素の共通スタイル */
-#basic .form-control,
-#basic .form-select {
-    background-color: var(--bs-dark) !important;
-    border: 1px solid var(--cyber-yellow) !important;
-    color: var(--cyber-yellow) !important;
-}
-
-/* フォーム要素のホバー時 */
-#basic .form-control:hover,
-#basic .form-select:hover {
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 5px var(--cyber-yellow) !important;
-}
-
-/* フォーム要素のフォーカス時 */
-#basic .form-control:focus,
-#basic .form-select:focus {
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 10px var(--cyber-yellow) !important;
-}
-
-/* チェックボックスのスタイル改善 */
-.cyber-checkbox {
-    width: 1.2em;
-    height: 1.2em;
-    background-color: rgba(0, 0, 0, 0.8) !important;
-    border: 2px solid var(--cyber-yellow) !important;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-/* チェックボックスがチェックされた時のスタイル */
-.cyber-checkbox:checked {
-    background-color: var(--cyber-yellow) !important;
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 15px var(--cyber-yellow),
-                0 0 30px var(--cyber-yellow),
-                inset 0 0 10px rgba(255, 255, 255, 0.8);
-}
-
-/* チェックボックスのスタイル */
-.cyber-checkbox:checked::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) rotate(45deg);
-    width: 0.3em;
-    height: 0.6em;
-    border: solid black;
-    border-width: 0 4px 4px 0;
-}
-
-/* チェックボックスホバー時のスタイル */
-.cyber-checkbox:hover {
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 8px var(--cyber-yellow);
-    transform: scale(1.05);
-}
-
-/* チェックボックスのラベル */
-.form-check-label {
-    color: var(--cyber-yellow);
-    margin-left: 0.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1.1rem;
-}
-
-/* チェックボックスがチェックされた時のラベル */
-.cyber-checkbox:checked + .form-check-label {
-    color: var(--cyber-yellow);
-    text-shadow: 0 0 2px var(--cyber-yellow),
-                 0 0 4px var(--cyber-yellow);
-    font-weight: bold;
-    letter-spacing: 0.5px;
-}
-
-/* チェックボックスグループ内のラベルホバー時 */
-.form-check-label:hover {
-    color: var(--cyber-yellow);
-    text-shadow: 0 0 2px var(--cyber-yellow);
-}
-
-/* 読み取り専用フィールドのスタイル */
-.form-control:read-only,
-.form-select:disabled,
-.cyber-checkbox:disabled,
-.cyber-checkbox:disabled + .form-check-label {
-    background-color: var(--bs-dark) !important;
-    border-color: var(--cyber-yellow) !important;
-    color: var(--cyber-yellow) !important;
-    opacity: 0.5 !important;
-}
-
-/* チェックボックスが無効でチェック済みの場合 */
-.cyber-checkbox:disabled:checked {
-    background-color: var(--cyber-yellow) !important;
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 15px var(--cyber-yellow),
-                0 0 30px var(--cyber-yellow);
-    opacity: 1 !important;
-}
-
-/* チェックボックスが無効でチェック済みの場合のラベル */
-.cyber-checkbox:disabled:checked + .form-check-label {
-    color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 2px var(--cyber-yellow),
-                 0 0 4px var(--cyber-yellow);
-    font-weight: bold;
-    opacity: 1 !important;
-    letter-spacing: 0.5px;
-}
-
-/* ドロップダウンのスタイル改善 */
-#basic .form-select {
-    background-color: var(--bs-dark) !important;
-    border: 1px solid var(--cyber-yellow) !important;
-    color: var(--cyber-yellow) !important;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffd700' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
-}
-
-/* ドロップダウンの選択肢のスタイル */
-#basic .form-select option {
-    background-color: var(--bs-dark) !important;
-    color: var(--cyber-yellow) !important;
-}
-
-/* ドロップダウンの選択肢のホバー時 */
-#basic .form-select option:hover,
-#basic .form-select option:focus,
-#basic .form-select option:active,
-#basic .form-select option:checked {
-    background-color: rgba(255, 215, 0, 0.2) !important;
-    color: var(--cyber-yellow) !important;
-}
-
-/* アクションボタンの新しいスタイル */
-.btn-cyber-action {
-    background: var(--cyber-yellow);
-    color: #000;
-    border: 2px solid var(--cyber-yellow);
-    font-weight: bold;
-    padding: 5px 15px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.btn-cyber-action:hover {
-    background: #000;
-    color: var(--cyber-yellow);
-    box-shadow: 0 0 15px var(--cyber-yellow);
-    transform: translateY(-2px);
-}
-
-/* チェックボックスグループのスタイル */
-.cyber-checkbox-group {
-    background: rgba(13, 25, 45, 0.5);
-    border: 1px solid var(--cyber-yellow);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-top: 0.5rem;
-}
-
-/* 区切り線のスタイル */
-.cyber-divider {
-    border: 0;
-    height: 1px;
-    background: linear-gradient(
-        to right,
-        transparent,
-        var(--cyber-yellow),
-        transparent
-    );
-    opacity: 0.5;
-    margin: 2rem 0;
-}
-
-/* チェックボックス間の余白 */
-.form-check {
-    margin-bottom: 0.5rem;
-}
-
-/* 最後のチェックボックスの余白を消す */
-.form-check:last-child {
-    margin-bottom: 0;
-}
-
-/* ラベルのスタイル */
-.form-label {
-    color: var(--cyber-yellow);
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-}
-
-/* アイコンのスタイル */
-.form-label i {
-    margin-right: 0.5rem;
-    color: var(--cyber-yellow);
-}
-
-/* 入力グループのスタイルを強制上書き */
-.input-group-text {
-    background-color: var(--cyber-yellow) !important;
-    color: #000 !important;
-    border: 1px solid var(--cyber-yellow) !important;
-}
-
-/* 入力欄の背景色を強制的に暗くする */
-.form-control {
-    background-color: var(--bs-dark) !important;
-    color: var(--cyber-yellow) !important;
-    border: 1px solid var(--cyber-yellow) !important;
-}
-
-/* フォーカス時のスタイル */
-.form-control:focus {
-    background-color: var(--bs-dark) !important;
-    color: var(--cyber-yellow) !important;
-    border-color: var(--cyber-yellow) !important;
-    box-shadow: 0 0 10px var(--cyber-yellow) !important;
-}
-
-/* プレースホルダーのスタイル */
-.form-control::placeholder {
-    color: rgba(255, 215, 0, 0.5) !important;
-}
-</style> 
+</div> 

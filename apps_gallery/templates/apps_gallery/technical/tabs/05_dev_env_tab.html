@@ -1,3 +1,5 @@
+{% include 'apps_gallery/shared/disabled_styles.html' %}
+
 <div id="dev_env" class="container" style="margin: 0 !important; padding: 0 !important;">
     <div class="card border-0 shadow-lg">
         <div class="card-body">
@@ -260,80 +262,81 @@
 </div>
 
 <style>
-/* 基本変数の定義 */
-:root {
-    --cyber-purple: #9333ea;
-    --cyber-purple-dim: rgba(147, 51, 234, 0.6);
-    --cyber-purple-glow: rgba(147, 51, 234, 0.3);
+/* カード全体 */
+body #dev_env .card {
+    background: rgba(30, 41, 59, 0.98) !important;
+    border: 1px solid #e9d5ff !important;  /* 他の要素と同じ紫に統一 */
 }
 
-/* カードスタイル */
-#dev_env .card {
-    background: rgba(13, 25, 45, 0.9) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--cyber-purple) !important;  /* ボーダーを細く */
-    box-shadow: 
-        0 0 8px var(--cyber-purple-dim),
-        inset 0 0 5px var(--cyber-purple-dim) !important;  /* さらに光量を抑制 */
+/* すべてのテキストを明るく */
+body #dev_env .form-label,
+body #dev_env label.form-label,
+body #dev_env .form-check-label,
+body #dev_env .text-cyber-purple,
+body #dev_env p.text-muted.small.mb-3,
+body #dev_env div.mb-4 > label.form-label,
+body #dev_env .form-check-label.text-cyber-purple {
+    color: #e9d5ff !important;
+    font-weight: 400 !important;
+    opacity: 1 !important;
 }
 
-/* テキストスタイル */
-#dev_env .text-cyber-purple {
-    color: var(--cyber-purple) !important;
-    text-shadow: 0 0 3px var(--cyber-purple-dim) !important;  /* シャドウを1層だけに */
+/* 説明文も明るく */
+body #dev_env .text-muted {
+    color: #e9d5ff !important;
+    opacity: 0.9 !important;
+}
+
+/* 必須マーク */
+body #dev_env .text-danger {
+    color: #e9d5ff !important;
+}
+
+/* チェックボックスとラジオボタンをよりクリアに */
+body #dev_env .form-check-input {
+    border: 3px solid #e9d5ff !important;  /* ボーダーをさらに太く */
+    background-color: rgba(30, 41, 59, 0.98) !important;
+    width: 1.2em !important;
+    height: 1.2em !important;
+    position: relative !important;
+    margin-top: 0.3em !important;  /* 位置調整 */
+}
+
+body #dev_env .form-check-input:checked {
+    background-color: #e9d5ff !important;
+    border-color: #e9d5ff !important;
+    background-image: none !important;  /* デフォルトのチェックマークを消す */
+}
+
+/* チェックマークをカスタマイズ */
+body #dev_env .form-check-input:checked::after {
+    content: '✓' !important;
+    position: absolute !important;
+    color: rgba(30, 41, 59, 0.98) !important;  /* 背景色と同じ色 */
+    font-size: 1em !important;
+    line-height: 0.8 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     font-weight: bold !important;
-    letter-spacing: 1px !important;
-    animation: cyber-purple-glow 3s ease-in-out infinite alternate !important;  /* アニメーションをさらにゆっくりに */
 }
 
-/* フォームコントロール */
-#dev_env .form-check-input {
-    border: 1px solid var(--cyber-purple) !important;
-    box-shadow: 0 0 3px var(--cyber-purple-dim) !important;
+/* チェックボックスのラベル */
+body #dev_env .form-check label {
+    color: #e9d5ff !important;
+    font-weight: 500 !important;
+    padding-left: 0.5em !important;
 }
 
-#dev_env .form-check-input:checked {
-    background-color: var(--cyber-purple) !important;
-    border-color: var(--cyber-purple) !important;
-    box-shadow: 0 0 10px var(--cyber-purple) !important;
+/* 見出し */
+body #dev_env h2.card-title span,
+body #dev_env h2.card-title i.bi-tools {
+    color: #e9d5ff !important;
 }
 
-/* チェックされた項目のラベルを輝かせる */
-#dev_env .form-check-input:checked + .form-check-label {
-    color: var(--cyber-purple) !important;
-    text-shadow: 
-        0 0 5px var(--cyber-purple),
-        0 0 10px var(--cyber-purple-glow) !important;
-    animation: label-glow 2s ease-in-out infinite alternate !important;
-}
-
-/* アニメーション定義 */
-@keyframes cyber-purple-glow {
-    from {
-        text-shadow: 0 0 2px var(--cyber-purple-dim);
-    }
-    to {
-        text-shadow: 0 0 4px var(--cyber-purple-dim);
-    }
-}
-
-@keyframes label-glow {
-    from {
-        text-shadow: 
-            0 0 5px var(--cyber-purple),
-            0 0 10px var(--cyber-purple-glow);
-    }
-    to {
-        text-shadow: 
-            0 0 8px var(--cyber-purple),
-            0 0 15px var(--cyber-purple-glow);
-    }
-}
-
-/* 追加：col-12の余白を強制的に消す */
-.col-12 {
-    margin-top: 0 !important;
-    --bs-gutter-y: 0 !important;
+/* チェックボックスとラジオボタンのホバー状態 */
+body #dev_env .form-check-input:hover {
+    border-color: #f3e8ff !important;
+    cursor: pointer !important;
 }
 </style> 

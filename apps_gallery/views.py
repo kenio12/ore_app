@@ -18,6 +18,14 @@ from .constants import (
     INFRASTRUCTURE,
     API_TOOLS,
     MONITORING_TOOLS,
+    PC_TYPES,
+    DEVICE_TYPES,
+    CPU_TYPES,
+    MEMORY_SIZES,
+    STORAGE_TYPES,
+    MONITOR_COUNTS,
+    INTERNET_TYPES,
+    MAKER_EXAMPLES,
 )
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -41,6 +49,15 @@ import sys
 from django.core.signals import request_started, request_finished
 from django.dispatch import receiver
 import time
+from .constants.architecture import (
+    ARCHITECTURE_PATTERNS,
+    DESIGN_PATTERNS,
+    ARCHITECTURE_HINTS,
+    SECURITY_MEASURES,
+    TESTING_TOOLS,
+    CODE_QUALITY_TOOLS
+)
+from .constants.backend_constants import BACKEND_STACK, BACKEND_PACKAGE_HINTS
 
 print("\n============= START DEBUG =============")  # ここに配置！
 
@@ -82,6 +99,22 @@ def get_common_context(app=None, readonly=False, is_edit=False):
         'infrastructure': dict(INFRASTRUCTURE),
         'api_tools': dict(API_TOOLS),
         'monitoring_tools': dict(MONITORING_TOOLS),
+        'pc_types': PC_TYPES,
+        'device_types': DEVICE_TYPES,
+        'cpu_types': CPU_TYPES,
+        'memory_sizes': MEMORY_SIZES,
+        'storage_types': STORAGE_TYPES,
+        'monitor_counts': MONITOR_COUNTS,
+        'internet_types': INTERNET_TYPES,
+        'maker_examples': MAKER_EXAMPLES,
+        'architecture_patterns': ARCHITECTURE_PATTERNS,
+        'design_patterns': DESIGN_PATTERNS,
+        'architecture_hints': ARCHITECTURE_HINTS,
+        'security_measures': SECURITY_MEASURES,
+        'testing_tools': TESTING_TOOLS,
+        'code_quality_tools': CODE_QUALITY_TOOLS,
+        'BACKEND_STACK': BACKEND_STACK,
+        'BACKEND_PACKAGE_HINTS': BACKEND_PACKAGE_HINTS,
     }
     
     if app:
@@ -286,20 +319,16 @@ def handle_app_form(request, app=None, context=None):
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
 def app_detail(request, pk):
+    """アプリの詳細表示ビュー（全タブ統合版）"""
     app = get_object_or_404(AppGallery, pk=pk)
-    
-    print("\n=== Catchphrases Data ===")
-    print(f"Catchphrase 1: {app.catchphrase_1}")
-    print(f"Catchphrase 2: {app.catchphrase_2}")
-    print(f"Catchphrase 3: {app.catchphrase_3}")
     
     print("\n=== Debug Info ===")
     print(f"App ID: {app.id}")
     print(f"Title: {app.title}")
     
-    template_path = 'apps_gallery/create_edit_detail.html'
     context = get_common_context(app=app, readonly=True)
-    return render(request, template_path, context)
+    # 新しい統合テンプレートを使用
+    return render(request, 'apps_gallery/app_view_detail.html', context)
 
 @login_required
 def delete_app(request, pk):
@@ -558,22 +587,6 @@ class HomeView(ListView):
         }
         return context
 
-def detail_view(request, pk):
-    app = get_object_or_404(AppGallery, pk=pk)
-    
-    print("\n=== Catchphrases Data ===")
-    print(f"Catchphrase 1: {app.catchphrase_1}")
-    print(f"Catchphrase 2: {app.catchphrase_2}")
-    print(f"Catchphrase 3: {app.catchphrase_3}")
-    
-    # デバッグ情報を追加
-    print("\n=== Debug Info ===")
-    print(f"App ID: {app.id}")
-    print(f"Title: {app.title}")
-    
-    context = get_common_context(app=app, readonly=True)
-    return render(request, 'apps_gallery/create_edit_detail.html', context)
-
 @require_http_methods(["POST"])
 def save_technical(request, app_id):
     try:
@@ -614,22 +627,3 @@ def save_technical(request, app_id):
             'success': False,
             'message': str(e)
         }, status=400)
-
-# ==================== 変更部分 ====================
-infrastructure = {
-    'pythonanywhere': 'PythonAnywhere',
-    'render': 'Render',
-    'heroku': 'Heroku',
-    'vercel': 'Vercel',
-    'aws': 'AWS',
-    'gcp': 'Google Cloud',
-    'azure': 'Microsoft Azure',
-    'digitalocean': 'DigitalOcean',
-    'kubernetes': 'Kubernetes',
-    'docker_swarm': 'Docker Swarm',
-    'local_server': 'ローカルサーバー',
-    'shared_hosting': 'レンタルサーバー',
-    'vps': 'VPS',
-    'none': '使用していない'
-}
-# ==================== 変更部分 ====================

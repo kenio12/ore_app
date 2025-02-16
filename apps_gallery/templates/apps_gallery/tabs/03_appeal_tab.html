@@ -1,4 +1,59 @@
 {% load app_filters %}
+{% include 'apps_gallery/shared/disabled_styles.html' %}
+
+<style>
+/* より具体的なセレクタを使用 */
+#appeal-section .card,
+html body #appeal-section .card {
+    background-color: rgba(0, 20, 50, 0.8) !important;
+    border: 2px solid #00ff9f !important;  /* サイバーグリーン */
+    border-radius: 8px !important;
+}
+
+/* フォーム要素のスタイル */
+#appeal-section .form-control, 
+#appeal-section .form-select {
+    background-color: rgba(26, 26, 26, 0.95) !important;
+    color: #00ff9f !important;
+    border: 2px solid #00ff9f !important;
+}
+
+/* ラベルのスタイル */
+#appeal-section .form-label {
+    color: #00ff9f !important;
+    opacity: 1 !important;
+}
+
+/* ヘルプテキストのスタイル */
+#appeal-section .form-text {
+    color: #00ff9f !important;
+    opacity: 0.8 !important;
+}
+
+/* 区切り線のスタイル */
+#appeal-section .cyber-divider {
+    border-color: rgba(0, 255, 159, 0.3) !important;
+}
+
+/* アイコンのスタイル */
+#appeal-section .bi {
+    color: #00ff9f !important;
+}
+
+/* キャッチコピーの番号部分のスタイル */
+#appeal-section .input-group-text {
+    background-color: rgba(0, 20, 50, 0.8) !important;
+    color: #00ff9f !important;
+    border: 2px solid #00ff9f !important;
+    border-right: none !important;  /* 右側の枠線を消して、入力欄とつなげる */
+}
+
+/* 入力グループの左側の角を調整 */
+#appeal-section .input-group > :first-child {
+    border-top-left-radius: 4px !important;
+    border-bottom-left-radius: 4px !important;
+}
+</style>
 
 <div class="container">
     <div class="card border-0">
@@ -144,89 +199,4 @@
             </div>
         </div>
     </div>
-</div>
-
-<style>
-/* アピールタブ専用のスタイル */
-#appeal {
-    margin-bottom: 150px;  /* 下部のボタンとの余白を150pxに増やす */
-}
-
-#appeal .form-control {
-    border-color: var(--cyber-green) !important;
-    color: var(--cyber-green) !important;
-    background-color: rgba(0, 20, 50, 0.5) !important;
-}
-
-#appeal .cyber-green-focus:focus {
-    border-color: var(--cyber-green) !important;
-    box-shadow: 0 0 10px var(--cyber-green) !important;
-}
-
-#appeal .input-group-text {
-    background: rgba(0,255,159,0.1) !important;
-    border-color: var(--cyber-green) !important;
-    color: var(--cyber-green) !important;
-}
-
-#appeal .bg-cyber-green {
-    background: rgba(0,255,159,0.1) !important;
-    border-color: var(--cyber-green) !important;
-}
-
-#appeal .form-text {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green) !important;
-}
-
-#appeal .form-text i {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green) !important;
-}
-
-#appeal ::placeholder {
-    color: rgba(0,255,159,0.5) !important;
-}
-
-#appeal .text-cyber-green {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green);
-}
-
-/* 読み取り専用時のスタイル */
-#appeal .form-control[readonly],
-#appeal .form-control:disabled {
-    background-color: rgba(0, 20, 50, 0.5) !important;
-    color: var(--cyber-green) !important;
-    border-color: var(--cyber-green) !important;
-    opacity: 1;
-}
-
-/* キャッチコピー入力欄のスタイル */
-.catchphrase-container .input-group input {
-    color: var(--cyber-green) !important;
-    border-color: var(--cyber-green) !important;
-    background-color: rgba(0, 20, 50, 0.5) !important;
-}
-
-.catchphrase-container .input-group input:focus {
-    box-shadow: 0 0 10px var(--cyber-green) !important;
-}
-
-.catchphrase-container .input-group-text {
-    background: rgba(0,255,159,0.1) !important;
-    border-color: var(--cyber-green) !important;
-    color: var(--cyber-green) !important;
-}
-
-.catchphrase-container input::placeholder {
-    color: rgba(0,255,159,0.5) !important;
-}
-
-/* 読み取り専用時のスタイル */
-.catchphrase-container input[readonly] {
-    background-color: rgba(0, 20, 50, 0.5) !important;
-    color: var(--cyber-green) !important;
-    opacity: 1;
-}
-</style> 
+</div> 

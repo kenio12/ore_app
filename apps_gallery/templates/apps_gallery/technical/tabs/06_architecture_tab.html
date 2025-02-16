@@ -1,3 +1,5 @@
+{% include 'apps_gallery/shared/disabled_styles.html' %}
+
 <div id="architecture" class="container" style="margin: 0 !important; padding: 0 !important;">
     <div class="card border-0 shadow-lg">
         <div class="card-body">
@@ -11,20 +13,22 @@
                 <label class="form-label text-cyber-green">アーキテクチャパターン</label>
                 <p class="text-muted small mb-3 text-cyber-green">
                     ※アプリケーションの基本構造を示すパターンです。
-                    初学者の方は「特に意識していない」を選んでも問題ありません。
+                    複数選択可能です。初学者の方は「特に意識していない」を選んでも問題ありません。
                 </p>
                 <div class="row g-3">
                     {% for key, value in architecture_patterns.items %}
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-check">
                             <input type="checkbox" 
                                    id="arch-{{ key }}"
-                                   class="form-check-input"
-                                   name="patterns"
+                                   class="form-check-input cyber-form-check-input"
+                                   name="architecture[patterns][]"
                                    value="{{ key }}"
                                    {% if app.architecture and app.architecture.patterns and key in app.architecture.patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label text-cyber-green">{{ value }}</label>
+                            <label class="form-check-label cyber-form-check-label text-cyber-green" 
+                                   for="arch-{{ key }}"
+                                   title="{{ value }}">{{ value }}</label>
                         </div>
                     </div>
                     {% endfor %}
@@ -35,22 +39,24 @@
             <div class="mb-4">
                 <label class="form-label text-cyber-green">デザインパターン</label>
                 <p class="text-muted small mb-3 text-cyber-green">
-                    ※プログラムの設計パターンです。
+                    ※プログラムの設計パターンです。複数選択可能です。
                     初学者の方は「特に意識していない」を選択してください。
                     学習が進むにつれて自然と理解できるようになります。
                 </p>
                 <div class="row g-3">
                     {% for key, value in design_patterns.items %}
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-check">
                             <input type="checkbox" 
                                    id="design-{{ key }}"
-                                   class="form-check-input"
-                                   name="design_patterns"
+                                   class="form-check-input cyber-form-check-input"
+                                   name="architecture[design_patterns][]"
                                    value="{{ key }}"
                                    {% if app.architecture and app.architecture.design_patterns and key in app.architecture.design_patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label text-cyber-green">{{ value }}</label>
+                            <label class="form-check-label cyber-form-check-label text-cyber-green" 
+                                   for="design-{{ key }}"
+                                   title="{{ value }}">{{ value }}</label>
                         </div>
                     </div>
                     {% endfor %}
@@ -78,59 +84,83 @@
 </div>
 
 <style>
-/* カードのスタイル改善 */
-.card {
-    background: rgba(13, 25, 45, 0.8) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 255, 159, 0.1) !important;
+/* 基本変数の定義 */
+:root {
+    --cyber-green: #00ff9f;
+    --cyber-green-glow: rgba(0, 255, 159, 0.5);
 }
 
-/* 入力フィールドのスタイル改善 */
-#architecture .form-control {
+/* カード全体のスタイル強制 */
+#architecture .card,
+html body #architecture .card {
+    background: rgba(13, 25, 45, 0.95) !important;
     border: 2px solid var(--cyber-green) !important;
-    color: var(--cyber-green) !important;
-    background: rgba(0, 20, 50, 0.5) !important;
-    text-shadow: 0 0 5px var(--cyber-green) !important;
-    font-weight: bold !important;
+    box-shadow: 0 0 15px var(--cyber-green-glow) !important;
 }
 
-/* ラベルのスタイル改善 */
-#architecture .text-cyber-green {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green) !important;
+/* フォーム要素の強制スタイル */
+#architecture .form-check-input,
+html body #architecture .form-check-input {
+    opacity: 1 !important;
+    background-color: transparent !important;
+    border: 2px solid var(--cyber-green) !important;
+    box-shadow: 0 0 10px var(--cyber-green-glow) !important;
 }
 
-/* チェックボックスのスタイル改善 */
-#architecture .form-check-input:checked {
-    background-color: var(--cyber-green) !important;
+/* チェック時の強制スタイル */
+#architecture .form-check-input:checked,
+html body #architecture .form-check-input:checked {
+    background-color: transparent !important;
     border-color: var(--cyber-green) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%2300ff9f' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e") !important;
 }
 
-#architecture .form-check-label {
+/* ラベルの強制スタイル */
+#architecture .form-check-label,
+#architecture .text-cyber-green,
+html body #architecture .form-check-label,
+html body #architecture .text-cyber-green {
     color: var(--cyber-green) !important;
     text-shadow: 0 0 5px var(--cyber-green) !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
 }
 
-/* プレースホルダーのスタイル改善 */
-#architecture ::placeholder {
+/* 説明文の強制スタイル */
+#architecture p.text-muted.small.mb-3,
+html body #architecture p.text-muted.small.mb-3 {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green-glow) !important;
+    opacity: 0.9 !important;
+}
+
+/* テキストエリアの強制スタイル */
+#architecture textarea.form-control,
+html body #architecture textarea.form-control {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: var(--cyber-green) !important;
+    border: 2px solid var(--cyber-green) !important;
+    box-shadow: 0 0 10px var(--cyber-green-glow) !important;
+}
+
+/* disabled状態の強制スタイル */
+#architecture .form-control:disabled,
+#architecture .form-select:disabled,
+#architecture .form-check-input:disabled,
+html body #architecture .form-control:disabled,
+html body #architecture .form-select:disabled,
+html body #architecture .form-check-input:disabled {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: var(--cyber-green) !important;
+    border-color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green) !important;
+    opacity: 1 !important;
+}
+
+/* プレースホルダーの強制スタイル */
+#architecture ::placeholder,
+html body #architecture ::placeholder {
     color: rgba(0, 255, 159, 0.5) !important;
     text-shadow: none !important;
-}
-
-/* フォーカス時のスタイル */
-#architecture .form-control:focus {
-    box-shadow: 0 0 15px var(--cyber-green) !important;
-    background: rgba(0, 30, 70, 0.7) !important;
-}
-
-/* タイトルのスタイル改善 */
-.cyber-title {
-    color: var(--cyber-green);
-    text-shadow: 
-        0 0 10px var(--cyber-green),
-        0 0 20px var(--cyber-green);
-    font-weight: bold;
-    letter-spacing: 1px;
 }
 </style> 

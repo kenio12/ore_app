@@ -1,0 +1,57 @@
+{% comment %}
+共通のdisabledスタイル定義
+各タブで {% include 'apps_gallery/shared/disabled_styles.html' %} として使用
+{% endcomment %}
+
+<style>
+/* 共通のdisabledスタイル */
+.form-control:disabled,
+.form-select:disabled,
+.form-check-input:disabled {
+    opacity: 1 !important;
+    cursor: not-allowed !important;
+}
+
+/* テキスト入力系 */
+.form-control:disabled {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: inherit !important;
+    border-color: inherit !important;
+}
+
+/* セレクトボックス */
+.form-select:disabled {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: inherit !important;
+    border-color: inherit !important;
+}
+
+/* チェックボックス・ラジオボタン */
+.form-check-input:disabled {
+    background-color: transparent !important;
+    border-color: inherit !important;
+}
+
+.form-check-input:disabled:checked {
+    opacity: 1 !important;
+}
+
+/* ラベル */
+.form-check-label:has(+ input:disabled) {
+    opacity: 0.8 !important;
+    cursor: not-allowed !important;
+}
+
+/* テキストエリア */
+textarea:disabled {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: inherit !important;
+    border-color: inherit !important;
+}
+
+/* プレースホルダー */
+.form-control:disabled::placeholder {
+    color: inherit !important;
+    opacity: 0.5 !important;
+}
+</style> 
