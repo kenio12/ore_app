@@ -20,17 +20,17 @@
     <div class="container py-1">
         <nav class="nav nav-pills nav-fill m-0">
             <!-- ホームへ戻るボタン -->
-            <a href="#" onclick="handleHomeClick(event)" class="nav-link cyber-home" title="ホームへ戻る">
-                <span class="fs-4 me-2 cyber-emoji">🤖</span>
+            <a href="/" class="nav-link cyber-home" title="ホームへ戻る" onclick="handleHomeClick(event)">
+                <span class="fs-4 me-2 cyber-emoji">🏠</span>
             </a>
             
-            <a class="nav-link text-neon" data-bs-target="#screenshots" href="#screenshots">
+            <a class="nav-link text-neon" href="#screenshots-section" style="color: #e9d5ff !important; text-shadow: 0 0 5px #e9d5ff;">
                 <i class="bi bi-image-fill"></i> スクリーンショット
             </a>
-            <a class="nav-link text-neon" data-bs-target="#basic" href="#basic">
+            <a class="nav-link text-neon" href="#basic-section" style="color: #ffd700 !important; text-shadow: 0 0 5px #ffd700;">
                 <i class="bi bi-info-circle-fill"></i> 基本情報
             </a>
-            <a class="nav-link text-neon" data-bs-target="#appeal" href="#appeal">
+            <a class="nav-link text-neon" href="#appeal-section" style="color: #00ff9f !important; text-shadow: 0 0 5px #00ff9f;">
                 <i class="bi bi-stars"></i> アプリの魅力
             </a>
         </nav>
@@ -168,14 +168,6 @@
             <!-- アプリの魅力セクション -->
             <section id="appeal" class="mb-5">
                 {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
-            </section>
-        </div>
-
-        <div class="col-12">
-            <section id="dev_env" class="mb-5">
-                <div id="dev_env" class="container" style="--bs-gutter-y: 0 !important; margin: 0 !important; padding: 0 !important;">
-                    <!-- 不要なdivを削除 -->
-                </div>
             </section>
         </div>
     </div>
@@ -1214,9 +1206,8 @@ body {
 
 /* タブ内のカード幅を統一 */
 .container {
-    max-width: 1100px !important;  /* 横幅を1100pxに拡大 */
-    margin: 0 auto !important;     /* 中央寄せ */
-    padding: 0 1.5rem !important;  /* 左右の余白も少し広げる */
+    max-width: 1200px !important;
+    margin: 0 auto !important;
 }
 
 .container .card {
@@ -1238,6 +1229,16 @@ body {
 #appeal-section .card,
 #appeal-section .form-control {
     width: 100% !important;
+}
+
+/* スクリーンショットタブのタイトル文字を他のタブと合わせる */
+.card-title {
+    font-size: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+    text-shadow: 0 0 10px var(--cyber-pink),
+                 0 0 20px var(--cyber-pink) !important;
+    font-weight: bold !important;
+    color: var(--cyber-pink) !important;  /* 周りの要素と同じピンク色に変更 */
 }
 </style>
 

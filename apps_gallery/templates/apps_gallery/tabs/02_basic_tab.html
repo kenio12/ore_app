@@ -13,6 +13,19 @@
             
             <!-- 以下のスタイルを追加 -->
             <style>
+            /* 基本情報タブの横幅を調整 */
+            #basic-section .container,
+            #basic-section .card,
+            #basic-section .card-body {
+                max-width: 1000px !important;  /* 1200pxから1000pxに変更 */
+                margin-left: auto !important;
+                margin-right: auto !important;
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+
             /* より具体的なセレクタを使用 */
             #basic-section .card,
             html body #basic-section .card {
