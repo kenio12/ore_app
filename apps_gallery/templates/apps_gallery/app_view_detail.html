@@ -29,7 +29,7 @@
             <nav class="nav nav-pills nav-fill m-0">
                 <!-- ホームへ戻るボタン -->
                 <a href="/" class="nav-link cyber-home" title="ホームへ戻る">
-                    <span class="fs-4 me-2 cyber-emoji">🏠</span>
+                    <span class="fs-4 me-2 cyber-emoji">&#x1F916;</span>
                 </a>
                 
                 <a class="nav-link text-neon" href="#screenshots-section" style="color: #e9d5ff !important; text-shadow: 0 0 5px #e9d5ff;">
@@ -262,6 +262,7 @@
     -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     z-index: 999;
+    transition: transform 0.3s ease-in-out;
 }
 
 .nav-link {
@@ -296,6 +297,11 @@
     #app-view-detail {
         margin-top: 8rem !important;
     }
+}
+
+/* 隠れた状態のスタイル */
+.app-tabs.hidden {
+    transform: translateY(-100%);
 }
 </style>
 

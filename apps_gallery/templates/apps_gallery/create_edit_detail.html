@@ -2,6 +2,22 @@
 {% load app_filters %}
 {% load static %}
 
+{# 文字エンコーディングを明示的に指定 #}
+<meta charset="UTF-8">
+
+{# タイトルブロックを追加 #}
+{% block title %}
+    {% if app.id %}
+        {% if readonly %}
+            {{ app.title }} の詳細 | アプリギャラリー
+        {% else %}
+            {{ app.title }} を編集 | アプリギャラリー
+        {% endif %}
+    {% else %}
+        新規アプリを投稿 | アプリギャラリー
+    {% endif %}
+{% endblock %}
+
 {# ナビバーを完全に非表示にする #}
 {% block navbar %}
 {% endblock %}
@@ -21,16 +37,16 @@
         <nav class="nav nav-pills nav-fill m-0">
             <!-- ホームへ戻るボタン -->
             <a href="/" class="nav-link cyber-home" title="ホームへ戻る" onclick="handleHomeClick(event)">
-                <span class="fs-4 me-2 cyber-emoji">🏠</span>
+                <span class="fs-4 me-2 cyber-emoji">&#x1F916;</span>
             </a>
             
-            <a class="nav-link text-neon" href="#screenshots-section" style="color: #e9d5ff !important; text-shadow: 0 0 5px #e9d5ff;">
+            <a class="nav-link text-neon" href="#screenshots" style="color: #e9d5ff !important; text-shadow: 0 0 5px #e9d5ff;">
                 <i class="bi bi-image-fill"></i> スクリーンショット
             </a>
-            <a class="nav-link text-neon" href="#basic-section" style="color: #ffd700 !important; text-shadow: 0 0 5px #ffd700;">
+            <a class="nav-link text-neon" href="#basic" style="color: #ffd700 !important; text-shadow: 0 0 5px #ffd700;">
                 <i class="bi bi-info-circle-fill"></i> 基本情報
             </a>
-            <a class="nav-link text-neon" href="#appeal-section" style="color: #00ff9f !important; text-shadow: 0 0 5px #00ff9f;">
+            <a class="nav-link text-neon" href="#appeal" style="color: #00ff9f !important; text-shadow: 0 0 5px #00ff9f;">
                 <i class="bi bi-stars"></i> アプリの魅力
             </a>
         </nav>
@@ -38,7 +54,7 @@
 </div>
 
 <!-- メインコンテンツ -->
-<div class="container main-content">
+<div class="container main-content mt-5">
     <!-- ヘッダー部分（新規作成/編集/詳細で切り替え） -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 style="color: {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
@@ -340,7 +356,7 @@
                         <span class="button-glitch"></span>
                     </button>
                     <button class="basic-button save-dialog" onclick="saveAndGoHome()">
-                        <span class="button-text">保存する</span>
+                        <span class="button-text">移動する</span>
                         <span class="button-glitch"></span>
                     </button>
                 </div>
@@ -362,9 +378,10 @@
 </div>
 
 <style>
-/* メインコンテンツのマージン */
-.main-content {
-    margin-top: 4rem !important;  /* 少し小さく */
+/* メインコンテンツのマージン - より強い指定 */
+.container.main-content {
+    margin-top: 5rem !important;  /* 8remから5remに減らす */
+    padding-top: 1rem !important;  /* 2remから1remに減らす */
 }
 
 /* セクション間の余白 */
@@ -375,14 +392,14 @@ section.mb-5 {
 
 /* レスポンシブ対応 */
 @media (max-width: 768px) {  /* タブレット以下 */
-    .main-content {
-        margin-top: 6rem !important;
+    .container.main-content {
+        margin-top: 6rem !important;  /* 10remから6remに減らす */
     }
 }
 
 @media (max-width: 576px) {  /* スマホ */
-    .main-content {
-        margin-top: 8rem !important;
+    .container.main-content {
+        margin-top: 7rem !important;  /* 12remから7remに減らす */
     }
 }
 
@@ -415,10 +432,15 @@ section.mb-5 {
     margin-top: 0 !important;   /* ナビの上部マージンを0に */
 }
 
-/* スクロール時のスムーズな動き */
+/* スムーズスクロール */
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: 60px; /* タブの高さに合わせて調整 */
+    scroll-padding-top: 80px; /* ナビゲーションの高さ分を調整 */
+}
+
+/* セクションにスクロールマージンを追加 */
+section {
+    scroll-margin-top: 80px;
 }
 
 /* アクティブなタブのスタイル */
