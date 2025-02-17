@@ -332,22 +332,13 @@
                 </div>
                 
                 <!-- 右：保存ボタン -->
-                <div style="width: 33%; display: flex; justify-content: flex-end;">
+                <div style="width: 33%; display: flex; justify-content: flex-end; pointer-events: auto;">
                     {% if not readonly %}
                         <button type="button" 
-                                id="saveButton"
-                                class="btn-cyber-save"
-                                onclick="saveForm(event)"
-                                style="opacity: 0.7;
-                                       transition: all 0.3s;
-                                       background-color: rgba(0, 0, 0, 0.7);
-                                       border: 2px solid var(--cyber-green);
-                                       padding: 10px 25px;
-                                       border-radius: 30px;
-                                       pointer-events: auto;
-                                       backdrop-filter: blur(8px);
-                                       -webkit-backdrop-filter: blur(8px);">
-                            <i class="bi bi-save"></i> 保存
+                                id="saveButton" 
+                                class="btn-cyber-save">
+                            <span class="button-text">保存する</span>
+                            <span class="button-glitch"></span>
                         </button>
                     {% endif %}
                 </div>
@@ -919,164 +910,95 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- フォーム送信とダイアログ表示のJavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('technicalForm');
     const saveButton = document.getElementById('saveButton');
+    const form = document.getElementById('technicalForm');
     
-    console.log('Form:', form);
-    console.log('Save button:', saveButton);
+    if (saveButton && form) {
+        saveButton.addEventListener('click', async function(e) {
+            e.preventDefault();
+            
+            // 1. ハードウェア情報の収集（04_hardware_tab）
+            const hardwareData = {
+                maker: document.querySelector('input[name="maker"]')?.value || '',
+                model: document.querySelector('input[name="model"]')?.value || '',
+                pc_type: document.querySelector('input[name="pc_type"]:checked')?.value || '',
+                device_type: document.querySelector('input[name="device_type"]:checked')?.value || '',
+                cpu_type: document.querySelector('input[name="cpu_type"]:checked')?.value || '',
+                memory_size: document.querySelector('input[name="memory_size"]:checked')?.value || '',
+                storage_type: document.querySelector('input[name="storage_type"]:checked')?.value || '',
+                monitor_count: document.querySelector('input[name="monitor_count"]:checked')?.value || '',
+                internet_type: document.querySelector('input[name="internet_type"]:checked')?.value || ''
+            };
 
-    window.saveForm = async function(event) {
-        try {
+            // 2. 開発環境情報の収集（05_dev_env_tab）
+            const devEnvData = {
+                editors: Array.from(document.querySelectorAll('input[name="editors"]:checked')).map(cb => cb.value),
+                version_control: Array.from(document.querySelectorAll('input[name="version_control"]:checked')).map(cb => cb.value),
+                virtualization: Array.from(document.querySelectorAll('input[name="virtualization"]:checked')).map(cb => cb.value),
+                team_size: document.querySelector('input[name="team_size"]:checked')?.value || '',
+                communication_tools: Array.from(document.querySelectorAll('input[name="communication_tools"]:checked')).map(cb => cb.value),
+                ci_cd: Array.from(document.querySelectorAll('input[name="ci_cd"]:checked')).map(cb => cb.value),
+                infrastructure: Array.from(document.querySelectorAll('input[name="infrastructure"]:checked')).map(cb => cb.value),
+                api_tools: Array.from(document.querySelectorAll('input[name="api_tools"]:checked')).map(cb => cb.value),
+                monitoring_tools: Array.from(document.querySelectorAll('input[name="monitoring_tools"]:checked')).map(cb => cb.value)
+            };
+
+            // 3. アーキテクチャ情報の収集（06_architecture_tab）
+            const architectureData = {
+                patterns: Array.from(document.querySelectorAll('input[name="architecture[patterns][]"]:checked')).map(cb => cb.value),
+                design_patterns: Array.from(document.querySelectorAll('input[name="architecture[design_patterns][]"]:checked')).map(cb => cb.value),
+                description: document.querySelector('textarea[name="architecture[description]"]')?.value || ''
+            };
+
+            // 4. バックエンド情報の収集（07_backend_tab）
+            const backendData = {
+                main_language: document.querySelector('input[name="backend[main_language]"]:checked')?.value || '',
+                framework: document.querySelector('input[name="backend[framework]"]:checked')?.value || '',
+                packages: Array.from(document.querySelectorAll('input[name="backend[packages][]"]:checked')).map(cb => cb.value)
+            };
+
+            // 1. 正しいURLを構築
+            const url = `{% url 'apps_gallery:technical_edit' app.id %}`;
+
+            // 2. データを正しい形式に整形
             const formData = {
-                hardware_specs: {
-                    pc_type: '',
-                    device_type: '',
-                    maker: '',
-                    model: '',
-                    cpu_type: '',
-                    memory_size: '',
-                    storage_type: '',
-                    monitor_count: '',
-                    internet_type: ''
-                },
-                development_environment: {
-                    editors: [],
-                    version_control: [],
-                    virtualization: [],
-                    team_size: '',
-                    ci_cd: [],
-                    communication_tools: [],
-                    infrastructure: [],
-                    api_tools: [],
-                    monitoring_tools: []
-                },
-                backend: {
-                    main_language: '',
-                    framework: '',
-                    packages: []
-                },
-                architecture: {
-                    patterns: [],
-                    design_patterns: [],
-                    description: ''
-                }
+                hardware_specs: hardwareData,
+                development_environment: devEnvData,
+                backend: backendData,
+                architecture: architectureData
             };
-
-            // ハードウェア情報の収集
-            // メーカーとモデル（テキスト入力）
-            const makerInput = document.querySelector('#maker');
-            const modelInput = document.querySelector('#model');
-            if (makerInput) formData.hardware_specs.maker = makerInput.value;
-            if (modelInput) formData.hardware_specs.model = modelInput.value;
-
-            // ラジオボタンの値を収集
-            ['pc_type', 'device_type', 'cpu_type', 'memory_size', 'storage_type', 'monitor_count', 'internet_type'].forEach(field => {
-                const selectedRadio = document.querySelector(`input[name="hardware_specs[${field}]"]:checked`);
-                if (selectedRadio) {
-                    formData.hardware_specs[field] = selectedRadio.value;
-                }
-            });
-
-            // チーム規模の取得方法を修正
-            const teamSizeInput = document.querySelector('input[name="team_size"]:checked');
-            if (teamSizeInput) {
-                formData.development_environment.team_size = teamSizeInput.value;
-            }
-
-            // 開発環境情報の収集を修正
-            const devEnvFields = {
-                'editors': 'editors',
-                'version_control': 'version_control',
-                'virtualization': 'virtualization',
-                'team_size': 'team_size',
-                'ci_cd': 'ci_cd',
-                'communication_tools': 'communication_tools',
-                'infrastructure': 'infrastructure',
-                'api_tools': 'api_tools',
-                'monitoring_tools': 'monitoring_tools'
-            };
-
-            Object.entries(devEnvFields).forEach(([fieldName, key]) => {
-                const checkedInputs = document.querySelectorAll(`input[name="${fieldName}"]:checked`);
-                formData.development_environment[key] = Array.from(checkedInputs).map(input => input.value);
-            });
-
-            // バックエンド情報の収集
-            const mainLanguageRadio = document.querySelector('input[name="backend[main_language]"]:checked');
-            const frameworkRadio = document.querySelector('input[name="backend[framework]"]:checked');
-            const packageCheckboxes = document.querySelectorAll('input[name="backend[packages][]"]:checked');
-
-            if (mainLanguageRadio) formData.backend.main_language = mainLanguageRadio.value;
-            if (frameworkRadio) formData.backend.framework = frameworkRadio.value;
-            formData.backend.packages = Array.from(packageCheckboxes).map(cb => cb.value);
-
-            // アーキテクチャ情報の収集
-            const archFields = {
-                'patterns': 'patterns',
-                'design_patterns': 'design_patterns',
-                'description': 'description'
-            };
-
-            Object.entries(archFields).forEach(([fieldName, key]) => {
-                const checkedInputs = document.querySelectorAll(`input[name="${fieldName}"]:checked`);
-                formData.architecture[key] = Array.from(checkedInputs).map(input => input.value);
-            });
-
-            // 説明文
-            const descriptionInput = document.querySelector('textarea[name="description"]');
-            if (descriptionInput) {
-                formData.architecture.description = descriptionInput.value;
-            }
-
-            console.log('Sending data:', formData);
 
             // CSRFトークンの取得
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-            // APIリクエスト
-            const response = await fetch(window.location.pathname, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify(formData)
-            });
+            // 以下のフェッチ処理を追加
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify(formData)
+                });
 
-            const result = await response.json();
-
-            if (result.success) {
-                // 成功時の処理
-                const toast = new bootstrap.Toast(document.getElementById('technicalToast'));
-                toast.show();
-            } else {
-                // エラー時の処理
-                console.error('Save failed:', result.error);
-                alert('保存に失敗しました: ' + result.error);
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        showToast('success', '保存しました！');
+                    } else {
+                        showToast('error', result.error || 'エラーが発生しました');
+                    }
+                } else {
+                    showToast('error', '保存に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('error', 'エラーが発生しました');
             }
-
-        } catch (error) {
-            console.error('Error saving form:', error);
-            alert('保存中にエラーが発生しました');
-        }
-    };
-});
-
-// CSRFトークン取得関数
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
+        });
     }
-    return cookieValue;
-}
+});
 </script>
 
 <!-- 全てのコンテンツの後、endblockの直前に配置 -->
@@ -1341,6 +1263,116 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('homeDialog element not found on page load');
     }
 });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('technicalForm');
+    
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const formData = {
+                    hardware_specs: {
+                        pc_type: form.querySelector('input[name="pc_type"]:checked')?.value,
+                        device_type: form.querySelector('input[name="device_type"]:checked')?.value,
+                        maker: form.querySelector('input[name="maker"]')?.value,
+                        model: form.querySelector('input[name="model"]')?.value,
+                        cpu_type: form.querySelector('input[name="cpu_type"]:checked')?.value,
+                        memory_size: form.querySelector('input[name="memory_size"]:checked')?.value,
+                        storage_type: form.querySelector('input[name="storage_type"]:checked')?.value,
+                        monitor_count: form.querySelector('input[name="monitor_count"]:checked')?.value,
+                        internet_type: form.querySelector('input[name="internet_type"]:checked')?.value
+                    }
+                };
+
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    const toast = new bootstrap.Toast(document.getElementById('technicalToast'));
+                    toast.show();
+                } else {
+                    throw new Error(result.error || '保存に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('保存に失敗しました: ' + error.message);
+            }
+        });
+    }
+});
+</script>
+
+<!-- フレームワーク選択の更新関数が動的に動作していない -->
+<script>
+function updateFrameworks(language) {
+    const container = document.getElementById('frameworksContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (!language || !backendStack[language]) return;
+    
+    const frameworks = backendStack[language].frameworks;
+    
+    // フレームワークの選択肢を動的に生成
+    Object.entries(frameworks).forEach(([key, name]) => {
+        const div = document.createElement('div');
+        div.className = 'col-md-4';
+        div.innerHTML = `
+            <div class="form-check">
+                <input type="radio" 
+                       class="form-check-input cyber-form-check-input"
+                       name="backend[framework]"
+                       value="${key}"
+                       ${currentBackend.framework === key ? 'checked' : ''}
+                       ${readonly ? 'disabled' : ''}>
+                <label class="form-check-label cyber-form-check-label text-cyber-pink">${name}</label>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+</script>
+
+<!-- トースト表示用の関数を定義 -->
+<script>
+function showToast(type, message) {
+    const toast = document.getElementById('technicalToast');
+    if (!toast) {
+        console.error('Toast element not found');
+        return;
+    }
+
+    // Bootstrapのトーストインスタンスを作成
+    const bsToast = new bootstrap.Toast(toast);
+    
+    // トーストの背景色を設定
+    toast.classList.remove('bg-success', 'bg-danger');
+    toast.classList.add(type === 'success' ? 'bg-success' : 'bg-danger');
+    
+    // メッセージとアイコンを設定
+    const toastBody = toast.querySelector('.toast-body');
+    if (toastBody) {
+        toastBody.innerHTML = `
+            <i class="bi ${type === 'success' ? 'bi-check-circle' : 'bi-exclamation-circle'} me-2"></i>
+            ${message}
+        `;
+    }
+    
+    // トーストを表示
+    bsToast.show();
+}
 </script>
 
 {% endblock %} 

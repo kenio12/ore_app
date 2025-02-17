@@ -8,6 +8,16 @@
                 <span class="text-cyber-green">アーキテクチャ</span>
             </h2>
 
+            <!-- デバッグ情報の表示 -->
+            {% if debug %}
+            <div style="display: none;">
+                <p>Debug Info:</p>
+                <p>Architecture: {{ app.architecture|default:'{}' }}</p>
+                <p>Patterns: {{ app.architecture.patterns|default:'[]' }}</p>
+                <p>Design Patterns: {{ app.architecture.design_patterns|default:'[]' }}</p>
+            </div>
+            {% endif %}
+
             <!-- アーキテクチャパターン -->
             <div class="mb-4">
                 <label class="form-label text-cyber-green">アーキテクチャパターン</label>
@@ -24,7 +34,7 @@
                                    class="form-check-input cyber-form-check-input"
                                    name="architecture[patterns][]"
                                    value="{{ key }}"
-                                   {% if app.architecture and app.architecture.patterns and key in app.architecture.patterns %}checked{% endif %}
+                                   {% if app.architecture.patterns and key in app.architecture.patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
                             <label class="form-check-label cyber-form-check-label text-cyber-green" 
                                    for="arch-{{ key }}"
@@ -41,7 +51,6 @@
                 <p class="text-muted small mb-3 text-cyber-green">
                     ※プログラムの設計パターンです。複数選択可能です。
                     初学者の方は「特に意識していない」を選択してください。
-                    学習が進むにつれて自然と理解できるようになります。
                 </p>
                 <div class="row g-3">
                     {% for key, value in design_patterns.items %}
@@ -52,7 +61,7 @@
                                    class="form-check-input cyber-form-check-input"
                                    name="architecture[design_patterns][]"
                                    value="{{ key }}"
-                                   {% if app.architecture and app.architecture.design_patterns and key in app.architecture.design_patterns %}checked{% endif %}
+                                   {% if app.architecture.design_patterns and key in app.architecture.design_patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
                             <label class="form-check-label cyber-form-check-label text-cyber-green" 
                                    for="design-{{ key }}"
@@ -69,98 +78,65 @@
                 <p class="text-muted small mb-3 text-cyber-green">
                     ※選択したアーキテクチャについて、なぜそれを選んだのか、
                     どのように実装したのかを自由に説明してください。
-                    初学者の方は、「シンプルな構成で作りました」といった
-                    簡単な説明で十分です。
                 </p>
-                <textarea name="description"
+                <textarea name="architecture[description]"
                           class="form-control cyber-green-focus"
                           rows="4"
                           placeholder="採用したアーキテクチャとその理由を説明してください..."
-                          {% if readonly %}readonly{% endif %}>{{ app.architecture.description|default:'' }}</textarea>
+                          {% if readonly %}readonly{% endif %}>{% if app.architecture.description %}{{ app.architecture.description }}{% endif %}</textarea>
             </div>
 
+            {# デバッグ情報（非表示） #}
+            <div style="display: none;">
+                <p>Debug Info:</p>
+                <p>Architecture Data:</p>
+                <pre>
+                patterns: {{ app.architecture.patterns|default:"[]"|safe }}
+                design_patterns: {{ app.architecture.design_patterns|default:"[]"|safe }}
+                description: {{ app.architecture.description|default:"" }}
+                </pre>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-/* 基本変数の定義 */
+/* サイバーパンクなスタイル */
 :root {
     --cyber-green: #00ff9f;
     --cyber-green-glow: rgba(0, 255, 159, 0.5);
 }
 
-/* カード全体のスタイル強制 */
-#architecture .card,
-html body #architecture .card {
+#architecture .card {
     background: rgba(13, 25, 45, 0.95) !important;
     border: 2px solid var(--cyber-green) !important;
     box-shadow: 0 0 15px var(--cyber-green-glow) !important;
 }
 
-/* フォーム要素の強制スタイル */
-#architecture .form-check-input,
-html body #architecture .form-check-input {
-    opacity: 1 !important;
+#architecture .form-check-input {
     background-color: transparent !important;
     border: 2px solid var(--cyber-green) !important;
     box-shadow: 0 0 10px var(--cyber-green-glow) !important;
 }
 
-/* チェック時の強制スタイル */
-#architecture .form-check-input:checked,
-html body #architecture .form-check-input:checked {
+#architecture .form-check-input:checked {
     background-color: transparent !important;
     border-color: var(--cyber-green) !important;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%2300ff9f' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e") !important;
 }
 
-/* ラベルの強制スタイル */
-#architecture .form-check-label,
-#architecture .text-cyber-green,
-html body #architecture .form-check-label,
-html body #architecture .text-cyber-green {
+#architecture .text-cyber-green {
     color: var(--cyber-green) !important;
     text-shadow: 0 0 5px var(--cyber-green) !important;
-    opacity: 1 !important;
-    font-weight: 500 !important;
 }
 
-/* 説明文の強制スタイル */
-#architecture p.text-muted.small.mb-3,
-html body #architecture p.text-muted.small.mb-3 {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green-glow) !important;
-    opacity: 0.9 !important;
-}
-
-/* テキストエリアの強制スタイル */
-#architecture textarea.form-control,
-html body #architecture textarea.form-control {
+#architecture textarea.form-control {
     background-color: rgba(13, 25, 45, 0.95) !important;
     color: var(--cyber-green) !important;
     border: 2px solid var(--cyber-green) !important;
     box-shadow: 0 0 10px var(--cyber-green-glow) !important;
 }
 
-/* disabled状態の強制スタイル */
-#architecture .form-control:disabled,
-#architecture .form-select:disabled,
-#architecture .form-check-input:disabled,
-html body #architecture .form-control:disabled,
-html body #architecture .form-select:disabled,
-html body #architecture .form-check-input:disabled {
-    background-color: rgba(13, 25, 45, 0.95) !important;
-    color: var(--cyber-green) !important;
-    border-color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green) !important;
-    opacity: 1 !important;
-}
-
-/* プレースホルダーの強制スタイル */
-#architecture ::placeholder,
-html body #architecture ::placeholder {
+#architecture ::placeholder {
     color: rgba(0, 255, 159, 0.5) !important;
-    text-shadow: none !important;
 }
 </style> 

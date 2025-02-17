@@ -324,12 +324,30 @@ def app_detail(request, pk):
     """アプリの詳細表示ビュー（全タブ統合版）"""
     app = get_object_or_404(AppGallery, pk=pk)
     
-    print("\n=== Debug Info ===")
+    print("\n=== Architecture Debug Info ===")
     print(f"App ID: {app.id}")
-    print(f"Title: {app.title}")
+    print(f"App Title: {app.title}")
+    
+    # アーキテクチャ情報のデバッグ
+    architecture_data = app.architecture or {}
+    print(f"Architecture Data: {architecture_data}")
+    print(f"Patterns: {architecture_data.get('patterns', [])}")
+    print(f"Design Patterns: {architecture_data.get('design_patterns', [])}")
+    print(f"Description: {architecture_data.get('description', '')}")
+    
+    print("\n=== Hardware Debug Info ===")
+    print(f"Hardware Specs: {app.hardware_specs}")
+    if hasattr(app, 'hardware_specs'):
+        for key in ['pc_type', 'device_type', 'cpu_type', 'memory_size', 
+                   'storage_type', 'monitor_count', 'internet_type']:
+            print(f"{key}: {app.hardware_specs.get(key, '')}")
     
     context = get_common_context(app=app, readonly=True)
-    # 新しい統合テンプレートを使用
+    
+    # コンテキストのデバッグ
+    if 'app' in context:
+        print(f"Context App Architecture: {context['app'].architecture}")
+    
     return render(request, 'apps_gallery/app_view_detail.html', context)
 
 @login_required
@@ -593,38 +611,53 @@ class HomeView(ListView):
 def save_technical(request, app_id):
     try:
         data = json.loads(request.body)
-        print("Received data:", data)  # デバッグログ追加
+        print("\n=== Debug Info ===")
+        print(f"User: {request.user}, App ID: {app_id}")
+        print(f"Content-Type: {request.content_type}")
+        print("Received data:", data)
 
         app = get_object_or_404(AppGallery, id=app_id)
         
+        # アーキテクチャ情報の保存
+        if 'architecture' in data:
+            app.architecture = {
+                'patterns': data['architecture'].get('patterns', []),
+                'design_patterns': data['architecture'].get('design_patterns', []),
+                'description': data['architecture'].get('description', '')  # 文字列として保存
+            }
+        
         # ハードウェア情報の保存
         if 'hardware_specs' in data:
-            app.hardware = data['hardware_specs']
-            print("Saving hardware:", app.hardware)  # デバッグログ追加
-
-        # 開発環境の保存
+            app.hardware_specs = data['hardware_specs']
+            
+        # 開発環境情報の保存
         if 'development_environment' in data:
             app.development_environment = data['development_environment']
-            print("Saving dev env:", app.development_environment)  # デバッグログ追加
-
+            
         # バックエンド情報の保存
         if 'backend' in data:
             app.backend = data['backend']
-            print("Saving backend:", app.backend)  # デバッグログ追加
-
+            
         app.save()
+        
+        print("\n=== After Save ===")
+        print(f"Saved hardware: {app.hardware_specs}")
+        print(f"Saved dev env: {app.development_environment}")
+        print(f"Saved backend: {app.backend}")
+        print(f"Saved architecture: {app.architecture}")
         
         return JsonResponse({
             'success': True,
             'message': '保存しました',
             'data': {
-                'hardware_specs': app.hardware,
+                'architecture': app.architecture,
+                'hardware_specs': app.hardware_specs,
                 'development_environment': app.development_environment,
                 'backend': app.backend
             }
         })
     except Exception as e:
-        print("Error saving technical data:", str(e))  # エラーログ追加
+        print("Error saving technical data:", str(e))
         return JsonResponse({
             'success': False,
             'message': str(e)

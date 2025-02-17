@@ -51,83 +51,61 @@ def technical_edit_view(request, pk):
                 }, status=400)
 
             try:
-                # POSTデータを一度だけ読み取り
                 data = json.loads(request.body.decode('utf-8'))
-                
-                # デバッグ用
                 print("\n=== Debug Info ===")
                 print(f"User: {request.user}, App ID: {pk}")
                 print("Content-Type:", request.content_type)
                 print("Received data:", data)
-                
-                # CSRFトークンの検証
-                if not request.META.get('HTTP_X_CSRFTOKEN'):
-                    return JsonResponse({
-                        'success': False,
-                        'error': 'CSRF token missing'
-                    }, status=403)
-                
-                # ハードウェアデータの処理
-                hardware_data = data.get('hardware_specs', {}).copy()
-                if not isinstance(hardware_data, dict):
-                    hardware_data = {}
-                
-                # 開発環境データの処理
-                dev_env_data = data.get('development_environment', {}).copy()
-                
-                # team_sizeを配列から単一の値に変換
-                if 'team_size' in dev_env_data and isinstance(dev_env_data['team_size'], list):
-                    dev_env_data['team_size'] = dev_env_data['team_size'][0] if dev_env_data['team_size'] else ''
-                
-                # バックエンドデータの処理
-                backend_data = data.get('backend', {}).copy()
-                
-                # packagesの初期化と処理
-                if 'packages' not in backend_data:
-                    backend_data['packages'] = []
-                
-                if 'packages[]' in backend_data:
-                    package_value = backend_data.pop('packages[]')
-                    if isinstance(package_value, str):
-                        if package_value not in backend_data['packages']:
-                            backend_data['packages'].append(package_value)
-                    elif isinstance(package_value, list):
-                        for pkg in package_value:
-                            if pkg not in backend_data['packages']:
-                                backend_data['packages'].append(pkg)
-                
-                # アーキテクチャデータの処理を追加
-                architecture_data = data.get('architecture', {}).copy()
-                
+
+                # 現在のデータを保持
+                current_data = {
+                    'hardware_specs': dict(app.hardware_specs or {}),  # 新しいディクショナリを作成
+                    'development_environment': dict(app.development_environment or {}),
+                    'backend': dict(app.backend or {}),
+                    'architecture': dict(app.architecture or {})
+                }
+
+                # hardware_specsの特別処理
+                if 'hardware_specs' in data:
+                    new_hardware = data['hardware_specs']
+                    # 既存の値を保持
+                    hardware_data = dict(current_data['hardware_specs'])
+                    
+                    # 新しい値がある場合のみ更新
+                    for key, value in new_hardware.items():
+                        if value:  # 値が空でない場合のみ更新
+                            hardware_data[key] = value
+                        elif key not in hardware_data:  # キーが存在しない場合のみ空値を設定
+                            hardware_data[key] = ''
+                    
+                    current_data['hardware_specs'] = hardware_data
+
+                # 他のフィールドの更新（空の値で上書きしない）
+                for field in ['development_environment', 'backend', 'architecture']:
+                    if field in data and data[field]:
+                        for key, value in data[field].items():
+                            if value:  # 値が空でない場合のみ更新
+                                current_data[field][key] = value
+
                 # データを保存
-                app.hardware_specs = hardware_data
-                app.development_environment = dev_env_data
-                app.backend = backend_data
-                app.architecture = architecture_data
+                app.hardware_specs = current_data['hardware_specs']
+                app.development_environment = current_data['development_environment']
+                app.backend = current_data['backend']
+                app.architecture = current_data['architecture']
                 app.save()
 
-                # デバッグ用ログ追加
                 print("\n=== After Save ===")
-                print("Saved hardware:", app.hardware_specs)
-                print("Saved dev env:", app.development_environment)
-                print("Saved backend:", app.backend)
-                print("Saved architecture:", app.architecture)
-                
+                print(f"Saved hardware: {app.hardware_specs}")
+                print(f"Saved dev env: {app.development_environment}")
+                print(f"Saved backend: {app.backend}")
+                print(f"Saved architecture: {app.architecture}")
+
                 return JsonResponse({
                     'success': True,
-                    'message': '保存しました',
-                    'data': {
-                        'hardware_specs': app.hardware_specs,
-                        'development_environment': app.development_environment,
-                        'backend': app.backend,
-                        'architecture': app.architecture
-                    }
+                    'data': current_data
                 })
-                
+
             except json.JSONDecodeError as e:
-                print(f"\n=== JSON Decode Error ===")
-                print(f"Error: {str(e)}")
-                print(f"Raw body: {request.body.decode('utf-8')}")
                 return JsonResponse({
                     'success': False,
                     'error': f'Invalid JSON format: {str(e)}'

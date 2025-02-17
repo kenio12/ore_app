@@ -303,6 +303,35 @@
 .app-tabs.hidden {
     transform: translateY(-100%);
 }
+
+/* アーキテクチャセクション - サイバーグリーン */
+#app-view-detail #architecture-section .form-label,
+#app-view-detail #architecture-section .card-title {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green);
+}
+
+#app-view-detail #architecture-section .form-control {
+    background-color: #1a1a1a !important;
+    color: var(--cyber-green) !important;
+    border: 2px solid var(--cyber-green) !important;
+}
+
+/* アーキテクチャセクションのチェックボックス */
+#app-view-detail #architecture-section .form-check-input:checked {
+    background-color: var(--cyber-green) !important;
+    border-color: var(--cyber-green) !important;
+    box-shadow: 0 0 10px var(--cyber-green);
+}
+
+#app-view-detail #architecture-section .form-check-input {
+    border-color: var(--cyber-green) !important;
+}
+
+#app-view-detail #architecture-section .form-check-label {
+    color: var(--cyber-green) !important;
+    text-shadow: 0 0 5px var(--cyber-green);
+}
 </style>
 
 <!-- スクロール制御用のスクリプト -->
@@ -334,19 +363,24 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // デバッグ用：値の確認
         const specs = {
-            pc_type: "{{ app.hardware_specs.pc_type }}",
-            device_type: "{{ app.hardware_specs.device_type }}",
-            cpu_type: "{{ app.hardware_specs.cpu_type }}",
-            memory_size: "{{ app.hardware_specs.memory_size }}",
-            storage_type: "{{ app.hardware_specs.storage_type }}",
-            monitor_count: "{{ app.hardware_specs.monitor_count }}",
-            internet_type: "{{ app.hardware_specs.internet_type }}"
+            pc_type: "{{ app.hardware_specs.pc_type|default:'' }}",
+            device_type: "{{ app.hardware_specs.device_type|default:'' }}",
+            cpu_type: "{{ app.hardware_specs.cpu_type|default:'' }}",
+            memory_size: "{{ app.hardware_specs.memory_size|default:'' }}",
+            storage_type: "{{ app.hardware_specs.storage_type|default:'' }}",
+            monitor_count: "{{ app.hardware_specs.monitor_count|default:'' }}",
+            internet_type: "{{ app.hardware_specs.internet_type|default:'' }}"
         };
         
         console.log('Hardware specs:', specs);
 
         // 各ラジオボタンの設定
         Object.entries(specs).forEach(([key, value]) => {
+            if (!value) {
+                console.log(`Skipping empty value for ${key}`);
+                return; // 空の値はスキップ
+            }
+            
             console.log(`Looking for: ${key} with value: ${value}`);
             const selector = `input[name="hardware_specs[${key}]"][value="${value}"]`;
             console.log('Selector:', selector);
@@ -361,14 +395,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // メーカーと機種名
-        const maker = "{{ app.hardware_specs.maker }}";
-        const model = "{{ app.hardware_specs.model }}";
+        const maker = "{{ app.hardware_specs.maker|default:'' }}";
+        const model = "{{ app.hardware_specs.model|default:'' }}";
         
         const makerInput = document.getElementById('maker');
         const modelInput = document.getElementById('model');
         
-        if (makerInput) makerInput.value = maker;
-        if (modelInput) modelInput.value = model;
+        if (makerInput && maker) makerInput.value = maker;
+        if (modelInput && model) modelInput.value = model;
     } else {
         console.log('Hardware section not found');
     }
