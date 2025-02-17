@@ -9,57 +9,35 @@
 </div>
 
 <div class="min-vh-100">
-    <!-- ヒーローセクション -->
-    <div id="heroSection" class="position-relative text-center pt-5 mt-4 mb-4 cyber-hero" 
-         style="position: relative;
-                width: 100vw;
-                max-width: 100%;
-                aspect-ratio: 16 / 16;
-                margin: 0 auto;
-                border-radius: 8px;
-                overflow: hidden;
-                transition: all 0.3s ease-in-out;">
-        <!-- 背景画像を別のdivで設定 -->
-        <div class="d-none d-sm-block" 
-             style="position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    margin: 0;
-                    padding: 0;
-                    z-index: 1;">
-            <img src="{% static 'home/images/sy.png' %}" 
-                 style="width: 100%;
-                        height: 100%;
-                        display: block;
-                        margin: 0;
-                        padding: 0;
-                        cursor: pointer;"
-                 onclick="toggleHeroSection()">
-        </div>
-
-        <!-- appmanを最前面に -->
-        <div class="mx-auto text-center position-absolute" style="top: 35%; left: 50%; transform: translate(-50%, -50%); z-index: 3;">
-            <div style="position: relative;">
-                <!-- スマホ用のテキスト - 画像の上に重ねて表示 -->
-                <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0 d-block d-sm-none" 
-                   style="position: absolute; 
-                          top: 75%; /* 位置を下に移動 */
-                          left: 50%; 
-                          transform: translateX(-50%); 
-                          z-index: 4; 
-                          width: 100%;">
-                    わたしはアプリ
-                </p>
-                <img src="{% static 'home/images/appman.png' %}" 
-                     alt="アプリマン" 
-                     class="img-fluid cyber-glow" 
-                     style="max-width: 400px;
-                            position: relative;">
-                <p class="cyber-text-hero cyber-blue cyber-glow-text mb-0 d-none d-sm-block" style="font-size: 1.8rem; margin-top: 1rem;">
-                    わたしはアプリ
-                </p>
+    <!-- アプリの説明セクション -->
+    <div class="container mb-4 mt-4">
+        <div class="col-12">
+            <div class="card cyber-card">
+                <div class="card-body">
+                    <h3 class="card-title cyber-title mb-3">アプリの宣伝　他</h3>
+                    <div class="cyber-button-grid">
+                        <button class="cyber-button">
+                            <span class="button-text">開発したアプリの宣伝・共有</span>
+                            <span class="button-glitch"></span>
+                        </button>
+                        <button class="cyber-button">
+                            <span class="button-text">お仕事の依頼・受注</span>
+                            <span class="button-glitch"></span>
+                        </button>
+                        <button class="cyber-button">
+                            <span class="button-text">共同開発者の募集・参加</span>
+                            <span class="button-glitch"></span>
+                        </button>
+                        <button class="cyber-button">
+                            <span class="button-text">プログラミング教育・メンタリング</span>
+                            <span class="button-glitch"></span>
+                        </button>
+                        <button class="cyber-button">
+                            <span class="button-text">開発の苦労話・成功体験のブログ共有</span>
+                            <span class="button-glitch"></span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -70,63 +48,69 @@
             {% for app in apps %}
                 <div class="col-12 mb-4">
                     <div class="card cyber-card">
-                        <div class="row g-0" id="card-content-{{ app.id }}">
-                            {% if app.thumbnail %}
-                                <div class="col-md-4">
-                                    <div class="h-100">
-                                        <img src="{{ app.thumbnail.url }}" 
-                                             class="img-fluid cyber-image rounded-start h-100"
-                                             style="object-fit: cover;"
-                                             onload="checkImageOrientation(this, '{{ app.id }}')"
-                                             data-title="{{ app.title }}"
-                                             data-overview="{{ app.overview }}"
-                                             data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                             data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                                    </div>
-                                </div>
-                            {% elif app.screenshots %}
-                                <div class="col-md-4">
-                                    <div class="h-100">
-                                        <img src="{{ app.screenshots.0.url }}" 
-                                             class="img-fluid cyber-image rounded-start h-100"
-                                             style="object-fit: cover;"
-                                             onload="checkImageOrientation(this, '{{ app.id }}')"
-                                             data-title="{{ app.title }}"
-                                             data-overview="{{ app.overview }}"
-                                             data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                             data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                                    </div>
-                                </div>
-                            {% endif %}
-                            <div class="{% if app.thumbnail or app.screenshots %}col-md-8{% else %}col-12{% endif %}">
-                                <div class="card-body">
-                                    <h3 class="card-title cyber-title">{{ app.title }}</h3>
-                                    <p class="card-text cyber-description">{{ app.overview }}</p>
-                                    
-                                    <!-- アプリの種類とジャンル -->
-                                    <div class="mb-3">
-                                        <div class="mb-2">
-                                            {% for type in app.app_types %}
-                                                <span class="badge cyber-type me-2">{{ APP_TYPES|get_dict_value:type }}</span>
-                                            {% endfor %}
-                                        </div>
-                                        <div>
-                                            {% for genre in app.genres %}
-                                                <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
-                                            {% endfor %}
+                        <div class="position-relative">
+                            <!-- カテゴリーバッジ -->
+                            <div class="cyber-category-badge">
+                                <span class="badge-text">アプリ宣伝</span>
+                            </div>
+                            <div class="row g-0" id="card-content-{{ app.id }}">
+                                {% if app.thumbnail %}
+                                    <div class="col-md-4">
+                                        <div class="h-100">
+                                            <img src="{{ app.thumbnail.url }}" 
+                                                 class="img-fluid cyber-image rounded-start h-100"
+                                                 style="object-fit: cover;"
+                                                 onload="checkImageOrientation(this, '{{ app.id }}')"
+                                                 data-title="{{ app.title }}"
+                                                 data-overview="{{ app.overview }}"
+                                                 data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                                 data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
                                         </div>
                                     </div>
-                                    
-                                    <!-- アクションボタン -->
-                                    <div class="d-flex justify-content-end gap-2">
-                                        <a href="{% url 'apps_gallery:detail' app.id %}" class="btn btn-cyber-secondary">
-                                            <i class="bi bi-search"></i> 詳細を見る
-                                        </a>
-                                        {% if request.user == app.author %}
-                                            <a href="{% url 'apps_gallery:edit' app.id %}" class="btn btn-cyber-edit">
-                                                <i class="bi bi-pencil-square"></i> 編集する
+                                {% elif app.screenshots %}
+                                    <div class="col-md-4">
+                                        <div class="h-100">
+                                            <img src="{{ app.screenshots.0.url }}" 
+                                                 class="img-fluid cyber-image rounded-start h-100"
+                                                 style="object-fit: cover;"
+                                                 onload="checkImageOrientation(this, '{{ app.id }}')"
+                                                 data-title="{{ app.title }}"
+                                                 data-overview="{{ app.overview }}"
+                                                 data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                                 data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="{% if app.thumbnail or app.screenshots %}col-md-8{% else %}col-12{% endif %}">
+                                    <div class="card-body">
+                                        <h3 class="card-title cyber-title">{{ app.title }}</h3>
+                                        <p class="card-text cyber-description">{{ app.overview }}</p>
+                                        
+                                        <!-- アプリの種類とジャンル -->
+                                        <div class="mb-3">
+                                            <div class="mb-2">
+                                                {% for type in app.app_types %}
+                                                    <span class="badge cyber-type me-2">{{ APP_TYPES|get_dict_value:type }}</span>
+                                                {% endfor %}
+                                            </div>
+                                            <div>
+                                                {% for genre in app.genres %}
+                                                    <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- アクションボタン -->
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <a href="{% url 'apps_gallery:detail' app.id %}" class="btn btn-cyber-secondary">
+                                                <i class="bi bi-search"></i> 詳細を見る
                                             </a>
-                                        {% endif %}
+                                            {% if request.user == app.author %}
+                                                <a href="{% url 'apps_gallery:edit' app.id %}" class="btn btn-cyber-edit">
+                                                    <i class="bi bi-pencil-square"></i> 編集する
+                                                </a>
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -717,6 +701,128 @@ document.addEventListener('DOMContentLoaded', function() {
     color: #00ff9f;
     box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
     transform: translateY(-2px);
+}
+
+.cyber-subtitle {
+    color: #00ff9f;
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px rgba(0, 255, 159, 0.5);
+}
+
+.cyber-list {
+    list-style: none;
+    padding-left: 1.2rem;
+}
+
+.cyber-list li {
+    position: relative;
+    margin-bottom: 0.5rem;
+    color: #e9d5ff;
+}
+
+.cyber-list li::before {
+    content: "▶";
+    position: absolute;
+    left: -1.2rem;
+    color: #00ff9f;
+    font-size: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.cyber-button-grid {
+    display: grid;
+    grid-template-columns: 1fr;  /* モバイルでは1列 */
+    gap: 0.5rem;
+}
+
+@media (min-width: 768px) {  /* タブレット以上で2列 */
+    .cyber-button-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.cyber-button {
+    position: relative;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 255, 159, 0.1);
+    border: 1px solid #00ff9f;
+    border-radius: 4px;
+    color: #e9d5ff;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    text-align: left;
+    height: 100%;  /* 高さを揃える */
+}
+
+.cyber-button:hover {
+    background: rgba(0, 255, 159, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+.button-text {
+    position: relative;
+    z-index: 1;
+}
+
+.button-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, 
+        transparent 65%,
+        rgba(0, 255, 159, 0.1) 70%,
+        rgba(0, 255, 159, 0.2) 80%,
+        transparent 90%
+    );
+    background-size: 200% 200%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cyber-button:hover .button-glitch {
+    opacity: 1;
+    animation: glitch 1s infinite linear;
+}
+
+@keyframes glitch {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+.cyber-category-badge {
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    background: rgba(0, 255, 159, 0.1);
+    border: 1px solid #00ff9f;
+    border-radius: 0 0 8px 8px;
+    padding: 0.3rem 1rem;
+    transform: translateY(-1px);
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.2);
+    z-index: 10;
+}
+
+.badge-text {
+    color: #00ff9f;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 255, 159, 0.5);
+}
+
+/* ホバーエフェクト */
+.cyber-category-badge:hover {
+    background: rgba(0, 255, 159, 0.2);
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
 }
 </style>
 {% endblock %} 
