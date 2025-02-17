@@ -566,12 +566,32 @@ html {
 
 /* メインコンテンツのマージン */
 .main-content {
-    margin-top: 8rem !important;
+    margin-top: 4rem !important;  /* デスクトップ用 */
+}
+
+/* スマホ・タブレット用の余白調整 */
+@media (max-width: 768px) {
+    .main-content {
+        margin-top: 6rem !important;  /* モバイル用に余白を増やす */
+    }
+}
+
+/* さらに小さいスマートフォン用 */
+@media (max-width: 480px) {
+    .main-content {
+        margin-top: 7rem !important;  /* 小さい画面ではさらに余白を確保 */
+    }
 }
 
 /* スクロールマージン */
 .scroll-margin-top {
-    scroll-margin-top: 120px;
+    scroll-margin-top: 80px;  /* デスクトップ用 */
+}
+
+@media (max-width: 768px) {
+    .scroll-margin-top {
+        scroll-margin-top: 100px;  /* モバイル用 */
+    }
 }
 
 /* 共通のタブスタイル */
@@ -806,6 +826,16 @@ html {
         clip-path: inset(80% -6px 0 0);
         transform: translate(10px, -10px);
     }
+}
+
+/* メインタイトルの余白調整 */
+h2[style*="text-shadow"] {
+    margin-top: 0.5rem !important;  /* タイトル上部の余白を大幅に縮小 */
+}
+
+/* コンテナの上部余白調整 */
+.container.mt-5 {
+    margin-top: 1rem !important;  /* コンテナの上部余白も縮小 */
 }
 </style>
 
@@ -1374,5 +1404,87 @@ function showToast(type, message) {
     bsToast.show();
 }
 </script>
+
+<!-- スクロール制御用のスクリプト -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // タブナビゲーションのクリックイベントを制御
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                // タブメニューの高さを取得
+                const tabHeight = document.querySelector('.app-tabs').offsetHeight;
+                // 現在のスクロール位置
+                const currentPosition = window.pageYOffset;
+                // ターゲット要素の位置
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                
+                // 上スクロールの場合はタブの高さ分を考慮、下スクロールの場合は考慮しない
+                const offset = currentPosition > targetPosition ? tabHeight + 20 : 0;
+                
+                window.scrollTo({
+                    top: targetPosition - offset,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+
+// スクロール監視用の変数とイベントリスナー
+let lastScrollTop = 0;
+const tabsElement = document.getElementById('technicalTabs');  // technicalTabsに変更
+
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const isScrollingUp = scrollTop < lastScrollTop;
+    
+    if (scrollTop > 100 && !isScrollingUp) {
+        tabsElement.classList.add('hidden');
+    } else {
+        tabsElement.classList.remove('hidden');
+    }
+    
+    lastScrollTop = scrollTop;
+});
+</script>
+
+<!-- スタイルの追加 -->
+<style>
+/* スムーズスクロール */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px; /* ナビゲーションの高さ分を調整 */
+}
+
+/* セクションにスクロールマージンを追加 */
+section {
+    scroll-margin-top: 80px;
+}
+
+/* タブナビゲーション */
+.app-tabs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(13, 25, 45, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    z-index: 999;
+    transition: transform 0.3s ease;
+}
+
+/* タブが隠れる時のスタイル */
+.app-tabs.hidden {
+    transform: translateY(-100%);
+}
+</style>
 
 {% endblock %} 

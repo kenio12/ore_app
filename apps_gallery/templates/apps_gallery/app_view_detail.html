@@ -339,6 +339,34 @@
 let lastScrollTop = 0;
 const tabsElement = document.getElementById('appTabs');
 
+// スムーズスクロール用の関数を追加
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            // タブメニューの高さを取得
+            const tabHeight = document.querySelector('.app-tabs').offsetHeight;
+            // 現在のスクロール位置
+            const currentPosition = window.pageYOffset;
+            // ターゲット要素の位置
+            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+            
+            // 上スクロールの場合はタブの高さ分を考慮、下スクロールの場合は考慮しない
+            const offset = currentPosition > targetPosition ? tabHeight + 20 : 0;
+            
+            window.scrollTo({
+                top: targetPosition - offset,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// 既存のスクロール監視コード
 window.addEventListener('scroll', function() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const isScrollingUp = scrollTop < lastScrollTop;

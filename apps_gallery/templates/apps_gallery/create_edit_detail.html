@@ -414,7 +414,7 @@ section.mb-5 {
     -webkit-backdrop-filter: blur(8px);
     border-bottom: 1px solid rgba(0, 255, 255, 0.2);
     z-index: 999;
-    transition: transform 0.3s ease; /* スムーズな表示/非表示のためのトランジション */
+    transition: transform 0.3s ease;
 }
 
 /* タブが隠れる時のスタイル */
@@ -1550,18 +1550,44 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <script>
-// スクロール制御のための変数
+// スクロール制御用のスクリプト
+document.addEventListener('DOMContentLoaded', function() {
+    // タブナビゲーションのクリックイベントを制御
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                // タブメニューの高さを取得
+                const tabHeight = document.querySelector('.app-tabs').offsetHeight;
+                // 現在のスクロール位置
+                const currentPosition = window.pageYOffset;
+                // ターゲット要素の位置
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                
+                // 上スクロールの場合はタブの高さ分を考慮、下スクロールの場合は考慮しない
+                const offset = currentPosition > targetPosition ? tabHeight + 20 : 0;
+                
+                window.scrollTo({
+                    top: targetPosition - offset,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+
+// スクロール監視用の変数とイベントリスナー
 let lastScrollTop = 0;
 const tabsElement = document.getElementById('appTabs');
 
-// スクロールイベントのリスナー
 window.addEventListener('scroll', function() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    // スクロール方向を判定（上:true, 下:false）
     const isScrollingUp = scrollTop < lastScrollTop;
     
-    // スクロール位置が100px以上で、かつ下にスクロール中
     if (scrollTop > 100 && !isScrollingUp) {
         tabsElement.classList.add('hidden');
     } else {
