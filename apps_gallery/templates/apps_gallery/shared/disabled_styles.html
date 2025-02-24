@@ -10,6 +10,9 @@
 .form-check-input:disabled {
     opacity: 1 !important;
     cursor: not-allowed !important;
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: #ffd700 !important;
+    border-color: #ffd700 !important;
 }
 
 /* テキスト入力系 */
@@ -29,29 +32,32 @@
 /* チェックボックス・ラジオボタン */
 .form-check-input:disabled {
     background-color: transparent !important;
-    border-color: inherit !important;
+    border: 2px solid #ffd700 !important;
+    opacity: 1 !important;
 }
 
 .form-check-input:disabled:checked {
+    background-color: #ffd700 !important;
+    border-color: #ffd700 !important;
     opacity: 1 !important;
 }
 
 /* ラベル */
-.form-check-label:has(+ input:disabled) {
-    opacity: 0.8 !important;
-    cursor: not-allowed !important;
+.form-check-label {
+    opacity: 1 !important;
+    color: #ffd700 !important;
 }
 
 /* テキストエリア */
 textarea:disabled {
     background-color: rgba(13, 25, 45, 0.95) !important;
-    color: inherit !important;
-    border-color: inherit !important;
+    color: #ffd700 !important;
+    border-color: #ffd700 !important;
 }
 
 /* プレースホルダー */
 .form-control:disabled::placeholder {
-    color: inherit !important;
+    color: #ffd700 !important;
     opacity: 0.5 !important;
 }
 </style> 

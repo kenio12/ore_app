@@ -1,237 +1,84 @@
 /* サイバーパンクテーマの基本設定 */
 :root {
-    --cyber-blue: #00ffff;
-    --cyber-purple: #bf5fff;
-    --cyber-green: #00ff9f;
-    --cyber-pink: #ff69b4;
-    --cyber-yellow: #ffd700;
+    /* 各タブ用の固有の色を設定 */
+    --cyber-purple: #bf5fff;    /* スクリーンショット用 */
+    --cyber-gold: #ffd700;      /* 基本情報用 */
+    --cyber-green: #00ff9f;     /* アプリの魅力用 */
+    --cyber-blue: #00ffff;      /* パソコン環境用 */
+    --cyber-orange: #ff8c00;    /* 開発環境用 */
+    --cyber-lime: #32cd32;      /* アーキテクチャ用 */
+    --cyber-pink: #ff1493;      /* フロントエンド用 */
+    --cyber-aqua: #00bfff;      /* バックエンド用 */
+    --cyber-emerald: #50c878;   /* データベース用 */
+    --cyber-red: #ff3e3e;       /* セキュリティ用 */
+    --cyber-yellow: #ffff00;    /* 開発ストーリー用 */
+    
     --cyber-bg-dark: rgba(13, 25, 45, 0.8);
     --cyber-bg-darker: rgba(0, 20, 50, 0.8);
 }
 
+/* セクション固有のスタイル */
+#screenshots-section { --section-color: var(--cyber-purple) !important; }
+#basic-section { --section-color: var(--cyber-gold) !important; }
+#appeal-section { --section-color: var(--cyber-green) !important; }
+#hardware-section { --section-color: var(--cyber-blue) !important; }
+#dev-env-section { --section-color: var(--cyber-orange) !important; }
+#architecture-section { --section-color: var(--cyber-lime) !important; }
+#backend-section { --section-color: var(--cyber-aqua) !important; }
+#frontend-section { --section-color: var(--cyber-pink) !important; }
+#database-section { --section-color: var(--cyber-emerald) !important; }
+#security-section { --section-color: var(--cyber-red) !important; }
+#development-section { --section-color: var(--cyber-yellow) !important; }
+
+/* セクション内の要素のスタイル */
+[id$="-section"] {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+}
+
+[id$="-section"] .form-control,
+[id$="-section"] .form-select,
+[id$="-section"] .form-label,
+[id$="-section"] .form-check-label,
+[id$="-section"] .card-title {
+    color: var(--section-color) !important;
+    border-color: var(--section-color) !important;
+    text-shadow: 0 0 5px var(--section-color) !important;
+}
+
 /* フォーム要素の基本スタイル */
-.cyber-form-input {
-    background-color: var(--cyber-bg-darker) !important;
-    border: 2px solid currentColor !important;
-    color: inherit !important;
-    font-weight: bold !important;
-}
-
-/* ラジオボタンとチェックボックスの基本スタイル */
-.cyber-form-check-input {
-    border: 3px solid currentColor !important;
-    background-color: rgba(30, 41, 59, 0.98) !important;
-    width: 1.2em !important;
-    height: 1.2em !important;
-    position: relative !important;
-    margin-top: 0.3em !important;
-}
-
-/* チェック時のスタイル */
-.cyber-form-check-input:checked {
-    background-color: currentColor !important;
-    border-color: currentColor !important;
-    background-image: none !important;
-}
-
-/* チェックマーク（内側の丸）のスタイル */
-.cyber-form-check-input:checked::after {
-    content: '✓' !important;
-    position: absolute !important;
-    color: rgba(30, 41, 59, 0.98) !important;
-    font-size: 1em !important;
-    line-height: 0.8 !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    font-weight: bold !important;
-}
-
-/* カードの基本スタイル */
-.cyber-card {
-    background: rgba(13, 25, 45, 0.8) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border-radius: 8px !important;
-}
-
-/* タイトルの基本スタイル */
-.cyber-title {
-    font-weight: bold !important;
-    letter-spacing: 1px !important;
-    text-shadow: 
-        0 0 10px currentColor,
-        0 0 20px currentColor !important;
-}
-
-/* ラベルの基本スタイル */
-.cyber-label {
-    color: currentColor !important;
-    text-shadow: 0 0 5px currentColor !important;
-    opacity: 1 !important;
-}
-
-/* フォーカス時のスタイル */
-.cyber-focus {
-    outline: none !important;
-    box-shadow: 
-        0 0 5px currentColor,
-        0 0 10px currentColor,
-        0 0 15px currentColor !important;
-    border-color: currentColor !important;
-}
-
-/* ボタンの基本スタイル */
-.cyber-button {
-    background: var(--cyber-bg-darker) !important;
-    border: 2px solid currentColor !important;
-    color: inherit !important;
-    font-weight: bold !important;
-    transition: all 0.3s ease !important;
-}
-
-.cyber-button:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 
-        0 0 5px currentColor,
-        0 0 10px currentColor !important;
-}
-
-/* セクションの基本スタイル */
-.cyber-section {
-    margin-bottom: 2rem !important;
-    padding: 1rem !important;
-    border-radius: 8px !important;
-    background: var(--cyber-bg-dark) !important;
-}
-
-/* グリッド背景のスタイル */
-.cyber-grid {
-    background-image: 
-        linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px) !important;
-    background-size: 20px 20px !important;
-    width: 100% !important;
-    height: 100% !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    z-index: -1 !important;
-}
-
-/* フォーム要素の共通スタイル */
 .form-control,
 .form-select {
     background-color: rgba(13, 25, 45, 0.8) !important;
     border: 2px solid currentColor !important;
-    padding: 0.5rem 1rem !important;
-    font-size: 1.1rem !important;
 }
 
-.form-control:focus,
-.form-select:focus {
-    background-color: rgba(0, 30, 70, 0.7) !important;
+/* タブのスタイル */
+.nav-link.text-neon {
+    opacity: 1 !important;
+    font-weight: bold !important;
+}
+
+.nav-link.text-neon:hover {
+    transform: translateY(-2px) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-link.text-neon.active {
+    background: rgba(255, 255, 255, 0.15) !important;
     box-shadow: 0 0 15px currentColor !important;
 }
 
-/* 読み取り専用・無効化状態のスタイル */
-.form-control[readonly],
-.form-select[readonly],
-.form-control:disabled,
-.form-select:disabled {
-    background-color: rgba(0, 20, 50, 0.5) !important;
-    border: 2px solid currentColor !important;
-    opacity: 1 !important;
-    cursor: default !important;
+/* スクロール時のタブ非表示 */
+.app-tabs.hidden {
+    transform: translateY(-100%) !important;
 }
 
-/* ラベルの共通スタイル */
-.form-label {
-    font-weight: 500 !important;
-    font-size: 1.1rem !important;
-    margin-bottom: 0.5rem !important;
+/* ホームボタンのスタイル */
+.cyber-home {
+    color: #fff !important;
+    text-shadow: 0 0 5px #fff !important;
 }
 
-/* チェックボックスの共通スタイル */
-.form-check-input {
-    border: 2px solid currentColor !important;
-    background-color: transparent !important;
-}
-
-.form-check-input:checked {
-    background-color: currentColor !important;
-    border-color: currentColor !important;
-}
-
-.form-check-label {
-    color: currentColor !important;
-    font-size: 1.1rem !important;
-    padding-left: 0.5em !important;
-}
-
-/* 入力グループのスタイル */
-.input-group-text {
-    background-color: rgba(13, 25, 45, 0.8) !important;
-    border: 2px solid currentColor !important;
-}
-
-.input-group > :first-child {
-    border-top-left-radius: 4px !important;
-    border-bottom-left-radius: 4px !important;
-}
-
-/* フォームテキストのスタイル */
-.form-text {
-    opacity: 0.8 !important;
-}
-
-/* プレースホルダーのスタイル */
-.form-control::placeholder {
-    color: currentColor !important;
-    opacity: 0.5 !important;
-}
-
-/* セクションタイトルの共通スタイル */
-.cyber-section-title {
-    font-weight: bold !important;
-    letter-spacing: 1px !important;
-    text-shadow: 
-        0 0 10px currentColor,
-        0 0 20px currentColor !important;
-}
-
-/* チェックボックスのラベル */
-.cyber-form-check-label {
-    font-weight: 500 !important;
-    padding-left: 0.5em !important;
-}
-
-/* ホバー状態 */
-.cyber-form-check-input:hover {
-    border-color: currentColor !important;
-    cursor: pointer !important;
-    box-shadow: 0 0 10px currentColor !important;
-}
-
-/* 基本情報タブ用のスタイル */
-#basic-section .form-control,
-#basic-section .form-select,
-#basic-section .form-label,
-#basic-section .form-check-label,
-#basic-section .input-group-text {
-    color: var(--cyber-yellow) !important;
-    border-color: var(--cyber-yellow) !important;
-    text-shadow: 0 0 5px var(--cyber-yellow) !important;
-}
-
-/* アプリの魅力タブ用のスタイル */
-#appeal-section .form-control,
-#appeal-section .form-select,
-#appeal-section .form-label,
-#appeal-section .form-check-label,
-#appeal-section .input-group-text {
-    color: var(--cyber-green) !important;
-    border-color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green) !important;
+.cyber-emoji {
+    font-style: normal !important;
 } 

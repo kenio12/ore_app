@@ -1,0 +1,113 @@
+{% include 'apps_gallery/shared/disabled_styles.html' %}
+
+<div id="frontend" class="container" style="margin: 0 !important; padding: 0 !important;">
+    <div class="card border-0 shadow-lg" style="background-color: rgba(13, 25, 45, 0.8) !important;">
+        <div class="card-body">
+            <h2 class="card-title h3 mb-4">
+                <i class="bi bi-window text-cyber-rose"></i>
+                <span class="text-cyber-rose">フロントエンド</span>
+            </h2>
+
+            <form id="frontend-form">
+                <!-- フロントエンド言語 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-rose">フロントエンド言語</label>
+                    <div class="row g-3">
+                        {% for key, value in FRONTEND_LANGUAGES.items %}
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           id="frontend-lang-{{ key }}"
+                                           name="frontend_languages"
+                                           value="{{ key }}"
+                                           class="form-check-input"
+                                           {% if key in app.frontend.languages %}checked{% endif %}
+                                           {% if readonly %}disabled{% endif %}>
+                                    <label class="form-check-label" for="frontend-lang-{{ key }}">
+                                        {{ value }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- フレームワーク -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-rose">フレームワーク</label>
+                    <div class="row g-3">
+                        {% for key, value in FRONTEND_FRAMEWORKS.items %}
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           id="frontend-framework-{{ key }}"
+                                           name="frontend_frameworks"
+                                           value="{{ key }}"
+                                           class="form-check-input"
+                                           {% if key in app.frontend.frameworks %}checked{% endif %}
+                                           {% if readonly %}disabled{% endif %}>
+                                    <label class="form-check-label" for="frontend-framework-{{ key }}">
+                                        {{ value }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- CSSフレームワーク -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-rose">CSSフレームワーク</label>
+                    <div class="row g-3">
+                        {% for key, value in CSS_FRAMEWORKS.items %}
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           id="frontend-css-{{ key }}"
+                                           name="css_frameworks"
+                                           value="{{ key }}"
+                                           class="form-check-input"
+                                           {% if key in app.frontend.css_frameworks %}checked{% endif %}
+                                           {% if readonly %}disabled{% endif %}>
+                                    <label class="form-check-label" for="frontend-css-{{ key }}">
+                                        {{ value }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* サイバーパンク風のスタイル */
+#frontend .text-cyber-rose {
+    color: #ff1493 !important;
+    text-shadow: 0 0 5px #ff1493 !important;
+}
+
+#frontend .form-check-input:checked {
+    background-color: #ff1493 !important;
+    border-color: #ff1493 !important;
+    box-shadow: 0 0 5px #ff1493 !important;
+}
+
+#frontend .form-check-input:hover {
+    border-color: #ff1493 !important;
+}
+
+#frontend .form-check-label {
+    color: #ff69b4 !important;
+    text-shadow: 0 0 2px #ff69b4 !important;
+}
+
+/* disabled状態のスタイル */
+#frontend .form-check-input:disabled:checked {
+    background-color: #ff1493 !important;
+    border-color: #ff1493 !important;
+    opacity: 0.7 !important;
+}
+</style> 
