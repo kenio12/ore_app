@@ -6,6 +6,9 @@
 {% endblock %}
 
 {% block content %}
+<!-- サイバーテーマのCSS読み込み -->
+<link rel="stylesheet" href="{% static 'apps_gallery/css/cyber-theme.css' %}">
+
 <!-- サイバーパンク風の装飾 -->
 <div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
     <div class="cyber-grid"></div>
@@ -39,16 +42,16 @@
                     <i class="bi bi-info-circle-fill"></i> 基本情報
                 </a>
                 <a class="nav-link text-neon" href="#appeal-section" style="color: var(--cyber-green) !important; text-shadow: 0 0 5px var(--cyber-green);">
-                    <i class="bi bi-stars"></i> アプリの魅力
+                    <i class="bi bi-star-fill"></i> アプリの魅力
                 </a>
                 <a class="nav-link text-neon" href="#hardware-section" style="color: var(--cyber-blue) !important; text-shadow: 0 0 5px var(--cyber-blue);">
-                    <i class="bi bi-cpu"></i> パソコン環境
+                    <i class="bi bi-pc-display"></i> パソコン環境
                 </a>
                 <a class="nav-link text-neon" href="#dev-env-section" style="color: var(--cyber-orange) !important; text-shadow: 0 0 5px var(--cyber-orange);">
                     <i class="bi bi-tools"></i> 開発環境
                 </a>
                 <a class="nav-link text-neon" href="#architecture-section" style="color: var(--cyber-lime) !important; text-shadow: 0 0 5px var(--cyber-lime);">
-                    <i class="bi bi-diagram-3"></i> アーキテクチャ
+                    <i class="bi bi-diagram-3-fill"></i> アーキテクチャ
                 </a>
                 <a class="nav-link text-neon" href="#backend-section" style="color: var(--cyber-aqua) !important; text-shadow: 0 0 5px var(--cyber-aqua);">
                     <i class="bi bi-server"></i> バックエンド
@@ -57,13 +60,13 @@
                     <i class="bi bi-window"></i> フロントエンド
                 </a>
                 <a class="nav-link text-neon" href="#database-section" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 5px var(--cyber-emerald);">
-                    <i class="bi bi-database"></i> データベース
+                    <i class="bi bi-database-fill"></i> データベース
                 </a>
                 <a class="nav-link text-neon" href="#security-section" style="color: var(--cyber-red) !important; text-shadow: 0 0 5px var(--cyber-red);">
-                    <i class="bi bi-shield-lock"></i> セキュリティ
+                    <i class="bi bi-shield-fill-check"></i> セキュリティ
                 </a>
                 <a class="nav-link text-neon" href="#development-section" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 5px var(--cyber-yellow);">
-                    <i class="bi bi-journal-code"></i> 開発ストーリー
+                    <i class="bi bi-journal-text"></i> 開発ストーリー
                 </a>
             </nav>
         </div>
@@ -136,7 +139,7 @@
 </div>
 
 <style>
-/* サイバーパンクな背景のみ残す */
+/* サイバーパンクな背景 */
 .cyber-background {
     background: linear-gradient(45deg, #001e54, #0066cc);
 }
@@ -155,6 +158,44 @@
     0% { opacity: 0.5; }
     50% { opacity: 0.8; }
     100% { opacity: 0.5; }
+}
+
+/* タブナビゲーションの背景 */
+.app-tabs {
+    background: rgba(13, 25, 45, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    transition: transform 0.3s ease !important;
+    margin-bottom: 2rem !important;  /* タブと下のセクションの間隔を追加 */
+}
+
+/* タブのスタイル */
+.nav-link {
+    padding: 1rem 0.5rem !important;  /* 左右の余白を縮小 */
+    transition: all 0.3s ease !important;
+    font-weight: bold !important;
+    border-radius: 0.5rem !important;
+    color: inherit !important;
+    text-shadow: 0 0 5px currentColor !important;
+}
+
+.nav-link:hover {
+    transform: translateY(-2px) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 15px currentColor !important;
+}
+
+/* スクロール時のタブ非表示 */
+.app-tabs.hidden {
+    transform: translateY(-100%) !important;
 }
 
 /* メインコンテンツのマージン調整 */

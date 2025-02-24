@@ -52,10 +52,37 @@
     border: 2px solid currentColor !important;
 }
 
+/* タブの色設定を修正 */
+.nav-link.text-neon[href="#screenshots-section"] { color: var(--cyber-purple) !important; text-shadow: 0 0 5px var(--cyber-purple) !important; }
+.nav-link.text-neon[href="#basic-section"] { color: var(--cyber-gold) !important; text-shadow: 0 0 5px var(--cyber-gold) !important; }
+.nav-link.text-neon[href="#appeal-section"] { color: var(--cyber-green) !important; text-shadow: 0 0 5px var(--cyber-green) !important; }
+.nav-link.text-neon[href="#hardware-section"] { color: var(--cyber-blue) !important; text-shadow: 0 0 5px var(--cyber-blue) !important; }
+.nav-link.text-neon[href="#dev-env-section"] { color: var(--cyber-orange) !important; text-shadow: 0 0 5px var(--cyber-orange) !important; }
+.nav-link.text-neon[href="#architecture-section"] { color: var(--cyber-lime) !important; text-shadow: 0 0 5px var(--cyber-lime) !important; }
+.nav-link.text-neon[href="#backend-section"] { color: var(--cyber-aqua) !important; text-shadow: 0 0 5px var(--cyber-aqua) !important; }
+.nav-link.text-neon[href="#frontend-section"] { color: var(--cyber-pink) !important; text-shadow: 0 0 5px var(--cyber-pink) !important; }
+.nav-link.text-neon[href="#database-section"] { color: var(--cyber-emerald) !important; text-shadow: 0 0 5px var(--cyber-emerald) !important; }
+.nav-link.text-neon[href="#security-section"] { color: var(--cyber-red) !important; text-shadow: 0 0 5px var(--cyber-red) !important; }
+.nav-link.text-neon[href="#development-section"] { color: var(--cyber-yellow) !important; text-shadow: 0 0 5px var(--cyber-yellow) !important; }
+
+/* タブナビゲーションの背景 */
+.app-tabs {
+    background: rgba(13, 25, 45, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    transition: transform 0.3s ease !important;
+    margin-bottom: 2rem !important;
+}
+
 /* タブのスタイル */
 .nav-link.text-neon {
     opacity: 1 !important;
     font-weight: bold !important;
+    padding: 1rem 0.5rem !important;
 }
 
 .nav-link.text-neon:hover {
