@@ -41,52 +41,25 @@ from .development import (
 )
 
 # フロントエンド関連
-from .frontend_constants import (
-    FRONTEND_LANGUAGES,
-    FRONTEND_FRAMEWORKS,
-    CSS_FRAMEWORKS
-)
-
-# バックエンド関連
-from .backend_constants import (
-    BACKEND_STACK,
-    BACKEND_PACKAGE_HINTS
-)
+from . import _08_frontend_constants as frontend_constants
+FRONTEND_LANGUAGES = frontend_constants.FRONTEND_LANGUAGES
+FRONTEND_FRAMEWORKS = frontend_constants.FRONTEND_FRAMEWORKS
+CSS_FRAMEWORKS = frontend_constants.CSS_FRAMEWORKS
 
 # データベース関連
-from .database_constants import (
-    DATABASE_TYPES,
-    ORMS
-)
+from . import _09_database_constants as database_constants
+DATABASE_TYPES = database_constants.DATABASE_TYPES
+DATABASE_HOSTING = database_constants.DATABASE_HOSTING
+ORMS = database_constants.ORMS
 
-# インフラ関連
-from .infrastructure_constants import (
-    CACHES,
-    DATABASE_HOSTING
-)
+# セキュリティ関連
+from . import _10_security_constants as security_constants
+AUTHENTICATION_METHODS = security_constants.AUTHENTICATION_METHODS
+SECURITY_MEASURES = security_constants.SECURITY_MEASURES
 
-# アーキテクチャとセキュリティ
-from .architecture import (
-    ARCHITECTURE_PATTERNS,
-    DESIGN_PATTERNS,
-    ARCHITECTURE_HINTS,
-    SECURITY_MEASURES,
-    TESTING_TOOLS,
-    CODE_QUALITY_TOOLS
-)
-
-# 開発期間
-from .development_period import (
-    DEVELOPMENT_PERIODS,
-    DEVELOPMENT_PHASES
-)
-
-# クラウドストレージ
-from .cloud_storage import (
-    CLOUDINARY_TRANSFORMATION,
-    CLOUDINARY_FOLDERS,
-    LOG_LEVELS
-)
+# 開発期間関連
+from . import _11_development_constants as development_constants
+DEVELOPMENT_PERIODS = development_constants.DEVELOPMENT_PERIODS
 
 # 全ての定数をエクスポート
 __all__ = [
@@ -107,23 +80,12 @@ __all__ = [
     # フロントエンド関連
     'FRONTEND_LANGUAGES', 'FRONTEND_FRAMEWORKS', 'CSS_FRAMEWORKS',
     
-    # バックエンド関連
-    'BACKEND_STACK',
-    'BACKEND_PACKAGE_HINTS',
-    
     # データベース関連
-    'DATABASE_TYPES', 'ORMS',
+    'DATABASE_TYPES', 'DATABASE_HOSTING', 'ORMS',
     
-    # インフラ関連
-    'CACHES', 'DATABASE_HOSTING',
+    # セキュリティ関連
+    'AUTHENTICATION_METHODS', 'SECURITY_MEASURES',
     
-    # アーキテクチャとセキュリティ
-    'ARCHITECTURE_PATTERNS', 'DESIGN_PATTERNS', 'ARCHITECTURE_HINTS',
-    'SECURITY_MEASURES', 'TESTING_TOOLS', 'CODE_QUALITY_TOOLS',
-    
-    # 開発期間
-    'DEVELOPMENT_PERIODS', 'DEVELOPMENT_PHASES',
-    
-    # クラウドストレージ
-    'CLOUDINARY_TRANSFORMATION', 'CLOUDINARY_FOLDERS', 'LOG_LEVELS'
+    # 開発期間関連
+    'DEVELOPMENT_PERIODS'
 ]
