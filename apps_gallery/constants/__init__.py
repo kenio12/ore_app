@@ -37,7 +37,7 @@ from .development import (
     INFRASTRUCTURE,
     CI_CD,
     API_TOOLS,
-    MONITORING_TOOLS
+    MONITORING_TOOLS,
 )
 
 # フロントエンド関連

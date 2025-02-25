@@ -26,6 +26,15 @@ from .constants import (
     MONITOR_COUNTS,
     INTERNET_TYPES,
     MAKER_EXAMPLES,
+    FRONTEND_LANGUAGES,
+    FRONTEND_FRAMEWORKS,
+    CSS_FRAMEWORKS,
+    DATABASE_TYPES,
+    DATABASE_HOSTING,
+    ORMS,
+    AUTHENTICATION_METHODS,
+    SECURITY_MEASURES,
+    DEVELOPMENT_PERIODS,
 )
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
@@ -53,7 +62,6 @@ from .constants.architecture import (
     ARCHITECTURE_PATTERNS,
     DESIGN_PATTERNS,
     ARCHITECTURE_HINTS,
-    SECURITY_MEASURES,
     TESTING_TOOLS,
     CODE_QUALITY_TOOLS
 )
@@ -117,6 +125,14 @@ def get_common_context(app=None, readonly=False, is_edit=False):
         'GENRES': dict(GENRES),
         'APP_STATUS': dict(APP_STATUS),
         'PUBLISH_STATUS': dict(PUBLISH_STATUS),
+        'FRONTEND_LANGUAGES': dict(FRONTEND_LANGUAGES),
+        'FRONTEND_FRAMEWORKS': dict(FRONTEND_FRAMEWORKS),
+        'CSS_FRAMEWORKS': dict(CSS_FRAMEWORKS),
+        'DATABASE_TYPES': dict(DATABASE_TYPES),
+        'DATABASE_HOSTING': dict(DATABASE_HOSTING),
+        'ORMS': dict(ORMS),
+        'AUTHENTICATION_METHODS': dict(AUTHENTICATION_METHODS),
+        'DEVELOPMENT_PERIODS': dict(DEVELOPMENT_PERIODS),
     }
     
     if app:
@@ -324,30 +340,19 @@ def app_detail(request, pk):
     """アプリの詳細表示ビュー（全タブ統合版）"""
     app = get_object_or_404(AppGallery, pk=pk)
     
-    print("\n=== Architecture Debug Info ===")
-    print(f"App ID: {app.id}")
-    print(f"App Title: {app.title}")
+    print("\n=== Frontend Debug Info ===")
+    if hasattr(app, 'frontend'):
+        print(f"Frontend Languages: {app.frontend.get('languages', [])}")
+        print(f"Frontend Frameworks: {app.frontend.get('frameworks', [])}")
+        print(f"CSS Frameworks: {app.frontend.get('css_frameworks', [])}")
     
-    # アーキテクチャ情報のデバッグ
-    architecture_data = app.architecture or {}
-    print(f"Architecture Data: {architecture_data}")
-    print(f"Patterns: {architecture_data.get('patterns', [])}")
-    print(f"Design Patterns: {architecture_data.get('design_patterns', [])}")
-    print(f"Description: {architecture_data.get('description', '')}")
-    
-    print("\n=== Hardware Debug Info ===")
-    print(f"Hardware Specs: {app.hardware_specs}")
-    if hasattr(app, 'hardware_specs'):
-        for key in ['pc_type', 'device_type', 'cpu_type', 'memory_size', 
-                   'storage_type', 'monitor_count', 'internet_type']:
-            print(f"{key}: {app.hardware_specs.get(key, '')}")
+    print("\n=== Database Debug Info ===")
+    if hasattr(app, 'database'):
+        print(f"Database Types: {app.database.get('types', [])}")
+        print(f"Database Hosting: {app.database.get('hosting', [])}")
+        print(f"ORMs: {app.database.get('orms', [])}")
     
     context = get_common_context(app=app, readonly=True)
-    
-    # コンテキストのデバッグ
-    if 'app' in context:
-        print(f"Context App Architecture: {context['app'].architecture}")
-    
     return render(request, 'apps_gallery/app_view_detail.html', context)
 
 @login_required
