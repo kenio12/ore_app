@@ -262,6 +262,32 @@
 </div>
 
 <style>
+/* 開発環境タブのスタイル */
+#dev-env-section .card-title,
+#dev-env-section .text-cyber-orange {
+    color: var(--cyber-orange) !important;
+    text-shadow: 0 0 10px var(--cyber-orange),
+                0 0 20px var(--cyber-orange) !important;
+}
+
+#dev-env-section .form-control,
+#dev-env-section .form-select,
+#dev-env-section .form-check-input {
+    border: 2px solid var(--cyber-orange) !important;
+    color: var(--cyber-orange) !important;
+}
+
+#dev-env-section .form-check-input:checked {
+    background-color: var(--cyber-orange) !important;
+    box-shadow: 0 0 10px var(--cyber-orange) !important;
+}
+
+#dev-env-section .form-label,
+#dev-env-section .form-check-label {
+    color: var(--cyber-orange) !important;
+    text-shadow: 0 0 5px var(--cyber-orange) !important;
+}
+
 /* カード全体 */
 body #dev_env .card {
     background: rgba(30, 41, 59, 0.98) !important;

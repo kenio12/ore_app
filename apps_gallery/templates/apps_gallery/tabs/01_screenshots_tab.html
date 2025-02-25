@@ -1,7 +1,7 @@
 {% load app_filters %}
 {% include 'apps_gallery/shared/disabled_styles.html' %}
 
-<div class="container">
+<div style="width: 100%; max-width: 1200px; margin: 0 auto;">
     <div class="card border-0">
         <div class="card-body">
             <h2 class="card-title h3 mb-4" style="color: var(--cyber-purple) !important; 
@@ -186,8 +186,8 @@ body .text-cyber-purple {
 
 body #screenshots .btn-action,
 body .btn-action {
-    border: 2px solid #e9d5ff !important;
-    color: #e9d5ff !important;
+    border: 2px solid var(--cyber-purple) !important;
+    color: var(--cyber-purple) !important;
 }
 
 body #screenshots .btn-set-thumbnail,
@@ -360,8 +360,8 @@ body #screenshots .btn-cyber-purple:hover:not(:disabled) {
 
 .btn-action {
     background: rgba(13, 25, 45, 0.8);
-    border: 2px solid #e9d5ff !important;
-    color: #e9d5ff !important;
+    border: 2px solid var(--cyber-purple) !important;
+    color: var(--cyber-purple) !important;
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -374,7 +374,7 @@ body #screenshots .btn-cyber-purple:hover:not(:disabled) {
 
 .btn-action:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(191, 95, 255, 0.5);
+    box-shadow: 0 0 15px var(--cyber-purple) !important;
 }
 
 .btn-set-thumbnail {
@@ -617,6 +617,27 @@ body #screenshots .btn-cyber-purple:hover:not(:disabled) {
 
 .cyber-message {
     animation: slideIn 0.3s ease-out;
+}
+
+/* スクリーンショットタブのスタイル */
+#screenshots .card-title,
+#screenshots .text-cyber-purple {
+    color: var(--cyber-purple) !important;
+    text-shadow: 0 0 10px var(--cyber-purple),
+                0 0 20px var(--cyber-purple) !important;
+}
+
+.screenshot-description {
+    border-top: 1px solid var(--cyber-purple) !important;
+}
+
+.btn-action {
+    border: 2px solid var(--cyber-purple) !important;
+    color: var(--cyber-purple) !important;
+}
+
+.btn-action:hover {
+    box-shadow: 0 0 15px var(--cyber-purple) !important;
 }
 </style>
 

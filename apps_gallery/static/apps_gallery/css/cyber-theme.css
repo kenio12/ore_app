@@ -82,7 +82,12 @@
 .nav-link.text-neon {
     opacity: 1 !important;
     font-weight: bold !important;
-    padding: 1rem 0.5rem !important;
+    padding: 0.5rem 0.5rem !important;
+    font-size: 0.9rem !important;
+    line-height: 1 !important; /* 行の高さを最小に */
+    min-height: 2rem !important; /* 最小の高さを設定 */
+    display: flex !important;
+    align-items: center !important;
 }
 
 .nav-link.text-neon:hover {
@@ -93,6 +98,8 @@
 .nav-link.text-neon.active {
     background: rgba(255, 255, 255, 0.15) !important;
     box-shadow: 0 0 15px currentColor !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
 }
 
 /* スクロール時のタブ非表示 */
@@ -108,4 +115,46 @@
 
 .cyber-emoji {
     font-style: normal !important;
+}
+
+/* タブナビゲーションのスタイル調整 */
+.app-tabs .nav-link {
+    padding: 0.25rem 0.5rem !important; /* パディングをさらに小さく */
+    line-height: 1 !important;
+    margin: 0 !important;
+    height: auto !important;
+}
+
+.app-tabs .nav {
+    gap: 0.25rem !important;
+    min-height: 0 !important; /* 最小の高さ制限を解除 */
+}
+
+/* ボタンのサイズ調整 */
+.btn-cyber-action,
+.btn-action {
+    padding: 0.25rem 0.5rem !important; /* パディングを小さく */
+    font-size: 0.875rem !important; /* フォントサイズを小さく */
+    line-height: 1.2 !important; /* 行の高さを調整 */
+    margin: 0.25rem !important; /* マージンを小さく */
+}
+
+/* アイコン付きボタンの調整 */
+.btn-cyber-action i,
+.btn-action i {
+    font-size: 0.875rem !important; /* アイコンサイズも調整 */
+    margin-right: 0.25rem !important; /* アイコンとテキストの間隔を調整 */
+}
+
+/* フォームボタンの調整 */
+.form-group .btn,
+.input-group .btn {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem !important;
+    height: auto !important; /* 高さを自動調整 */
+}
+
+/* アクションボタングループの調整 */
+.action-buttons {
+    gap: 0.5rem !important; /* ボタン間の間隔を調整 */
 } 

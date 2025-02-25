@@ -54,7 +54,7 @@
 </div>
 
 <!-- メインコンテンツ -->
-<div class="container main-content mt-5">
+<div class="container-fluid main-content mt-5" style="max-width: 1200px; margin: 0 auto;">
     <!-- ヘッダー部分（新規作成/編集/詳細で切り替え） -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 style="color: {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
@@ -378,28 +378,62 @@
 </div>
 
 <style>
-/* メインコンテンツのマージン - より強い指定 */
-.container.main-content {
-    margin-top: 5rem !important;  /* 8remから5remに減らす */
-    padding-top: 1rem !important;  /* 2remから1remに減らす */
+/* コンテナの制限を解除 */
+.container-fluid,
+.container {
+    max-width: 1200px !important;
+    width: 100% !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* タブコンテンツの幅を確保 */
+.tab-content,
+.tab-pane {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+/* 各タブ内のコンテナも同じ幅に */
+#screenshots > div,
+#basic > div,
+#appeal > div {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+/* カードも同じ幅に */
+.card {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* メインコンテンツのマージン - さらに上部マージンを減らす */
+.container-fluid.main-content {
+    margin-top: 4.5rem !important;  /* 6remから4.5remにさらに減らす */
+    padding-top: 2rem !important;
 }
 
 /* セクション間の余白 */
 section.mb-5 {
-    margin-bottom: 2rem !important;  /* 5remから2remに変更 */
-    border-bottom: none !important;  /* 下線を削除 */
+    margin-bottom: 5rem !important;
+    border-bottom: none !important;
 }
 
-/* レスポンシブ対応 */
+/* レスポンシブ対応も調整 */
 @media (max-width: 768px) {  /* タブレット以下 */
-    .container.main-content {
-        margin-top: 6rem !important;  /* 10remから6remに減らす */
+    .container-fluid.main-content {
+        margin-top: 6rem !important;  /* 8remから6remに減らす */
     }
 }
 
 @media (max-width: 576px) {  /* スマホ */
-    .container.main-content {
-        margin-top: 7rem !important;  /* 12remから7remに減らす */
+    .container-fluid.main-content {
+        margin-top: 8rem !important;  /* 10remから8remに減らす */
     }
 }
 
@@ -1224,43 +1258,6 @@ body {
 #appeal {
     border-bottom: none !important;  /* 下線を明示的に削除 */
     padding-bottom: 0 !important;    /* 下部パディングも削除 */
-}
-
-/* タブ内のカード幅を統一 */
-.container {
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-}
-
-.container .card {
-    width: 100% !important;
-    margin: 0 auto !important;
-}
-
-/* カードボディの余白を統一 */
-.card-body {
-    padding: 2rem !important;
-}
-
-/* スクリーンショットタブの調整 */
-.screenshots-container {
-    width: 100% !important;
-}
-
-/* アピールタブの調整 */
-#appeal-section .card,
-#appeal-section .form-control {
-    width: 100% !important;
-}
-
-/* スクリーンショットタブのタイトル文字を他のタブと合わせる */
-.card-title {
-    font-size: 1.5rem !important;
-    margin-bottom: 1.5rem !important;
-    text-shadow: 0 0 10px var(--cyber-pink),
-                 0 0 20px var(--cyber-pink) !important;
-    font-weight: bold !important;
-    color: var(--cyber-pink) !important;  /* 周りの要素と同じピンク色に変更 */
 }
 </style>
 

@@ -1,7 +1,7 @@
 {% load app_filters %}
 {% include 'apps_gallery/shared/disabled_styles.html' %}
 
-<div class="container">
+<div style="width: 100%; max-width: 1200px; margin: 0 auto;">
     <div class="card border-0">
         <div class="card-body">
             <h2 class="card-title h3 mb-4" style="color: #ffd700 !important; 
@@ -13,19 +13,6 @@
             
             <!-- 以下のスタイルを追加 -->
             <style>
-            /* 基本情報タブの横幅を調整 */
-            #basic-section .container,
-            #basic-section .card,
-            #basic-section .card-body {
-                max-width: 1000px !important;  /* 1200pxから1000pxに変更 */
-                margin-left: auto !important;
-                margin-right: auto !important;
-                padding-left: 20px !important;
-                padding-right: 20px !important;
-                width: 100% !important;
-                box-sizing: border-box !important;
-            }
-
             /* より具体的なセレクタを使用 */
             #basic-section .card,
             html body #basic-section .card {
@@ -91,6 +78,18 @@
                 color: #000 !important;
                 text-shadow: none !important;
                 box-shadow: 0 0 10px #ffd700 !important;
+            }
+
+            #basic-section .card-title,
+            #basic-section .text-cyber-gold {
+                color: var(--cyber-gold) !important;
+                text-shadow: 0 0 10px var(--cyber-gold),
+                            0 0 20px var(--cyber-gold) !important;
+            }
+
+            .form-control.cyber-gold-focus:focus {
+                border-color: var(--cyber-gold) !important;
+                box-shadow: 0 0 15px var(--cyber-gold) !important;
             }
             </style>
 

@@ -60,25 +60,30 @@
 </div>
 
 <style>
-/* サイバーパンク風のスタイル */
-#security .text-cyber-red {
-    color: #ff3e3e !important;
-    text-shadow: 0 0 5px #ff3e3e !important;
+/* セキュリティタブのスタイル */
+#security-section .card-title,
+#security-section .text-cyber-red {
+    color: var(--cyber-red) !important;
+    text-shadow: 0 0 10px var(--cyber-red),
+                0 0 20px var(--cyber-red) !important;
 }
 
-#security .form-check-input:checked {
-    background-color: #ff3e3e !important;
-    border-color: #ff3e3e !important;
-    box-shadow: 0 0 5px #ff3e3e !important;
+#security-section .form-control,
+#security-section .form-select,
+#security-section .form-check-input {
+    border: 2px solid var(--cyber-red) !important;
+    color: var(--cyber-red) !important;
 }
 
-#security .form-check-input:hover {
-    border-color: #ff3e3e !important;
+#security-section .form-check-input:checked {
+    background-color: var(--cyber-red) !important;
+    box-shadow: 0 0 10px var(--cyber-red) !important;
 }
 
-#security .form-check-label {
-    color: #ff6b6b !important;
-    text-shadow: 0 0 2px #ff6b6b !important;
+#security-section .form-label,
+#security-section .form-check-label {
+    color: var(--cyber-red) !important;
+    text-shadow: 0 0 5px var(--cyber-red) !important;
 }
 
 /* disabled状態のスタイル */
