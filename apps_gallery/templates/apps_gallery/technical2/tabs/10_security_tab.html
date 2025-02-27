@@ -8,6 +8,14 @@
                 <span class="text-cyber-red">セキュリティ</span>
             </h2>
 
+            <!-- デバッグ情報の表示 -->
+            {% if debug %}
+            <div class="debug-info" style="display: none;">
+                <p>Authentication Methods: {{ app.security.authentication_methods|default:"[]" }}</p>
+                <p>Security Measures: {{ app.security.measures|default:"[]" }}</p>
+            </div>
+            {% endif %}
+
             <form id="security-form">
                 <!-- 認証方式 -->
                 <div class="mb-4">
@@ -21,7 +29,7 @@
                                            name="authentication_methods"
                                            value="{{ key }}"
                                            class="form-check-input"
-                                           {% if key in app.security.authentication_methods %}checked{% endif %}
+                                           {% if app.security and key in app.security.authentication_methods %}checked{% endif %}
                                            {% if readonly %}disabled{% endif %}>
                                     <label class="form-check-label" for="auth-method-{{ key }}">
                                         {{ value }}
@@ -44,7 +52,7 @@
                                            name="security_measures"
                                            value="{{ key }}"
                                            class="form-check-input"
-                                           {% if key in app.security.measures %}checked{% endif %}
+                                           {% if app.security and key in app.security.measures %}checked{% endif %}
                                            {% if readonly %}disabled{% endif %}>
                                     <label class="form-check-label" for="security-measure-{{ key }}">
                                         {{ value }}

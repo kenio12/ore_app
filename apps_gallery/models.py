@@ -153,6 +153,30 @@ class AppGallery(models.Model):
         blank=True,
         help_text='アーキテクチャ関連の情報（アーキテクチャパターン、デザインパターン、説明など）'
     )
+
+    # フロントエンド情報
+    frontend = models.JSONField(
+        'フロントエンド情報',
+        default=dict,
+        blank=True,
+        help_text='フロントエンド関連の情報（言語、フレームワーク、CSSフレームワークなど）'
+    )
+
+    # データベース情報
+    database = models.JSONField(
+        'データベース情報',
+        default=dict,
+        blank=True,
+        help_text='データベース関連の情報（種類、ホスティング、ORMなど）'
+    )
+
+    # セキュリティ情報
+    security = models.JSONField(
+        'セキュリティ情報',
+        default=dict,
+        blank=True,
+        help_text='セキュリティ関連の情報（認証方式、セキュリティ対策など）'
+    )
     
     # ==================== 管理用フィールド ====================
     created_at = models.DateTimeField('作成日時', auto_now_add=True)

@@ -133,6 +133,7 @@ def get_common_context(app=None, readonly=False, is_edit=False):
         'ORMS': dict(ORMS),
         'AUTHENTICATION_METHODS': dict(AUTHENTICATION_METHODS),
         'DEVELOPMENT_PERIODS': dict(DEVELOPMENT_PERIODS),
+        'SECURITY_MEASURES': dict(SECURITY_MEASURES),
     }
     
     if app:
@@ -191,7 +192,11 @@ def create_view(request):
         'thumbnail_index': thumbnail_index,
         'app': {
             'screenshots': screenshots,
-            'thumbnail_index': thumbnail_index
+            'thumbnail_index': thumbnail_index,
+            'security': {
+                'authentication_methods': [],
+                'measures': []
+            }
         }
     })
     
@@ -336,21 +341,23 @@ def handle_app_form(request, app=None, context=None):
     
     return render(request, 'apps_gallery/create_edit_detail.html', context)
 
+@login_required
 def app_detail(request, pk):
     """アプリの詳細表示ビュー（全タブ統合版）"""
     app = get_object_or_404(AppGallery, pk=pk)
     
-    print("\n=== Frontend Debug Info ===")
-    if hasattr(app, 'frontend'):
-        print(f"Frontend Languages: {app.frontend.get('languages', [])}")
-        print(f"Frontend Frameworks: {app.frontend.get('frameworks', [])}")
-        print(f"CSS Frameworks: {app.frontend.get('css_frameworks', [])}")
+    # セキュリティ情報が未設定の場合は初期化
+    if not hasattr(app, 'security') or app.security is None:
+        app.security = {
+            'authentication_methods': [],
+            'measures': []
+        }
+        app.save()
     
-    print("\n=== Database Debug Info ===")
-    if hasattr(app, 'database'):
-        print(f"Database Types: {app.database.get('types', [])}")
-        print(f"Database Hosting: {app.database.get('hosting', [])}")
-        print(f"ORMs: {app.database.get('orms', [])}")
+    print("\n=== Security Debug Info ===")
+    print(f"Security Data: {app.security}")
+    print(f"Authentication Methods: {app.security.get('authentication_methods', [])}")
+    print(f"Security Measures: {app.security.get('measures', [])}")
     
     context = get_common_context(app=app, readonly=True)
     return render(request, 'apps_gallery/app_view_detail.html', context)
