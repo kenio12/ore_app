@@ -81,51 +81,11 @@
     </div>
 </div>
 
-<!-- 各タブのコンテンツ -->
-<div id="screenshots-section" class="section mb-5">
-    {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
-</div>
-<div id="basic-section" class="section mb-5">
-    {% include 'apps_gallery/tabs/02_basic_tab.html' %}
-</div>
-<div id="appeal-section" class="section mb-5">
-    {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
-</div>
-
-<!-- 技術系のセクション - パスを正しいものに修正 -->
-<div id="hardware-section" class="section mb-5">
-    {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
-</div>
-<div id="dev-env-section" class="section mb-5">
-    {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
-</div>
-<div id="architecture-section" class="section mb-5">
-    {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
-</div>
-<div id="backend-section" class="section mb-5">
-    {% include 'apps_gallery/technical/tabs/07_backend_tab.html' %}
-</div>
-<div id="frontend-section" class="section mb-5">
-    {% include 'apps_gallery/tabs/08_frontend_tab.html' %}
-</div>
-<div id="database-section" class="section mb-5">
-    {% include 'apps_gallery/tabs/09_database_tab.html' %}
-</div>
-<div id="security-section" class="section mb-5">
-    {% include 'apps_gallery/tabs/10_security_tab.html' %}
-</div>
-<div id="development-section" class="section mb-5">
-    {% include 'apps_gallery/tabs/11_development_tab.html' %}
-</div>
-
 <!-- メインコンテンツ -->
-<div class="container-fluid main-content mt-5" style="max-width: 1200px; margin: 0 auto;">
+<div class="container-fluid main-content" style="max-width: 1200px; margin: 0 auto; margin-top: -20px;">
     <!-- ヘッダー部分（新規作成/編集/詳細で切り替え） -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 style="color: {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
-                   text-shadow: 0 0 10px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}, 
-                              0 0 20px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
-                   font-weight: bold;">
+        <h2 class="{% if not readonly %}text-cyber-green{% else %}text-cyber-blue{% endif %}">
             {% if app.id %}
                 {% if readonly %}
                     {{ app.title }}の詳細
@@ -138,7 +98,7 @@
         </h2>
     </div>
 
-    <!-- フォーム開始（編集モードの時のみ） -->
+<!-- フォーム開始（編集モードの時のみ） -->
     {% if not readonly %}
         <form id="appForm" 
               method="post" 
@@ -155,103 +115,42 @@
             {% endif %}
     {% endif %}
 
-    <!-- 各セクション -->
-    <div class="row g-4">
-        <div class="col-12">
-            <!-- スクリーンショットセクション -->
-            <section id="screenshots" class="mb-3 scroll-margin-top">
-                <!-- スクリーンショットタブは既に上部でインクルード済みなので重複を避けるために削除 -->
-            </section>
-        </div>
+<!-- 各タブのコンテンツ -->
+<div id="screenshots-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
+</div>
+<div id="basic-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/02_basic_tab.html' %}
+</div>
+<div id="appeal-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
+</div>
 
-        <div class="col-12">
-            <!-- 基本情報セクション -->
-            <section id="basic" class="mb-3">
-                <div class="card border-0" id="basic-info-card">
-                    <div class="card-body">
-                        <h2 class="card-title h3 mb-4" style="color: #ffd700 !important;">
-                            <i class="bi bi-info-circle-fill" style="color: #ffd700 !important;"></i> 基本情報
-                        </h2>
-
-                        <!-- 作者名（表示のみ） -->
-                        <div class="mb-4">
-                            <label class="form-label text-cyber-yellow">作者</label>
-                            <input type="text" 
-                                   class="form-control cyber-yellow-focus" 
-                                   value="{{ user.username }}"
-                                   readonly>
-                        </div>
-
-                        <!-- アプリ名 -->
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-cyber-yellow" for="title">
-                                アプリ名
-                            </label>
-                            <input type="text" 
-                                   id="title" 
-                                   name="title" 
-                                   class="form-control cyber-yellow-focus" 
-                                   value="{{ app.title }}"
-                                   {% if readonly %}readonly{% endif %}>
-                        </div>
-
-                        <!-- アプリの種類（チェックボックス） -->
-                        <div class="mb-4">
-                            <label class="form-label">アプリの種類</label>
-                            <div class="row g-3">
-                                {% for key, label in APP_TYPES.items %}
-                                    <div class="col-md-3 col-sm-6">
-                                        <div class="form-check">
-                                            <input type="checkbox" 
-                                                   name="app_types" 
-                                                   value="{{ key }}"
-                                                   id="type_{{ key }}"
-                                                   class="form-check-input cyber-form-check-input"
-                                                   {% if app and key in app.app_types %}checked{% endif %}
-                                                   {% if readonly %}disabled{% endif %}>
-                                            <label class="form-check-label cyber-form-check-label" for="type_{{ key }}">
-                                                {{ label }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <!-- ジャンル（チェックボックス） -->
-                        <div class="mb-4">
-                            <label class="form-label">ジャンル</label>
-                            <div class="row g-3">
-                                {% for key, label in GENRES.items %}
-                                    <div class="col-md-3 col-sm-6">
-                                        <div class="form-check">
-                                            <input type="checkbox" 
-                                                   name="genres" 
-                                                   value="{{ key }}"
-                                                   id="genre_{{ key }}"
-                                                   class="form-check-input cyber-checkbox"
-                                                   {% if app and key in app.genres %}checked{% endif %}
-                                                   {% if readonly %}disabled{% endif %}>
-                                            <label class="form-check-label" for="genre_{{ key }}">
-                                                {{ label }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <div class="col-12">
-            <!-- アプリの魅力セクション -->
-            <section id="appeal" class="mb-5">
-                {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
-            </section>
-        </div>
-    </div>
+<!-- 技術系のセクション - パスを統一 -->
+<div id="hardware-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/04_hardware_tab.html' %}
+</div>
+<div id="dev-env-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/05_dev_env_tab.html' %}
+</div>
+<div id="architecture-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/06_architecture_tab.html' %}
+</div>
+<div id="backend-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/07_backend_tab.html' %}
+</div>
+<div id="frontend-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/08_frontend_tab.html' %}
+</div>
+<div id="database-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/09_database_tab.html' %}
+</div>
+<div id="security-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/10_security_tab.html' %}
+</div>
+<div id="development-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/11_development_tab.html' %}
+</div>
 
     <!-- フォーム終了（編集モードの時のみ） -->
     {% if not readonly %}
@@ -393,7 +292,7 @@
 
 /* メインコンテンツのマージン - さらに上部マージンを減らす */
 .container-fluid.main-content {
-    margin-top: 4.5rem !important;  /* 6remから4.5remにさらに減らす */
+    margin-top: 0.5rem !important;  /* 2remから0.5remにさらに減らす */
     padding-top: 2rem !important;
 }
 
@@ -406,13 +305,13 @@ section.mb-5 {
 /* レスポンシブ対応も調整 */
 @media (max-width: 768px) {  /* タブレット以下 */
     .container-fluid.main-content {
-        margin-top: 6rem !important;  /* 8remから6remに減らす */
+        margin-top: 1rem !important;  /* 3remから1remに減らす */
     }
 }
 
 @media (max-width: 576px) {  /* スマホ */
     .container-fluid.main-content {
-        margin-top: 8rem !important;  /* 10remから8remに減らす */
+        margin-top: 2rem !important;  /* 4remから2remに減らす */
     }
 }
 
@@ -2140,4 +2039,61 @@ function startAutoSaveFeature() {
 }
 </script>
 <!-- // ==================== 追加部分 ==================== -->
+
+<!-- ==================== 追加部分 ==================== -->
+<script>
+// グローバル変数（appState）を定義
+let appState = {
+    formChanged: false,      // フォーム変更フラグ
+    initialData: null,       // 初期データ（比較用）
+    saveTimer: null,         // 保存タイマーID
+    initialLoad: true,       // 初期ロードフラグ
+    lastSaveTime: null,      // 最終保存時間
+    saveInProgress: false,   // 保存処理中フラグ
+    retryCount: 0,           // リトライカウンター
+    errorState: false        // エラー状態
+};
+
+// フォームの変更フラグをリセットする関数（外部から呼び出し可能）
+function resetFormDirty() {
+    console.log('フォーム変更フラグをリセットします');
+    
+    // appState変数のリセット
+    if (typeof appState !== 'undefined') {
+        appState.formChanged = false;
+    }
+    
+    // 自動保存状態のリセット
+    if (typeof autoSaveState !== 'undefined') {
+        autoSaveState.formChanged = false;
+    }
+    
+    // 保存状態表示の更新
+    const statusEl = document.getElementById('saveStatus');
+    if (statusEl) {
+        statusEl.textContent = '保存済み';
+        const container = document.getElementById('saveStatusContainer');
+        if (container) {
+            container.className = 'save-status-container success';
+        }
+    }
+    
+    return true;
+}
+
+// ドキュメント読み込み完了時にフォームにresetDirty関数を追加
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('appForm');
+    if (form) {
+        form.resetDirty = resetFormDirty;
+    }
+});
+
+// ページ離脱時の確認処理をオーバーライド（画像アップロード中は警告を表示しない）
+window.onbeforeunload = function(event) {
+    // 警告メッセージを表示しない - すべての場合に警告なしでページ遷移を許可
+    return undefined;
+};
+// ... existing code ...
+</script>
 {% endblock %} 
