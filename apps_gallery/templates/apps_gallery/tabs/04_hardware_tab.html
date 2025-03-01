@@ -1,0 +1,374 @@
+<div id="hardware" class="container" style="margin: 0 !important; padding: 0 !important;">
+    <div class="card border-0 shadow-lg" style="background-color: rgba(13, 25, 45, 0.8) !important;">
+        <div class="card-body">
+            <h2 class="card-title h3 mb-4">
+                <i class="bi bi-cpu text-cyber-blue"></i> 
+                <span class="text-cyber-blue">開発に使用したパソコン環境</span>
+            </h2>
+
+            <form id="hardware-form">
+                <!-- メーカーと機種情報（一番上に移動） -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">使用パソコンのメーカー</label>
+                    <div class="input-group mb-3">
+                        <input type="text" 
+                               id="maker"
+                               name="maker"
+                               class="form-control cyber-blue-focus"
+                               placeholder="例: Apple, Lenovo, Dell, HP など"
+                               value="{{ app.hardware_specs.maker }}"
+                               {% if readonly %}disabled{% endif %}>
+                    </div>
+                    <!-- メーカー例の表示 -->
+                    <div class="mt-2 mb-3">
+                        <small class="text-cyber-blue">
+                            <i class="bi bi-info-circle"></i> 代表的なメーカー例:
+                        </small>
+                        <div class="row g-2 mt-1">
+                            {% for example in maker_examples %}
+                            <div class="col-md-4">
+                                <small class="text-cyber-blue">• {{ example }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <label class="form-label text-cyber-blue">使用パソコンの機種名</label>
+                    <div class="input-group">
+                        <input type="text" 
+                               id="model"
+                               name="model"
+                               class="form-control cyber-blue-focus"
+                               placeholder="例: MacBook Pro (2020), ThinkPad X1 Carbon など"
+                               value="{{ app.hardware_specs.model }}"
+                               {% if readonly %}disabled{% endif %}>
+                    </div>
+                </div>
+
+                <!-- PCタイプ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">使用パソコンのタイプ</label>
+                    <div class="row g-3">
+                        {% for key, value in pc_types.items %}
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       class="form-check-input"
+                                       name="pc_type"
+                                       value="{{ key }}"
+                                       {% if app.hardware_specs.pc_type == key %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-blue">{{ value }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- デバイスタイプ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">使用パソコンの種類</label>
+                    <p class="text-muted small mb-3 text-cyber-blue">
+                        ※使用しているパソコンの種類を選択してください。
+                        WindowsパソコンやMac、ChromebookなどのGoogle製パソコン、
+                        Linuxをメインで使用しているパソコンなど、
+                        開発に使用している主なパソコンを選んでください。
+                    </p>
+                    <div class="row g-3">
+                        {% for key, value in device_types.items %}
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="device-{{ key }}"
+                                       name="device_type"
+                                       class="form-check-input cyber-blue-focus"
+                                       value="{{ key }}"
+                                       {% if app.hardware_specs.device_type == key %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-blue" for="device-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- CPU -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">CPU</label>
+                    <div class="row g-3">
+                        {% for key, value in cpu_types.items %}
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="cpu-{{ key }}"
+                                       name="cpu_type"
+                                       class="form-check-input cyber-form-check-input"
+                                       value="{{ key }}"
+                                       {% if app.hardware_specs.cpu_type == key %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label cyber-form-check-label" for="cpu-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- メモリ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">メモリ</label>
+                    <div class="row g-3">
+                        {% for key, value in memory_sizes.items %}
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="memory-{{ key }}"
+                                       name="memory_size"
+                                       class="form-check-input cyber-form-check-input"
+                                       value="{{ key }}"
+                                       {% if key == app.hardware_specs.memory_size %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label cyber-form-check-label" for="memory-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- ストレージ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">ストレージタイプ</label>
+                    <div class="row g-3">
+                        {% for key, value in storage_types.items %}
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="storage-{{ key }}"
+                                       name="storage_type"
+                                       class="form-check-input cyber-blue-focus"
+                                       value="{{ key }}"
+                                       {% if key == app.hardware_specs.storage_type %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-blue" for="storage-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- モニター数 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">使用モニター数</label>
+                    <div class="row g-3">
+                        {% for key, value in monitor_counts.items %}
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="monitor-{{ key }}"
+                                       name="monitor_count"
+                                       class="form-check-input cyber-blue-focus"
+                                       value="{{ key }}"
+                                       {% if key == app.hardware_specs.monitor_count %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-blue" for="monitor-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- インターネット回線 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-blue">使用インターネット回線</label>
+                    <div class="row g-3">
+                        {% for key, value in internet_types.items %}
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="radio" 
+                                       id="internet-{{ key }}"
+                                       name="internet_type"
+                                       class="form-check-input cyber-blue-focus"
+                                       value="{{ key }}"
+                                       {% if key == app.hardware_specs.internet_type %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-blue" for="internet-{{ key }}">
+                                    {{ value }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- デバッグ情報の表示 -->
+<div style="display: none;">
+    <p>CPU Types: {{ cpu_types }}</p>
+    <p>Memory Sizes: {{ memory_sizes }}</p>
+    <p>Storage Types: {{ storage_types }}</p>
+</div>
+
+<style>
+/* ハードウェアタブのスタイル */
+#hardware-section .card-title,
+#hardware-section .text-cyber-blue {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 10px var(--cyber-blue),
+                0 0 20px var(--cyber-blue) !important;
+}
+
+#hardware-section .form-control,
+#hardware-section .form-select,
+#hardware-section .form-check-input {
+    border: 2px solid var(--cyber-blue) !important;
+    color: var(--cyber-blue) !important;
+}
+
+#hardware-section .form-check-input:checked {
+    background-color: var(--cyber-blue) !important;
+    box-shadow: 0 0 10px var(--cyber-blue) !important;
+}
+
+#hardware-section .form-label,
+#hardware-section .form-check-label {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
+}
+
+/* カード全体のスタイル */
+#hardware .card,
+html body #hardware .card {
+    background-color: rgba(13, 25, 45, 0.8) !important;
+    border: 2px solid #00ffff !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+}
+
+/* ラジオボタンとチェックボックスのスタイル */
+#hardware .form-check-input,
+html body #hardware .form-check-input {
+    border: 2px solid #00ffff !important;
+    background-color: rgba(13, 25, 45, 0.8) !important;
+}
+
+#hardware .form-check-input:checked,
+html body #hardware .form-check-input:checked {
+    background-color: #00ffff !important;
+    border-color: #00ffff !important;
+}
+
+/* すべてのテキスト要素を水色に */
+#hardware *,
+html body #hardware * {
+    color: #00ffff !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5) !important;
+}
+
+/* 入力フィールドのスタイル */
+#hardware .form-control,
+html body #hardware .form-control {
+    background-color: rgba(13, 25, 45, 0.8) !important;
+    color: #00ffff !important;
+    border: 2px solid #00ffff !important;
+}
+
+/* プレースホルダーのスタイル */
+#hardware .form-control::placeholder,
+html body #hardware .form-control::placeholder {
+    color: rgba(0, 255, 255, 0.5) !important;
+}
+
+/* 説明文のスタイル */
+#hardware .text-muted,
+html body #hardware .text-muted {
+    color: #00ffff !important;
+    opacity: 0.8 !important;
+}
+
+/* 入力済み値のスタイル */
+#hardware input[type="text"],
+html body #hardware input[type="text"],
+#hardware input[type="radio"],
+html body #hardware input[type="radio"],
+#hardware select,
+html body #hardware select {
+    color: #00ffff !important;
+}
+
+/* ラジオボタンとチェックボックスのラベル */
+#hardware .form-check-label,
+html body #hardware .form-check-label {
+    color: #00ffff !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5) !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
+}
+
+/* フォームのラベル */
+#hardware .form-label,
+html body #hardware .form-label {
+    color: #00ffff !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5) !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
+}
+</style>
+
+<!-- <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const hardwareSection = document.getElementById('hardware');
+    
+    if (hardwareSection) {
+        // ハードウェアスペックのデータを取得
+        const specs = {
+            pc_type: "{{ app.hardware_specs.pc_type|default:'' }}",
+            device_type: "{{ app.hardware_specs.device_type|default:'' }}",
+            maker: "{{ app.hardware_specs.maker|default:'' }}",
+            model: "{{ app.hardware_specs.model|default:'' }}",
+            cpu_type: "{{ app.hardware_specs.cpu_type|default:'' }}",
+            memory_size: "{{ app.hardware_specs.memory_size|default:'' }}",
+            storage_type: "{{ app.hardware_specs.storage_type|default:'' }}",
+            monitor_count: "{{ app.hardware_specs.monitor_count|default:'' }}",
+            internet_type: "{{ app.hardware_specs.internet_type|default:'' }}"
+        };
+
+        // メーカーと機種名の設定
+        const makerInput = document.querySelector('input[name="maker"]');
+        const modelInput = document.querySelector('input[name="model"]');
+        if (makerInput) makerInput.value = specs.maker;
+        if (modelInput) modelInput.value = specs.model;
+
+        // ラジオボタンの設定
+        Object.entries(specs).forEach(([key, value]) => {
+            if (value) {
+                const radioInput = document.querySelector(`input[name="${key}"][value="${value}"]`);
+                if (radioInput) {
+                    radioInput.checked = true;
+                }
+            }
+        });
+
+        // フォームの変更を監視
+        const form = document.getElementById('hardware-form');
+        if (form) {
+            form.addEventListener('change', function() {
+                console.log('Hardware form changed');
+                // 親フォームのイベントをトリガー
+                const event = new Event('hardwareChanged', { bubbles: true });
+                form.dispatchEvent(event);
+            });
+        }
+    }
+});
+</script>  -->

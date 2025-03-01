@@ -86,6 +86,20 @@ class AppForm(forms.ModelForm):
                     'rows': '8'
                 })
 
+        # 自動保存のために全フィールドを任意に設定
+        for field_name in self.fields:
+            self.fields[field_name].required = False
+            
+        # 自動保存用の属性を追加
+        for field_name in self.fields:
+            if 'class' in self.fields[field_name].widget.attrs:
+                self.fields[field_name].widget.attrs['class'] += ' auto-save-field'
+            else:
+                self.fields[field_name].widget.attrs['class'] = 'auto-save-field'
+            
+            # 変更検知用のイベント属性
+            self.fields[field_name].widget.attrs['data-autosave'] = 'true'
+
     def clean_app_types(self):
         app_types = self.cleaned_data.get('app_types', [])
         if isinstance(app_types, str):

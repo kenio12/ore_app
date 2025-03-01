@@ -2,7 +2,10 @@
 {% include 'apps_gallery/shared/disabled_styles.html' %}
 
 <div style="width: 100%; max-width: 1200px; margin: 0 auto;">
-    <div class="card border-0">
+    <div class="card border-0" 
+         data-is-edit-mode="{% if app.id %}true{% else %}false{% endif %}"
+         data-app-id="{% if app.id %}{{ app.id }}{% else %}null{% endif %}"
+         data-readonly="{% if readonly %}true{% else %}false{% endif %}">
         <div class="card-body">
             <h2 class="card-title h3 mb-4" style="color: var(--cyber-purple) !important; 
                                                  text-shadow: 0 0 10px var(--cyber-purple),
@@ -642,6 +645,10 @@ body #screenshots .btn-cyber-purple:hover:not(:disabled) {
 </style>
 
 <script>
+// グローバル変数は1回だけ宣言
+let isSubmitting = false;
+const MAX_SCREENSHOTS = 3;
+
 // グローバルスコープでCSRFトークンを取得する関数を定義
 function getCookie(name) {
     let cookieValue = null;
@@ -664,9 +671,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
-// グローバル変数で送信中フラグを管理
-let isSubmitting = false;
 
 // トースト表示関数を確認
 function showToast(message, type = 'success') {
@@ -706,50 +710,73 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
-// スクリーンショットの最大数を定義
-const MAX_SCREENSHOTS = 3;
-
 // スクリーンショット数をチェックしてアップロードエリアの表示を制御する関数
 function updateUploadAreaVisibility() {
-    const screenshotsCount = document.querySelectorAll('.screenshot-wrapper').length;
-    const uploadForm = document.querySelector('.upload-form');
-    
-    if (screenshotsCount >= MAX_SCREENSHOTS) {
+    try {
+        const screenshotsCount = document.querySelectorAll('.screenshot-wrapper').length;
+        const uploadForm = document.querySelector('.upload-form');
+        
+        console.log('現在のスクリーンショット数:', screenshotsCount);
+
         if (uploadForm) {
-            uploadForm.style.display = 'none';
+            if (screenshotsCount >= MAX_SCREENSHOTS) {
+                uploadForm.style.display = 'none';
+                console.log('アップロードフォームを非表示にしました');
+            } else {
+                uploadForm.style.display = 'block';
+                console.log('アップロードフォームを表示しました');
+            }
+        } else {
+            console.log('アップロードフォームが見つかりません');
         }
-    } else {
-        if (uploadForm) {
-            uploadForm.style.display = 'block';
-        }
+    } catch (error) {
+        console.error('アップロードエリアの表示制御中にエラーが発生しました:', error);
     }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const isEditMode = {% if app.id %}true{% else %}false{% endif %};
-    const appId = {% if app.id %}{{ app.id }}{% else %}null{% endif %};
+    const cardElement = document.querySelector('.card');
+    const isEditMode = cardElement.dataset.isEditMode === 'true';
+    const appId = cardElement.dataset.appId !== 'null' ? parseInt(cardElement.dataset.appId) : null;
+    const isReadonly = cardElement.dataset.readonly === 'true';
+    
+    console.log('初期化パラメータ:', { isEditMode, appId, isReadonly });
     
     // 初期表示時にアップロードエリアの表示を制御
     updateUploadAreaVisibility();
     
     // プレビュー表示の処理を追加
     function showPreview(file) {
-        const previewArea = document.querySelector('.upload-preview-area');
-        const previewPlaceholder = previewArea.querySelector('.preview-placeholder');
-        const previewWrapper = previewArea.querySelector('.preview-wrapper');
-        const imagePreview = document.getElementById('imagePreview');
-        const cancelButton = document.getElementById('cancelPreview');
+        try {
+            const previewArea = document.querySelector('.upload-preview-area');
+            if (!previewArea) {
+                console.warn('プレビューエリアが見つかりません');
+                return;
+            }
 
-        // FileReaderでファイルを読み込む
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            imagePreview.src = e.target.result;
-            imagePreview.classList.remove('d-none');
-            previewWrapper.style.display = 'block';
-            previewPlaceholder.style.display = 'none';
-            cancelButton.classList.remove('d-none');
+            const previewPlaceholder = previewArea.querySelector('.preview-placeholder');
+            const previewWrapper = previewArea.querySelector('.preview-wrapper');
+            const imagePreview = document.getElementById('imagePreview');
+            const cancelButton = document.getElementById('cancelPreview');
+
+            if (!previewPlaceholder || !previewWrapper || !imagePreview || !cancelButton) {
+                console.warn('プレビュー表示に必要な要素が見つかりません');
+                return;
+            }
+
+            // FileReaderでファイルを読み込む
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.classList.remove('d-none');
+                previewWrapper.style.display = 'block';
+                previewPlaceholder.style.display = 'none';
+                cancelButton.classList.remove('d-none');
+            }
+            reader.readAsDataURL(file);
+        } catch (error) {
+            console.error('プレビュー表示中にエラーが発生しました:', error);
         }
-        reader.readAsDataURL(file);
     }
 
     // キャンセルボタンの処理を追加
@@ -763,19 +790,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // プレビューをリセットする関数
     function resetPreview() {
-        const previewArea = document.querySelector('.upload-preview-area');
-        const previewPlaceholder = previewArea.querySelector('.preview-placeholder');
-        const previewWrapper = previewArea.querySelector('.preview-wrapper');
-        const imagePreview = document.getElementById('imagePreview');
-        const cancelButton = document.getElementById('cancelPreview');
-        const fileInput = document.getElementById('screenshotInput');
+        try {
+            const previewArea = document.querySelector('.upload-preview-area');
+            if (!previewArea) {
+                console.warn('プレビューエリアが見つかりません');
+                return;
+            }
 
-        imagePreview.src = '';
-        imagePreview.classList.add('d-none');
-        previewWrapper.style.display = 'none';
-        previewPlaceholder.style.display = 'block';
-        cancelButton.classList.add('d-none');
-        fileInput.value = '';
+            const previewPlaceholder = previewArea.querySelector('.preview-placeholder');
+            const previewWrapper = previewArea.querySelector('.preview-wrapper');
+            const imagePreview = document.getElementById('imagePreview');
+            const cancelButton = document.getElementById('cancelPreview');
+            const fileInput = document.getElementById('screenshotInput');
+
+            if (!previewPlaceholder || !previewWrapper || !imagePreview || !cancelButton || !fileInput) {
+                console.warn('プレビューリセットに必要な要素が見つかりません');
+                return;
+            }
+
+            imagePreview.src = '';
+            imagePreview.classList.add('d-none');
+            previewWrapper.style.display = 'none';
+            previewPlaceholder.style.display = 'block';
+            cancelButton.classList.add('d-none');
+            fileInput.value = '';
+        } catch (error) {
+            console.error('プレビューリセット中にエラーが発生しました:', error);
+        }
     }
 
     // フォームデータを保存する関数
@@ -807,8 +848,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // アップロード処理を修正
     async function handleUpload(file) {
-        const uploadLoader = document.getElementById('uploadLoader');
-        uploadLoader.style.display = 'flex';
+        if (isSubmitting) return; // 二重送信防止
+        isSubmitting = true;
         
         try {
             // まず既存のフォーム送信処理を利用して保存
@@ -852,15 +893,28 @@ document.addEventListener('DOMContentLoaded', function() {
             const uploadResult = await uploadResponse.json();
             
             if (uploadResponse.ok) {
-                // スクリーンショットのアップロード成功メッセージを表示
-                setTimeout(() => {
-                    showToast('スクリーンショットをアップロードしました', 'success');
-                }, 1500); // 最初のトーストの後に表示
+                // 画像のロードを待つ関数
+                const waitForImageLoad = (imageUrl) => {
+                    return new Promise((resolve) => {
+                        const img = new Image();
+                        img.onload = () => resolve();
+                        img.src = uploadResult.screenshot.url;
+                    });
+                };
+
+                // 画像のロードを待つ
+                await waitForImageLoad(uploadResult.screenshot.url);
+
+                // 画像のロード完了後にトーストを表示
+                showToast('スクリーンショットをアップロードしました', 'success');
+                
+                // アップロードエリアの表示を更新
+                updateUploadAreaVisibility();
                 
                 // さらに少し待ってからリダイレクト
                 setTimeout(() => {
                     window.location.href = `/apps_gallery/edit/${app_id}/`;
-                }, 2500);
+                }, 1500);
             } else {
                 throw new Error(uploadResult.error || 'アップロードに失敗しました');
             }
@@ -869,7 +923,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('エラー:', error);
             showToast(error.message, 'error');
         } finally {
-            uploadLoader.style.display = 'none';
+            isSubmitting = false;
         }
     }
 
@@ -950,43 +1004,71 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', () => handleDelete(btn.dataset.index));
     });
 
-    // ファイルアップロード関連
-    const dropZone = document.querySelector('.upload-preview-area');
-    const fileInput = document.getElementById('screenshotInput');
+    // ファイルアップロード関連の初期化関数
+    function initializeFileUpload() {
+        // 要素の存在チェックを最初に行う
+        const dropZone = document.querySelector('.upload-preview-area');
+        const fileInput = document.getElementById('screenshotInput');
 
-    if (dropZone && fileInput) {
-        // クリックでのファイル選択
-        dropZone.addEventListener('click', () => fileInput.click());
-        
-        // ファイル選択時の処理
-        fileInput.addEventListener('change', e => {
-            if (e.target.files[0]) handleUpload(e.target.files[0]);
-        });
+        if (!dropZone) {
+            console.warn('ドロップゾーン要素が見つかりません');
+            return;
+        }
 
-        // ドラッグ&ドロップ処理
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, e => {
-                e.preventDefault();
-                e.stopPropagation();
+        if (!fileInput) {
+            console.warn('ファイル入力要素が見つかりません');
+            return;
+        }
+
+        console.log('アップロードに必要な要素を確認しました');
+
+        try {
+            // クリックでのファイル選択
+            dropZone.addEventListener('click', () => fileInput.click());
+            
+            // ファイル選択時の処理
+            fileInput.addEventListener('change', e => {
+                if (e.target.files[0]) handleUpload(e.target.files[0]);
             });
-        });
 
-        // ドラッグオーバー時のスタイル
-        dropZone.addEventListener('dragover', () => {
-            dropZone.classList.add('dragover');
-        });
+            // ドラッグ&ドロップ処理
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            });
 
-        // ドラッグ離脱時のスタイル
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
+            // ドラッグオーバー時のスタイル
+            dropZone.addEventListener('dragover', () => {
+                dropZone.classList.add('dragover');
+            });
 
-        // ドロップ時の処理
-        dropZone.addEventListener('drop', e => {
-            dropZone.classList.remove('dragover');
-            const file = e.dataTransfer.files[0];
-            if (file) handleUpload(file);
-        });
+            // ドラッグ離脱時のスタイル
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            // ドロップ時の処理
+            dropZone.addEventListener('drop', e => {
+                dropZone.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file) handleUpload(file);
+            });
+
+            console.log('ファイルアップロード機能の初期化が完了しました');
+        } catch (error) {
+            console.error('ファイルアップロード機能の初期化中にエラーが発生しました:', error);
+        }
+    }
+
+    // 初期化関数を呼び出し
+    // readonly モードでないときのみファイルアップロードの初期化を行う
+    if (!isReadonly && document.querySelector('#screenshot-upload-form')) {
+        console.log('アップロード機能の初期化を開始します');
+        initializeFileUpload();
+    } else {
+        console.log('読み取り専用モードまたはアップロードフォームがないため、アップロード機能を初期化しません');
     }
 });
 </script> 

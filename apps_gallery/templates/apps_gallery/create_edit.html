@@ -1,0 +1,2125 @@
+{% extends 'base.html' %}
+{% load app_filters %}
+{% load static %}
+
+{# 文字エンコーディングを明示的に指定 #}
+<meta charset="UTF-8">
+
+{# タイトルブロックを追加 #}
+{% block title %}
+    {% if app.id %}
+        {% if readonly %}
+            {{ app.title }} の詳細 | アプリギャラリー
+        {% else %}
+            {{ app.title }} を編集 | アプリギャラリー
+        {% endif %}
+    {% else %}
+        新規アプリを投稿 | アプリギャラリー
+    {% endif %}
+{% endblock %}
+
+{# ナビバーを完全に非表示にする #}
+{% block navbar %}
+{% endblock %}
+
+{# デバッグ用 #}
+{{ hide_navbar|default:"not set" }}
+
+{% block content %}
+<!-- サイバーテーマのCSS読み込み -->
+<link rel="stylesheet" href="{% static 'apps_gallery/css/cyber-theme.css' %}">
+
+<!-- サイバーパンク風の装飾 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<!-- タブナビゲーション -->
+<div id="appTabs" class="app-tabs">
+    <div class="container py-1">
+        <nav class="nav nav-pills nav-fill m-0">
+            <!-- ホームへ戻るボタン -->
+            <a href="/" class="nav-link cyber-home" title="ホームへ戻る" onclick="handleHomeClick(event)">
+                <span class="fs-4 me-2 cyber-emoji">&#x1F916;</span>
+            </a>
+            
+            <!-- 既存のタブ -->
+            <a class="nav-link active" id="basic-tab" data-bs-toggle="tab" href="#basic-section" role="tab" aria-controls="basic-section" aria-selected="true">
+                <i class="bi bi-info-circle-fill"></i> 基本情報
+            </a>
+            <a class="nav-link text-neon" href="#screenshots-section" style="color: var(--cyber-purple) !important; text-shadow: 0 0 5px var(--cyber-purple);">
+                <i class="bi bi-image-fill"></i> スクリーンショット
+            </a>
+            <a class="nav-link text-neon" href="#appeal-section" style="color: var(--cyber-green) !important; text-shadow: 0 0 5px var(--cyber-green);">
+                <i class="bi bi-star-fill"></i> アプリの魅力
+            </a>
+            <a class="nav-link text-neon" href="#hardware-section" style="color: var(--cyber-blue) !important; text-shadow: 0 0 5px var(--cyber-blue);">
+                <i class="bi bi-pc-display"></i> パソコン環境
+            </a>
+            <a class="nav-link text-neon" href="#dev-env-section" style="color: var(--cyber-orange) !important; text-shadow: 0 0 5px var(--cyber-orange);">
+                <i class="bi bi-tools"></i> 開発環境
+            </a>
+            <a class="nav-link text-neon" href="#architecture-section" style="color: var(--cyber-lime) !important; text-shadow: 0 0 5px var(--cyber-lime);">
+                <i class="bi bi-diagram-3-fill"></i> アーキテクチャ
+            </a>
+            <a class="nav-link text-neon" href="#backend-section" style="color: var(--cyber-aqua) !important; text-shadow: 0 0 5px var(--cyber-aqua);">
+                <i class="bi bi-server"></i> バックエンド
+            </a>
+            <a class="nav-link text-neon" href="#frontend-section" style="color: var(--cyber-pink) !important; text-shadow: 0 0 5px var(--cyber-pink);">
+                <i class="bi bi-window"></i> フロントエンド
+            </a>
+            <a class="nav-link text-neon" href="#database-section" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 5px var(--cyber-emerald);">
+                <i class="bi bi-database-fill"></i> データベース
+            </a>
+            <a class="nav-link text-neon" href="#security-section" style="color: var(--cyber-red) !important; text-shadow: 0 0 5px var(--cyber-red);">
+                <i class="bi bi-shield-fill-check"></i> セキュリティ
+            </a>
+            <a class="nav-link text-neon" href="#development-section" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 5px var(--cyber-yellow);">
+                <i class="bi bi-journal-text"></i> 開発ストーリー
+            </a>
+        </nav>
+    </div>
+</div>
+
+<!-- 各タブのコンテンツ -->
+<div id="screenshots-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
+</div>
+<div id="basic-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/02_basic_tab.html' %}
+</div>
+<div id="appeal-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
+</div>
+
+<!-- 技術系のセクション - パスを正しいものに修正 -->
+<div id="hardware-section" class="section mb-5">
+    {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
+</div>
+<div id="dev-env-section" class="section mb-5">
+    {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
+</div>
+<div id="architecture-section" class="section mb-5">
+    {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
+</div>
+<div id="backend-section" class="section mb-5">
+    {% include 'apps_gallery/technical/tabs/07_backend_tab.html' %}
+</div>
+<div id="frontend-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/08_frontend_tab.html' %}
+</div>
+<div id="database-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/09_database_tab.html' %}
+</div>
+<div id="security-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/10_security_tab.html' %}
+</div>
+<div id="development-section" class="section mb-5">
+    {% include 'apps_gallery/tabs/11_development_tab.html' %}
+</div>
+
+<!-- メインコンテンツ -->
+<div class="container-fluid main-content mt-5" style="max-width: 1200px; margin: 0 auto;">
+    <!-- ヘッダー部分（新規作成/編集/詳細で切り替え） -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="color: {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
+                   text-shadow: 0 0 10px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}, 
+                              0 0 20px {% if not readonly %}#00ff9f{% else %}#00ffff{% endif %}; 
+                   font-weight: bold;">
+            {% if app.id %}
+                {% if readonly %}
+                    {{ app.title }}の詳細
+                {% else %}
+                    {{ app.title }}を編集
+                {% endif %}
+            {% else %}
+                新しいアプリを登録
+            {% endif %}
+        </h2>
+    </div>
+
+    <!-- フォーム開始（編集モードの時のみ） -->
+    {% if not readonly %}
+        <form id="appForm" 
+              method="post" 
+              action="{% if is_edit %}{% url 'apps_gallery:edit' app.id %}{% else %}{% url 'apps_gallery:create' %}{% endif %}"
+              data-is-edit="{% if is_edit %}true{% else %}false{% endif %}"
+              data-app-id="{{ app.id|default:'' }}"
+              enctype="multipart/form-data" 
+              class="needs-validation" 
+              novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="active_tab" id="active_tab" value="{{ active_tab }}">
+            {% if app.id %}
+                <input type="hidden" name="app_id" value="{{ app.id }}">
+            {% endif %}
+    {% endif %}
+
+    <!-- 各セクション -->
+    <div class="row g-4">
+        <div class="col-12">
+            <!-- スクリーンショットセクション -->
+            <section id="screenshots" class="mb-3 scroll-margin-top">
+                <!-- スクリーンショットタブは既に上部でインクルード済みなので重複を避けるために削除 -->
+            </section>
+        </div>
+
+        <div class="col-12">
+            <!-- 基本情報セクション -->
+            <section id="basic" class="mb-3">
+                <div class="card border-0" id="basic-info-card">
+                    <div class="card-body">
+                        <h2 class="card-title h3 mb-4" style="color: #ffd700 !important;">
+                            <i class="bi bi-info-circle-fill" style="color: #ffd700 !important;"></i> 基本情報
+                        </h2>
+
+                        <!-- 作者名（表示のみ） -->
+                        <div class="mb-4">
+                            <label class="form-label text-cyber-yellow">作者</label>
+                            <input type="text" 
+                                   class="form-control cyber-yellow-focus" 
+                                   value="{{ user.username }}"
+                                   readonly>
+                        </div>
+
+                        <!-- アプリ名 -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-cyber-yellow" for="title">
+                                アプリ名
+                            </label>
+                            <input type="text" 
+                                   id="title" 
+                                   name="title" 
+                                   class="form-control cyber-yellow-focus" 
+                                   value="{{ app.title }}"
+                                   {% if readonly %}readonly{% endif %}>
+                        </div>
+
+                        <!-- アプリの種類（チェックボックス） -->
+                        <div class="mb-4">
+                            <label class="form-label">アプリの種類</label>
+                            <div class="row g-3">
+                                {% for key, label in APP_TYPES.items %}
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="form-check">
+                                            <input type="checkbox" 
+                                                   name="app_types" 
+                                                   value="{{ key }}"
+                                                   id="type_{{ key }}"
+                                                   class="form-check-input cyber-form-check-input"
+                                                   {% if app and key in app.app_types %}checked{% endif %}
+                                                   {% if readonly %}disabled{% endif %}>
+                                            <label class="form-check-label cyber-form-check-label" for="type_{{ key }}">
+                                                {{ label }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- ジャンル（チェックボックス） -->
+                        <div class="mb-4">
+                            <label class="form-label">ジャンル</label>
+                            <div class="row g-3">
+                                {% for key, label in GENRES.items %}
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="form-check">
+                                            <input type="checkbox" 
+                                                   name="genres" 
+                                                   value="{{ key }}"
+                                                   id="genre_{{ key }}"
+                                                   class="form-check-input cyber-checkbox"
+                                                   {% if app and key in app.genres %}checked{% endif %}
+                                                   {% if readonly %}disabled{% endif %}>
+                                            <label class="form-check-label" for="genre_{{ key }}">
+                                                {{ label }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-12">
+            <!-- アプリの魅力セクション -->
+            <section id="appeal" class="mb-5">
+                {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
+            </section>
+        </div>
+    </div>
+
+    <!-- フォーム終了（編集モードの時のみ） -->
+    {% if not readonly %}
+        </form>
+    {% endif %}
+
+    <!-- 下部のボタングループ -->
+    <div class="position-fixed d-flex justify-content-between align-items-center" 
+         style="bottom: 20px; left: 20px; right: 20px; z-index: 1000; pointer-events: none;">
+        
+        <!-- 左：空き -->
+        <div style="width: 33%;"></div>
+        
+        <!-- 中央：ステータス表示 -->
+        <div style="width: 33%; display: flex; justify-content: center;">
+            {% if not readonly and app.id %}
+                <span class="status-badge editing-status"
+                      style="opacity: 0.7;
+                             transition: all 0.3s;
+                             background-color: rgba(0, 0, 0, 0.7);
+                             border: 2px solid var(--cyber-green);
+                             padding: 10px 25px;
+                             border-radius: 30px;
+                             pointer-events: auto;
+                             backdrop-filter: blur(8px);
+                             -webkit-backdrop-filter: blur(8px);">
+                    <i class="bi bi-pencil-square"></i> 編集中
+                </span>
+            {% elif readonly and app.id %}
+                <span class="status-badge viewing-status"
+                      style="opacity: 0.7;
+                             transition: all 0.3s;
+                             background-color: rgba(0, 0, 0, 0.7);
+                             border: 2px solid var(--cyber-green);
+                             padding: 10px 25px;
+                             border-radius: 30px;
+                             pointer-events: auto;
+                             backdrop-filter: blur(8px);
+                             -webkit-backdrop-filter: blur(8px);">
+                    <i class="bi bi-eye"></i> 詳細
+                </span>
+            {% endif %}
+        </div>
+        
+        <!-- 右：保存ボタン -->
+        <div style="width: 33%; display: flex; justify-content: flex-end;">
+            {% if not readonly %}
+                <button type="submit" 
+                        form="appForm" 
+                        class="btn-cyber-save"
+                        style="opacity: 0.7;
+                               transition: all 0.3s;
+                               background-color: rgba(0, 0, 0, 0.7);
+                               border: 2px solid var(--cyber-green);
+                               padding: 10px 25px;
+                               border-radius: 30px;
+                               pointer-events: auto;
+                               backdrop-filter: blur(8px);
+                               -webkit-backdrop-filter: blur(8px);">
+                    <i class="bi bi-save"></i> 保存
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- ホーム画面移動用のダイアログ -->
+    <div class="basic-dialog-overlay" id="homeDialog" style="display: none;">
+        <div class="basic-dialog">
+            <div class="basic-dialog-content">
+                <div class="basic-message">
+                    <div class="message-icon">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div class="message-text">
+                        保存して、ホーム画面に移動しますか？
+                    </div>
+                </div>
+                <div class="basic-dialog-buttons">
+                    <button class="basic-button cancel-dialog" onclick="closeHomeDialog()">
+                        <span class="button-text">閉じる</span>
+                        <span class="button-glitch"></span>
+                    </button>
+                    <button class="basic-button save-dialog" onclick="saveAndGoHome()">
+                        <span class="button-text">移動する</span>
+                        <span class="button-glitch"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- トースト要素を修正 -->
+<div class="toast-container position-fixed top-50 start-50 translate-middle" style="z-index: 9999;">
+    <div class="toast align-items-center text-white bg-success border-0" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="bi bi-check-circle me-2"></i>保存しました！
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* コンテナの制限を解除 */
+.container-fluid,
+.container {
+    max-width: 1200px !important;
+    width: 100% !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* タブコンテンツの幅を確保 */
+.tab-content,
+.tab-pane {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+/* 各タブ内のコンテナも同じ幅に */
+#screenshots > div,
+#basic > div,
+#appeal > div {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+/* カードも同じ幅に */
+.card {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+/* メインコンテンツのマージン - さらに上部マージンを減らす */
+.container-fluid.main-content {
+    margin-top: 4.5rem !important;  /* 6remから4.5remにさらに減らす */
+    padding-top: 2rem !important;
+}
+
+/* セクション間の余白 */
+section.mb-5 {
+    margin-bottom: 5rem !important;
+    border-bottom: none !important;
+}
+
+/* レスポンシブ対応も調整 */
+@media (max-width: 768px) {  /* タブレット以下 */
+    .container-fluid.main-content {
+        margin-top: 6rem !important;  /* 8remから6remに減らす */
+    }
+}
+
+@media (max-width: 576px) {  /* スマホ */
+    .container-fluid.main-content {
+        margin-top: 8rem !important;  /* 10remから8remに減らす */
+    }
+}
+
+/* タブナビゲーション */
+.app-tabs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(13, 25, 45, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    z-index: 999;
+    transition: transform 0.3s ease;
+}
+
+/* タブが隠れる時のスタイル */
+.app-tabs.hidden {
+    transform: translateY(-100%);
+}
+
+.app-tabs .container {
+    padding-top: 0 !important;  /* コンテナの上部パディングを0に */
+    margin-top: 0 !important;   /* コンテナの上部マージンを0に */
+}
+
+.nav-pills {
+    padding-top: 0 !important;  /* ナビの上部パディングを0に */
+    margin-top: 0 !important;   /* ナビの上部マージンを0に */
+}
+
+/* スムーズスクロール */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px; /* ナビゲーションの高さ分を調整 */
+}
+
+/* セクションにスクロールマージンを追加 */
+section {
+    scroll-margin-top: 80px;
+}
+
+/* アクティブなタブのスタイル */
+.nav-link.active {
+    background-color: rgba(0, 255, 255, 0.2) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+/* サイバーパンクな背景 */
+.cyber-background {
+    background: linear-gradient(45deg, #001e54, #0066cc);
+}
+
+/* 編集モード時の背景色を変更 */
+{% if not readonly %}
+    {% if app %}
+    .cyber-background {
+        background: linear-gradient(45deg, #003322, #006644);
+    }
+
+    .cyber-grid {
+        background-image: 
+            linear-gradient(rgba(0,255,100,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,100,0.2) 1px, transparent 1px);
+    }
+    {% else %}
+    /* 新規作成時の背景色 */
+    .cyber-background {
+        background: linear-gradient(45deg, #1a1a3a, #4a1a4a);
+    }
+
+    .cyber-grid {
+        background-image: 
+            linear-gradient(rgba(255,0,255,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    }
+    {% endif %}
+{% else %}
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+}
+{% endif %}
+
+.cyber-grid {
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+/* 基本変数の定義 */
+:root {
+    --cyber-yellow: #ffd700;
+    --cyber-green: #00ff9f;
+    --cyber-blue: #00ffff;
+    --cyber-purple: #bf5fff;
+    --cyber-background: rgba(0, 20, 50, 0.8);
+    --cyber-text: #ffffff;  /* 基本テキストカラー */
+}
+
+/* 全体のテキストカラー */
+body {
+    color: var(--cyber-text);
+}
+
+/* 共通のカードスタイル */
+.card {
+    background-color: var(--cyber-background);
+    border: 2px solid;
+    border-radius: 8px;
+    color: var(--cyber-text);  /* カード内のテキストカラー */
+}
+
+/* フォーム要素の共通スタイル */
+.form-control, 
+.form-select,
+.form-check-input {
+    background-color: rgba(26, 26, 26, 0.95) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    color: var(--cyber-yellow) !important;
+}
+
+/* フォーカス時のスタイル */
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 10px var(--cyber-yellow) !important;
+}
+
+/* チェックボックスのスタイル */
+.form-check-input:checked {
+    background-color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+}
+
+/* 基本情報セクション */
+#basic-info-card.card,
+#basic-info-card.card.border-0 {
+    background-color: var(--cyber-background) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    border-radius: 8px !important;
+    color: var(--cyber-yellow) !important;
+    margin-bottom: 1rem !important;
+}
+
+#basic-section .form-label,
+#basic-section .form-check-label {
+    color: var(--cyber-yellow);
+}
+
+#basic-section .form-control,
+#basic-section .form-select {
+    color: var(--cyber-yellow);
+    border-color: var(--cyber-yellow);
+}
+
+/* アプリの魅力セクション */
+#appeal .card,
+#appeal .card.border-0 {
+    background-color: var(--cyber-background) !important;
+    border: 2px solid var(--cyber-green) !important;
+    border-radius: 8px !important;
+    color: var(--cyber-green) !important;
+}
+
+#appeal .form-control, 
+#appeal .form-select,
+#appeal .form-check-input {
+    background-color: rgba(26, 26, 26, 0.95) !important;
+    border: 2px solid var(--cyber-green) !important;
+    color: var(--cyber-green) !important;
+}
+
+#appeal .form-label,
+#appeal .form-check-label {
+    color: var(--cyber-green) !important;
+}
+
+#appeal .form-control:focus,
+#appeal .form-select:focus {
+    border-color: var(--cyber-green) !important;
+    box-shadow: 0 0 10px var(--cyber-green) !important;
+}
+
+/* プレースホルダーのスタイル */
+::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* サイバーパンクなスタイル */
+.text-cyber-yellow {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow);
+}
+
+/* チェックボックスの色を黄色に、チェックマークは黒に */
+.form-check-input:checked {
+    background-color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 5px var(--cyber-yellow);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e") !important;
+}
+
+.form-check-input:focus {
+    border-color: var(--cyber-yellow);
+    box-shadow: 0 0 5px var(--cyber-yellow);
+}
+
+/* 未チェック時のボーダーも黄色に */
+.form-check-input {
+    border-color: var(--cyber-yellow);
+}
+
+/* チェックボックスが無効でチェック済みの場合のスタイルを修正 */
+.cyber-checkbox:disabled:checked {
+    background-color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 15px var(--cyber-yellow);
+    opacity: 1 !important;
+}
+
+/* チェックボックスが無効でチェック済みの場合のラベルを修正 */
+.cyber-checkbox:disabled:checked + .form-check-label {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow);
+    font-weight: bold;
+    opacity: 1 !important;
+    letter-spacing: 0.5px;
+}
+
+/* 無効化されたチェックボックスのラベルも見やすく */
+.cyber-checkbox:disabled + .form-check-label {
+    opacity: 1 !important;
+    color: var(--cyber-yellow) !important;
+}
+
+/* 保存ボタンのスタイル */
+.btn-cyber-save {
+    background: rgba(0, 255, 159, 0.1);  /* 緑色のスケルトン背景 */
+    color: #00ff9f;  /* サイバー緑色のテキスト */
+    border: 2px solid #00ff9f;  /* 緑色のボーダー */
+    text-shadow: 0 0 5px #00ff9f;  /* テキストの光る効果 */
+    padding: 10px 30px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    border-radius: 25px;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);  /* 緑色の光る効果 */
+    font-size: 1.1rem;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.btn-cyber-save:hover {
+    background: rgba(0, 255, 159, 0.2);  /* ホバー時は少し濃く */
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5);  /* ホバー時は光をより強く */
+    transform: translateY(-2px);
+}
+
+.btn-cyber-save:active {
+    transform: translateY(1px);
+}
+
+/* ボタングループのコンテナ */
+.bottom-button-group {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+/* 各ボタンコンテナ */
+.button-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    max-width: 250px;
+}
+
+/* 左のボタンコンテナ */
+.button-container:first-child {
+    justify-content: flex-start;
+}
+
+/* 右のボタンコンテナ */
+.button-container:last-child {
+    justify-content: flex-end;
+}
+
+/* ステータスバッジのスタイル */
+.status-badge {
+    display: inline-flex;  /* インラインフレックスに変更 */
+    align-items: center;   /* アイコンと文字を中央揃え */
+    padding: 8px 25px;
+    border-radius: 25px;
+    font-weight: bold;
+    background: rgba(0, 255, 159, 0.1);  /* スケルトン背景 */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* 編集モード時のステータス表示 */
+.status-badge.editing-status {
+    color: #00ff9f;
+    border: 2px solid #00ff9f;
+    text-shadow: 0 0 5px #00ff9f;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+/* アイコンのスタイル */
+.status-badge i {
+    margin-right: 8px;  /* アイコンと文字の間隔を調整 */
+}
+
+/* 詳細モード時のステータス表示 */
+.status-badge.viewing-status {
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    background: #000000;  /* 黒地の背景を明示的に指定 */
+}
+
+/* 既存のボタンスタイル */
+.btn-cyber-mode-switch {
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* 詳細へボタン - 青色 */
+#btn-to-detail {
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+    border: 2px solid #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+#btn-to-detail:hover {
+    background: rgba(0, 255, 255, 0.2);
+    color: #00ffff;
+    transform: translateY(-2px);
+}
+
+/* 編集へボタン - 緑色 */
+#btn-to-edit {
+    background: rgba(0, 255, 159, 0.1);
+    color: #00ff9f;
+    border: 2px solid #00ff9f;
+    text-shadow: 0 0 5px #00ff9f;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+#btn-to-edit:hover {
+    background: rgba(0, 255, 159, 0.2);
+    color: #00ff9f;
+    transform: translateY(-2px);
+}
+
+/* 技術基盤編タブ */
+.nav-link[href*="technical_edit"] {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue), 0 0 10px var(--cyber-blue);
+}
+
+.nav-link[href*="technical_edit"]:hover {
+    background-color: rgba(0, 255, 255, 0.1) !important;
+}
+
+/* 技術基盤編への遷移ボタン */
+.technical-transition-btn {
+    color: var(--cyber-blue) !important;
+    text-shadow: 0 0 5px var(--cyber-blue) !important;
+    transition: all 0.3s ease;
+    background: rgba(0, 255, 255, 0.1) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+.technical-transition-btn:hover {
+    background: rgba(0, 255, 255, 0.2) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+/* グリッチエフェクトを削除 */
+.cyber-glitch-effect {
+    display: none;
+}
+
+/* アイコンのアニメーション */
+.technical-transition-btn i {
+    margin-right: 0.5rem;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(3px);
+    }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .technical-transition-btn {
+        margin-top: 0.5rem !important;
+        margin-left: 0 !important;
+    }
+}
+
+/* ダイアログのスタイルを修正 */
+.cyber-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+}
+
+.cyber-dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(13, 25, 45, 0.95);
+    border: 2px solid var(--cyber-yellow);
+    box-shadow: 0 0 20px var(--cyber-yellow);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+}
+
+.cyber-dialog-content {
+    color: var(--cyber-yellow);
+    text-align: center;
+}
+
+.cyber-message {
+    margin-bottom: 20px;
+}
+
+.message-icon {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: var(--cyber-yellow);
+}
+
+.message-text {
+    font-size: 1.1em;
+    line-height: 1.4;
+    text-shadow: 0 0 5px var(--cyber-yellow);
+}
+
+.cyber-dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cyber-button {
+    padding: 8px 16px;
+    border: 1px solid var(--cyber-yellow);
+    background: transparent;
+    color: var(--cyber-yellow);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    text-shadow: 0 0 5px var(--cyber-yellow);
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-button:hover {
+    background: var(--cyber-yellow);
+    color: #000;
+    box-shadow: 0 0 10px var(--cyber-yellow);
+}
+
+.button-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 1px solid var(--cyber-yellow);
+    animation: glitch 2s infinite;
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes glitch {
+    0% { clip-path: inset(80% -6px 0 0); transform: translate(-10px, -10px); }
+    10% { clip-path: inset(10% -6px 85% 0); transform: translate(10px, 10px); }
+    20% { clip-path: inset(80% -6px 0 0); transform: translate(-10px, 10px); }
+    30% { clip-path: inset(10% -6px 85% 0); transform: translate(0px, -10px); }
+    40% { clip-path: inset(50% -6px 30% 0); transform: translate(-10px, 0px); }
+    50% { clip-path: inset(0% -6px 70% 0); transform: translate(10px, -10px); }
+    60% { clip-path: inset(70% -6px 10% 0); transform: translate(-10px, 10px); }
+    70% { clip-path: inset(20% -6px 60% 0); transform: translate(10px, 0px); }
+    80% { clip-path: inset(60% -6px 20% 0); transform: translate(-10px, -10px); }
+    90% { clip-path: inset(30% -6px 50% 0); transform: translate(0px, 10px); }
+    100% { clip-path: inset(80% -6px 0 0); transform: translate(10px, -10px); }
+}
+
+/* サイドナビゲーションボタンのスタイル */
+.side-nav-button {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+}
+
+.left-nav {
+    left: 20px;
+}
+
+.right-nav {
+    right: 20px;
+}
+
+.btn-cyber-nav {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(0, 255, 159, 0.1);  /* スケルトン背景 */
+    border: 2px solid #00ff9f;  /* ボーダーを少し太く */
+    color: #00ff9f;
+    text-decoration: none;
+    border-radius: 25px;  /* より丸みを持たせる */
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-weight: bold;  /* テキストを太く */
+    text-shadow: 0 0 5px #00ff9f;  /* テキストを光らせる */
+}
+
+.btn-cyber-nav:hover {
+    background: rgba(0, 255, 159, 0.2);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.5);
+    transform: scale(1.05);
+    text-decoration: none;
+}
+
+/* ホバー時のグリッチエフェクト */
+.btn-cyber-nav:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 255, 159, 0.2);  /* 緑色に変更 */
+    animation: glitch 0.3s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+    100% { transform: translate(0); }
+}
+
+/* 新しいボタンのホバースタイル */
+.btn-cyber-secondary:hover {
+    opacity: 1 !important;
+    box-shadow: 0 0 20px var(--cyber-green);
+    border-color: var(--cyber-green) !important;
+    background-color: rgba(0, 255, 159, 0.1) !important;
+}
+
+/* PCでのみテキストを表示 */
+@media (min-width: 768px) {
+    .btn-cyber-secondary {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+}
+
+/* アニメーション効果 */
+.btn-cyber-secondary {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-cyber-secondary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(0, 255, 159, 0.1),
+        transparent,
+        rgba(0, 255, 159, 0.1)
+    );
+    transform: rotate(45deg);
+    animation: cyber-shine 3s infinite;
+}
+
+@keyframes cyber-shine {
+    0% {
+        transform: translateX(-100%) rotate(45deg);
+    }
+    100% {
+        transform: translateX(100%) rotate(45deg);
+    }
+}
+
+/* ツールチップのカスタマイズ */
+.tooltip {
+    position: fixed !important;
+}
+
+.tooltip .tooltip-inner {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--cyber-green);
+    color: var(--cyber-green);
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+    font-size: 14px;
+    padding: 8px 12px;
+    max-width: 200px;  /* 幅を制限 */
+    margin-right: 10px;  /* 右側の余白を追加 */
+}
+
+/* スマホ向けの調整 */
+@media (max-width: 768px) {
+    .tooltip {
+        margin-right: 70px !important;  /* スマホでは右側により大きな余白 */
+    }
+}
+
+/* モーダルのスタイル */
+.modal-content {
+    box-shadow: 0 0 20px rgba(0, 255, 159, 0.3);
+}
+
+.btn-cyber-green:hover {
+    background-color: rgba(0, 255, 159, 0.8) !important;
+    box-shadow: 0 0 15px var(--cyber-green);
+}
+
+.btn-outline-cyber:hover {
+    background-color: rgba(0, 255, 159, 0.2);
+    color: var(--cyber-green) !important;
+    border-color: var(--cyber-green) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+/* モーダルのアニメーション */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+    transform: scale(0.9);
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+/* モーダルの背景をより暗く */
+.modal-backdrop.show {
+    opacity: 0.8;
+}
+
+/* ステータスバッジのホバーエフェクト */
+.status-badge {
+    transition: all 0.3s ease;
+}
+
+.status-badge:hover {
+    box-shadow: 0 0 15px var(--cyber-green);
+}
+
+/* 保存ボタンのホバーエフェクト */
+.btn-cyber-save {
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-save:hover {
+    box-shadow: 0 0 15px var(--cyber-green);
+    transform: translateY(-2px);
+}
+
+/* 詳細表示時のスタイル */
+.viewing-status {
+    color: var(--cyber-green);
+    text-shadow: 0 0 5px var(--cyber-green);
+}
+
+/* 編集中表示時のスタイル */
+.editing-status {
+    color: var(--cyber-green);
+    text-shadow: 0 0 5px var(--cyber-green);
+}
+
+/* 基本ダイアログ用の独自スタイル */
+.basic-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.basic-dialog {
+    background: rgba(0, 20, 40, 0.9);
+    border: 2px solid #ffd700;  /* 黄色のボーダー */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);  /* 黄色の光る効果 */
+    max-width: 500px;
+    width: 90%;
+    position: absolute;  /* 追加 */
+    top: 50%;           /* 追加 */
+    left: 50%;          /* 追加 */
+    transform: translate(-50%, -50%);  /* 追加 */
+}
+
+.basic-dialog-content {
+    text-align: center;
+}
+
+.basic-message {
+    margin-bottom: 20px;
+    color: #ffd700;  /* 黄色のテキスト */
+    text-shadow: 0 0 5px #ffd700;  /* 黄色の光る効果 */
+}
+
+.basic-dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.basic-button {
+    background: rgba(255, 215, 0, 0.1);  /* 黄色の背景 */
+    border: 2px solid #ffd700;  /* 黄色のボーダー */
+    color: #ffd700;  /* 黄色のテキスト */
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.basic-button:hover {
+    background: rgba(255, 215, 0, 0.2);  /* ホバー時は少し濃い黄色 */
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);  /* 黄色の光る効果 */
+}
+
+/* アプリの魅力セクション */
+#appeal .input-group-text {
+    background-color: rgba(0, 20, 50, 0.8) !important;
+    color: var(--cyber-green) !important;
+    border: 2px solid var(--cyber-green) !important;
+    border-right: none !important;
+}
+
+#appeal .input-group .form-control {
+    border-left: none !important;
+    border-color: var(--cyber-green) !important;
+    color: var(--cyber-green) !important;
+}
+
+#appeal .card h2,
+#appeal .card i.bi,
+#appeal .form-label,
+#appeal .form-text {
+    color: var(--cyber-green) !important;
+}
+
+#appeal .form-control {
+    border-color: var(--cyber-green) !important;
+    color: var(--cyber-green) !important;
+}
+
+/* 基本情報セクションは黄色のまま */
+#basic-info-card.card,
+#basic-info-card.card.border-0 {
+    background-color: var(--cyber-background) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    border-radius: 8px !important;
+    color: var(--cyber-yellow) !important;
+    margin-bottom: 1rem !important;
+}
+
+/* アプリの魅力セクション */
+#appeal {
+    border-bottom: none !important;  /* 下線を明示的に削除 */
+    padding-bottom: 0 !important;    /* 下部パディングも削除 */
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('appForm');
+    const toastEl = document.getElementById('liveToast');
+    
+    // トーストのオプションを設定
+    const toastOptions = {
+        animation: true,
+        autohide: true,  // 自動で非表示
+        delay: 2000      // 2秒後に消える
+    };
+    
+    // Bootstrapトーストの初期化
+    const toast = new bootstrap.Toast(toastEl, toastOptions);
+
+    // 成功メッセージのパラメータがURLにある場合のみトーストを表示
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('success')) {
+        // トーストを表示
+        toast.show();
+        
+        // URLからsuccess=trueパラメータを削除
+        window.history.replaceState({}, '', window.location.pathname);
+        
+        // 2秒後に強制的に非表示
+        setTimeout(() => {
+            toast.hide();
+            // DOMからトースト要素を完全に削除
+            toastEl.remove();
+        }, 2000);
+    }
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // フォームの通常の送信を許可
+            return true;
+        });
+    }
+
+    // ページロード時にキャッシュをクリア
+    if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+        window.location.reload(true);  // 強制的にページを再読み込み
+    }
+});
+
+// バックフォワードキャッシュ対策を強化
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted || 
+        (window.performance && 
+         window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD)) {
+        window.location.reload(true);  // キャッシュを無視して再読み込み
+    }
+});
+
+// フォームの非同期保存処理
+async function handleFormSubmit(event) {
+    event.preventDefault();
+    
+    const form = document.getElementById('appForm');
+    const formData = new FormData(form);
+    const submitButton = document.querySelector('.btn-cyber-save');
+    
+    // 保存ボタンを無効化
+    if (submitButton) {
+        submitButton.disabled = true;
+    }
+
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            showToast('保存しました', 'success');
+            
+            // 新規作成時はeditページへリダイレクト
+            if (!formData.get('app_id') && data.app_id) {
+                window.location.href = `/apps_gallery/edit/${data.app_id}/`;
+            }
+        } else {
+            throw new Error(data.error || '保存に失敗しました');
+        }
+    } catch (error) {
+        showToast(error.message, 'error');
+    } finally {
+        // 保存ボタンを再度有効化
+        if (submitButton) {
+            submitButton.disabled = false;
+        }
+    }
+}
+
+// イベントリスナーの設定
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('appForm');
+    if (form) {
+        form.addEventListener('submit', handleFormSubmit);
+    }
+});
+
+// 技術へボタンのクリック時の処理を条件分岐
+async function confirmTechTransition(event) {
+    event.preventDefault();
+    console.log('confirmTechTransition called');
+    
+    const link = event.currentTarget;
+    const form = document.getElementById('appForm');
+    const isEdit = form !== null;
+    
+    if (isEdit) {
+        const modal = new bootstrap.Modal(document.getElementById('techConfirmModal'));
+        modal.show();
+        
+        document.getElementById('saveTechButton').onclick = async function() {
+            try {
+                console.log('Saving form data...');
+                const formData = new FormData(form);
+                formData.append('next_url', link.href);  // 遷移先URLを追加
+                
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
+
+                const data = await response.json();
+                console.log('Save response:', data);
+                
+                if (data.success) {
+                    window.location.href = data.redirect_url || link.href;
+                } else {
+                    throw new Error(data.error || '保存に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('保存中にエラーが発生しました：' + error.message);
+            }
+            modal.hide();
+        };
+    } else {
+        window.location.href = link.href;
+    }
+}
+
+// CSRFトークンを取得する関数
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<!-- Bootstrapのスクリプトが読み込まれていることを確認 -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrapが読み込まれていません！');
+        return;
+    }
+
+    // app.idが存在する場合のみモーダル関連の処理を実行
+    const saveTechButton = document.getElementById('saveTechButton');
+    if (saveTechButton && '{{ app.id }}') {
+        const modalEl = document.getElementById('techConfirmModal');
+        const modal = new bootstrap.Modal(modalEl);
+        
+        // キャンセルボタンのイベントリスナー
+        document.querySelector('.cancel-btn').addEventListener('click', function() {
+            modal.hide();
+        });
+
+        saveTechButton.addEventListener('click', async function() {
+            const form = document.getElementById('appForm');
+            const isReadOnly = {% if readonly %}true{% else %}false{% endif %};
+            const techUrl = "{% if app.id %}{% if readonly %}{% url 'apps_gallery:technical_detail' app.id %}{% else %}{% url 'apps_gallery:technical_edit' app.id %}{% endif %}{% endif %}";
+            
+            if (isReadOnly) {
+                // 詳細表示モードの場合は直接遷移
+                window.location.href = techUrl;
+            } else {
+                // 編集モードの場合は保存してから遷移
+                if (form) {
+                    const formData = new FormData(form);
+                    
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken'),
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // 技術情報編集ページへ遷移（トーストメッセージ付き）
+                            window.location.href = techUrl + (techUrl.includes('?') ? '&' : '?') + 'toast_message=保存し、技術情報の編集画面に移動しました。';
+                        } else {
+                            throw new Error(data.error || '保存に失敗しました');
+                        }
+                    } catch (error) {
+                        showToast(error.message, 'error');
+                    }
+                }
+            }
+            modal.hide();
+        });
+    }
+});
+</script>
+
+<!-- ツールチップを有効化するスクリプト -->
+<script>
+// この部分を削除
+</script>
+
+<script>
+// スクロール制御用のスクリプト
+document.addEventListener('DOMContentLoaded', function() {
+    // タブナビゲーションのクリックイベントを制御
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                // タブメニューの高さを取得
+                const tabHeight = document.querySelector('.app-tabs').offsetHeight;
+                // 現在のスクロール位置
+                const currentPosition = window.pageYOffset;
+                // ターゲット要素の位置
+                const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                
+                // 上スクロールの場合はタブの高さ分を考慮、下スクロールの場合は考慮しない
+                const offset = currentPosition > targetPosition ? tabHeight + 20 : 0;
+                
+                window.scrollTo({
+                    top: targetPosition - offset,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+
+// スクロール監視用の変数とイベントリスナー
+let lastScrollTop = 0;
+const tabsElement = document.getElementById('appTabs');
+
+window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const isScrollingUp = scrollTop < lastScrollTop;
+    
+    if (scrollTop > 100 && !isScrollingUp) {
+        tabsElement.classList.add('hidden');
+    } else {
+        tabsElement.classList.remove('hidden');
+    }
+    
+    lastScrollTop = scrollTop;
+});
+</script>
+
+<script>
+// ホームボタンクリック時の処理
+function handleHomeClick(event) {
+    event.preventDefault();
+    
+    // readonlyかどうかをチェック
+    const isReadOnly = {% if readonly %}true{% else %}false{% endif %};
+    
+    if (isReadOnly) {
+        // 詳細画面の場合は直接ホームへ遷移
+        window.location.href = '/';
+    } else {
+        // 編集画面の場合は変更があるか確認
+        if (typeof appState !== 'undefined' && !appState.formChanged) {
+            // 変更がなければ直接ホームへ遷移
+            window.location.href = '/';
+        } else {
+            // 変更があればダイアログを表示
+            const homeDialog = document.getElementById('homeDialog');
+            if (homeDialog) {
+                homeDialog.style.display = 'block';
+            }
+        }
+    }
+}
+
+// ダイアログを閉じる処理
+function closeHomeDialog() {
+    const homeDialog = document.getElementById('homeDialog');
+    homeDialog.style.display = 'none';
+}
+
+// ホームへ移動用の新しい保存関数
+function saveAndGoHome() {
+    const form = document.getElementById('appForm');
+    if (form) {
+        // FormDataオブジェクトを作成
+        const formData = new FormData(form);
+        
+        // Fetch APIでPOSTリクエストを送信
+        fetch(form.action + '?redirect=home', {  // URLにパラメータを追加
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // 保存成功後にホームページへリダイレクト
+                window.location.href = '/';
+            } else {
+                alert('保存に失敗しました：' + (data.error || '不明なエラー'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('保存中にエラーが発生しました');
+        });
+    } else {
+        console.error('Form not found');
+        alert('フォームが見つかりません');
+    }
+}
+</script>
+
+<!-- ==================== 追加部分 ==================== -->
+<script>
+// グローバル変数（appState）を定義
+let appState = {
+    formChanged: false,      // フォーム変更フラグ
+    initialData: null,       // 初期データ（比較用）
+    saveTimer: null,         // 保存タイマーID
+    initialLoad: true,       // 初期ロードフラグ
+    lastSaveTime: null,      // 最終保存時間
+    saveInProgress: false,   // 保存処理中フラグ
+    retryCount: 0,           // リトライカウンター
+    errorState: false        // エラー状態
+};
+
+// フォームデータをシリアライズする関数
+function serializeForm() {
+    const form = document.getElementById('appForm');
+    if (!form) return {};
+    
+    const formData = new FormData(form);
+    const serialized = {};
+    
+    for (let [key, value] of formData.entries()) {
+        if (value instanceof File) {
+            serialized[key] = value.name || 'file-selected';
+        } else {
+            serialized[key] = value;
+        }
+    }
+    
+    return serialized;
+}
+
+// 変更検知のリスナーを設定
+function setupChangeListeners() {
+    const formElements = document.querySelectorAll(
+        '#appForm input:not([type=hidden]), #appForm textarea, #appForm select'
+    );
+    
+    formElements.forEach(element => {
+        ['input', 'change', 'paste'].forEach(eventType => {
+            element.addEventListener(eventType, () => {
+                if (element.type === 'file' && element.files.length > 0) {
+                    appState.formChanged = true;
+                    saveImmediately();
+                    return;
+                }
+                
+                const currentData = serializeForm();
+                if (JSON.stringify(currentData) !== JSON.stringify(appState.initialData)) {
+                    appState.formChanged = true;
+                    showSavingStatus('変更あり', 'pending');
+                    scheduleAutoSave();
+                }
+            });
+        });
+    });
+}
+
+// 保存状態表示用UIを作成
+function createSaveStatusUI() {
+    if (document.getElementById('saveStatusContainer')) return;
+    
+    const container = document.createElement('div');
+    container.id = 'saveStatusContainer';
+    container.className = 'save-status-container';
+    
+    const statusEl = document.createElement('div');
+    statusEl.id = 'saveStatus';
+    statusEl.className = 'save-status';
+    statusEl.textContent = '準備完了';
+    
+    const timestampEl = document.createElement('div');
+    timestampEl.id = 'saveTimestamp';
+    timestampEl.className = 'save-timestamp';
+    
+    container.appendChild(statusEl);
+    container.appendChild(timestampEl);
+    
+    document.body.appendChild(container);
+    
+    // スタイルの追加
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+        .save-status-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 8px 12px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .save-status {
+            font-weight: bold;
+        }
+        .save-timestamp {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        .save-status-container.success {
+            background: rgba(0, 128, 0, 0.8);
+        }
+        .save-status-container.error {
+            background: rgba(200, 0, 0, 0.9);
+        }
+        .save-status-container.pending {
+            background: rgba(255, 165, 0, 0.8);
+        }
+        .save-status-container.saving {
+            background: rgba(0, 0, 128, 0.8);
+        }
+    `;
+    document.head.appendChild(styleEl);
+}
+
+// 自動保存のスケジューリング
+function scheduleAutoSave() {
+    if (appState.saveTimer) clearTimeout(appState.saveTimer);
+    
+    appState.saveTimer = setTimeout(() => {
+        if (appState.formChanged && !appState.saveInProgress) {
+            performAutoSave();
+        }
+    }, 2000);
+}
+
+// 即時保存
+function saveImmediately() {
+    if (appState.saveTimer) clearTimeout(appState.saveTimer);
+    
+    if (!appState.saveInProgress) {
+        performAutoSave();
+    }
+}
+
+// 自動保存の実行
+function performAutoSave() {
+    if (!appState.formChanged || appState.saveInProgress) return;
+    
+    appState.saveInProgress = true;
+    showSavingStatus('保存中...', 'saving');
+    
+    const form = document.getElementById('appForm');
+    if (!form) {
+        appState.saveInProgress = false;
+        showSavingStatus('フォームが見つかりません', 'error');
+        return;
+    }
+    
+    const formData = new FormData(form);
+    formData.append('is_auto_save', 'true');
+    
+    // URLからアプリIDを取得
+    const urlParts = window.location.pathname.split('/');
+    let appId = null;
+    
+    for (let i = 0; i < urlParts.length; i++) {
+        if (urlParts[i] === 'edit' && i+1 < urlParts.length) {
+            appId = urlParts[i+1];
+            break;
+        }
+    }
+    
+    // 保存先URLを構築
+    const saveUrl = appId ? 
+        `/apps_gallery/auto-save/${appId}/` : 
+        '/apps_gallery/auto-save/';
+        
+    console.log('保存先URL:', saveUrl);
+    
+    // CSRFトークンを取得
+    const csrfToken = getCookie('csrftoken');
+    
+    fetch(saveUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-Auto-Save': 'true',
+            'X-CSRFToken': csrfToken
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        appState.saveInProgress = false;
+        
+        if (data.success) {
+            // 保存成功
+            appState.formChanged = false;
+            appState.lastSaveTime = new Date();
+            appState.retryCount = 0;
+            appState.errorState = false;
+            
+            // 初期データを更新
+            appState.initialData = serializeForm();
+            
+            showSavingStatus('保存済み', 'success');
+            
+            // IDが更新された場合はURLを更新
+            if (data.app_id && window.location.pathname.includes('/create/')) {
+                history.replaceState(
+                    {appId: data.app_id}, 
+                    document.title, 
+                    `/apps_gallery/edit/${data.app_id}/`
+                );
+            }
+        } else {
+            // バリデーションエラーなど
+            handleSaveError(data.error || '保存できませんでした');
+        }
+    })
+    .catch(error => {
+        appState.saveInProgress = false;
+        console.error('保存エラー:', error);
+        handleSaveError('接続エラー: ' + error.message);
+    });
+}
+
+// エラー処理
+function handleSaveError(errorMsg) {
+    appState.errorState = true;
+    appState.retryCount++;
+    
+    // エラー表示
+    showSavingStatus(
+        `保存エラー (${appState.retryCount}回目): ${errorMsg}`, 
+        'error'
+    );
+    
+    // 最大3回までリトライ
+    if (appState.retryCount <= 3) {
+        setTimeout(() => {
+            if (appState.formChanged) {
+                performAutoSave();
+            }
+        }, 5000 * appState.retryCount); // リトライ間隔を徐々に増やす
+    } else {
+        showSavingStatus('自動保存失敗 - 手動で保存してください', 'error');
+    }
+}
+
+// 保存状態の表示
+function showSavingStatus(message, status = null) {
+    const statusEl = document.getElementById('saveStatus');
+    const timestampEl = document.getElementById('saveTimestamp');
+    const container = document.getElementById('saveStatusContainer');
+    
+    if (!statusEl || !container) return;
+    
+    statusEl.textContent = message;
+    
+    // タイムスタンプの更新
+    if (status === 'success' && appState.lastSaveTime) {
+        const timeStr = appState.lastSaveTime.toLocaleTimeString();
+        timestampEl.textContent = `最終保存: ${timeStr}`;
+    }
+    
+    // コンテナのクラス更新
+    container.className = 'save-status-container';
+    if (status) {
+        container.classList.add(status);
+    }
+    
+    // 成功時は3秒後に表示を薄くする
+    if (status === 'success') {
+        setTimeout(() => {
+            container.style.opacity = '0.5';
+        }, 3000);
+    } else {
+        container.style.opacity = '1';
+    }
+}
+
+// 自動保存機能をスタートする関数（これが元々呼び出されている関数）
+function startAutoSaveFeature() {
+    console.log('自動保存機能を開始します');
+    
+    // 初期データの保存（比較用）
+    appState.initialData = serializeForm();
+    
+    // 保存状態表示エリアの作成
+    createSaveStatusUI();
+    
+    // すべての入力フィールドに変更リスナーを設定
+    setupChangeListeners();
+    
+    // 5秒後に初期ロード状態を解除
+    setTimeout(() => { 
+        appState.initialLoad = false;
+        console.log('初期ロード状態を解除しました');
+    }, 5000);
+}
+
+// DOMロード時に関数を実行
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM読み込み完了、自動保存機能を初期化します');
+    // startAutoSaveFeature関数は既に別の場所で呼び出されているので、
+    // ここでは呼び出さない
+});
+</script>
+<!-- // ==================== 追加部分 ==================== -->
+
+<!-- ==================== 追加部分 ==================== -->
+<script>
+// 自動保存機能
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM読み込み完了！');
+    
+    // 既存の要素があるか確認してからコードを実行
+    const form = document.getElementById('appForm');
+    if (!form) {
+        console.error('アプリフォームが見つかりません');
+        return;
+    }
+    
+    // タブの確認（デバッグ用）
+    const tabs = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+    console.log(`タブの数: ${tabs.length}`);
+    tabs.forEach((tab, index) => {
+        console.log(`タブ ${index+1}: ${tab.textContent.trim()} - ID: ${tab.getAttribute('href')}`);
+    });
+    
+    // 状態管理
+    const autoSaveState = {
+        formChanged: false,
+        saveTimer: null,
+        lastSaveTime: null,
+        saveInProgress: false
+    };
+    
+    // 保存状態表示エリア
+    const saveStatusContainer = document.createElement('div');
+    saveStatusContainer.id = 'saveStatusContainer';
+    saveStatusContainer.className = 'save-status-container';
+    saveStatusContainer.innerHTML = `
+        <span id="saveStatus">準備完了</span>
+        <span id="saveTimestamp"></span>
+    `;
+    document.body.appendChild(saveStatusContainer);
+    
+    // スタイルを追加
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+        .save-status-container {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--cyber-green);
+            border: 2px solid var(--cyber-green);
+            border-radius: 5px;
+            z-index: 9999;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+        #saveStatus {
+            font-weight: bold;
+        }
+        #saveTimestamp {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        .save-status-container.success { border-color: #00ff00; }
+        .save-status-container.error { border-color: #ff0000; }
+        .save-status-container.pending { border-color: #ffff00; }
+        .save-status-container.saving { border-color: #0080ff; }
+    `;
+    document.head.appendChild(styleEl);
+    
+    console.log('状態表示コンテナを追加しました');
+    
+    // すべての入力フィールドに変更リスナーを設定（存在チェック付き）
+    const formInputs = document.querySelectorAll('#appForm input, #appForm textarea, #appForm select');
+    if (formInputs.length > 0) {
+        formInputs.forEach(element => {
+            element.addEventListener('input', () => {
+                autoSaveState.formChanged = true;
+                showSavingStatus('変更あり', 'pending');
+                scheduleAutoSave();
+            });
+        });
+        console.log(`${formInputs.length}個の入力フィールドにリスナーを設定しました`);
+    } else {
+        console.error('入力フィールドが見つかりません');
+    }
+    
+    // 自動保存のスケジューリング（デバウンス）
+    function scheduleAutoSave() {
+        if (autoSaveState.saveTimer) {
+            clearTimeout(autoSaveState.saveTimer);
+        }
+        autoSaveState.saveTimer = setTimeout(saveFormData, 2000); // 2秒後に保存
+    }
+    
+    // フォームデータの保存
+    function saveFormData() {
+        if (!autoSaveState.formChanged || autoSaveState.saveInProgress) return;
+        
+        autoSaveState.saveInProgress = true;
+        showSavingStatus('保存中...', 'saving');
+        
+        const formData = new FormData(form);
+        
+        // URLからアプリIDを取得
+        const urlParts = window.location.pathname.split('/');
+        let appId = null;
+        
+        for (let i = 0; i < urlParts.length; i++) {
+            if (urlParts[i] === 'edit' && i+1 < urlParts.length) {
+                appId = urlParts[i+1];
+                break;
+            }
+        }
+        
+        // 正しいURLを構築
+        const saveUrl = appId ? 
+            `/apps_gallery/auto-save/${appId}/` : 
+            '/apps_gallery/auto-save/';
+            
+        console.log('保存先URL:', saveUrl);
+        
+        // CSRFトークンを取得
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        // データ送信
+        fetch(saveUrl, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Auto-Save': 'true',
+                'X-CSRFToken': csrfToken
+            }
+        })
+        .then(response => {
+            console.log('サーバーレスポンス:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('保存結果:', data);
+            autoSaveState.saveInProgress = false;
+            
+            if (data.success) {
+                autoSaveState.formChanged = false;
+                autoSaveState.lastSaveTime = new Date();
+                showSavingStatus('保存完了', 'success');
+                
+                // 新規作成の場合は編集URLに更新
+                if (data.app_id && window.location.pathname.includes('/create/')) {
+                    history.replaceState(
+                        {appId: data.app_id}, 
+                        document.title, 
+                        `/apps_gallery/edit/${data.app_id}/`
+                    );
+                }
+            } else {
+                showSavingStatus('保存エラー', 'error');
+                console.error('自動保存エラー:', data.errors || data.error);
+            }
+        })
+        .catch(error => {
+            autoSaveState.saveInProgress = false;
+            showSavingStatus('接続エラー', 'error');
+            console.error('自動保存中にエラーが発生しました:', error);
+        });
+    }
+    
+    // 保存状態の表示
+    function showSavingStatus(message, status = null) {
+        const statusEl = document.getElementById('saveStatus');
+        const timestampEl = document.getElementById('saveTimestamp');
+        const container = document.getElementById('saveStatusContainer');
+        
+        if (!statusEl || !container) {
+            console.error('ステータス表示要素が見つかりません');
+            return;
+        }
+        
+        statusEl.textContent = message;
+        
+        // タイムスタンプの更新
+        if (status === 'success' && autoSaveState.lastSaveTime) {
+            const timeStr = autoSaveState.lastSaveTime.toLocaleTimeString();
+            timestampEl.textContent = `最終保存: ${timeStr}`;
+        }
+        
+        // コンテナのクラス更新
+        container.className = 'save-status-container';
+        if (status) {
+            container.classList.add(status);
+        }
+    }
+    
+    // ページ離脱時の処理
+    window.addEventListener('beforeunload', (event) => {
+        // 保存されていない変更がある場合は確認
+        if (autoSaveState.formChanged) {
+            event.preventDefault();
+            event.returnValue = '変更が保存されていません。このページを離れますか？';
+        }
+    });
+    
+    // 初期状態を表示
+    showSavingStatus('準備完了');
+    console.log('自動保存機能の初期化完了');
+});
+
+// ここで明示的にstartAutoSaveFeature関数を定義
+function startAutoSaveFeature() {
+    console.log('startAutoSaveFeature関数が呼び出されました');
+    // この関数は既に上のDOMContentLoadedイベントで実装されているため、
+    // 何もしなくても大丈夫です
+}
+</script>
+<!-- // ==================== 追加部分 ==================== -->
+{% endblock %} 

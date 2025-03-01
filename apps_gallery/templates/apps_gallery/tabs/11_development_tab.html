@@ -1,0 +1,218 @@
+{% include 'apps_gallery/shared/disabled_styles.html' %}
+
+<div id="development" class="container" style="margin: 0 !important; padding: 0 !important;">
+    <div class="card border-0 shadow-lg">
+        <div class="card-body">
+            <h2 class="card-title h3 mb-4">
+                <i class="bi bi-code-slash text-cyber-yellow"></i>
+                <span class="cyber-title">開発ストーリー</span>
+            </h2>
+
+            <form id="development-form">
+                <!-- 開発期間 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-yellow">開発期間 <span class="text-danger">*</span></label>
+                    <p class="text-muted small mb-3 text-cyber-yellow">
+                        ※このアプリケーションの開発期間を入力してください
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label text-cyber-yellow">開始日</label>
+                            <input type="date" 
+                                   name="development_start_date"
+                                   class="form-control cyber-yellow-focus"
+                                   value="{{ app.development_story.start_date|date:'Y-m-d' }}"
+                                   {% if readonly %}disabled{% endif %}>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-cyber-yellow">終了日</label>
+                            <input type="date" 
+                                   name="development_end_date"
+                                   class="form-control cyber-yellow-focus"
+                                   value="{{ app.development_story.end_date|date:'Y-m-d' }}"
+                                   {% if readonly %}disabled{% endif %}>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 開発の難しさ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-yellow">開発の難しさ</label>
+                    <p class="text-muted small mb-3 text-cyber-yellow">
+                        ※開発の難易度を選択してください
+                    </p>
+                    <select name="development_difficulty" 
+                            class="form-select cyber-yellow-focus"
+                            {% if readonly %}disabled{% endif %}>
+                        <option value="">選択してください</option>
+                        {% for key, value in DEVELOPMENT_DIFFICULTIES.items %}
+                            <option value="{{ key }}"
+                                    {% if app.development_story.development_difficulty == key %}selected{% endif %}>
+                                {{ value }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- 開発の満足度 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-yellow">開発の満足度</label>
+                    <p class="text-muted small mb-3 text-cyber-yellow">
+                        ※開発結果の満足度を選択してください
+                    </p>
+                    <select name="development_satisfaction" 
+                            class="form-select cyber-yellow-focus"
+                            {% if readonly %}disabled{% endif %}>
+                        <option value="">選択してください</option>
+                        {% for key, value in DEVELOPMENT_SATISFACTIONS.items %}
+                            <option value="{{ key }}"
+                                    {% if app.development_story.development_satisfaction == key %}selected{% endif %}>
+                                {{ value }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- 開発のきっかけ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-yellow">開発のきっかけ</label>
+                    <p class="text-muted small mb-3 text-cyber-yellow">
+                        ※このアプリケーションを開発しようと思ったきっかけを詳しく教えてください
+                    </p>
+                    <textarea name="development_motivation"
+                              class="form-control cyber-yellow-focus"
+                              rows="10"
+                              placeholder="例：
+・自分が日々の業務で感じていた課題
+・解決したかった具体的な問題
+・新しい技術への興味や学習意欲
+・市場のニーズや機会の発見
+・チームや組織からの要望
+など、できるだけ具体的に記述してください"
+                              {% if readonly %}readonly{% endif %}>{% if app.development_story.development_motivation %}{{ app.development_story.development_motivation }}{% endif %}</textarea>
+                </div>
+
+                <!-- 開発秘話 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-yellow">開発秘話</label>
+                    <p class="text-muted small mb-3 text-cyber-yellow">
+                        ※開発中に苦労したこと、工夫したこと、学んだことなどを詳しく教えてください
+                    </p>
+                    <textarea name="development_story"
+                              class="form-control cyber-yellow-focus"
+                              rows="10"
+                              placeholder="例：
+・技術選定の理由と経緯
+・直面した具体的な課題とその解決方法
+・工夫したアーキテクチャや設計の詳細
+・パフォーマンスやセキュリティへの取り組み
+・チーム開発での工夫や学び
+・ユーザーフィードバックと改善プロセス
+・今後の展望や改善点
+など、開発プロセス全体を通じての経験を共有してください"
+                              {% if readonly %}readonly{% endif %}>{% if app.development_story.development_story %}{{ app.development_story.development_story }}{% endif %}</textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* 基本変数の定義 */
+:root {
+    --cyber-yellow: #ffd700;
+    --cyber-yellow-glow: rgba(255, 215, 0, 0.5);
+}
+
+/* カード全体のスタイル */
+#development .card {
+    background: rgba(13, 25, 45, 0.95) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    box-shadow: 0 0 15px var(--cyber-yellow-glow) !important;
+}
+
+/* セレクトボックスのスタイル */
+#development .form-select {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: var(--cyber-yellow) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    box-shadow: 0 0 10px var(--cyber-yellow-glow) !important;
+}
+
+#development .form-select:focus {
+    border-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 15px var(--cyber-yellow-glow) !important;
+}
+
+/* テキストエリアのスタイル */
+#development textarea.form-control {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: var(--cyber-yellow) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    box-shadow: 0 0 10px var(--cyber-yellow-glow) !important;
+}
+
+/* プレースホルダーのスタイル */
+#development ::placeholder {
+    color: rgba(255, 215, 0, 0.5) !important;
+}
+
+/* テキストのスタイル */
+#development .text-cyber-yellow,
+#development .form-check-label,
+#development .cyber-title {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow) !important;
+    opacity: 1 !important;
+    font-weight: 500 !important;
+}
+
+/* 説明文のスタイル */
+#development .text-muted {
+    color: var(--cyber-yellow) !important;
+    opacity: 0.9 !important;
+}
+
+/* disabled状態のスタイル */
+#development .form-control:disabled,
+#development .form-select:disabled {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+    opacity: 0.8 !important;
+}
+
+/* 開発ストーリータブのスタイル */
+#development-section .card-title,
+#development-section .text-cyber-yellow {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 10px var(--cyber-yellow),
+                0 0 20px var(--cyber-yellow) !important;
+}
+
+#development-section .form-control,
+#development-section .form-select,
+#development-section .form-check-input {
+    border: 2px solid var(--cyber-yellow) !important;
+    color: var(--cyber-yellow) !important;
+}
+
+#development-section .form-check-input:checked {
+    background-color: var(--cyber-yellow) !important;
+    box-shadow: 0 0 10px var(--cyber-yellow) !important;
+}
+
+#development-section .form-label,
+#development-section .form-check-label,
+#development-section .text-muted {
+    color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 5px var(--cyber-yellow) !important;
+}
+
+/* 日付入力フィールドのスタイル */
+#development-section input[type="date"] {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    color: var(--cyber-yellow) !important;
+}
+</style> 

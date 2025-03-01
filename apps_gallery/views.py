@@ -205,7 +205,7 @@ def create_view(request):
     print(f"Template Size: {len(str(context))}")
     
     # 各テンプレートのサイズを確認
-    for template in ['create_edit_detail.html', 'tabs/01_screenshots_tab.html', 
+    for template in ['create_edit.html', 'tabs/01_screenshots_tab.html', 
                     'tabs/02_basic_tab.html', 'tabs/03_appeal_tab.html']:
         content = render_to_string(f'apps_gallery/{template}', context)
         print(f"\nTemplate {template}:")
@@ -216,7 +216,7 @@ def create_view(request):
     
     print("\n=== End Debug Info ===\n")
     
-    return render(request, 'apps_gallery/create_edit_detail.html', context)
+    return render(request, 'apps_gallery/create_edit.html', context)
 
 @login_required
 def edit_app(request, pk):
@@ -247,7 +247,7 @@ def edit_app(request, pk):
         context = get_common_context(app=app, is_edit=True)
         context['form'] = AppForm(instance=app)
         
-        return render(request, 'apps_gallery/create_edit_detail.html', context)
+        return render(request, 'apps_gallery/create_edit.html', context)
         
     except Exception as e:
         logger.error(f"Error in edit_app: {str(e)}")
@@ -339,7 +339,7 @@ def handle_app_form(request, app=None, context=None):
         'active_tab': request.GET.get('tab', '')
     })
     
-    return render(request, 'apps_gallery/create_edit_detail.html', context)
+    return render(request, 'apps_gallery/create_edit.html', context)
 
 @login_required
 def app_detail(request, pk):
@@ -674,3 +674,103 @@ def save_technical(request, app_id):
             'success': False,
             'message': str(e)
         }, status=400)
+
+@login_required
+@require_http_methods(["POST"])
+def auto_save_app(request, app_id=None):
+    """自動保存用APIエンドポイント"""
+    logger.info(f"自動保存処理開始: app_id={app_id}")
+    
+    try:
+        # 自動保存フラグをチェック
+        is_auto_save = request.headers.get('X-Auto-Save') == 'true'
+        
+        if app_id and app_id != 'undefined':
+            # 既存アプリの更新
+            app = get_object_or_404(AppGallery, id=app_id, author=request.user)
+            logger.info(f"既存アプリを自動保存: {app.title}")
+        else:
+            # 新規アプリの作成
+            app = AppGallery(
+                author=request.user,
+                status='draft',
+                title=request.POST.get('title', '無題')
+            )
+            logger.info("新規アプリを自動保存")
+        
+        # フォームのデータを取得
+        form = AppForm(request.POST, request.FILES, instance=app)
+        
+        if is_auto_save:
+            # 自動保存時は最低限のバリデーションのみ
+            app.save()
+            
+            # フォームが有効なら関連データも保存
+            if form.is_valid():
+                form.save_m2m()  # Many-to-Manyの保存
+            
+            logger.info(f"自動保存完了: app_id={app.id}")
+            
+            return JsonResponse({
+                'success': True,
+                'app_id': app.id,
+                'message': '自動保存しました'
+            })
+        else:
+            # 通常の保存時は完全バリデーション
+            if form.is_valid():
+                app = form.save()
+                return JsonResponse({
+                    'success': True,
+                    'app_id': app.id,
+                    'message': '保存しました'
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'errors': form.errors
+                })
+                
+    except Exception as e:
+        logger.error(f"自動保存エラー: {str(e)}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return JsonResponse({
+            'success': False, 
+            'error': str(e)
+        }, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def delete_empty_app(request, app_id):
+    """空のアプリを削除するAPIエンドポイント"""
+    try:
+        app = get_object_or_404(AppGallery, id=app_id, author=request.user)
+        
+        # 空かどうかをチェック（タイトルが'無題'のままで他の重要フィールドが空）
+        is_empty = (
+            app.title in ['無題', ''] and 
+            not app.description and 
+            not app.overview and
+            len(app.screenshots or []) == 0
+        )
+        
+        if is_empty:
+            logger.info(f"空のアプリを削除: app_id={app_id}")
+            app.delete()
+            return JsonResponse({
+                'success': True,
+                'message': '空のアプリを削除しました'
+            })
+        
+        return JsonResponse({
+            'success': False,
+            'message': 'アプリは空ではないため削除しませんでした'
+        })
+        
+    except Exception as e:
+        logger.error(f"空アプリ削除エラー: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)

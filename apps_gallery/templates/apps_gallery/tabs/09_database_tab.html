@@ -1,0 +1,139 @@
+{% include 'apps_gallery/shared/disabled_styles.html' %}
+
+<div id="database" class="container" style="margin: 0 !important; padding: 0 !important;">
+    <div class="card border-0 shadow-lg" style="background-color: rgba(13, 25, 45, 0.8) !important;">
+        <div class="card-body">
+            <h2 class="card-title h3 mb-4">
+                <i class="bi bi-database text-cyber-green"></i>
+                <span class="text-cyber-green">データベース</span>
+            </h2>
+
+            <form id="database-form">
+                <!-- データベース種類 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-green">データベース種類</label>
+                    <div class="row g-3">
+                        {% for key, value in DATABASE_TYPES.items %}
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           id="db-type-{{ key }}"
+                                           name="database_types"
+                                           value="{{ key }}"
+                                           class="form-check-input"
+                                           {% if key in app.database.types %}checked{% endif %}
+                                           {% if readonly %}disabled{% endif %}>
+                                    <label class="form-check-label" for="db-type-{{ key }}">
+                                        {{ value }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- データベースホスティング -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-green">ホスティングサービス</label>
+                    <div class="row g-3">
+                        {% for key, value in DATABASE_HOSTING.items %}
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           id="db-hosting-{{ key }}"
+                                           name="database_hosting"
+                                           value="{{ key }}"
+                                           class="form-check-input"
+                                           {% if key in app.database.hosting %}checked{% endif %}
+                                           {% if readonly %}disabled{% endif %}>
+                                    <label class="form-check-label" for="db-hosting-{{ key }}">
+                                        {{ value }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- ORM -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-green">ORM</label>
+                    <div class="row g-3">
+                        {% for key, value in ORMS.items %}
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           id="db-orm-{{ key }}"
+                                           name="database_orms"
+                                           value="{{ key }}"
+                                           class="form-check-input"
+                                           {% if key in app.database.orms %}checked{% endif %}
+                                           {% if readonly %}disabled{% endif %}>
+                                    <label class="form-check-label" for="db-orm-{{ key }}">
+                                        {{ value }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* データベースタブのスタイル */
+#database-section .card-title,
+#database-section .text-cyber-emerald {
+    color: var(--cyber-emerald) !important;
+    text-shadow: 0 0 10px var(--cyber-emerald),
+                0 0 20px var(--cyber-emerald) !important;
+}
+
+#database-section .form-control,
+#database-section .form-select,
+#database-section .form-check-input {
+    border: 2px solid var(--cyber-emerald) !important;
+    color: var(--cyber-emerald) !important;
+}
+
+#database-section .form-check-input:checked {
+    background-color: var(--cyber-emerald) !important;
+    box-shadow: 0 0 10px var(--cyber-emerald) !important;
+}
+
+#database-section .form-label,
+#database-section .form-check-label {
+    color: var(--cyber-emerald) !important;
+    text-shadow: 0 0 5px var(--cyber-emerald) !important;
+}
+
+/* サイバーパンク風のスタイル */
+#database .text-cyber-green {
+    color: #00ff9f !important;
+    text-shadow: 0 0 5px #00ff9f !important;
+}
+
+#database .form-check-input:checked {
+    background-color: #00ff9f !important;
+    border-color: #00ff9f !important;
+    box-shadow: 0 0 5px #00ff9f !important;
+}
+
+#database .form-check-input:hover {
+    border-color: #00ff9f !important;
+}
+
+#database .form-check-label {
+    color: #00ff9f !important;
+    text-shadow: 0 0 2px #00ff9f !important;
+}
+
+/* disabled状態のスタイル */
+#database .form-check-input:disabled:checked {
+    background-color: #00ff9f !important;
+    border-color: #00ff9f !important;
+    opacity: 0.7 !important;
+}
+</style> 

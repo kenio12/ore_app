@@ -16,4 +16,9 @@ urlpatterns = [
     # 技術情報関連の新しいURL
     path('technical/edit/<int:pk>/', views_technical.technical_edit_view, name='technical_edit'),
     path('technical/detail/<int:pk>/', views_technical.technical_detail_view, name='technical_detail'),
+
+    # 自動保存関連のURL
+    path('auto-save/<int:app_id>/', views.auto_save_app, name='auto_save_with_id'),
+    path('auto-save/', views.auto_save_app, name='auto_save'),  # 新規作成時用
+    path('delete-empty/<int:app_id>/', views.delete_empty_app, name='delete_empty'),  # 空アプリ削除
 ] 
