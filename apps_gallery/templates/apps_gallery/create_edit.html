@@ -1238,6 +1238,23 @@ body {
     border-bottom: none !important;  /* 下線を明示的に削除 */
     padding-bottom: 0 !important;    /* 下部パディングも削除 */
 }
+
+.save-status-container {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.8);
+    color: var(--cyber-green);
+    border: 2px solid var(--cyber-green);
+    border-radius: 5px;
+    z-index: 9999;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+    transition: all 0.3s;
+    pointer-events: none;
+    display: none; /* 保存状態表示を非表示にする */
+}
 </style>
 
 <script>
@@ -1664,7 +1681,7 @@ function createSaveStatusUI() {
     const statusEl = document.createElement('div');
     statusEl.id = 'saveStatus';
     statusEl.className = 'save-status';
-    statusEl.textContent = '準備完了';
+    statusEl.textContent = '';
     
     const timestampEl = document.createElement('div');
     timestampEl.id = 'saveTimestamp';
@@ -1939,7 +1956,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveStatusContainer.id = 'saveStatusContainer';
     saveStatusContainer.className = 'save-status-container';
     saveStatusContainer.innerHTML = `
-        <span id="saveStatus">準備完了</span>
+        <span id="saveStatus"></span>
         <span id="saveTimestamp"></span>
     `;
     document.body.appendChild(saveStatusContainer);
@@ -1961,6 +1978,7 @@ document.addEventListener('DOMContentLoaded', () => {
             box-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
             transition: all 0.3s;
             pointer-events: none;
+            display: none; /* 保存状態表示を非表示にする */
         }
         #saveStatus {
             font-weight: bold;
@@ -2110,7 +2128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // 初期状態を表示
-    showSavingStatus('準備完了');
+    showSavingStatus('');
     console.log('自動保存機能の初期化完了');
 });
 
