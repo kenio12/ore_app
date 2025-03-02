@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'apps_gallery.apps.AppsGalleryConfig',
     'dashboard.apps.DashboardConfig',
+    'profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [

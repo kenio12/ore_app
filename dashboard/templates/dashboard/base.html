@@ -17,7 +17,7 @@
                         <a href="{% url 'dashboard:apps' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'apps' %}active{% endif %}">
                             <i class="bi bi-cpu me-2"></i>アプリ管理
                         </a>
-                        <a href="{% url 'dashboard:profile' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                        <a href="{% url 'profiles:profile_detail' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.view_name == 'profiles:profile_detail' %}active{% endif %}">
                             <i class="bi bi-person-circle me-2"></i>プロフィール
                         </a>
                         <a href="{% url 'dashboard:account' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'account' %}active{% endif %}">

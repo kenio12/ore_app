@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from apps_gallery.models import AppGallery
 
@@ -22,8 +22,8 @@ def apps(request):
 
 @login_required
 def profile(request):
-    """プロフィール設定ページ"""
-    return render(request, 'dashboard/profile.html')
+    """プロフィール設定ページ - profiles アプリへリダイレクト"""
+    return redirect('profiles:profile_detail')
 
 @login_required
 def account(request):

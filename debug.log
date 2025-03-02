@@ -7078,3 +7078,63 @@ INFO 2025-03-02 15:55:41,998 views 419 140499758196416 App found: どうなっ�
 INFO 2025-03-02 15:55:41,998 views 419 140499758196416 App found: どうなってんねん？
 INFO 2025-03-02 15:55:42,004 views 419 140499758196416 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/lilccfof5l4zranh1afc', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740895669/app_screenshots/app_69/lilccfof5l4zranh1afc.png', 'description': ''}]
 INFO 2025-03-02 15:55:42,004 views 419 140499758196416 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/lilccfof5l4zranh1afc', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740895669/app_screenshots/app_69/lilccfof5l4zranh1afc.png', 'description': ''}]
+DEBUG 2025-03-02 16:55:16,655 PngImagePlugin 25 139641801930432 STREAM b'IHDR' 16 13
+DEBUG 2025-03-02 16:55:16,657 PngImagePlugin 25 139641801930432 STREAM b'iCCP' 41 2732
+DEBUG 2025-03-02 16:55:16,658 PngImagePlugin 25 139641801930432 iCCP profile name b'ICC Profile'
+DEBUG 2025-03-02 16:55:16,661 PngImagePlugin 25 139641801930432 Compression method 0
+DEBUG 2025-03-02 16:55:16,663 PngImagePlugin 25 139641801930432 STREAM b'eXIf' 2785 138
+DEBUG 2025-03-02 16:55:16,664 PngImagePlugin 25 139641801930432 STREAM b'pHYs' 2935 9
+DEBUG 2025-03-02 16:55:16,665 PngImagePlugin 25 139641801930432 STREAM b'iTXt' 2956 470
+DEBUG 2025-03-02 16:55:16,671 PngImagePlugin 25 139641801930432 STREAM b'iDOT' 3438 28
+DEBUG 2025-03-02 16:55:16,673 PngImagePlugin 25 139641801930432 b'iDOT' 3438 28 (unknown)
+DEBUG 2025-03-02 16:55:16,675 PngImagePlugin 25 139641801930432 STREAM b'IDAT' 3478 16384
+DEBUG 2025-03-02 16:55:16,678 Image 25 139641801930432 Importing BlpImagePlugin
+DEBUG 2025-03-02 16:55:16,680 Image 25 139641801930432 Importing BmpImagePlugin
+DEBUG 2025-03-02 16:55:16,682 Image 25 139641801930432 Importing BufrStubImagePlugin
+DEBUG 2025-03-02 16:55:16,685 Image 25 139641801930432 Importing CurImagePlugin
+DEBUG 2025-03-02 16:55:16,686 Image 25 139641801930432 Importing DcxImagePlugin
+DEBUG 2025-03-02 16:55:16,690 Image 25 139641801930432 Importing DdsImagePlugin
+DEBUG 2025-03-02 16:55:16,699 Image 25 139641801930432 Importing EpsImagePlugin
+DEBUG 2025-03-02 16:55:16,701 Image 25 139641801930432 Importing FitsImagePlugin
+DEBUG 2025-03-02 16:55:16,703 Image 25 139641801930432 Importing FliImagePlugin
+DEBUG 2025-03-02 16:55:16,706 Image 25 139641801930432 Importing FpxImagePlugin
+DEBUG 2025-03-02 16:55:16,714 Image 25 139641801930432 Image: failed to import FpxImagePlugin: No module named 'olefile'
+DEBUG 2025-03-02 16:55:16,720 Image 25 139641801930432 Importing FtexImagePlugin
+DEBUG 2025-03-02 16:55:16,727 Image 25 139641801930432 Importing GbrImagePlugin
+DEBUG 2025-03-02 16:55:16,729 Image 25 139641801930432 Importing GifImagePlugin
+DEBUG 2025-03-02 16:55:16,732 Image 25 139641801930432 Importing GribStubImagePlugin
+DEBUG 2025-03-02 16:55:16,734 Image 25 139641801930432 Importing Hdf5StubImagePlugin
+DEBUG 2025-03-02 16:55:16,740 Image 25 139641801930432 Importing IcnsImagePlugin
+DEBUG 2025-03-02 16:55:16,745 Image 25 139641801930432 Importing IcoImagePlugin
+DEBUG 2025-03-02 16:55:16,748 Image 25 139641801930432 Importing ImImagePlugin
+DEBUG 2025-03-02 16:55:16,751 Image 25 139641801930432 Importing ImtImagePlugin
+DEBUG 2025-03-02 16:55:16,753 Image 25 139641801930432 Importing IptcImagePlugin
+DEBUG 2025-03-02 16:55:16,757 Image 25 139641801930432 Importing JpegImagePlugin
+DEBUG 2025-03-02 16:55:16,758 Image 25 139641801930432 Importing Jpeg2KImagePlugin
+DEBUG 2025-03-02 16:55:16,760 Image 25 139641801930432 Importing McIdasImagePlugin
+DEBUG 2025-03-02 16:55:16,763 Image 25 139641801930432 Importing MicImagePlugin
+DEBUG 2025-03-02 16:55:16,768 Image 25 139641801930432 Image: failed to import MicImagePlugin: No module named 'olefile'
+DEBUG 2025-03-02 16:55:16,771 Image 25 139641801930432 Importing MpegImagePlugin
+DEBUG 2025-03-02 16:55:16,774 Image 25 139641801930432 Importing MpoImagePlugin
+DEBUG 2025-03-02 16:55:16,780 Image 25 139641801930432 Importing MspImagePlugin
+DEBUG 2025-03-02 16:55:16,782 Image 25 139641801930432 Importing PalmImagePlugin
+DEBUG 2025-03-02 16:55:16,785 Image 25 139641801930432 Importing PcdImagePlugin
+DEBUG 2025-03-02 16:55:16,789 Image 25 139641801930432 Importing PcxImagePlugin
+DEBUG 2025-03-02 16:55:16,791 Image 25 139641801930432 Importing PdfImagePlugin
+DEBUG 2025-03-02 16:55:16,800 Image 25 139641801930432 Importing PixarImagePlugin
+DEBUG 2025-03-02 16:55:16,810 Image 25 139641801930432 Importing PngImagePlugin
+DEBUG 2025-03-02 16:55:16,812 Image 25 139641801930432 Importing PpmImagePlugin
+DEBUG 2025-03-02 16:55:16,814 Image 25 139641801930432 Importing PsdImagePlugin
+DEBUG 2025-03-02 16:55:16,818 Image 25 139641801930432 Importing QoiImagePlugin
+DEBUG 2025-03-02 16:55:16,824 Image 25 139641801930432 Importing SgiImagePlugin
+DEBUG 2025-03-02 16:55:16,827 Image 25 139641801930432 Importing SpiderImagePlugin
+DEBUG 2025-03-02 16:55:16,831 Image 25 139641801930432 Importing SunImagePlugin
+DEBUG 2025-03-02 16:55:16,834 Image 25 139641801930432 Importing TgaImagePlugin
+DEBUG 2025-03-02 16:55:16,838 Image 25 139641801930432 Importing TiffImagePlugin
+DEBUG 2025-03-02 16:55:16,840 Image 25 139641801930432 Importing WebPImagePlugin
+DEBUG 2025-03-02 16:55:16,847 Image 25 139641801930432 Importing WmfImagePlugin
+DEBUG 2025-03-02 16:55:16,850 Image 25 139641801930432 Importing XbmImagePlugin
+DEBUG 2025-03-02 16:55:16,856 Image 25 139641801930432 Importing XpmImagePlugin
+DEBUG 2025-03-02 16:55:16,860 Image 25 139641801930432 Importing XVThumbImagePlugin
+DEBUG 2025-03-02 17:13:46,779 connectionpool 26 140703364191936 Starting new HTTPS connection (1): api.cloudinary.com:443
+DEBUG 2025-03-02 17:13:48,916 connectionpool 26 140703364191936 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
