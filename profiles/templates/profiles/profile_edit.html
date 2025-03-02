@@ -88,6 +88,202 @@
                             </div>
                         </div>
                         
+                        <!-- ハードウェア情報 -->
+                        <div class="mt-4 mb-4">
+                            <h4 class="text-success mb-3">
+                                <i class="bi bi-cpu"></i> 開発に使用したパソコン環境
+                            </h4>
+                            <div class="card bg-dark border-success">
+                                <div class="card-body">
+                                    <!-- メーカーと機種情報 -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用パソコンのメーカー</label>
+                                        <div class="input-group mb-2">
+                                            <input type="text" 
+                                                id="maker"
+                                                name="maker"
+                                                class="form-control bg-dark text-light"
+                                                placeholder="例: Apple, Lenovo, Dell, HP など"
+                                                value="{{ user.profile.hardware_specs.maker }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle"></i> 代表的なメーカー: Apple, Dell, HP, Lenovo, ASUS, マウスコンピューターなど
+                                            </small>
+                                        </div>
+
+                                        <label class="form-label text-success">使用パソコンの機種名</label>
+                                        <div class="input-group mb-2">
+                                            <input type="text" 
+                                                id="model"
+                                                name="model"
+                                                class="form-control bg-dark text-light"
+                                                placeholder="例: MacBook Pro (2020), ThinkPad X1 Carbon など"
+                                                value="{{ user.profile.hardware_specs.model }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle"></i> モデル名や年式を含めると分かりやすいです
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <!-- PCタイプ -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用パソコンのタイプ</label>
+                                        <div class="row g-3">
+                                            {% for key, value in pc_types.items %}
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        class="form-check-input"
+                                                        id="pc-type-{{ key }}"
+                                                        name="pc_type"
+                                                        value="{{ key }}"
+                                                        {% if user.profile.hardware_specs.pc_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="pc-type-{{ key }}">{{ value }}</label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- デバイスタイプ -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用パソコンの種類</label>
+                                        <small class="text-muted d-block mb-2">※Windows、Mac、Chromebook、Linuxなど、開発に使用している主なパソコンを選択</small>
+                                        <div class="row g-3">
+                                            {% for key, value in device_types.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="device-{{ key }}"
+                                                        name="device_type"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if user.profile.hardware_specs.device_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="device-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- CPU -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">CPU</label>
+                                        <div class="row g-3">
+                                            {% for key, value in cpu_types.items %}
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="cpu-{{ key }}"
+                                                        name="cpu_type"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if user.profile.hardware_specs.cpu_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="cpu-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- メモリ -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">メモリ</label>
+                                        <div class="row g-3">
+                                            {% for key, value in memory_sizes.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="memory-{{ key }}"
+                                                        name="memory_size"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if user.profile.hardware_specs.memory_size == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="memory-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- ストレージ -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">ストレージタイプ</label>
+                                        <div class="row g-3">
+                                            {% for key, value in storage_types.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="storage-{{ key }}"
+                                                        name="storage_type"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if user.profile.hardware_specs.storage_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="storage-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- モニター数 -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用モニター数</label>
+                                        <div class="row g-3">
+                                            {% for key, value in monitor_counts.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="monitor-{{ key }}"
+                                                        name="monitor_count"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if user.profile.hardware_specs.monitor_count == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="monitor-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- インターネット回線 -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用インターネット回線</label>
+                                        <div class="row g-3">
+                                            {% for key, value in internet_types.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="internet-{{ key }}"
+                                                        name="internet_type"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if user.profile.hardware_specs.internet_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="internet-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="mt-4">
                             <button type="submit" class="btn btn-success me-2">
                                 <i class="bi bi-save"></i> 保存
@@ -137,6 +333,17 @@
 
 .form-control:focus, 
 .form-select:focus {
+    border-color: #00ff00;
+    box-shadow: 0 0 0 0.25rem rgba(0, 255, 0, 0.25);
+}
+
+/* フォーム要素のスタイル */
+.form-check-input:checked {
+    background-color: #00ff00;
+    border-color: #00ff00;
+}
+
+.form-check-input:focus {
     border-color: #00ff00;
     box-shadow: 0 0 0 0.25rem rgba(0, 255, 0, 0.25);
 }

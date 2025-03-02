@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load profile_filters %}
 
 {% block title %}プロフィール - {{ user.username }}{% endblock %}
 
@@ -63,6 +64,111 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- ハードウェア情報 -->
+                    {% if profile.hardware_specs %}
+                    <div class="mt-4">
+                        <h4 class="text-success mb-3">
+                            <i class="bi bi-cpu"></i> 開発に使用したパソコン環境
+                        </h4>
+                        <div class="card bg-dark border-success">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- メーカーと機種情報 -->
+                                    {% if profile.hardware_specs.maker or profile.hardware_specs.model %}
+                                    <div class="col-md-6 mb-3">
+                                        {% if profile.hardware_specs.maker %}
+                                        <p class="mb-2">
+                                            <span class="text-success">メーカー:</span>
+                                            <span class="text-light">{{ profile.hardware_specs.maker }}</span>
+                                        </p>
+                                        {% endif %}
+                                        
+                                        {% if profile.hardware_specs.model %}
+                                        <p class="mb-0">
+                                            <span class="text-success">機種名:</span>
+                                            <span class="text-light">{{ profile.hardware_specs.model }}</span>
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <!-- PCタイプとデバイスタイプ -->
+                                    <div class="col-md-6 mb-3">
+                                        {% if profile.hardware_specs.pc_type %}
+                                        <p class="mb-2">
+                                            <span class="text-success">PCタイプ:</span>
+                                            <span class="text-light">{{ pc_types|get_item:profile.hardware_specs.pc_type }}</span>
+                                        </p>
+                                        {% endif %}
+                                        
+                                        {% if profile.hardware_specs.device_type %}
+                                        <p class="mb-0">
+                                            <span class="text-success">PC種類:</span>
+                                            <span class="text-light">{{ device_types|get_item:profile.hardware_specs.device_type }}</span>
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- CPU・メモリ・ストレージ -->
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            {% if profile.hardware_specs.cpu_type %}
+                                            <div class="col-md-4 mb-3">
+                                                <p class="mb-0">
+                                                    <span class="text-success">CPU:</span>
+                                                    <span class="text-light">{{ cpu_types|get_item:profile.hardware_specs.cpu_type }}</span>
+                                                </p>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if profile.hardware_specs.memory_size %}
+                                            <div class="col-md-4 mb-3">
+                                                <p class="mb-0">
+                                                    <span class="text-success">メモリ:</span>
+                                                    <span class="text-light">{{ memory_sizes|get_item:profile.hardware_specs.memory_size }}</span>
+                                                </p>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if profile.hardware_specs.storage_type %}
+                                            <div class="col-md-4 mb-3">
+                                                <p class="mb-0">
+                                                    <span class="text-success">ストレージ:</span>
+                                                    <span class="text-light">{{ storage_types|get_item:profile.hardware_specs.storage_type }}</span>
+                                                </p>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- モニター数・インターネット回線 -->
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            {% if profile.hardware_specs.monitor_count %}
+                                            <div class="col-md-6 mb-3">
+                                                <p class="mb-0">
+                                                    <span class="text-success">使用モニター数:</span>
+                                                    <span class="text-light">{{ monitor_counts|get_item:profile.hardware_specs.monitor_count }}</span>
+                                                </p>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            {% if profile.hardware_specs.internet_type %}
+                                            <div class="col-md-6 mb-3">
+                                                <p class="mb-0">
+                                                    <span class="text-success">インターネット回線:</span>
+                                                    <span class="text-light">{{ internet_types|get_item:profile.hardware_specs.internet_type }}</span>
+                                                </p>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="card-footer bg-dark border-top border-success">
                     <a href="{% url 'profiles:profile_edit' %}" class="btn btn-success">

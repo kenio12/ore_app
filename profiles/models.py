@@ -9,6 +9,8 @@ class Profile(models.Model):
     bio = models.TextField('自己紹介', max_length=500, blank=True)
     social_github = models.CharField('GitHub', max_length=100, blank=True)
     social_twitter = models.CharField('X（旧Twitter）', max_length=100, blank=True)
+    # ハードウェア環境の情報
+    hardware_specs = models.JSONField('ハードウェア環境', default=dict, null=True, blank=True)
     created_at = models.DateTimeField('作成日時', auto_now_add=True)
     updated_at = models.DateTimeField('更新日時', auto_now=True)
 
