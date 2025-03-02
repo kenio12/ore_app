@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{# 文字エンコーディングを明示的に指定 #}
+<meta charset="UTF-8">
+
+{# タイトルブロックを追加 #}
+{% block title %}
+    {{ app.title }} の詳細 | アプリギャラリー
+{% endblock %}
+
 {# ナビバーを完全に非表示にする #}
 {% block navbar %}
 {% endblock %}
@@ -15,7 +23,7 @@
 </div>
 
 <!-- メインコンテンツ -->
-<div id="app-view-detail" class="container mt-4">
+<div id="app-view-detail" class="container-fluid mt-3">
     <!-- ヘッダー -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="cyber-title" style="color: var(--cyber-purple) !important; 
@@ -27,114 +35,113 @@
     </div>
 
     <!-- タブナビゲーション -->
-    <div id="appTabs" class="app-tabs">
-        <div class="container py-1">
-            <nav class="nav nav-pills nav-fill m-0">
-                <!-- ホームへ戻るボタン -->
-                <a href="/" class="nav-link cyber-home" title="ホームへ戻る">
-                    <span class="fs-4 me-2 cyber-emoji">&#x1F916;</span>
-                </a>
-                
-                <a class="nav-link text-neon" href="#screenshots-section" style="color: var(--cyber-purple) !important; text-shadow: 0 0 5px var(--cyber-purple);">
-                    <i class="bi bi-image-fill"></i> スクリーンショット
-                </a>
-                <a class="nav-link text-neon" href="#basic-section" style="color: var(--cyber-gold) !important; text-shadow: 0 0 5px var(--cyber-gold);">
-                    <i class="bi bi-info-circle-fill"></i> 基本情報
-                </a>
-                <a class="nav-link text-neon" href="#appeal-section" style="color: var(--cyber-green) !important; text-shadow: 0 0 5px var(--cyber-green);">
-                    <i class="bi bi-star-fill"></i> アプリの魅力
-                </a>
-                <a class="nav-link text-neon" href="#hardware-section" style="color: var(--cyber-blue) !important; text-shadow: 0 0 5px var(--cyber-blue);">
-                    <i class="bi bi-pc-display"></i> パソコン環境
-                </a>
-                <a class="nav-link text-neon" href="#dev-env-section" style="color: var(--cyber-orange) !important; text-shadow: 0 0 5px var(--cyber-orange);">
-                    <i class="bi bi-tools"></i> 開発環境
-                </a>
-                <a class="nav-link text-neon" href="#architecture-section" style="color: var(--cyber-lime) !important; text-shadow: 0 0 5px var(--cyber-lime);">
-                    <i class="bi bi-diagram-3-fill"></i> アーキテクチャ
-                </a>
-                <a class="nav-link text-neon" href="#backend-section" style="color: var(--cyber-aqua) !important; text-shadow: 0 0 5px var(--cyber-aqua);">
-                    <i class="bi bi-server"></i> バックエンド
-                </a>
-                <a class="nav-link text-neon" href="#frontend-section" style="color: var(--cyber-pink) !important; text-shadow: 0 0 5px var(--cyber-pink);">
-                    <i class="bi bi-window"></i> フロントエンド
-                </a>
-                <a class="nav-link text-neon" href="#database-section" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 5px var(--cyber-emerald);">
-                    <i class="bi bi-database-fill"></i> データベース
-                </a>
-                <a class="nav-link text-neon" href="#security-section" style="color: var(--cyber-red) !important; text-shadow: 0 0 5px var(--cyber-red);">
-                    <i class="bi bi-shield-fill-check"></i> セキュリティ
-                </a>
-                <a class="nav-link text-neon" href="#development-section" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 5px var(--cyber-yellow);">
-                    <i class="bi bi-journal-text"></i> 開発ストーリー
-                </a>
-            </nav>
+    <ul class="nav nav-tabs mb-3 app-tabs" id="appTabs" role="tablist">
+        <!-- ホームへ戻るボタン -->
+        <li class="nav-item" role="presentation">
+            <a href="/" class="nav-link cyber-home" title="ホームへ戻る">
+                <span class="fs-4 me-2 cyber-emoji" style="display: inline-block; font-size: 1.5rem;">&#x1F916;</span>
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active text-neon" id="screenshots-tab" data-bs-toggle="tab" data-bs-target="#screenshots-section" type="button" role="tab" aria-controls="screenshots-section" aria-selected="true" style="color: var(--cyber-purple) !important; text-shadow: 0 0 10px var(--cyber-purple) !important; border-color: var(--cyber-purple) !important;">スクリーンショット</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic-section" type="button" role="tab" aria-controls="basic-section" aria-selected="false" style="color: var(--cyber-gold) !important; text-shadow: 0 0 10px var(--cyber-gold) !important; border-color: var(--cyber-gold) !important;">基本情報</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="appeal-tab" data-bs-toggle="tab" data-bs-target="#appeal-section" type="button" role="tab" aria-controls="appeal-section" aria-selected="false" style="color: var(--cyber-green) !important; text-shadow: 0 0 10px var(--cyber-green) !important; border-color: var(--cyber-green) !important;">アピール</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-section" type="button" role="tab" aria-controls="hardware-section" aria-selected="false" style="color: var(--cyber-blue) !important; text-shadow: 0 0 10px var(--cyber-blue) !important; border-color: var(--cyber-blue) !important;">ハードウェア</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="dev-env-tab" data-bs-toggle="tab" data-bs-target="#dev-env-section" type="button" role="tab" aria-controls="dev-env-section" aria-selected="false" style="color: var(--cyber-orange) !important; text-shadow: 0 0 10px var(--cyber-orange) !important; border-color: var(--cyber-orange) !important;">開発環境</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="architecture-tab" data-bs-toggle="tab" data-bs-target="#architecture-section" type="button" role="tab" aria-controls="architecture-section" aria-selected="false" style="color: var(--cyber-lime) !important; text-shadow: 0 0 10px var(--cyber-lime) !important; border-color: var(--cyber-lime) !important;">アーキテクチャ</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="backend-tab" data-bs-toggle="tab" data-bs-target="#backend-section" type="button" role="tab" aria-controls="backend-section" aria-selected="false" style="color: var(--cyber-aqua) !important; text-shadow: 0 0 10px var(--cyber-aqua) !important; border-color: var(--cyber-aqua) !important;">バックエンド</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="frontend-tab" data-bs-toggle="tab" data-bs-target="#frontend-section" type="button" role="tab" aria-controls="frontend-section" aria-selected="false" style="color: var(--cyber-pink) !important; text-shadow: 0 0 10px var(--cyber-pink) !important; border-color: var(--cyber-pink) !important;">フロントエンド</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="database-tab" data-bs-toggle="tab" data-bs-target="#database-section" type="button" role="tab" aria-controls="database-section" aria-selected="false" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 10px var(--cyber-emerald) !important; border-color: var(--cyber-emerald) !important;">データベース</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="security-tab" data-bs-toggle="tab" data-bs-target="#security-section" type="button" role="tab" aria-controls="security-section" aria-selected="false" style="color: var(--cyber-red) !important; text-shadow: 0 0 10px var(--cyber-red) !important; border-color: var(--cyber-red) !important;">セキュリティ</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="development-tab" data-bs-toggle="tab" data-bs-target="#development-section" type="button" role="tab" aria-controls="development-section" aria-selected="false" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 10px var(--cyber-yellow) !important; border-color: var(--cyber-yellow) !important;">開発ストーリー</button>
+        </li>
+    </ul>
+
+    <!-- タブコンテンツ -->
+    <div class="tab-content" id="appTabsContent">
+        <!-- スクリーンショットタブ -->
+        <div class="tab-pane fade show active" id="screenshots-section" role="tabpanel" aria-labelledby="screenshots-tab">
+            {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
+        </div>
+        
+        <!-- 基本情報タブ -->
+        <div class="tab-pane fade" id="basic-section" role="tabpanel" aria-labelledby="basic-tab">
+            {% include 'apps_gallery/tabs/02_basic_tab.html' %}
+        </div>
+
+        <!-- アピールタブ -->
+        <div class="tab-pane fade" id="appeal-section" role="tabpanel" aria-labelledby="appeal-tab">
+            {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
+        </div>
+
+        <!-- ハードウェアタブ -->
+        <div class="tab-pane fade" id="hardware-section" role="tabpanel" aria-labelledby="hardware-tab">
+            {% include 'apps_gallery/tabs/04_hardware_tab.html' %}
+        </div>
+
+        <!-- 開発環境タブ -->
+        <div class="tab-pane fade" id="dev-env-section" role="tabpanel" aria-labelledby="dev-env-tab">
+            {% include 'apps_gallery/tabs/05_dev_env_tab.html' %}
+        </div>
+
+        <!-- アーキテクチャタブ -->
+        <div class="tab-pane fade" id="architecture-section" role="tabpanel" aria-labelledby="architecture-tab">
+            {% include 'apps_gallery/tabs/06_architecture_tab.html' %}
+        </div>
+
+        <!-- バックエンドタブ -->
+        <div class="tab-pane fade" id="backend-section" role="tabpanel" aria-labelledby="backend-tab">
+            {% include 'apps_gallery/tabs/07_backend_tab.html' %}
+        </div>
+
+        <!-- フロントエンドタブ -->
+        <div class="tab-pane fade" id="frontend-section" role="tabpanel" aria-labelledby="frontend-tab">
+            {% include 'apps_gallery/tabs/08_frontend_tab.html' %}
+        </div>
+
+        <!-- データベースタブ -->
+        <div class="tab-pane fade" id="database-section" role="tabpanel" aria-labelledby="database-tab">
+            {% include 'apps_gallery/tabs/09_database_tab.html' %}
+        </div>
+
+        <!-- セキュリティタブ -->
+        <div class="tab-pane fade" id="security-section" role="tabpanel" aria-labelledby="security-tab">
+            {% include 'apps_gallery/tabs/10_security_tab.html' %}
+        </div>
+
+        <!-- 開発ストーリータブ -->
+        <div class="tab-pane fade" id="development-section" role="tabpanel" aria-labelledby="development-tab">
+            {% include 'apps_gallery/tabs/11_development_tab.html' %}
         </div>
     </div>
 
-    <!-- 各セクション -->
-    <div id="screenshots-section" class="section mb-5">
-        {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
-    </div>
-
-    <div id="basic-section" class="section mb-5">
-        {% include 'apps_gallery/tabs/02_basic_tab.html' %}
-    </div>
-
-    <div id="appeal-section" class="section mb-5">
-        {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
-    </div>
-
-    <!-- ハードウェア情報 -->
-    <div id="hardware-section" class="section mb-5">
-        {% include 'apps_gallery/technical/tabs/04_hardware_tab.html' %}
-    </div>
-
-    <!-- 開発環境 -->
-    <div id="dev-env-section" class="section mb-5">
-        {% include 'apps_gallery/technical/tabs/05_dev_env_tab.html' %}
-    </div>
-
-    <!-- アーキテクチャ -->
-    <div id="architecture-section" class="section mb-5">
-        {% include 'apps_gallery/technical/tabs/06_architecture_tab.html' %}
-    </div>
-
-    <!-- バックエンド -->
-    <div id="backend-section" class="section mb-5">
-        {% include 'apps_gallery/technical/tabs/07_backend_tab.html' %}
-    </div>
-
-    <!-- フロントエンド -->
-    <div id="frontend-section" class="section mb-5">
-        {% include 'apps_gallery/tabs/08_frontend_tab.html' %}
-    </div>
-
-    <!-- データベース -->
-    <div id="database-section" class="section mb-5">
-        {% include 'apps_gallery/tabs/09_database_tab.html' %}
-    </div>
-
-    <!-- セキュリティ -->
-    <div id="security-section" class="section mb-5">
-        {% include 'apps_gallery/tabs/10_security_tab.html' %}
-    </div>
-
-    <!-- 開発ストーリー -->
-    <div id="development-section" class="section mb-5">
-        {% include 'apps_gallery/tabs/11_development_tab.html' %}
-    </div>
-
-    <!-- デバッグ用の表示を追加 -->
-    <div style="display: none;">
-        <p>Debug Info:</p>
-        <p>PC Type: {{ app.hardware_specs.pc_type }}</p>
-        <p>Device Type: {{ app.hardware_specs.device_type }}</p>
-        <p>CPU Type: {{ app.hardware_specs.cpu_type }}</p>
-        <p>Memory Size: {{ app.hardware_specs.memory_size }}</p>
-        <p>Storage Type: {{ app.hardware_specs.storage_type }}</p>
-        <p>Monitor Count: {{ app.hardware_specs.monitor_count }}</p>
-        <p>Internet Type: {{ app.hardware_specs.internet_type }}</p>
+    <!-- ホームに戻るボタン -->
+    <div class="row mt-4 mb-4">
+        <div class="col-md-12 d-flex justify-content-center">
+            <a href="/" class="btn btn-secondary cyber-home" id="homeButton">
+                <span class="fs-4 me-2 cyber-emoji">&#x1F916;</span> ホームに戻る
+            </a>
+        </div>
     </div>
 </div>
 
@@ -175,12 +182,10 @@
 
 /* タブのスタイル */
 .nav-link {
-    padding: 1rem 0.5rem !important;  /* 左右の余白を縮小 */
     transition: all 0.3s ease !important;
     font-weight: bold !important;
-    border-radius: 0.5rem !important;
     color: inherit !important;
-    text-shadow: 0 0 5px currentColor !important;
+    text-shadow: 0 0 10px currentColor !important;
 }
 
 .nav-link:hover {
@@ -198,81 +203,83 @@
     transform: translateY(-100%) !important;
 }
 
-/* メインコンテンツのマージン調整 */
+/* ホームボタンのスタイル */
+.cyber-home {
+    background: linear-gradient(45deg, #2b1055, #7597de) !important;
+    border: 1px solid #8ab4f8 !important;
+    box-shadow: 0 0 10px #8ab4f8 !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+}
+
+.cyber-home:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 15px #8ab4f8 !important;
+}
+
+/* オリジナルのCSSも維持 */
 #app-view-detail {
-    margin-top: 4rem !important;
+    margin-top: 1rem !important;
 }
 
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
-    #app-view-detail {
-        margin-top: 6rem !important;
+    .nav-link {
+        padding: 0.5rem 0.3rem !important;
+        font-size: 0.9rem !important;
     }
 }
 
 @media (max-width: 576px) {
-    #app-view-detail {
-        margin-top: 8rem !important;
+    .nav-link {
+        padding: 0.4rem 0.2rem !important;
+        font-size: 0.8rem !important;
     }
 }
 </style>
 
-<!-- スクロール制御用のスクリプト -->
-<script>
-let lastScrollTop = 0;
-const tabsElement = document.getElementById('appTabs');
-
-// スムーズスクロール用の関数を追加
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        
-        const targetElement = document.querySelector(targetId);
-        if (targetElement) {
-            // タブメニューの高さを取得
-            const tabHeight = document.querySelector('.app-tabs').offsetHeight;
-            // 現在のスクロール位置
-            const currentPosition = window.pageYOffset;
-            // ターゲット要素の位置
-            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
-            
-            // 上スクロールの場合はタブの高さ分を考慮、下スクロールの場合は考慮しない
-            const offset = currentPosition > targetPosition ? tabHeight + 20 : 0;
-            
-            window.scrollTo({
-                top: targetPosition - offset,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// 既存のスクロール監視コード
-window.addEventListener('scroll', function() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const isScrollingUp = scrollTop < lastScrollTop;
-    
-    if (scrollTop > 100 && !isScrollingUp) {
-        tabsElement.classList.add('hidden');
-    } else {
-        tabsElement.classList.remove('hidden');
-    }
-    
-    lastScrollTop = scrollTop;
-});
-</script>
-
-<!-- 既存のスクリプト部分の後に追加 -->
+<!-- タブ制御用スクリプト -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // ハードウェア情報の展開
+    const appTabs = document.querySelector('.app-tabs');
+    let lastScrollTop = 0;
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // 下にスクロールしたらナビを隠す、上にスクロールしたら表示
+        if (scrollTop > lastScrollTop && scrollTop > 150) {
+            appTabs.classList.add('hidden');
+        } else {
+            appTabs.classList.remove('hidden');
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+
+    // Djangoのメッセージを自動的に閉じる
+    const alerts = document.querySelectorAll('.alert');
+    if (alerts.length > 0) {
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                // Bootstrapの閉じるボタンをクリックしたのと同じ効果
+                const closeBtn = alert.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.click();
+                } else {
+                    // 閉じるボタンがない場合は要素を非表示にする
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
+                }
+            }, 3000); // 3秒後に自動的に閉じる
+        });
+    }
+    
+    // ハードウェア情報の展開（既存のコード）
     const hardwareSection = document.getElementById('hardware-section');
     if (hardwareSection) {
-        console.log('Hardware section found');
-        
-        // デバッグ用：値の確認
         const specs = {
             pc_type: "{{ app.hardware_specs.pc_type|default:'' }}",
             device_type: "{{ app.hardware_specs.device_type|default:'' }}",
@@ -283,25 +290,14 @@ document.addEventListener('DOMContentLoaded', function() {
             internet_type: "{{ app.hardware_specs.internet_type|default:'' }}"
         };
         
-        console.log('Hardware specs:', specs);
-
         // 各ラジオボタンの設定
         Object.entries(specs).forEach(([key, value]) => {
-            if (!value) {
-                console.log(`Skipping empty value for ${key}`);
-                return; // 空の値はスキップ
-            }
+            if (!value) return; // 空の値はスキップ
             
-            console.log(`Looking for: ${key} with value: ${value}`);
             const selector = `input[name="hardware_specs[${key}]"][value="${value}"]`;
-            console.log('Selector:', selector);
-            
             const radioInput = document.querySelector(selector);
             if (radioInput) {
-                console.log(`Found radio for ${key}`);
                 radioInput.checked = true;
-            } else {
-                console.log(`Radio not found for ${key}`);
             }
         });
 
@@ -314,10 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (makerInput && maker) makerInput.value = maker;
         if (modelInput && model) modelInput.value = model;
-    } else {
-        console.log('Hardware section not found');
     }
 });
 </script>
-
 {% endblock %}
