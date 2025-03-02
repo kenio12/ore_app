@@ -8,7 +8,7 @@
                                                  text-shadow: 0 0 10px var(--cyber-purple),
                                                             0 0 20px var(--cyber-purple);
                                                  font-weight: bold;">
-                <i class="bi bi-image-fill" style="color: var(--cyber-purple) !important;"></i> スクリーンショット
+                <i class="bi bi-image-fill me-2" style="color: var(--cyber-purple) !important;"></i> スクリーンショット
             </h2>
 
             <!-- スクリーンショットギャラリー -->
@@ -67,8 +67,14 @@
                         {% csrf_token %}
                         <div class="upload-preview-area mb-3" id="previewArea">
                             <div class="preview-placeholder">
-                                <i class="bi bi-cloud-upload"></i>
-                                <span>画像をドロップするか、クリックして選択</span>
+                                <div class="upload-instruction">
+                                    <i class="bi bi-cloud-upload fs-1 mb-3"></i>
+                                    <div class="drop-text mb-3">ここに画像をドロップ</div>
+                                    <div class="text-center">または</div>
+                                    <button type="button" class="btn btn-upload-image mt-3">
+                                        <i class="bi bi-image-fill me-2"></i> 画像を選択
+                                    </button>
+                                </div>
                             </div>
                             <div class="preview-wrapper position-relative">
                                 <img id="imagePreview" class="d-none">
@@ -467,26 +473,26 @@ body #screenshots .btn-cyber-purple:hover:not(:disabled) {
 /* トースト通知のスタイル */
 .cyber-toast {
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     right: 20px;
     padding: 15px 25px;
-    background: rgba(0, 255, 136, 0.2);
-    color: #00ff88;
-    border: 1px solid rgba(0, 255, 136, 0.5);
+    background: rgba(191, 95, 255, 0.2);
+    color: var(--cyber-purple);
+    border: 1px solid rgba(191, 95, 255, 0.5);
     border-radius: 8px;
     backdrop-filter: blur(5px);
     z-index: 9999;
     animation: toastFadeIn 0.3s ease-in-out;
-    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+    box-shadow: 0 0 15px rgba(191, 95, 255, 0.3);
     min-width: 300px;
     max-width: 500px;
 }
 
 .cyber-toast.error {
-    background: rgba(255, 68, 68, 0.2);
-    color: #ff4444;
-    border-color: rgba(255, 68, 68, 0.5);
-    box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+    background: rgba(255, 62, 62, 0.2);
+    color: var(--cyber-red);
+    border-color: rgba(255, 62, 62, 0.5);
+    box-shadow: 0 0 15px rgba(255, 62, 62, 0.3);
 }
 
 .toast-header {
@@ -513,7 +519,7 @@ body #screenshots .btn-cyber-purple:hover:not(:disabled) {
 @keyframes toastFadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(-20px);
     }
     to {
         opacity: 1;
@@ -571,54 +577,6 @@ body #screenshots .btn-cyber-purple:hover:not(:disabled) {
     100% { opacity: 0.6; }
 }
 
-/* トースト通知のスタイル */
-.cyber-message {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(0, 255, 136, 0.2);
-    color: #00ff88;
-    padding: 15px 30px;
-    border-radius: 20px;
-    border: 1px solid rgba(0, 255, 136, 0.5);
-    backdrop-filter: blur(5px);
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-    font-weight: bold;
-    z-index: 9999;
-    transition: all 0.5s ease-out;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transform: translateY(0);
-    opacity: 1;
-}
-
-.cyber-message.error {
-    background: rgba(255, 0, 0, 0.2);
-    color: #ff4444;
-    border-color: rgba(255, 0, 0, 0.5);
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-}
-
-.cyber-message .bi {
-    font-size: 1.2em;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateY(-20px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.cyber-message {
-    animation: slideIn 0.3s ease-out;
-}
-
 /* スクリーンショットタブのスタイル */
 #screenshots .card-title,
 #screenshots .text-cyber-purple {
@@ -638,6 +596,92 @@ body #screenshots .btn-cyber-purple:hover:not(:disabled) {
 
 .btn-action:hover {
     box-shadow: 0 0 15px var(--cyber-purple) !important;
+}
+
+/* スクリーンショットボタンのスタイル */
+.screenshot-button-wrapper {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.btn-cyber-screenshot {
+    background-color: rgba(30, 41, 59, 0.8);
+    color: var(--cyber-purple) !important;
+    border: 2px solid var(--cyber-purple) !important;
+    border-radius: 8px;
+    padding: 10px 25px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px var(--cyber-purple),
+                 0 0 20px var(--cyber-purple);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(233, 213, 255, 0.3);
+    cursor: pointer;
+}
+
+.btn-cyber-screenshot:hover {
+    background-color: rgba(233, 213, 255, 0.2);
+    box-shadow: 0 0 20px rgba(233, 213, 255, 0.5);
+    transform: translateY(-3px);
+}
+
+.btn-cyber-screenshot:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 15px rgba(233, 213, 255, 0.4);
+}
+
+.btn-cyber-screenshot i {
+    color: var(--cyber-purple) !important;
+    margin-right: 10px;
+}
+
+/* アップロードエリアの改善スタイル */
+.upload-preview-area {
+    border: 2px dashed var(--cyber-purple) !important;
+    color: var(--cyber-purple) !important;
+    border-radius: 8px;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-instruction {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+.btn-upload-image {
+    background-color: rgba(30, 41, 59, 0.8);
+    color: var(--cyber-purple) !important;
+    border: 2px solid var(--cyber-purple) !important;
+    border-radius: 8px;
+    padding: 10px 25px;
+    font-weight: bold;
+    text-shadow: 0 0 5px var(--cyber-purple) !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(233, 213, 255, 0.5) !important;
+}
+
+.btn-upload-image:hover {
+    background-color: rgba(233, 213, 255, 0.2);
+    box-shadow: 0 0 15px rgba(233, 213, 255, 0.7) !important;
+    transform: translateY(-2px);
+}
+
+.btn-upload-image:active {
+    transform: translateY(1px);
+}
+
+.drop-text {
+    font-size: 1.2rem;
+    font-weight: bold;
 }
 </style>
 

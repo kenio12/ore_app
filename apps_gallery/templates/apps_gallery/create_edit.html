@@ -9,9 +9,9 @@
 {% block title %}
     {% if app.id %}
         {% if readonly %}
-            {{ app.name }} の詳細 | アプリギャラリー
+            {{ app.title }} の詳細 | アプリギャラリー
         {% else %}
-            {{ app.name }} を編集 | アプリギャラリー
+            {{ app.title }} を編集 | アプリギャラリー
         {% endif %}
     {% else %}
         新規アプリを投稿 | アプリギャラリー
@@ -47,7 +47,7 @@
         <div class="col-md-12">
             <h2>
                 {% if app.id %}
-                    {{ app.name }}の編集
+                    {{ app.title }}の編集
                 {% else %}
                     新規アプリ作成
                 {% endif %}
@@ -70,6 +70,12 @@
         
         <!-- タブパネル -->
         <ul class="nav nav-tabs mb-3 app-tabs" id="appFormTabs" role="tablist">
+            <!-- ホームへ戻るボタン -->
+            <li class="nav-item" role="presentation">
+                <a href="/" class="nav-link cyber-home" title="ホームへ戻る">
+                    <span class="fs-4 me-2 cyber-emoji" style="display: inline-block; font-size: 1.5rem;">&#x1F916;</span>
+                </a>
+            </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link active text-neon" id="screenshots-tab" data-bs-toggle="tab" data-bs-target="#screenshots-section" type="button" role="tab" aria-controls="screenshots-section" aria-selected="true" style="color: var(--cyber-purple) !important; text-shadow: 0 0 10px var(--cyber-purple) !important; border-color: var(--cyber-purple) !important;">スクリーンショット</button>
             </li>
@@ -165,31 +171,14 @@
 
         <!-- 送信ボタン -->
         <div class="row mt-4 mb-4">
-            <div class="col-md-12 d-flex justify-content-between">
+            <div class="col-md-12 d-flex justify-content-center">
+                <!-- ホームボタンはタブナビゲーションに移動したので削除 -->
                 <a href="/" class="btn btn-secondary cyber-home" id="homeButton">
-                    <i class="bi bi-house-door"></i> <i class="bi bi-robot"></i> ホームに戻る
+                    <span class="fs-4 me-2 cyber-emoji">&#x1F916;</span> ホームに戻る
                 </a>
-                {% if not readonly %}
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> 保存
-                </button>
-                {% endif %}
             </div>
         </div>
     </form>
-</div>
-
-<!-- ホームに戻るダイアログ -->
-<div id="homeDialog" style="display: none;">
-    <div class="home-dialog-content">
-        <h4>変更が保存されていません</h4>
-        <p>保存せずにホームに戻りますか？未保存の変更は失われます。</p>
-        <div class="home-dialog-buttons">
-            <button id="cancelHomeButton" class="btn btn-secondary">キャンセル</button>
-            <button id="discardButton" class="btn btn-danger">保存せずに戻る</button>
-            <button id="saveAndHomeButton" class="btn btn-primary">保存して戻る</button>
-        </div>
-    </div>
 </div>
 
 <!-- 自動保存のJavaScriptファイルを読み込む -->

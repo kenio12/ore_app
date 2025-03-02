@@ -33,44 +33,17 @@
                                    {% if readonly %}disabled{% endif %}>
                         </div>
                     </div>
-                </div>
-
-                <!-- 開発の難しさ -->
-                <div class="mb-4">
-                    <label class="form-label text-cyber-yellow">開発の難しさ</label>
-                    <p class="text-muted small mb-3 text-cyber-yellow">
-                        ※開発の難易度を選択してください
-                    </p>
-                    <select name="development_difficulty" 
-                            class="form-select cyber-yellow-focus"
-                            {% if readonly %}disabled{% endif %}>
-                        <option value="">選択してください</option>
-                        {% for key, value in DEVELOPMENT_DIFFICULTIES.items %}
-                            <option value="{{ key }}"
-                                    {% if app.development_story.development_difficulty == key %}selected{% endif %}>
-                                {{ value }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- 開発の満足度 -->
-                <div class="mb-4">
-                    <label class="form-label text-cyber-yellow">開発の満足度</label>
-                    <p class="text-muted small mb-3 text-cyber-yellow">
-                        ※開発結果の満足度を選択してください
-                    </p>
-                    <select name="development_satisfaction" 
-                            class="form-select cyber-yellow-focus"
-                            {% if readonly %}disabled{% endif %}>
-                        <option value="">選択してください</option>
-                        {% for key, value in DEVELOPMENT_SATISFACTIONS.items %}
-                            <option value="{{ key }}"
-                                    {% if app.development_story.development_satisfaction == key %}selected{% endif %}>
-                                {{ value }}
-                            </option>
-                        {% endfor %}
-                    </select>
+                    <div class="mt-3">
+                        <div id="development-duration-container" class="cyber-box p-3 text-center">
+                            <h4 class="text-cyber-yellow mb-1" id="development-duration">
+                                {% if app.development_story.start_date and app.development_story.end_date %}
+                                    開発期間: <span id="years"></span>年 <span id="months"></span>ヶ月 <span id="days"></span>日
+                                {% else %}
+                                    開発期間: 日付を入力してください
+                                {% endif %}
+                            </h4>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 開発のきっかけ -->
@@ -81,7 +54,7 @@
                     </p>
                     <textarea name="development_motivation"
                               class="form-control cyber-yellow-focus"
-                              rows="10"
+                              rows="6"
                               placeholder="例：
 ・自分が日々の業務で感じていた課題
 ・解決したかった具体的な問題
@@ -92,25 +65,77 @@
                               {% if readonly %}readonly{% endif %}>{% if app.development_story.development_motivation %}{{ app.development_story.development_motivation }}{% endif %}</textarea>
                 </div>
 
-                <!-- 開発秘話 -->
+                <!-- 開発で工夫した点 -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-yellow">開発秘話</label>
+                    <label class="form-label text-cyber-yellow">開発で工夫した点</label>
                     <p class="text-muted small mb-3 text-cyber-yellow">
-                        ※開発中に苦労したこと、工夫したこと、学んだことなどを詳しく教えてください
+                        ※開発中に特に工夫した点や創意工夫したことを詳しく教えてください
                     </p>
-                    <textarea name="development_story"
+                    <textarea name="development_innovations"
                               class="form-control cyber-yellow-focus"
-                              rows="10"
+                              rows="6"
                               placeholder="例：
-・技術選定の理由と経緯
-・直面した具体的な課題とその解決方法
-・工夫したアーキテクチャや設計の詳細
-・パフォーマンスやセキュリティへの取り組み
-・チーム開発での工夫や学び
-・ユーザーフィードバックと改善プロセス
-・今後の展望や改善点
-など、開発プロセス全体を通じての経験を共有してください"
-                              {% if readonly %}readonly{% endif %}>{% if app.development_story.development_story %}{{ app.development_story.development_story }}{% endif %}</textarea>
+・技術選定の理由と独自の工夫
+・パフォーマンス向上のために実施した最適化
+・ユーザー体験を向上させるために導入した機能
+・開発プロセスで取り入れた効率化手法
+など、あなたのアプリケーションのユニークな工夫点を教えてください"
+                              {% if readonly %}readonly{% endif %}>{% if app.development_story.development_innovations %}{{ app.development_story.development_innovations }}{% endif %}</textarea>
+                </div>
+
+                <!-- 開発で断念した点 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-yellow">開発で断念した点</label>
+                    <p class="text-muted small mb-3 text-cyber-yellow">
+                        ※当初は実装を目指していたが、時間や技術的制約で断念した機能や特徴を教えてください
+                    </p>
+                    <textarea name="development_abandoned"
+                              class="form-control cyber-yellow-focus"
+                              rows="6"
+                              placeholder="例：
+・実装を試みたが技術的に困難だった機能
+・時間的制約により優先度を下げた要素
+・パフォーマンス上の理由で見送った機能
+・コストや複雑性の観点から見送った選択肢
+など、開発過程で直面した現実的な判断と妥協点について"
+                              {% if readonly %}readonly{% endif %}>{% if app.development_story.development_abandoned %}{{ app.development_story.development_abandoned }}{% endif %}</textarea>
+                </div>
+
+                <!-- 今後の増設予定 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-yellow">今後の増設予定</label>
+                    <p class="text-muted small mb-3 text-cyber-yellow">
+                        ※今後追加予定の機能や改善点について教えてください
+                    </p>
+                    <textarea name="development_future_plans"
+                              class="form-control cyber-yellow-focus"
+                              rows="6"
+                              placeholder="例：
+・次のバージョンで計画している新機能
+・ユーザーフィードバックに基づく改善点
+・拡張性やスケーラビリティに関する計画
+・新しい技術やフレームワークの導入予定
+など、アプリケーションの進化の方向性について"
+                              {% if readonly %}readonly{% endif %}>{% if app.development_story.development_future_plans %}{{ app.development_story.development_future_plans }}{% endif %}</textarea>
+                </div>
+
+                <!-- 開発を通して、感じたこと -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-yellow">開発を通して、感じたこと</label>
+                    <p class="text-muted small mb-3 text-cyber-yellow">
+                        ※この開発プロジェクトから学んだことや感じたことをシェアしてください
+                    </p>
+                    <textarea name="development_reflections"
+                              class="form-control cyber-yellow-focus"
+                              rows="6"
+                              placeholder="例：
+・開発過程で得た新しい気づきや学び
+・予想外の困難とその対処から得た教訓
+・チーム開発の場合は協働の経験や学び
+・自分自身のスキルや考え方の変化
+・プロジェクト全体を振り返っての感想
+など、開発者として成長した点や感じたことを自由に"
+                              {% if readonly %}readonly{% endif %}>{% if app.development_story.development_reflections %}{{ app.development_story.development_reflections }}{% endif %}</textarea>
                 </div>
             </form>
         </div>
@@ -215,4 +240,149 @@
     border: 2px solid var(--cyber-yellow) !important;
     color: var(--cyber-yellow) !important;
 }
-</style> 
+
+/* カレンダーアイコンを黄色に変更 */
+#development input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(80%) sepia(80%) saturate(1000%) hue-rotate(5deg) brightness(105%) contrast(105%);
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+#development input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Firefoxなど他のブラウザ対応 */
+#development input[type="date"] {
+    position: relative;
+}
+
+#development input[type="date"]::-moz-calendar-picker-indicator {
+    background-color: var(--cyber-yellow);
+    opacity: 0.8;
+}
+
+/* 開発期間表示ボックスのスタイル */
+#development-duration-container {
+    background: rgba(13, 25, 45, 0.9) !important;
+    border: 2px solid var(--cyber-yellow) !important;
+    box-shadow: 0 0 15px var(--cyber-yellow-glow) !important;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+#development-duration-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 0%, rgba(255, 215, 0, 0.1) 50%, transparent 100%);
+    animation: cyber-glow 3s infinite;
+}
+
+#development-duration {
+    font-weight: bold !important;
+    text-shadow: 0 0 10px var(--cyber-yellow), 0 0 20px var(--cyber-yellow) !important;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes cyber-glow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+</style>
+
+<script>
+// 開発期間を計算して表示するスクリプト
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDurationCalculator();
+});
+
+// タブ切り替え時にも期間計算を実行するため、Bootstrap tabイベントをリッスン
+document.addEventListener('shown.bs.tab', function(event) {
+    if (event.target.id === 'development-tab') {
+        // 開発ストーリータブがアクティブになったら計算を実行
+        initializeDurationCalculator();
+    }
+});
+
+// 期間計算ロジックを初期化する関数
+function initializeDurationCalculator() {
+    // 開始日と終了日の入力フィールドを取得
+    const startDateInput = document.querySelector('input[name="development_start_date"]');
+    const endDateInput = document.querySelector('input[name="development_end_date"]');
+    
+    // 期間表示要素
+    const developmentDuration = document.getElementById('development-duration');
+    
+    if (!startDateInput || !endDateInput || !developmentDuration) {
+        console.warn('開発期間計算に必要な要素が見つかりません');
+        return;
+    }
+    
+    // 期間計算関数
+    function calculateDuration() {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(endDateInput.value);
+        
+        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+            // 開始日と終了日が両方有効な場合のみ計算
+            
+            // 年月日の計算
+            let years = endDate.getFullYear() - startDate.getFullYear();
+            let months = endDate.getMonth() - startDate.getMonth();
+            let days = endDate.getDate() - startDate.getDate();
+            
+            // 日が負の場合、前月から借りる
+            if (days < 0) {
+                months -= 1;
+                // 前月の最終日を計算
+                const lastDayOfPrevMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 0).getDate();
+                days += lastDayOfPrevMonth;
+            }
+            
+            // 月が負の場合、前年から借りる
+            if (months < 0) {
+                years -= 1;
+                months += 12;
+            }
+            
+            // 結果を表示
+            developmentDuration.innerHTML = `開発期間: <span id="years">${years}</span>年 <span id="months">${months}</span>ヶ月 <span id="days">${days}</span>日`;
+            
+            // インプットフィールドに計算結果も保存（オプション）
+            const hiddenDurationInput = document.querySelector('input[name="development_duration"]');
+            if (!hiddenDurationInput) {
+                // 隠しフィールドを作成
+                const newHiddenInput = document.createElement('input');
+                newHiddenInput.type = 'hidden';
+                newHiddenInput.name = 'development_duration';
+                newHiddenInput.value = `${years}年${months}ヶ月${days}日`;
+                startDateInput.parentNode.parentNode.appendChild(newHiddenInput);
+            } else {
+                // 既存の隠しフィールドを更新
+                hiddenDurationInput.value = `${years}年${months}ヶ月${days}日`;
+            }
+        } else {
+            // どちらかの日付が無効な場合
+            developmentDuration.textContent = '開発期間: 日付を入力してください';
+        }
+    }
+    
+    // 日付入力時に期間を計算
+    startDateInput.addEventListener('change', calculateDuration);
+    endDateInput.addEventListener('change', calculateDuration);
+    
+    // 自動保存後も期間計算を更新するため、inputイベントもリッスン
+    startDateInput.addEventListener('input', calculateDuration);
+    endDateInput.addEventListener('input', calculateDuration);
+    
+    // 初期表示時にも計算実行
+    calculateDuration();
+}
+</script> 

@@ -140,7 +140,7 @@ function performAutoSave() {
             appState.lastSaveTime = new Date();
             appState.retryCount = 0;
             
-            // アプリIDがない場合は設定
+            // アプリIDがない場合は設定（新規作成の場合）
             if (!appId && data.app_id) {
                 // アプリIDをフォームに設定
                 form.setAttribute('data-app-id', data.app_id);
@@ -151,10 +151,31 @@ function performAutoSave() {
                 appIdInput.name = 'app_id';
                 appIdInput.value = data.app_id;
                 form.appendChild(appIdInput);
+                
+                // URLがcreateの場合は、editに変更する
+                if (window.location.pathname.includes('/create/')) {
+                    // 現在のURLを取得
+                    const currentPath = window.location.pathname;
+                    // createをedit/{app_id}/に置き換え
+                    const newPath = currentPath.replace('/create/', `/edit/${data.app_id}/`);
+                    // URLを更新（履歴を置き換え）
+                    window.history.replaceState({}, '', newPath);
+                    console.log(`URLを更新しました: ${newPath}`);
+                }
+                
+                // 新規アプリが作成された場合は特別なメッセージを表示
+                updateSaveStatus('success', `新規アプリID: ${data.app_id}で保存しました`);
+                
+                // トーストでも通知
+                showToastMessage(`新規アプリID: ${data.app_id}で保存しました`);
+            } else {
+                // 既存アプリの更新の場合はアプリIDを含むメッセージ
+                const currentAppId = form.getAttribute('data-app-id') || appId;
+                updateSaveStatus('success', `アプリID: ${currentAppId}を上書き保存しました`);
+                
+                // トーストでも通知
+                showToastMessage(`アプリID: ${currentAppId}を上書き保存しました`);
             }
-            
-            // 保存状態表示を更新
-            updateSaveStatus('success', '保存しました');
         } else {
             // 保存失敗
             updateSaveStatus('error', data.error || '保存に失敗しました');
@@ -208,50 +229,40 @@ function retryAutoSave() {
 
 // 保存状態表示を更新する関数
 function updateSaveStatus(status, message) {
-    // ステータス表示要素を取得または作成
+    // ステータス表示要素を取得
     let container = document.getElementById('saveStatusContainer');
     
-    if (!container) {
-        // ステータス表示コンテナを作成
-        container = document.createElement('div');
-        container.id = 'saveStatusContainer';
-        container.className = 'save-status-container';
+    if (container) {
+        // 「準備完了」メッセージは表示しない（指示に従い）
+        if (status === 'ready') {
+            return;
+        }
         
-        // メッセージ部分
-        const saveMsg = document.createElement('span');
-        saveMsg.id = 'saveStatusMsg';
-        container.appendChild(saveMsg);
+        // メッセージを更新
+        const saveMsg = document.getElementById('saveStatusMsg');
+        if (saveMsg) {
+            saveMsg.textContent = message;
+        }
         
-        // タイムスタンプ部分
-        const timestamp = document.createElement('span');
-        timestamp.id = 'saveTimestamp';
-        timestamp.className = 'save-timestamp';
-        container.appendChild(timestamp);
+        // タイムスタンプを更新
+        if (status === 'success' && appState.lastSaveTime) {
+            const timestamp = document.getElementById('saveTimestamp');
+            if (timestamp) {
+                timestamp.textContent = `最終保存: ${appState.lastSaveTime.toLocaleTimeString()}`;
+            }
+        }
         
-        // ページ上部に固定表示
-        document.body.appendChild(container);
-    }
-    
-    // メッセージを更新
-    const saveMsg = document.getElementById('saveStatusMsg');
-    saveMsg.textContent = message;
-    
-    // タイムスタンプを更新
-    if (status === 'success' && appState.lastSaveTime) {
-        const timestamp = document.getElementById('saveTimestamp');
-        timestamp.textContent = `最終保存: ${appState.lastSaveTime.toLocaleTimeString()}`;
-    }
-    
-    // ステータスに応じてクラスを設定
-    container.className = `save-status-container ${status}`;
-    
-    // 成功・エラー時は一定時間後に表示を消す
-    if (status === 'success' || status === 'error') {
-        setTimeout(() => {
-            container.classList.add('fade-out');
-        }, 5000);
-    } else {
-        container.classList.remove('fade-out');
+        // ステータスに応じてクラスを設定
+        container.className = `save-status-container ${status}`;
+        
+        // 成功・エラー時は一定時間後に表示を消す
+        if (status === 'success' || status === 'error') {
+            setTimeout(() => {
+                container.classList.add('fade-out');
+            }, 5000);
+        } else {
+            container.classList.remove('fade-out');
+        }
     }
 }
 
@@ -267,6 +278,97 @@ function resetFormDirty() {
     updateSaveStatus('success', '保存済み');
     
     return true;
+}
+
+// トーストメッセージを表示する関数
+function showToastMessage(message) {
+    // すでに存在する場合は削除
+    let existingToast = document.getElementById('autoSaveToast');
+    if (existingToast) {
+        existingToast.remove();
+    }
+    
+    // アクティブなタブを検出し、対応する色を取得
+    const activeTab = document.querySelector('.nav-link.active');
+    let tabColor = '#00ff9f'; // デフォルトはサイバーグリーン
+    
+    // アクティブなタブのIDに基づいて色を設定
+    if (activeTab) {
+        const tabId = activeTab.id;
+        
+        // タブIDから対応するCSS変数を特定
+        if (tabId === 'screenshots-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-purple').trim();
+        } else if (tabId === 'basic-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-gold').trim();
+        } else if (tabId === 'appeal-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-green').trim();
+        } else if (tabId === 'hardware-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-blue').trim();
+        } else if (tabId === 'dev-env-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-orange').trim();
+        } else if (tabId === 'architecture-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-lime').trim();
+        } else if (tabId === 'backend-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-aqua').trim();
+        } else if (tabId === 'frontend-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-pink').trim();
+        } else if (tabId === 'database-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-emerald').trim();
+        } else if (tabId === 'security-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-red').trim();
+        } else if (tabId === 'development-tab') {
+            tabColor = getComputedStyle(document.documentElement).getPropertyValue('--cyber-yellow').trim();
+        }
+        
+        // 色が取得できなかった場合のフォールバック
+        if (!tabColor || tabColor === '') {
+            tabColor = '#00ff9f'; // デフォルト色
+        }
+    }
+    
+    // トースト要素を作成
+    const toastEl = document.createElement('div');
+    toastEl.id = 'autoSaveToast';
+    toastEl.className = 'toast position-fixed bottom-0 end-0 m-3';
+    toastEl.setAttribute('role', 'alert');
+    toastEl.setAttribute('aria-live', 'assertive');
+    toastEl.setAttribute('aria-atomic', 'true');
+    
+    // サイバーパンクスタイルのCSS - 動的に色を反映
+    toastEl.style.backgroundColor = 'rgba(18, 18, 24, 0.95)';
+    toastEl.style.border = `2px solid ${tabColor}`;
+    toastEl.style.boxShadow = `0 0 15px ${tabColor}80`; // 50%の透明度を追加
+    
+    // トースト内容を設定 - 動的に色を反映
+    toastEl.innerHTML = `
+        <div class="toast-header" style="background-color: rgba(0, 20, 50, 0.9); color: ${tabColor}; border-bottom: 1px solid ${tabColor};">
+            <strong class="me-auto" style="color: ${tabColor}; text-shadow: 0 0 5px ${tabColor};">自動保存</strong>
+            <small style="color: ${tabColor};">たった今</small>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="閉じる"></button>
+        </div>
+        <div class="toast-body" style="color: ${tabColor}; text-shadow: 0 0 5px ${tabColor}80;">${message}</div>
+    `;
+    
+    // bodyに追加
+    document.body.appendChild(toastEl);
+    
+    // Bootstrapトーストの初期化
+    if (typeof bootstrap !== 'undefined') {
+        const toast = new bootstrap.Toast(toastEl, {
+            animation: true,
+            autohide: true,
+            delay: 3000
+        });
+        
+        // トーストを表示
+        toast.show();
+        
+        // 表示後に削除
+        toastEl.addEventListener('hidden.bs.toast', function() {
+            toastEl.remove();
+        });
+    }
 }
 
 // CSRFトークンを取得する関数
@@ -362,22 +464,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // appStateの状態を確認
     console.log('appState初期状態:', JSON.stringify(appState));
     
-    // ホームダイアログを確実に非表示に
+    // ホームダイアログを完全に削除（不要になったため）
     const homeDialog = document.getElementById('homeDialog');
     if (homeDialog) {
-        homeDialog.style.display = 'none';
-        console.log('ページロード時にホームダイアログを非表示に設定');
-    } else {
-        console.warn('[DEBUG] ホームダイアログが見つかりません');
+        homeDialog.parentNode.removeChild(homeDialog);
+        console.log('ホームダイアログを完全に削除しました');
     }
-
-    // 強制的に非表示にする（別の方法でも試す）
-    const allDialogs = document.querySelectorAll('[id="homeDialog"]');
-    console.log(`[DEBUG] 見つかったダイアログ数: ${allDialogs.length}`);
-    allDialogs.forEach((dialog, index) => {
-        dialog.style.display = 'none';
-        console.log(`[DEBUG] ダイアログ ${index} を非表示にしました`);
-    });
 
     // ホームボタンのイベントリスナーを設定
     const homeButton = document.getElementById('homeButton');
@@ -389,26 +481,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('ホームボタンのイベントリスナーを設定');
     } else {
         console.warn('[DEBUG] ホームボタンが見つかりません');
-    }
-    
-    // キャンセルボタンのイベントリスナーを設定
-    const cancelHomeButton = document.getElementById('cancelHomeButton');
-    if (cancelHomeButton) {
-        cancelHomeButton.addEventListener('click', closeHomeDialog);
-    }
-    
-    // 保存せずに戻るボタンのイベントリスナーを設定
-    const discardButton = document.getElementById('discardButton');
-    if (discardButton) {
-        discardButton.addEventListener('click', function() {
-            window.location.href = '/';
-        });
-    }
-    
-    // 保存して戻るボタンのイベントリスナーを設定
-    const saveAndHomeButton = document.getElementById('saveAndHomeButton');
-    if (saveAndHomeButton) {
-        saveAndHomeButton.addEventListener('click', saveAndGoHome);
     }
     
     const form = document.getElementById('appForm');
@@ -426,6 +498,18 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // URLチェック - アプリIDがあるのにURLがcreateの場合は修正する
+        const appId = form.getAttribute('data-app-id');
+        if (appId && window.location.pathname.includes('/create/')) {
+            // 現在のURLを取得
+            const currentPath = window.location.pathname;
+            // createをedit/{app_id}/に置き換え
+            const newPath = currentPath.replace('/create/', `/edit/${appId}/`);
+            // URLを更新（履歴を置き換え）
+            window.history.replaceState({}, '', newPath);
+            console.log(`ページロード時にURLを更新しました: ${newPath}`);
+        }
+
         // 初期データを保存
         appState.initialData = serializeForm();
         
@@ -434,9 +518,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // フォームにresetDirty関数を追加
         form.resetDirty = resetFormDirty;
-        
-        // 保存状態表示を作成
-        updateSaveStatus('ready', '準備完了');
         
         console.log('自動保存機能が初期化されました');
     } else {

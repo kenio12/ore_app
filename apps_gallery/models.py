@@ -178,6 +178,14 @@ class AppGallery(models.Model):
         help_text='セキュリティ関連の情報（認証方式、セキュリティ対策など）'
     )
     
+    # 開発ストーリー情報を追加
+    development_story = models.JSONField(
+        '開発ストーリー情報',
+        default=dict,
+        blank=True,
+        help_text='開発ストーリー関連の情報（開発期間、工夫したポイント、苦労した点など）'
+    )
+    
     # ==================== 管理用フィールド ====================
     created_at = models.DateTimeField('作成日時', auto_now_add=True)
     updated_at = models.DateTimeField('更新日時', auto_now=True)

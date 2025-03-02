@@ -111,7 +111,7 @@
                        id="title" 
                        name="title" 
                        class="form-control cyber-yellow-focus" 
-                       value="{{ app.title }}"
+                       value="{% if app.title %}{{ app.title }}{% endif %}"
                        {% if readonly %}readonly{% endif %}>
             </div>
 

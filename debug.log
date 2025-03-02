@@ -6257,3 +6257,565 @@ INFO 2025-03-02 12:28:02,900 views 25 139679776106176 App found: けにおアプ
 INFO 2025-03-02 12:28:02,900 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
 INFO 2025-03-02 12:28:02,901 views 25 139679776106176 Screenshots: []
 INFO 2025-03-02 12:28:02,901 views 25 139679776106176 Screenshots: []
+DEBUG 2025-03-02 12:40:12,507 connectionpool 25 139679776106176 Resetting dropped connection: api.cloudinary.com
+DEBUG 2025-03-02 12:40:14,379 connectionpool 25 139679776106176 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 12:40:15,367 views 25 139679776106176 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:40:15,367 views 25 139679776106176 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:40:15,370 views 25 139679776106176 新規アプリを自動保存
+INFO 2025-03-02 12:40:15,370 views 25 139679776106176 新規アプリを自動保存
+INFO 2025-03-02 12:40:15,404 views 25 139679776106176 自動保存完了: app_id=71
+INFO 2025-03-02 12:40:15,404 views 25 139679776106176 自動保存完了: app_id=71
+INFO 2025-03-02 12:40:16,935 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:40:16,935 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:40:16,947 views 25 139679776106176 App found: None
+INFO 2025-03-02 12:40:16,947 views 25 139679776106176 App found: None
+INFO 2025-03-02 12:40:16,950 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:40:16,950 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:41:25,338 views 25 139679776106176 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:41:25,338 views 25 139679776106176 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:41:25,345 views 25 139679776106176 既存アプリを自動保存: None
+INFO 2025-03-02 12:41:25,345 views 25 139679776106176 既存アプリを自動保存: None
+INFO 2025-03-02 12:41:25,379 views 25 139679776106176 自動保存完了: app_id=70
+INFO 2025-03-02 12:41:25,379 views 25 139679776106176 自動保存完了: app_id=70
+INFO 2025-03-02 12:41:37,420 views 25 139679776106176 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:41:37,420 views 25 139679776106176 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:41:37,430 views 25 139679776106176 既存アプリを自動保存: None
+INFO 2025-03-02 12:41:37,430 views 25 139679776106176 既存アプリを自動保存: None
+INFO 2025-03-02 12:41:37,461 views 25 139679776106176 自動保存完了: app_id=70
+INFO 2025-03-02 12:41:37,461 views 25 139679776106176 自動保存完了: app_id=70
+INFO 2025-03-02 12:42:10,451 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:42:10,451 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:42:10,511 views 25 139679776106176 App found: None
+INFO 2025-03-02 12:42:10,511 views 25 139679776106176 App found: None
+INFO 2025-03-02 12:42:10,516 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:42:10,516 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:51:25,029 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 12:51:25,029 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 12:51:25,042 views 25 139679766664896 App found: None
+INFO 2025-03-02 12:51:25,042 views 25 139679766664896 App found: None
+INFO 2025-03-02 12:51:25,045 views 25 139679766664896 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:51:25,045 views 25 139679766664896 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:53:03,054 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 12:53:03,054 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 12:53:03,091 views 25 139679766664896 App found: None
+INFO 2025-03-02 12:53:03,091 views 25 139679766664896 App found: None
+INFO 2025-03-02 12:53:03,099 views 25 139679766664896 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:53:03,099 views 25 139679766664896 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:54:30,293 views 25 139679766664896 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:54:30,293 views 25 139679766664896 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:54:30,300 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 12:54:30,300 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 12:54:30,331 views 25 139679766664896 自動保存完了: app_id=70
+INFO 2025-03-02 12:54:30,331 views 25 139679766664896 自動保存完了: app_id=70
+INFO 2025-03-02 12:54:37,606 views 25 139679766664896 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:54:37,606 views 25 139679766664896 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:54:37,615 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 12:54:37,615 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 12:54:37,640 views 25 139679766664896 自動保存完了: app_id=70
+INFO 2025-03-02 12:54:37,640 views 25 139679766664896 自動保存完了: app_id=70
+INFO 2025-03-02 12:54:43,563 views 25 139679766664896 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:54:43,563 views 25 139679766664896 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:54:43,572 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 12:54:43,572 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 12:54:43,641 views 25 139679766664896 自動保存完了: app_id=70
+INFO 2025-03-02 12:54:43,641 views 25 139679766664896 自動保存完了: app_id=70
+INFO 2025-03-02 12:54:48,394 views 25 139679766664896 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:54:48,394 views 25 139679766664896 自動保存処理開始: app_id=70
+INFO 2025-03-02 12:54:48,404 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 12:54:48,404 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 12:54:48,433 views 25 139679766664896 自動保存完了: app_id=70
+INFO 2025-03-02 12:54:48,433 views 25 139679766664896 自動保存完了: app_id=70
+INFO 2025-03-02 12:55:06,775 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 12:55:06,775 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 12:55:06,815 views 25 139679766664896 App found: None
+INFO 2025-03-02 12:55:06,815 views 25 139679766664896 App found: None
+INFO 2025-03-02 12:55:06,821 views 25 139679766664896 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:55:06,821 views 25 139679766664896 Screenshots: [{'public_id': 'app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740886813/app_screenshots/app_70/gmv4i7i4lrrqpa7vmyyu.png', 'description': ''}]
+INFO 2025-03-02 12:55:42,770 views 25 139679766664896 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:55:42,770 views 25 139679766664896 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:55:42,773 views 25 139679766664896 新規アプリを自動保存
+INFO 2025-03-02 12:55:42,773 views 25 139679766664896 新規アプリを自動保存
+INFO 2025-03-02 12:55:42,817 views 25 139679766664896 自動保存完了: app_id=72
+INFO 2025-03-02 12:55:42,817 views 25 139679766664896 自動保存完了: app_id=72
+INFO 2025-03-02 12:59:55,557 views 25 139679766664896 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:59:55,557 views 25 139679766664896 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:59:55,563 views 25 139679766664896 新規アプリを自動保存
+INFO 2025-03-02 12:59:55,563 views 25 139679766664896 新規アプリを自動保存
+INFO 2025-03-02 12:59:55,595 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 12:59:55,595 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:01:01,211 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:01:01,211 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:01:01,221 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:01:01,221 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:01:01,271 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:01:01,271 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:01:26,297 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:01:26,297 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:01:26,331 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:01:26,331 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:01:26,387 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:01:26,387 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:01:31,223 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:01:31,223 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:01:31,233 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:01:31,233 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:01:31,497 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:01:31,497 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:02:49,027 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:02:49,027 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:02:49,042 views 25 139679766664896 App found: None
+INFO 2025-03-02 13:02:49,042 views 25 139679766664896 App found: None
+INFO 2025-03-02 13:02:49,044 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:02:49,044 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:02:56,056 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:02:56,056 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:02:56,065 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:02:56,065 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:02:56,092 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:02:56,092 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:03:52,121 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:03:52,121 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:03:52,130 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:03:52,130 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:03:52,164 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:03:52,164 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:04,855 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:04:04,855 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:04:04,879 views 25 139679766664896 App found: None
+INFO 2025-03-02 13:04:04,879 views 25 139679766664896 App found: None
+INFO 2025-03-02 13:04:04,882 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:04:04,882 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:04:11,538 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:11,538 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:11,545 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:11,545 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:11,590 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:11,590 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:23,824 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:23,824 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:23,837 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:23,837 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:23,873 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:23,873 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:28,960 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:28,960 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:28,977 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:28,977 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:29,029 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:29,029 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:42,034 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:42,034 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:42,045 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:42,045 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:42,073 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:42,073 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:55,147 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:55,147 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:04:55,159 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:55,159 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:04:55,187 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:04:55,187 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:05:06,020 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:05:06,020 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:05:06,028 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:05:06,028 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:05:06,059 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:05:06,059 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:05:09,139 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:05:09,139 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:05:09,148 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:05:09,148 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:05:09,184 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:05:09,184 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:06:34,201 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:06:34,201 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:06:34,212 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:06:34,212 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:06:34,246 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:06:34,246 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:06:55,873 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:06:55,873 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:06:55,884 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:06:55,884 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:06:55,918 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:06:55,918 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:09:40,199 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:09:40,199 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:09:40,227 views 25 139679766664896 App found: None
+INFO 2025-03-02 13:09:40,227 views 25 139679766664896 App found: None
+INFO 2025-03-02 13:09:40,230 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:09:40,230 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:09:52,394 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:09:52,394 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:09:52,399 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:09:52,399 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:09:52,430 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:09:52,430 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:09:56,301 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:09:56,301 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:09:56,316 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:09:56,316 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:09:56,344 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:09:56,344 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:10:53,436 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:10:53,436 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:10:53,448 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:10:53,448 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:10:53,479 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:10:53,479 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:10:57,936 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:10:57,936 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:10:57,956 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:10:57,956 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:10:58,000 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:10:58,000 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:11:06,899 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:11:06,899 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:11:06,909 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:11:06,909 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:11:06,945 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:11:06,945 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:11:11,582 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:11:11,582 views 25 139679766664896 自動保存処理開始: app_id=73
+INFO 2025-03-02 13:11:11,591 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:11:11,591 views 25 139679766664896 既存アプリを自動保存: None
+INFO 2025-03-02 13:11:11,622 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:11:11,622 views 25 139679766664896 自動保存完了: app_id=73
+INFO 2025-03-02 13:16:13,481 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:16:13,481 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:16:13,494 views 25 139679766664896 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:16:13,494 views 25 139679766664896 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:16:13,496 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:16:13,496 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:16:26,429 views 25 139679766664896 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:16:26,429 views 25 139679766664896 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:16:26,436 views 25 139679766664896 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:16:26,436 views 25 139679766664896 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:16:26,465 views 25 139679766664896 自動保存完了: app_id=69
+INFO 2025-03-02 13:16:26,465 views 25 139679766664896 自動保存完了: app_id=69
+INFO 2025-03-02 13:16:30,930 views 25 139679766664896 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:16:30,930 views 25 139679766664896 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:16:30,936 views 25 139679766664896 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:16:30,936 views 25 139679766664896 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:16:30,961 views 25 139679766664896 自動保存完了: app_id=69
+INFO 2025-03-02 13:16:30,961 views 25 139679766664896 自動保存完了: app_id=69
+INFO 2025-03-02 13:16:31,252 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:16:31,252 views 25 139679766664896 Request method: GET
+INFO 2025-03-02 13:16:31,263 views 25 139679766664896 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:16:31,263 views 25 139679766664896 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:16:31,265 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:16:31,265 views 25 139679766664896 Screenshots: []
+INFO 2025-03-02 13:43:12,128 views 26 139792450979520 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:43:12,128 views 26 139792450979520 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:43:12,139 views 26 139792450979520 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:43:12,139 views 26 139792450979520 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:43:12,178 views 26 139792450979520 自動保存完了: app_id=69
+INFO 2025-03-02 13:43:12,178 views 26 139792450979520 自動保存完了: app_id=69
+INFO 2025-03-02 13:43:16,292 views 26 139792450979520 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:43:16,292 views 26 139792450979520 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:43:16,301 views 26 139792450979520 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:43:16,301 views 26 139792450979520 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:43:16,324 views 26 139792450979520 自動保存完了: app_id=69
+INFO 2025-03-02 13:43:16,324 views 26 139792450979520 自動保存完了: app_id=69
+INFO 2025-03-02 13:43:19,557 views 26 139792450979520 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:43:19,557 views 26 139792450979520 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:43:19,570 views 26 139792450979520 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:43:19,570 views 26 139792450979520 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:43:19,600 views 26 139792450979520 自動保存完了: app_id=69
+INFO 2025-03-02 13:43:19,600 views 26 139792450979520 自動保存完了: app_id=69
+INFO 2025-03-02 13:44:50,792 views 26 139792450979520 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:44:50,792 views 26 139792450979520 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:44:50,800 views 26 139792450979520 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:44:50,800 views 26 139792450979520 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:44:50,862 views 26 139792450979520 自動保存完了: app_id=69
+INFO 2025-03-02 13:44:50,862 views 26 139792450979520 自動保存完了: app_id=69
+INFO 2025-03-02 13:44:57,768 views 26 139792450979520 Request method: GET
+INFO 2025-03-02 13:44:57,768 views 26 139792450979520 Request method: GET
+INFO 2025-03-02 13:44:57,857 views 26 139792450979520 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:44:57,857 views 26 139792450979520 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:44:57,862 views 26 139792450979520 Screenshots: []
+INFO 2025-03-02 13:44:57,862 views 26 139792450979520 Screenshots: []
+INFO 2025-03-02 13:45:18,629 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:45:18,629 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:45:18,634 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:45:18,634 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:45:18,664 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:45:18,664 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:45:30,638 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:45:30,638 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:45:30,645 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:45:30,645 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:45:30,675 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:45:30,675 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:46:28,970 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:46:28,970 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:46:28,980 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:46:28,980 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:46:29,023 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:46:29,023 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:46:34,430 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:46:34,430 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:46:34,438 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:46:34,438 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:46:34,470 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:46:34,470 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:47:03,394 views 26 139792442586816 Request method: GET
+INFO 2025-03-02 13:47:03,394 views 26 139792442586816 Request method: GET
+INFO 2025-03-02 13:47:03,425 views 26 139792442586816 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:47:03,425 views 26 139792442586816 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:47:03,495 views 26 139792442586816 Screenshots: []
+INFO 2025-03-02 13:47:03,495 views 26 139792442586816 Screenshots: []
+INFO 2025-03-02 13:50:01,048 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:50:01,048 views 26 139792442586816 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:50:01,056 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:50:01,056 views 26 139792442586816 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:50:01,088 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:50:01,088 views 26 139792442586816 自動保存完了: app_id=69
+INFO 2025-03-02 13:50:05,832 views 26 139792442586816 Request method: GET
+INFO 2025-03-02 13:50:05,832 views 26 139792442586816 Request method: GET
+INFO 2025-03-02 13:50:05,846 views 26 139792442586816 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:50:05,846 views 26 139792442586816 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:50:05,852 views 26 139792442586816 Screenshots: []
+INFO 2025-03-02 13:50:05,852 views 26 139792442586816 Screenshots: []
+INFO 2025-03-02 13:55:31,118 views 209 139749765326528 Request method: GET
+INFO 2025-03-02 13:55:31,118 views 209 139749765326528 Request method: GET
+INFO 2025-03-02 13:55:31,131 views 209 139749765326528 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:31,131 views 209 139749765326528 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:31,135 views 209 139749765326528 Screenshots: []
+INFO 2025-03-02 13:55:31,135 views 209 139749765326528 Screenshots: []
+INFO 2025-03-02 13:55:38,278 views 209 139749765326528 Request method: GET
+INFO 2025-03-02 13:55:38,278 views 209 139749765326528 Request method: GET
+INFO 2025-03-02 13:55:38,283 views 209 139749773719232 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:55:38,283 views 209 139749773719232 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:55:38,292 views 209 139749765326528 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:38,292 views 209 139749765326528 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:38,295 views 209 139749773719232 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:38,295 views 209 139749765326528 Screenshots: []
+INFO 2025-03-02 13:55:38,295 views 209 139749773719232 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:38,295 views 209 139749765326528 Screenshots: []
+INFO 2025-03-02 13:55:38,414 views 209 139749773719232 自動保存完了: app_id=69
+INFO 2025-03-02 13:55:38,414 views 209 139749773719232 自動保存完了: app_id=69
+INFO 2025-03-02 13:55:46,171 views 209 139749765326528 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:55:46,171 views 209 139749765326528 自動保存処理開始: app_id=69
+INFO 2025-03-02 13:55:46,179 views 209 139749765326528 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:46,179 views 209 139749765326528 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:46,213 views 209 139749765326528 自動保存完了: app_id=69
+INFO 2025-03-02 13:55:46,213 views 209 139749765326528 自動保存完了: app_id=69
+INFO 2025-03-02 13:55:50,712 views 209 139749765326528 Request method: GET
+INFO 2025-03-02 13:55:50,712 views 209 139749765326528 Request method: GET
+INFO 2025-03-02 13:55:50,728 views 209 139749765326528 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:50,728 views 209 139749765326528 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 13:55:50,730 views 209 139749765326528 Screenshots: []
+INFO 2025-03-02 13:55:50,730 views 209 139749765326528 Screenshots: []
+INFO 2025-03-02 14:08:52,701 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:08:52,701 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:08:52,716 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:08:52,716 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:08:52,724 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:08:52,724 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:09:27,897 views 419 140499776030400 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:09:27,897 views 419 140499776030400 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:09:27,905 views 419 140499776030400 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:09:27,905 views 419 140499776030400 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:09:28,055 views 419 140499776030400 自動保存完了: app_id=69
+INFO 2025-03-02 14:09:28,055 views 419 140499776030400 自動保存完了: app_id=69
+INFO 2025-03-02 14:09:50,258 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:09:50,258 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:09:50,280 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:09:50,280 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:09:50,285 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:09:50,285 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:09:58,604 views 419 140499776030400 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:09:58,604 views 419 140499776030400 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:09:58,613 views 419 140499776030400 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:09:58,613 views 419 140499776030400 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:09:58,699 views 419 140499776030400 自動保存完了: app_id=69
+INFO 2025-03-02 14:09:58,699 views 419 140499776030400 自動保存完了: app_id=69
+INFO 2025-03-02 14:17:12,098 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:17:12,098 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:17:12,128 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:17:12,128 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:17:12,190 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:17:12,190 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:18:40,848 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:18:40,848 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:18:40,862 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:18:40,862 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:18:40,865 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:18:40,865 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:20:00,420 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:20:00,420 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:20:00,460 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:20:00,460 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:20:00,484 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:20:00,484 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:21:03,495 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:21:03,495 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:21:03,507 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:21:03,507 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:21:03,511 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:21:03,511 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:22:39,025 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:22:39,025 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:22:39,043 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:22:39,043 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:22:39,049 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:22:39,049 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:23:47,118 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:23:47,118 views 419 140499776030400 Request method: GET
+INFO 2025-03-02 14:23:47,201 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:23:47,201 views 419 140499776030400 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:23:47,208 views 419 140499776030400 Screenshots: []
+INFO 2025-03-02 14:23:47,208 views 419 140499776030400 Screenshots: []
+DEBUG 2025-03-02 14:38:56,340 connectionpool 419 140499767637696 Starting new HTTPS connection (1): api.cloudinary.com:443
+DEBUG 2025-03-02 14:38:58,479 connectionpool 419 140499767637696 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 14:38:59,042 views 419 140499767637696 自動保存処理開始: app_id=None
+INFO 2025-03-02 14:38:59,042 views 419 140499767637696 自動保存処理開始: app_id=None
+INFO 2025-03-02 14:38:59,045 views 419 140499767637696 新規アプリを自動保存
+INFO 2025-03-02 14:38:59,045 views 419 140499767637696 新規アプリを自動保存
+INFO 2025-03-02 14:38:59,097 views 419 140499767637696 自動保存完了: app_id=75
+INFO 2025-03-02 14:38:59,097 views 419 140499767637696 自動保存完了: app_id=75
+INFO 2025-03-02 14:39:01,043 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:39:01,043 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:39:01,060 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:39:01,060 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:39:01,062 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}]
+INFO 2025-03-02 14:39:01,062 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}]
+INFO 2025-03-02 14:39:42,834 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:39:42,834 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:39:42,857 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:39:42,857 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:39:42,865 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}]
+INFO 2025-03-02 14:39:42,865 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}]
+DEBUG 2025-03-02 14:39:43,704 connectionpool 419 140499767637696 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 14:39:45,821 views 419 140499767637696 自動保存処理開始: app_id=74
+INFO 2025-03-02 14:39:45,821 views 419 140499767637696 自動保存処理開始: app_id=74
+INFO 2025-03-02 14:39:45,837 views 419 140499767637696 既存アプリを自動保存: None
+INFO 2025-03-02 14:39:45,837 views 419 140499767637696 既存アプリを自動保存: None
+INFO 2025-03-02 14:39:45,935 views 419 140499767637696 自動保存完了: app_id=74
+INFO 2025-03-02 14:39:45,935 views 419 140499767637696 自動保存完了: app_id=74
+INFO 2025-03-02 14:39:46,314 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:39:46,314 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:39:46,330 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:39:46,330 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:39:46,332 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}]
+INFO 2025-03-02 14:39:46,332 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}]
+INFO 2025-03-02 14:40:59,049 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:40:59,049 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:40:59,081 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:40:59,081 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:40:59,094 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}]
+INFO 2025-03-02 14:40:59,094 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}]
+DEBUG 2025-03-02 14:40:59,709 connectionpool 419 140499767637696 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 14:41:02,033 views 419 140499767637696 自動保存処理開始: app_id=74
+INFO 2025-03-02 14:41:02,033 views 419 140499767637696 自動保存処理開始: app_id=74
+INFO 2025-03-02 14:41:02,042 views 419 140499767637696 既存アプリを自動保存: None
+INFO 2025-03-02 14:41:02,042 views 419 140499767637696 既存アプリを自動保存: None
+INFO 2025-03-02 14:41:02,153 views 419 140499767637696 自動保存完了: app_id=74
+INFO 2025-03-02 14:41:02,153 views 419 140499767637696 自動保存完了: app_id=74
+INFO 2025-03-02 14:41:02,335 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:02,335 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:02,358 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:02,358 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:02,362 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/magkdcfkb9yrz5chbasi', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894059/app_screenshots/app_74/magkdcfkb9yrz5chbasi.png', 'description': ''}]
+INFO 2025-03-02 14:41:02,362 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/tsenxip9hrsfa3cpycxa', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893938/app_screenshots/app_74/tsenxip9hrsfa3cpycxa.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/magkdcfkb9yrz5chbasi', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894059/app_screenshots/app_74/magkdcfkb9yrz5chbasi.png', 'description': ''}]
+DEBUG 2025-03-02 14:41:21,477 connectionpool 419 140499767637696 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/destroy HTTP/1.1" 200 None
+INFO 2025-03-02 14:41:22,552 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:22,552 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:22,566 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:22,566 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:22,569 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/magkdcfkb9yrz5chbasi', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894059/app_screenshots/app_74/magkdcfkb9yrz5chbasi.png', 'description': ''}]
+INFO 2025-03-02 14:41:22,569 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/magkdcfkb9yrz5chbasi', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894059/app_screenshots/app_74/magkdcfkb9yrz5chbasi.png', 'description': ''}]
+INFO 2025-03-02 14:41:46,924 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:46,924 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:47,029 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:47,029 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:47,044 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/magkdcfkb9yrz5chbasi', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894059/app_screenshots/app_74/magkdcfkb9yrz5chbasi.png', 'description': ''}]
+INFO 2025-03-02 14:41:47,044 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}, {'public_id': 'app_screenshots/app_74/magkdcfkb9yrz5chbasi', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894059/app_screenshots/app_74/magkdcfkb9yrz5chbasi.png', 'description': ''}]
+DEBUG 2025-03-02 14:41:50,278 connectionpool 419 140499767637696 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/destroy HTTP/1.1" 200 None
+INFO 2025-03-02 14:41:51,351 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:51,351 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:51,371 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:51,371 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:51,377 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}]
+INFO 2025-03-02 14:41:51,377 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/vdjmxqmohvtmhzevwbxx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740893983/app_screenshots/app_74/vdjmxqmohvtmhzevwbxx.png', 'description': ''}]
+DEBUG 2025-03-02 14:41:57,551 connectionpool 419 140499767637696 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/destroy HTTP/1.1" 200 None
+INFO 2025-03-02 14:41:58,620 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:58,620 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:41:58,632 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:58,632 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:41:58,637 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:41:58,637 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:42:06,663 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:42:06,663 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:42:06,684 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:42:06,684 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:42:06,687 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:42:06,687 views 419 140499767637696 Screenshots: []
+DEBUG 2025-03-02 14:42:07,621 connectionpool 419 140499767637696 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 14:42:09,636 views 419 140499767637696 自動保存処理開始: app_id=74
+INFO 2025-03-02 14:42:09,636 views 419 140499767637696 自動保存処理開始: app_id=74
+INFO 2025-03-02 14:42:09,646 views 419 140499767637696 既存アプリを自動保存: None
+INFO 2025-03-02 14:42:09,646 views 419 140499767637696 既存アプリを自動保存: None
+INFO 2025-03-02 14:42:09,702 views 419 140499767637696 自動保存完了: app_id=74
+INFO 2025-03-02 14:42:09,702 views 419 140499767637696 自動保存完了: app_id=74
+INFO 2025-03-02 14:42:10,193 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:42:10,193 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:42:10,209 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:42:10,209 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:42:10,212 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/efdg08pfheib4udc6nua', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894127/app_screenshots/app_74/efdg08pfheib4udc6nua.png', 'description': ''}]
+INFO 2025-03-02 14:42:10,212 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/efdg08pfheib4udc6nua', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894127/app_screenshots/app_74/efdg08pfheib4udc6nua.png', 'description': ''}]
+INFO 2025-03-02 14:43:21,123 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:43:21,123 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:43:21,157 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:43:21,157 views 419 140499767637696 App found: None
+INFO 2025-03-02 14:43:21,162 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/efdg08pfheib4udc6nua', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894127/app_screenshots/app_74/efdg08pfheib4udc6nua.png', 'description': ''}]
+INFO 2025-03-02 14:43:21,162 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/efdg08pfheib4udc6nua', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894127/app_screenshots/app_74/efdg08pfheib4udc6nua.png', 'description': ''}]
+INFO 2025-03-02 14:43:32,548 views 419 140499767637696 自動保存処理開始: app_id=74
+INFO 2025-03-02 14:43:32,548 views 419 140499767637696 自動保存処理開始: app_id=74
+INFO 2025-03-02 14:43:32,558 views 419 140499767637696 既存アプリを自動保存: None
+INFO 2025-03-02 14:43:32,558 views 419 140499767637696 既存アプリを自動保存: None
+INFO 2025-03-02 14:43:32,618 views 419 140499767637696 自動保存完了: app_id=74
+INFO 2025-03-02 14:43:32,618 views 419 140499767637696 自動保存完了: app_id=74
+INFO 2025-03-02 14:43:45,454 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:43:45,454 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:43:45,470 views 419 140499767637696 App found: おい
+INFO 2025-03-02 14:43:45,470 views 419 140499767637696 App found: おい
+INFO 2025-03-02 14:43:45,472 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/efdg08pfheib4udc6nua', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894127/app_screenshots/app_74/efdg08pfheib4udc6nua.png', 'description': ''}]
+INFO 2025-03-02 14:43:45,472 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/efdg08pfheib4udc6nua', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894127/app_screenshots/app_74/efdg08pfheib4udc6nua.png', 'description': ''}]
+INFO 2025-03-02 14:44:53,925 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:44:53,925 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:44:53,963 views 419 140499767637696 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:44:53,963 views 419 140499767637696 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:44:53,967 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:44:53,967 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:45:07,924 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:45:07,924 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:45:07,941 views 419 140499767637696 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:45:07,941 views 419 140499767637696 App found: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:45:07,945 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:45:07,945 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:45:08,019 views 419 140499776030400 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:45:08,019 views 419 140499776030400 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:45:08,033 views 419 140499776030400 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:45:08,033 views 419 140499776030400 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　uooooou
+INFO 2025-03-02 14:45:08,113 views 419 140499776030400 自動保存完了: app_id=69
+INFO 2025-03-02 14:45:08,113 views 419 140499776030400 自動保存完了: app_id=69
+INFO 2025-03-02 14:45:19,522 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:45:19,522 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:45:19,529 views 419 140499767637696 既存アプリを自動保存: なんやねん
+INFO 2025-03-02 14:45:19,529 views 419 140499767637696 既存アプリを自動保存: なんやねん
+INFO 2025-03-02 14:45:19,577 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:45:19,577 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:45:22,081 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:45:22,081 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:45:22,092 views 419 140499767637696 App found: なんやねん
+INFO 2025-03-02 14:45:22,092 views 419 140499767637696 App found: なんやねん
+INFO 2025-03-02 14:45:22,094 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:45:22,094 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:45:55,662 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:45:55,662 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:45:55,676 views 419 140499767637696 既存アプリを自動保存: なんやねん
+INFO 2025-03-02 14:45:55,676 views 419 140499767637696 既存アプリを自動保存: なんやねん
+INFO 2025-03-02 14:45:55,719 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:45:55,719 views 419 140499767637696 自動保存完了: app_id=69

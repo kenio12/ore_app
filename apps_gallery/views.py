@@ -629,62 +629,6 @@ class HomeView(ListView):
         }
         return context
 
-@require_http_methods(["POST"])
-def save_technical(request, app_id):
-    try:
-        data = json.loads(request.body)
-        print("\n=== Debug Info ===")
-        print(f"User: {request.user}, App ID: {app_id}")
-        print(f"Content-Type: {request.content_type}")
-        print("Received data:", data)
-
-        app = get_object_or_404(AppGallery, id=app_id)
-        
-        # アーキテクチャ情報の保存
-        if 'architecture' in data:
-            app.architecture = {
-                'patterns': data['architecture'].get('patterns', []),
-                'design_patterns': data['architecture'].get('design_patterns', []),
-                'description': data['architecture'].get('description', '')  # 文字列として保存
-            }
-        
-        # ハードウェア情報の保存
-        if 'hardware_specs' in data:
-            app.hardware_specs = data['hardware_specs']
-            
-        # 開発環境情報の保存
-        if 'development_environment' in data:
-            app.development_environment = data['development_environment']
-            
-        # バックエンド情報の保存
-        if 'backend' in data:
-            app.backend = data['backend']
-            
-        app.save()
-        
-        print("\n=== After Save ===")
-        print(f"Saved hardware: {app.hardware_specs}")
-        print(f"Saved dev env: {app.development_environment}")
-        print(f"Saved backend: {app.backend}")
-        print(f"Saved architecture: {app.architecture}")
-        
-        return JsonResponse({
-            'success': True,
-            'message': '保存しました',
-            'data': {
-                'architecture': app.architecture,
-                'hardware_specs': app.hardware_specs,
-                'development_environment': app.development_environment,
-                'backend': app.backend
-            }
-        })
-    except Exception as e:
-        print("Error saving technical data:", str(e))
-        return JsonResponse({
-            'success': False,
-            'message': str(e)
-        }, status=400)
-
 @login_required
 @require_http_methods(["POST"])
 def auto_save_app(request, app_id=None):
@@ -695,10 +639,20 @@ def auto_save_app(request, app_id=None):
         # 自動保存フラグをチェック
         is_auto_save = request.headers.get('X-Auto-Save') == 'true'
         
+        # JSONフィールドの既存値を保持する変数
+        existing_security = None
+        existing_frontend = None
+        existing_database = None
+        
         if app_id and app_id != 'undefined':
             # 既存アプリの更新
             app = get_object_or_404(AppGallery, id=app_id, author=request.user)
             logger.info(f"既存アプリを自動保存: {app.title}")
+            
+            # 既存のJSONフィールド値を保存
+            existing_security = app.security
+            existing_frontend = app.frontend
+            existing_database = app.database
         else:
             # 新規アプリの作成
             app = AppGallery(
@@ -721,6 +675,31 @@ def auto_save_app(request, app_id=None):
                 # フォームが無効な場合でも最低限のデータは保存する
                 app.save()
             
+            # 既存のJSONフィールド値を復元（上書きされないように）
+            if existing_security is not None:
+                app.security = existing_security
+            if existing_frontend is not None:
+                app.frontend = existing_frontend
+            if existing_database is not None:
+                app.database = existing_database
+                
+            # フォームデータに対応するフィールドがある場合のみ更新
+            data = request.POST
+            if 'security' in data:
+                app.security = json.loads(data['security']) if isinstance(data['security'], str) else data['security']
+            if 'frontend' in data:
+                app.frontend = json.loads(data['frontend']) if isinstance(data['frontend'], str) else data['frontend']
+            if 'database' in data:
+                app.database = json.loads(data['database']) if isinstance(data['database'], str) else data['database']
+                
+            # 変更を保存
+            app.save()
+            
+            # デバッグ用にJSONフィールドの状態をログ出力
+            print(f"自動保存後の状態 - Security: {app.security}")
+            print(f"自動保存後の状態 - Frontend: {app.frontend}")
+            print(f"自動保存後の状態 - Database: {app.database}")
+            
             logger.info(f"自動保存完了: app_id={app.id}")
             
             return JsonResponse({
@@ -732,6 +711,27 @@ def auto_save_app(request, app_id=None):
             # 通常の保存時は完全バリデーション
             if form.is_valid():
                 app = form.save()
+                
+                # 既存のJSONフィールド値を復元（上書きされないように）
+                if existing_security is not None:
+                    app.security = existing_security
+                if existing_frontend is not None:
+                    app.frontend = existing_frontend
+                if existing_database is not None:
+                    app.database = existing_database
+                
+                # フォームデータに対応するフィールドがある場合のみ更新
+                data = request.POST
+                if 'security' in data:
+                    app.security = json.loads(data['security']) if isinstance(data['security'], str) else data['security']
+                if 'frontend' in data:
+                    app.frontend = json.loads(data['frontend']) if isinstance(data['frontend'], str) else data['frontend']
+                if 'database' in data:
+                    app.database = json.loads(data['database']) if isinstance(data['database'], str) else data['database']
+                    
+                # 変更を保存
+                app.save()
+                
                 return JsonResponse({
                     'success': True,
                     'app_id': app.id,
