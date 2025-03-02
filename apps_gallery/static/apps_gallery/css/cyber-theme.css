@@ -17,9 +17,29 @@
     --cyber-bg-darker: rgba(0, 20, 50, 0.8);
 }
 
-/* セクション固有のスタイル */
+/* 全体の基本スタイル追加 */
+body {
+    background-color: #121212 !important;
+    color: #ffffff !important;
+}
+
+.container-fluid {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    color: #ffffff !important;
+    padding: 20px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3) !important;
+}
+
+h2, h3, h4, h5, label {
+    color: #00ffff !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5) !important;
+}
+
+/* セクション固有のスタイル - IDセレクタ修正 */
 #screenshots-section { --section-color: var(--cyber-purple) !important; }
 #basic-section { --section-color: var(--cyber-gold) !important; }
+#basic-info-section { --section-color: var(--cyber-green) !important; }
 #appeal-section { --section-color: var(--cyber-green) !important; }
 #hardware-section { --section-color: var(--cyber-blue) !important; }
 #dev-env-section { --section-color: var(--cyber-orange) !important; }
@@ -29,6 +49,280 @@
 #database-section { --section-color: var(--cyber-emerald) !important; }
 #security-section { --section-color: var(--cyber-red) !important; }
 #development-section { --section-color: var(--cyber-yellow) !important; }
+
+/* タブパネルのスタイル修正 */
+.card {
+    background-color: var(--cyber-bg-dark) !important;
+    border: 1px solid var(--section-color, #00ffff) !important;
+    box-shadow: 0 0 15px var(--section-color, rgba(0, 255, 255, 0.3)) !important;
+    margin-bottom: 20px !important;
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    border-bottom: 2px solid var(--section-color, #00ffff) !important;
+}
+
+/* フォーム要素の強化スタイル - 文字色を強制的に白に */
+.form-control,
+.form-select,
+textarea,
+input {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    color: #ffffff !important; /* 強制的に白色に */
+    border: 2px solid var(--section-color, #00ffff) !important;
+    box-shadow: 0 0 10px var(--section-color, rgba(0, 255, 255, 0.3)) !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+    background-color: rgba(0, 10, 20, 0.8) !important;
+    color: white !important;
+    border-color: var(--section-color, #00ffff) !important;
+    box-shadow: 0 0 15px var(--section-color, rgba(0, 255, 255, 0.5)) !important;
+}
+
+/* タブの色設定を修正 - Bootstrapの優先順位を上回るようセレクタを強化 */
+.nav-tabs .nav-item .nav-link.text-neon#screenshots-tab,
+button#screenshots-tab.nav-link.text-neon { 
+    color: var(--cyber-purple) !important; 
+    text-shadow: 0 0 10px var(--cyber-purple) !important;
+    border-color: var(--cyber-purple) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#basic-tab,
+button#basic-tab.nav-link.text-neon { 
+    color: var(--cyber-gold) !important; 
+    text-shadow: 0 0 10px var(--cyber-gold) !important;
+    border-color: var(--cyber-gold) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#appeal-tab,
+button#appeal-tab.nav-link.text-neon { 
+    color: var(--cyber-green) !important; 
+    text-shadow: 0 0 10px var(--cyber-green) !important;
+    border-color: var(--cyber-green) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#hardware-tab,
+button#hardware-tab.nav-link.text-neon { 
+    color: var(--cyber-blue) !important; 
+    text-shadow: 0 0 10px var(--cyber-blue) !important;
+    border-color: var(--cyber-blue) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#dev-env-tab,
+button#dev-env-tab.nav-link.text-neon { 
+    color: var(--cyber-orange) !important; 
+    text-shadow: 0 0 10px var(--cyber-orange) !important;
+    border-color: var(--cyber-orange) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#architecture-tab,
+button#architecture-tab.nav-link.text-neon { 
+    color: var(--cyber-lime) !important; 
+    text-shadow: 0 0 10px var(--cyber-lime) !important;
+    border-color: var(--cyber-lime) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#backend-tab,
+button#backend-tab.nav-link.text-neon { 
+    color: var(--cyber-aqua) !important; 
+    text-shadow: 0 0 10px var(--cyber-aqua) !important;
+    border-color: var(--cyber-aqua) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#frontend-tab,
+button#frontend-tab.nav-link.text-neon { 
+    color: var(--cyber-pink) !important; 
+    text-shadow: 0 0 10px var(--cyber-pink) !important;
+    border-color: var(--cyber-pink) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#database-tab,
+button#database-tab.nav-link.text-neon { 
+    color: var(--cyber-emerald) !important; 
+    text-shadow: 0 0 10px var(--cyber-emerald) !important;
+    border-color: var(--cyber-emerald) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#security-tab,
+button#security-tab.nav-link.text-neon { 
+    color: var(--cyber-red) !important; 
+    text-shadow: 0 0 10px var(--cyber-red) !important;
+    border-color: var(--cyber-red) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#development-tab,
+button#development-tab.nav-link.text-neon { 
+    color: var(--cyber-yellow) !important; 
+    text-shadow: 0 0 10px var(--cyber-yellow) !important;
+    border-color: var(--cyber-yellow) !important;
+}
+
+/* Bootstrapのデフォルトスタイルを上書き */
+.nav-tabs .nav-link {
+    color: #ffffff !important;
+}
+.nav-tabs .nav-link:hover {
+    color: #00ffff !important;
+}
+.nav-tabs .nav-link.active {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    border-color: currentColor currentColor transparent !important;
+}
+
+/* タブナビゲーションの背景 */
+.app-tabs {
+    background: rgba(13, 25, 45, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    transition: transform 0.3s ease !important;
+    margin-bottom: 2rem !important;
+    padding: 10px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2) !important;
+    width: 100% !important; /* 幅を確保 */
+    left: 0 !important; /* 左端に配置 */
+}
+
+/* スクロール時にナビを隠す */
+.app-tabs.hidden {
+    transform: translateY(-100%) !important;
+}
+
+/* 相対位置コンテナ */
+.tab-container {
+    position: relative !important;
+}
+
+/* タブボタンの位置指定 */
+.nav-link.text-neon {
+    position: relative !important;
+}
+
+/* よりカラフルなタブボタン */
+.nav-link.text-neon {
+    border: 1px solid currentColor !important;
+    margin: 0 3px !important;
+    box-shadow: 0 0 10px currentColor !important;
+    text-shadow: 0 0 10px currentColor !important;
+    font-weight: bold !important;
+    padding: 0.25rem 0.5rem !important;
+    line-height: 1 !important;
+    min-height: 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease !important;
+    opacity: 0.9 !important; /* 非アクティブタブを少し薄く */
+}
+
+.nav-link.text-neon:hover {
+    box-shadow: 0 0 15px currentColor !important;
+    text-shadow: 0 0 15px currentColor !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    transform: translateY(-2px) !important;
+    opacity: 1 !important;
+}
+
+.nav-link.text-neon.active {
+    box-shadow: 0 0 20px currentColor !important;
+    text-shadow: 0 0 20px currentColor !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    border-width: 2px !important;
+    opacity: 1 !important;
+    font-weight: bold !important;
+    transform: translateY(-1px) !important;
+}
+
+/* アクティブタブの輝き強化 */
+.nav-link.text-neon.active:before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 4px;
+    background: transparent;
+    z-index: -1;
+    box-shadow: 0 0 15px 3px currentColor !important;
+    opacity: 0.7;
+    animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+/* ホームボタンとアクションボタンの強化 */
+.btn {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    color: #00ffff !important;
+    border: 2px solid #00ffff !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7) !important;
+    transition: all 0.3s ease !important;
+    font-weight: bold !important;
+    letter-spacing: 1px !important;
+}
+
+.btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5) !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 1) !important;
+}
+
+.btn-primary {
+    background-color: rgba(0, 50, 100, 0.7) !important;
+    color: #00ffff !important;
+    border-color: #00ffff !important;
+}
+
+.btn-secondary {
+    background-color: rgba(50, 0, 100, 0.7) !important;
+    color: #ff00ff !important;
+    border-color: #ff00ff !important;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3) !important;
+}
+
+.btn-danger {
+    background-color: rgba(100, 0, 0, 0.7) !important;
+    color: #ff4444 !important;
+    border-color: #ff4444 !important;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.3) !important;
+}
+
+/* ホームダイアログのスタイル */
+#homeDialog {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 9999 !important;
+}
+
+.home-dialog-content {
+    background-color: rgba(10, 20, 40, 0.9) !important;
+    color: #00ffff !important;
+    padding: 30px !important;
+    border-radius: 10px !important;
+    border: 2px solid #00ffff !important;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.5) !important;
+    max-width: 500px !important;
+    text-align: center !important;
+}
+
+.home-dialog-buttons {
+    display: flex !important;
+    justify-content: space-around !important;
+    margin-top: 20px !important;
+}
 
 /* セクション内の要素のスタイル */
 [id$="-section"] {
@@ -50,61 +344,6 @@
 .form-select {
     background-color: rgba(13, 25, 45, 0.8) !important;
     border: 2px solid currentColor !important;
-}
-
-/* タブの色設定を修正 */
-.nav-link.text-neon[href="#screenshots-section"] { color: var(--cyber-purple) !important; text-shadow: 0 0 5px var(--cyber-purple) !important; }
-.nav-link.text-neon[href="#basic-section"] { color: var(--cyber-gold) !important; text-shadow: 0 0 5px var(--cyber-gold) !important; }
-.nav-link.text-neon[href="#appeal-section"] { color: var(--cyber-green) !important; text-shadow: 0 0 5px var(--cyber-green) !important; }
-.nav-link.text-neon[href="#hardware-section"] { color: var(--cyber-blue) !important; text-shadow: 0 0 5px var(--cyber-blue) !important; }
-.nav-link.text-neon[href="#dev-env-section"] { color: var(--cyber-orange) !important; text-shadow: 0 0 5px var(--cyber-orange) !important; }
-.nav-link.text-neon[href="#architecture-section"] { color: var(--cyber-lime) !important; text-shadow: 0 0 5px var(--cyber-lime) !important; }
-.nav-link.text-neon[href="#backend-section"] { color: var(--cyber-aqua) !important; text-shadow: 0 0 5px var(--cyber-aqua) !important; }
-.nav-link.text-neon[href="#frontend-section"] { color: var(--cyber-pink) !important; text-shadow: 0 0 5px var(--cyber-pink) !important; }
-.nav-link.text-neon[href="#database-section"] { color: var(--cyber-emerald) !important; text-shadow: 0 0 5px var(--cyber-emerald) !important; }
-.nav-link.text-neon[href="#security-section"] { color: var(--cyber-red) !important; text-shadow: 0 0 5px var(--cyber-red) !important; }
-.nav-link.text-neon[href="#development-section"] { color: var(--cyber-yellow) !important; text-shadow: 0 0 5px var(--cyber-yellow) !important; }
-
-/* タブナビゲーションの背景 */
-.app-tabs {
-    background: rgba(13, 25, 45, 0.95) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 1000 !important;
-    transition: transform 0.3s ease !important;
-    margin-bottom: 2rem !important;
-}
-
-/* タブのスタイル */
-.nav-link.text-neon {
-    opacity: 1 !important;
-    font-weight: bold !important;
-    padding: 0.5rem 0.5rem !important;
-    font-size: 0.9rem !important;
-    line-height: 1 !important; /* 行の高さを最小に */
-    min-height: 2rem !important; /* 最小の高さを設定 */
-    display: flex !important;
-    align-items: center !important;
-}
-
-.nav-link.text-neon:hover {
-    transform: translateY(-2px) !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-}
-
-.nav-link.text-neon.active {
-    background: rgba(255, 255, 255, 0.15) !important;
-    box-shadow: 0 0 15px currentColor !important;
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
-}
-
-/* スクロール時のタブ非表示 */
-.app-tabs.hidden {
-    transform: translateY(-100%) !important;
 }
 
 /* ホームボタンのスタイル */
@@ -157,4 +396,26 @@
 /* アクションボタングループの調整 */
 .action-buttons {
     gap: 0.5rem !important; /* ボタン間の間隔を調整 */
+}
+
+/* 特に基本情報タブの要素に強制的に色を設定 */
+#basic-section label {
+    color: var(--cyber-gold) !important;
+    text-shadow: 0 0 10px var(--cyber-gold) !important;
+    font-weight: bold !important;
+}
+
+#basic-section .form-control,
+#basic-section .form-select {
+    border-color: var(--cyber-gold) !important;
+    box-shadow: 0 0 10px var(--cyber-gold) !important;
+}
+
+#basic-section .card-header {
+    border-bottom: 2px solid var(--cyber-gold) !important;
+}
+
+#basic-section h5 {
+    color: var(--cyber-gold) !important;
+    text-shadow: 0 0 10px var(--cyber-gold) !important;
 } 

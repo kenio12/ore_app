@@ -1,9 +1,11 @@
 from django.urls import path
-from . import views, views_technical  # views_technicalを追加
+from . import views  # views_technicalを削除
+from django.shortcuts import redirect
 
 app_name = 'apps_gallery'
 
 urlpatterns = [
+    path('', lambda request: redirect('home:home'), name='home_redirect'),  # ホームページへリダイレクト
     path('create/', views.create_view, name='create'),  # アプリ作成
     path('edit/<int:pk>/', views.edit_app, name='edit'),  # アプリ編集（詳細の前に配置）
     path('<int:pk>/', views.app_detail, name='detail'),  # アプリ詳細（最後に配置）
@@ -13,9 +15,7 @@ urlpatterns = [
     path('set-thumbnail/', views.set_thumbnail, name='set_thumbnail'),  # サムネイル設定
     path('reset-screenshots/<int:pk>/', views.reset_screenshots, name='reset_screenshots'),
     
-    # 技術情報関連の新しいURL
-    path('technical/edit/<int:pk>/', views_technical.technical_edit_view, name='technical_edit'),
-    path('technical/detail/<int:pk>/', views_technical.technical_detail_view, name='technical_detail'),
+    # 技術情報関連のURLを削除
 
     # 自動保存関連のURL
     path('auto-save/<int:app_id>/', views.auto_save_app, name='auto_save_with_id'),

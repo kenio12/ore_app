@@ -18,12 +18,20 @@ def get_dict_value(dictionary, key):
     return dictionary.get(key, key) 
 
 @register.filter(name='get_item')
-def get_item(lst, index):
-    """リストから指定されたインデックスの要素を取得するフィルター"""
+def get_item(dictionary_or_list, key_or_index):
+    """
+    リストや辞書から指定されたキー/インデックスの要素を取得するフィルター
+    - リストの場合はインデックスで要素を取得
+    - 辞書の場合はキーで要素を取得
+    """
     try:
-        return lst[index]
-    except (IndexError, TypeError):
-        return None 
+        if isinstance(dictionary_or_list, dict):
+            return dictionary_or_list.get(key_or_index, '')
+        elif isinstance(dictionary_or_list, (list, tuple)):
+            return dictionary_or_list[key_or_index]
+        return ''
+    except (IndexError, TypeError, KeyError):
+        return ''
 
 @register.filter(name='subtract')
 def subtract(value, arg):

@@ -4,8 +4,8 @@
     <div class="card border-0 shadow-lg">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
-                <i class="bi bi-diagram-3 text-cyber-green"></i>
-                <span class="text-cyber-green">アーキテクチャ</span>
+                <i class="bi bi-diagram-3 text-cyber-lime"></i>
+                <span class="text-cyber-lime">アーキテクチャ</span>
             </h2>
 
             <!-- デバッグ情報の表示 -->
@@ -20,8 +20,8 @@
 
             <!-- アーキテクチャパターン -->
             <div class="mb-4">
-                <label class="form-label text-cyber-green">アーキテクチャパターン</label>
-                <p class="text-muted small mb-3 text-cyber-green">
+                <label class="form-label text-cyber-lime">アーキテクチャパターン</label>
+                <p class="text-muted small mb-3 text-cyber-lime">
                     ※アプリケーションの基本構造を示すパターンです。
                     複数選択可能です。初学者の方は「特に意識していない」を選んでも問題ありません。
                 </p>
@@ -36,7 +36,7 @@
                                    value="{{ key }}"
                                    {% if app.architecture.patterns and key in app.architecture.patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label cyber-form-check-label text-cyber-green" 
+                            <label class="form-check-label cyber-form-check-label text-cyber-lime" 
                                    for="arch-{{ key }}"
                                    title="{{ value }}">{{ value }}</label>
                         </div>
@@ -47,8 +47,8 @@
 
             <!-- デザインパターン -->
             <div class="mb-4">
-                <label class="form-label text-cyber-green">デザインパターン</label>
-                <p class="text-muted small mb-3 text-cyber-green">
+                <label class="form-label text-cyber-lime">デザインパターン</label>
+                <p class="text-muted small mb-3 text-cyber-lime">
                     ※プログラムの設計パターンです。複数選択可能です。
                     初学者の方は「特に意識していない」を選択してください。
                 </p>
@@ -63,7 +63,7 @@
                                    value="{{ key }}"
                                    {% if app.architecture.design_patterns and key in app.architecture.design_patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label cyber-form-check-label text-cyber-green" 
+                            <label class="form-check-label cyber-form-check-label text-cyber-lime" 
                                    for="design-{{ key }}"
                                    title="{{ value }}">{{ value }}</label>
                         </div>
@@ -74,8 +74,8 @@
 
             <!-- アーキテクチャの説明 -->
             <div class="mb-4">
-                <label class="form-label text-cyber-green">アーキテクチャの説明</label>
-                <p class="text-muted small mb-3 text-cyber-green">
+                <label class="form-label text-cyber-lime">アーキテクチャの説明</label>
+                <p class="text-muted small mb-3 text-cyber-lime">
                     ※選択したアーキテクチャについて、なぜそれを選んだのか、
                     どのように実装したのかを自由に説明してください。
                 </p>
@@ -103,41 +103,41 @@
 <style>
 /* サイバーパンクなスタイル */
 :root {
-    --cyber-green: #00ff9f;
-    --cyber-green-glow: rgba(0, 255, 159, 0.5);
+    --cyber-lime: #32cd32;
+    --cyber-lime-glow: rgba(50, 205, 50, 0.5);
 }
 
 #architecture .card {
     background: rgba(13, 25, 45, 0.95) !important;
-    border: 2px solid var(--cyber-green) !important;
-    box-shadow: 0 0 15px var(--cyber-green-glow) !important;
+    border: 2px solid var(--cyber-lime) !important;
+    box-shadow: 0 0 15px var(--cyber-lime-glow) !important;
 }
 
 #architecture .form-check-input {
     background-color: transparent !important;
-    border: 2px solid var(--cyber-green) !important;
-    box-shadow: 0 0 10px var(--cyber-green-glow) !important;
+    border: 2px solid var(--cyber-lime) !important;
+    box-shadow: 0 0 10px var(--cyber-lime-glow) !important;
 }
 
 #architecture .form-check-input:checked {
     background-color: transparent !important;
-    border-color: var(--cyber-green) !important;
+    border-color: var(--cyber-lime) !important;
 }
 
-#architecture .text-cyber-green {
-    color: var(--cyber-green) !important;
-    text-shadow: 0 0 5px var(--cyber-green) !important;
+#architecture .text-cyber-lime {
+    color: var(--cyber-lime) !important;
+    text-shadow: 0 0 5px var(--cyber-lime) !important;
 }
 
 #architecture textarea.form-control {
     background-color: rgba(13, 25, 45, 0.95) !important;
-    color: var(--cyber-green) !important;
-    border: 2px solid var(--cyber-green) !important;
-    box-shadow: 0 0 10px var(--cyber-green-glow) !important;
+    color: var(--cyber-lime) !important;
+    border: 2px solid var(--cyber-lime) !important;
+    box-shadow: 0 0 10px var(--cyber-lime-glow) !important;
 }
 
 #architecture ::placeholder {
-    color: rgba(0, 255, 159, 0.5) !important;
+    color: rgba(50, 205, 50, 0.5) !important;
 }
 
 /* アーキテクチャタブのスタイル */

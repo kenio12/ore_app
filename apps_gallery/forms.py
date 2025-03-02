@@ -119,6 +119,7 @@ class AppForm(forms.ModelForm):
 
     def save(self, commit=True):
         """保存前の処理"""
+        # インスタンスを取得（commitはFalseにして、自分で制御する）
         instance = super().save(commit=False)
         
         # キャッチフレーズをJSON文字列に変換
@@ -127,7 +128,10 @@ class AppForm(forms.ModelForm):
                 instance.catchphrases = json.dumps(instance.catchphrases)
             elif not instance.catchphrases:
                 instance.catchphrases = '[]'
-                
+        
+        # コミット指定がある場合は保存
         if commit:
             instance.save()
+            self.save_m2m()  # インスタンスメソッドとして呼び出す
+        
         return instance 

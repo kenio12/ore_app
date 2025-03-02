@@ -66,6 +66,7 @@ from .constants.architecture import (
     CODE_QUALITY_TOOLS
 )
 from .constants.backend_constants import BACKEND_STACK, BACKEND_PACKAGE_HINTS
+from django.db import models
 
 print("\n============= START DEBUG =============")  # ここに配置！
 
@@ -257,7 +258,16 @@ def edit_app(request, pk):
                 'error': str(e)
             }, status=500)
         messages.error(request, 'エラーが発生しました')
-        return redirect('apps_gallery:list')
+        
+        # エラー発生時も同じ画面を表示
+        try:
+            context = get_common_context(app=app, is_edit=True)
+            context['form'] = AppForm(instance=app)
+            return render(request, 'apps_gallery/create_edit.html', context)
+        except:
+            # どうしてもダメな場合はホームに戻る
+            logger.error("Failed to render edit page after error")
+            return redirect('/')
 
 @login_required
 def handle_app_form(request, app=None, context=None):
@@ -703,11 +713,13 @@ def auto_save_app(request, app_id=None):
         
         if is_auto_save:
             # 自動保存時は最低限のバリデーションのみ
-            app.save()
-            
             # フォームが有効なら関連データも保存
             if form.is_valid():
-                form.save_m2m()  # Many-to-Manyの保存
+                # formを使って直接保存する（save_m2mは内部で処理される）
+                app = form.save()
+            else:
+                # フォームが無効な場合でも最低限のデータは保存する
+                app.save()
             
             logger.info(f"自動保存完了: app_id={app.id}")
             

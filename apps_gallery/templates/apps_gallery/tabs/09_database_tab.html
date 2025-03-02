@@ -4,14 +4,14 @@
     <div class="card border-0 shadow-lg" style="background-color: rgba(13, 25, 45, 0.8) !important;">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
-                <i class="bi bi-database text-cyber-green"></i>
-                <span class="text-cyber-green">データベース</span>
+                <i class="bi bi-database text-cyber-emerald"></i>
+                <span class="text-cyber-emerald">データベース</span>
             </h2>
 
             <form id="database-form">
                 <!-- データベース種類 -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-green">データベース種類</label>
+                    <label class="form-label text-cyber-emerald">データベース種類</label>
                     <div class="row g-3">
                         {% for key, value in DATABASE_TYPES.items %}
                             <div class="col-md-3">
@@ -34,7 +34,7 @@
 
                 <!-- データベースホスティング -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-green">ホスティングサービス</label>
+                    <label class="form-label text-cyber-emerald">ホスティングサービス</label>
                     <div class="row g-3">
                         {% for key, value in DATABASE_HOSTING.items %}
                             <div class="col-md-3">
@@ -57,7 +57,7 @@
 
                 <!-- ORM -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-green">ORM</label>
+                    <label class="form-label text-cyber-emerald">ORM</label>
                     <div class="row g-3">
                         {% for key, value in ORMS.items %}
                             <div class="col-md-3">
@@ -110,30 +110,30 @@
 }
 
 /* サイバーパンク風のスタイル */
-#database .text-cyber-green {
-    color: #00ff9f !important;
-    text-shadow: 0 0 5px #00ff9f !important;
+#database .text-cyber-emerald {
+    color: #50c878 !important;
+    text-shadow: 0 0 5px #50c878 !important;
 }
 
 #database .form-check-input:checked {
-    background-color: #00ff9f !important;
-    border-color: #00ff9f !important;
-    box-shadow: 0 0 5px #00ff9f !important;
+    background-color: #50c878 !important;
+    border-color: #50c878 !important;
+    box-shadow: 0 0 5px #50c878 !important;
 }
 
 #database .form-check-input:hover {
-    border-color: #00ff9f !important;
+    border-color: #50c878 !important;
 }
 
 #database .form-check-label {
-    color: #00ff9f !important;
-    text-shadow: 0 0 2px #00ff9f !important;
+    color: #50c878 !important;
+    text-shadow: 0 0 2px #50c878 !important;
 }
 
 /* disabled状態のスタイル */
 #database .form-check-input:disabled:checked {
-    background-color: #00ff9f !important;
-    border-color: #00ff9f !important;
+    background-color: #50c878 !important;
+    border-color: #50c878 !important;
     opacity: 0.7 !important;
 }
 </style> 

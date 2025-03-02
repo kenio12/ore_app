@@ -5276,3 +5276,984 @@ INFO 2025-03-01 23:25:45,174 views 83 140488529491648 App found: None
 INFO 2025-03-01 23:25:45,174 views 83 140488529491648 App found: None
 INFO 2025-03-01 23:25:45,177 views 83 140488529491648 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
 INFO 2025-03-01 23:25:45,177 views 83 140488529491648 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-01 23:35:18,835 views 83 140488438965952 Request method: POST
+INFO 2025-03-01 23:35:18,835 views 83 140488438965952 Request method: POST
+INFO 2025-03-01 23:35:18,847 views 83 140488438965952 App found: None
+INFO 2025-03-01 23:35:18,847 views 83 140488438965952 App found: None
+INFO 2025-03-01 23:35:18,851 views 83 140488438965952 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-01 23:35:18,851 views 83 140488438965952 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-01 23:35:22,215 views 83 140488438965952 Request method: GET
+INFO 2025-03-01 23:35:22,215 views 83 140488438965952 Request method: GET
+INFO 2025-03-01 23:35:22,228 views 83 140488438965952 App found: None
+INFO 2025-03-01 23:35:22,228 views 83 140488438965952 App found: None
+INFO 2025-03-01 23:35:22,231 views 83 140488438965952 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-01 23:35:22,231 views 83 140488438965952 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-02 00:24:47,090 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:24:47,090 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:24:47,108 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:24:47,108 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:24:47,111 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-02 00:24:47,111 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-02 00:26:04,326 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:26:04,326 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:26:04,339 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:26:04,339 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:26:04,342 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-02 00:26:04,342 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-02 00:26:17,696 views 26 139778833946304 Request method: POST
+INFO 2025-03-02 00:26:17,696 views 26 139778833946304 Request method: POST
+INFO 2025-03-02 00:26:17,715 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:26:17,715 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:26:17,719 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+INFO 2025-03-02 00:26:17,719 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}]
+DEBUG 2025-03-02 00:26:17,946 connectionpool 26 139778833946304 Starting new HTTPS connection (1): api.cloudinary.com:443
+INFO 2025-03-02 00:26:19,613 views 26 139778825553600 自動保存処理開始: app_id=35
+INFO 2025-03-02 00:26:19,613 views 26 139778825553600 自動保存処理開始: app_id=35
+INFO 2025-03-02 00:26:19,621 views 26 139778825553600 既存アプリを自動保存: None
+INFO 2025-03-02 00:26:19,621 views 26 139778825553600 既存アプリを自動保存: None
+ERROR 2025-03-02 00:26:19,654 views 26 139778825553600 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 00:26:19,654 views 26 139778825553600 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 00:26:19,661 views 26 139778825553600 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 710, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 00:26:19,661 views 26 139778825553600 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 710, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+DEBUG 2025-03-02 00:26:20,455 connectionpool 26 139778833946304 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 00:28:06,943 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:28:06,943 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:28:06,963 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:28:06,963 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:28:07,024 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:28:07,024 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:28:18,483 views 26 139778833946304 Request method: POST
+INFO 2025-03-02 00:28:18,483 views 26 139778833946304 Request method: POST
+INFO 2025-03-02 00:28:18,509 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:28:18,509 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:28:18,515 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:28:18,515 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+DEBUG 2025-03-02 00:28:19,216 connectionpool 26 139778833946304 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 00:28:20,437 views 26 139778833946304 自動保存処理開始: app_id=35
+INFO 2025-03-02 00:28:20,437 views 26 139778833946304 自動保存処理開始: app_id=35
+INFO 2025-03-02 00:28:20,446 views 26 139778833946304 既存アプリを自動保存: None
+INFO 2025-03-02 00:28:20,446 views 26 139778833946304 既存アプリを自動保存: None
+ERROR 2025-03-02 00:28:20,472 views 26 139778833946304 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 00:28:20,472 views 26 139778833946304 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 00:28:20,476 views 26 139778833946304 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 710, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 00:28:20,476 views 26 139778833946304 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 710, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 00:28:21,804 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:28:21,804 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:28:21,821 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:28:21,821 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:28:21,827 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}]
+INFO 2025-03-02 00:28:21,827 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}]
+INFO 2025-03-02 00:28:29,715 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:28:29,715 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:28:29,726 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:28:29,726 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:28:29,728 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:28:29,728 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:32:53,680 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:32:53,680 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:32:53,698 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:32:53,698 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:32:53,703 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:32:53,703 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:41:19,779 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:41:19,779 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:41:19,794 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:41:19,794 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:41:19,800 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:41:19,800 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:41:43,475 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:41:43,475 views 26 139778833946304 Request method: GET
+INFO 2025-03-02 00:41:43,490 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:41:43,490 views 26 139778833946304 App found: None
+INFO 2025-03-02 00:41:43,494 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 00:41:43,494 views 26 139778833946304 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 01:17:29,326 views 26 139778825553600 Request method: GET
+INFO 2025-03-02 01:17:29,326 views 26 139778825553600 Request method: GET
+INFO 2025-03-02 01:17:29,353 views 26 139778825553600 App found: None
+INFO 2025-03-02 01:17:29,353 views 26 139778825553600 App found: None
+INFO 2025-03-02 01:17:29,401 views 26 139778825553600 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 01:17:29,401 views 26 139778825553600 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+ERROR 2025-03-02 01:17:29,442 views 26 139778825553600 Error in edit_app: apps_gallery/tabs/01_detail_tab.html
+ERROR 2025-03-02 01:17:29,442 views 26 139778825553600 Error in edit_app: apps_gallery/tabs/01_detail_tab.html
+INFO 2025-03-02 01:27:59,463 views 1535 140622407042752 Request method: GET
+INFO 2025-03-02 01:27:59,463 views 1535 140622407042752 Request method: GET
+INFO 2025-03-02 01:27:59,478 views 1535 140622407042752 App found: None
+INFO 2025-03-02 01:27:59,478 views 1535 140622407042752 App found: None
+INFO 2025-03-02 01:27:59,481 views 1535 140622407042752 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 01:27:59,481 views 1535 140622407042752 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+ERROR 2025-03-02 01:27:59,521 views 1535 140622407042752 Error in edit_app: apps_gallery/tabs/01_detail_tab.html
+ERROR 2025-03-02 01:27:59,521 views 1535 140622407042752 Error in edit_app: apps_gallery/tabs/01_detail_tab.html
+INFO 2025-03-02 01:52:19,634 views 2011 140655196866240 Request method: GET
+INFO 2025-03-02 01:52:19,634 views 2011 140655196866240 Request method: GET
+INFO 2025-03-02 01:52:19,648 views 2011 140655196866240 App found: None
+INFO 2025-03-02 01:52:19,648 views 2011 140655196866240 App found: None
+INFO 2025-03-02 01:52:19,652 views 2011 140655196866240 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+INFO 2025-03-02 01:52:19,652 views 2011 140655196866240 Screenshots: [{'public_id': 'app_screenshots/app_35/qwtqapcirppqa6somcbp', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842899/app_screenshots/app_35/qwtqapcirppqa6somcbp.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740839011/app_screenshots/app_35/lfxnmuwo0w2ghatdvfsw.png', 'description': ''}, {'public_id': 'app_screenshots/app_35/l24s9kugmo1jhb5z1tdt', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740842780/app_screenshots/app_35/l24s9kugmo1jhb5z1tdt.png', 'description': ''}]
+ERROR 2025-03-02 01:52:19,697 views 2011 140655196866240 Error in edit_app: apps_gallery/tabs/01_detail_tab.html
+ERROR 2025-03-02 01:52:19,697 views 2011 140655196866240 Error in edit_app: apps_gallery/tabs/01_detail_tab.html
+ERROR 2025-03-02 01:52:19,704 views 2011 140655196866240 Failed to render edit page after error
+ERROR 2025-03-02 01:52:19,704 views 2011 140655196866240 Failed to render edit page after error
+INFO 2025-03-02 02:41:29,367 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:29,367 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:29,369 views 2011 140655196866240 新規アプリを自動保存
+INFO 2025-03-02 02:41:29,369 views 2011 140655196866240 新規アプリを自動保存
+ERROR 2025-03-02 02:41:29,391 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:29,391 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:29,393 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:41:29,393 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:41:34,400 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:34,400 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:34,401 views 2011 140655196866240 新規アプリを自動保存
+INFO 2025-03-02 02:41:34,401 views 2011 140655196866240 新規アプリを自動保存
+ERROR 2025-03-02 02:41:34,428 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:34,428 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:34,429 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:41:34,429 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:41:36,442 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:36,442 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:36,446 views 2011 140655196866240 新規アプリを自動保存
+INFO 2025-03-02 02:41:36,446 views 2011 140655196866240 新規アプリを自動保存
+ERROR 2025-03-02 02:41:36,481 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:36,481 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:36,483 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:41:36,483 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:41:44,458 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:44,458 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:44,461 views 2011 140655196866240 新規アプリを自動保存
+INFO 2025-03-02 02:41:44,461 views 2011 140655196866240 新規アプリを自動保存
+ERROR 2025-03-02 02:41:44,494 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:44,494 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:44,496 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:41:44,496 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:41:51,520 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:51,520 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:41:51,522 views 2011 140655196866240 新規アプリを自動保存
+INFO 2025-03-02 02:41:51,522 views 2011 140655196866240 新規アプリを自動保存
+ERROR 2025-03-02 02:41:51,550 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:51,550 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:41:51,553 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:41:51,553 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:42:01,194 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:42:01,194 views 2011 140655196866240 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:42:01,196 views 2011 140655196866240 新規アプリを自動保存
+INFO 2025-03-02 02:42:01,196 views 2011 140655196866240 新規アプリを自動保存
+ERROR 2025-03-02 02:42:01,233 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:42:01,233 views 2011 140655196866240 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:42:01,235 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:42:01,235 views 2011 140655196866240 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+DEBUG 2025-03-02 02:51:11,000 connectionpool 25 140146753316544 Starting new HTTPS connection (1): api.cloudinary.com:443
+DEBUG 2025-03-02 02:51:13,325 connectionpool 25 140146753316544 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 02:51:13,840 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:13,840 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:13,842 views 25 140146753316544 新規アプリを自動保存
+INFO 2025-03-02 02:51:13,842 views 25 140146753316544 新規アプリを自動保存
+ERROR 2025-03-02 02:51:13,874 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:13,874 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:13,879 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:51:13,879 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:51:15,904 views 25 140146753316544 Request method: GET
+INFO 2025-03-02 02:51:15,904 views 25 140146753316544 Request method: GET
+INFO 2025-03-02 02:51:15,918 views 25 140146753316544 App found: None
+INFO 2025-03-02 02:51:15,918 views 25 140146753316544 App found: None
+INFO 2025-03-02 02:51:15,920 views 25 140146753316544 Screenshots: [{'public_id': 'app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740851472/app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq.png', 'description': ''}]
+INFO 2025-03-02 02:51:15,920 views 25 140146753316544 Screenshots: [{'public_id': 'app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740851472/app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq.png', 'description': ''}]
+INFO 2025-03-02 02:51:29,284 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:29,284 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:29,285 views 25 140146753316544 新規アプリを自動保存
+INFO 2025-03-02 02:51:29,285 views 25 140146753316544 新規アプリを自動保存
+ERROR 2025-03-02 02:51:29,310 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:29,310 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:29,311 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:51:29,311 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:51:33,443 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:33,443 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:33,445 views 25 140146753316544 新規アプリを自動保存
+INFO 2025-03-02 02:51:33,445 views 25 140146753316544 新規アプリを自動保存
+ERROR 2025-03-02 02:51:33,476 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:33,476 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:33,477 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:51:33,477 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:51:34,468 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:34,468 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:34,558 views 25 140146753316544 新規アプリを自動保存
+INFO 2025-03-02 02:51:34,558 views 25 140146753316544 新規アプリを自動保存
+ERROR 2025-03-02 02:51:34,614 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:34,614 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:34,616 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:51:34,616 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:51:43,508 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:43,508 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:43,510 views 25 140146753316544 新規アプリを自動保存
+INFO 2025-03-02 02:51:43,510 views 25 140146753316544 新規アプリを自動保存
+ERROR 2025-03-02 02:51:43,538 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:43,538 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:43,540 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:51:43,540 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:51:49,654 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:49,654 views 25 140146753316544 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:51:49,657 views 25 140146753316544 新規アプリを自動保存
+INFO 2025-03-02 02:51:49,657 views 25 140146753316544 新規アプリを自動保存
+ERROR 2025-03-02 02:51:49,711 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:49,711 views 25 140146753316544 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:51:49,716 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:51:49,716 views 25 140146753316544 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:54:42,831 views 25 140239941138112 Request method: GET
+INFO 2025-03-02 02:54:42,831 views 25 140239941138112 Request method: GET
+INFO 2025-03-02 02:54:42,878 views 25 140239941138112 App found: None
+INFO 2025-03-02 02:54:42,878 views 25 140239941138112 App found: None
+INFO 2025-03-02 02:54:42,890 views 25 140239941138112 Screenshots: [{'public_id': 'app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740851472/app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq.png', 'description': ''}]
+INFO 2025-03-02 02:54:42,890 views 25 140239941138112 Screenshots: [{'public_id': 'app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740851472/app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq.png', 'description': ''}]
+INFO 2025-03-02 02:54:58,103 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:54:58,103 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:54:58,106 views 25 140239941138112 新規アプリを自動保存
+INFO 2025-03-02 02:54:58,106 views 25 140239941138112 新規アプリを自動保存
+ERROR 2025-03-02 02:54:58,141 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:54:58,141 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:54:58,149 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:54:58,149 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:55:01,877 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:55:01,877 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:55:01,880 views 25 140239941138112 新規アプリを自動保存
+INFO 2025-03-02 02:55:01,880 views 25 140239941138112 新規アプリを自動保存
+ERROR 2025-03-02 02:55:01,914 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:55:01,914 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:55:01,917 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:55:01,917 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:55:03,183 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:55:03,183 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:55:03,186 views 25 140239941138112 新規アプリを自動保存
+INFO 2025-03-02 02:55:03,186 views 25 140239941138112 新規アプリを自動保存
+ERROR 2025-03-02 02:55:03,225 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:55:03,225 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:55:03,228 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:55:03,228 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:55:11,956 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:55:11,956 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:55:11,961 views 25 140239941138112 新規アプリを自動保存
+INFO 2025-03-02 02:55:11,961 views 25 140239941138112 新規アプリを自動保存
+ERROR 2025-03-02 02:55:12,021 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:55:12,021 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:55:12,025 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:55:12,025 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:55:18,477 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:55:18,477 views 25 140239941138112 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:55:18,488 views 25 140239941138112 新規アプリを自動保存
+INFO 2025-03-02 02:55:18,488 views 25 140239941138112 新規アプリを自動保存
+ERROR 2025-03-02 02:55:18,583 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:55:18,583 views 25 140239941138112 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:55:18,588 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:55:18,588 views 25 140239941138112 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:58:33,039 views 25 139834373818048 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:58:33,039 views 25 139834373818048 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:58:33,040 views 25 139834373818048 新規アプリを自動保存
+INFO 2025-03-02 02:58:33,040 views 25 139834373818048 新規アプリを自動保存
+ERROR 2025-03-02 02:58:33,074 views 25 139834373818048 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:58:33,074 views 25 139834373818048 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:58:33,083 views 25 139834373818048 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:58:33,083 views 25 139834373818048 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:58:48,131 views 25 139834373818048 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:58:48,131 views 25 139834373818048 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:58:48,134 views 25 139834373818048 新規アプリを自動保存
+INFO 2025-03-02 02:58:48,134 views 25 139834373818048 新規アプリを自動保存
+ERROR 2025-03-02 02:58:48,169 views 25 139834373818048 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:58:48,169 views 25 139834373818048 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:58:48,181 views 25 139834373818048 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:58:48,181 views 25 139834373818048 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:58:55,649 views 25 139834373818048 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:58:55,649 views 25 139834373818048 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:58:55,652 views 25 139834373818048 新規アプリを自動保存
+INFO 2025-03-02 02:58:55,652 views 25 139834373818048 新規アプリを自動保存
+ERROR 2025-03-02 02:58:55,685 views 25 139834373818048 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:58:55,685 views 25 139834373818048 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:58:55,688 views 25 139834373818048 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:58:55,688 views 25 139834373818048 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 02:58:59,977 views 25 139834373818048 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:58:59,977 views 25 139834373818048 自動保存処理開始: app_id=None
+INFO 2025-03-02 02:58:59,979 views 25 139834373818048 新規アプリを自動保存
+INFO 2025-03-02 02:58:59,979 views 25 139834373818048 新規アプリを自動保存
+ERROR 2025-03-02 02:59:00,010 views 25 139834373818048 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:59:00,010 views 25 139834373818048 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 02:59:00,011 views 25 139834373818048 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 02:59:00,011 views 25 139834373818048 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 03:00:42,327 views 25 140089703065280 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:00:42,327 views 25 140089703065280 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:00:42,331 views 25 140089703065280 新規アプリを自動保存
+INFO 2025-03-02 03:00:42,331 views 25 140089703065280 新規アプリを自動保存
+ERROR 2025-03-02 03:00:42,367 views 25 140089703065280 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:00:42,367 views 25 140089703065280 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:00:42,376 views 25 140089703065280 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 03:00:42,376 views 25 140089703065280 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 03:02:47,946 views 26 140442599999168 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:02:47,946 views 26 140442599999168 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:02:47,949 views 26 140442599999168 新規アプリを自動保存
+INFO 2025-03-02 03:02:47,949 views 26 140442599999168 新規アプリを自動保存
+ERROR 2025-03-02 03:02:47,984 views 26 140442599999168 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:02:47,984 views 26 140442599999168 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:02:47,989 views 26 140442599999168 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 03:02:47,989 views 26 140442599999168 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 03:02:58,587 views 26 140442599999168 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:02:58,587 views 26 140442599999168 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:02:58,588 views 26 140442599999168 新規アプリを自動保存
+INFO 2025-03-02 03:02:58,588 views 26 140442599999168 新規アプリを自動保存
+ERROR 2025-03-02 03:02:58,623 views 26 140442599999168 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:02:58,623 views 26 140442599999168 自動保存エラー: 'AppForm' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:02:58,626 views 26 140442599999168 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 03:02:58,626 views 26 140442599999168 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 720, in auto_save_app
+    form.save_m2m()  # Many-to-Manyの保存
+    ^^^^^^^^^^^^^
+AttributeError: 'AppForm' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 03:05:26,180 views 25 140039061292736 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:05:26,180 views 25 140039061292736 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:05:26,184 views 25 140039061292736 新規アプリを自動保存
+INFO 2025-03-02 03:05:26,184 views 25 140039061292736 新規アプリを自動保存
+ERROR 2025-03-02 03:05:26,221 views 25 140039061292736 自動保存エラー: 'super' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:05:26,221 views 25 140039061292736 自動保存エラー: 'super' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:05:26,232 views 25 140039061292736 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 719, in auto_save_app
+    app = form.save()  # これでsave_m2mメソッドが利用可能になる
+          ^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 135, in save
+    super().save_m2m()  # 直接親クラスのsave_m2mを呼び出す
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 03:05:26,232 views 25 140039061292736 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 719, in auto_save_app
+    app = form.save()  # これでsave_m2mメソッドが利用可能になる
+          ^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 135, in save
+    super().save_m2m()  # 直接親クラスのsave_m2mを呼び出す
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 03:05:33,856 views 25 140039061292736 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:05:33,856 views 25 140039061292736 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:05:33,859 views 25 140039061292736 新規アプリを自動保存
+INFO 2025-03-02 03:05:33,859 views 25 140039061292736 新規アプリを自動保存
+ERROR 2025-03-02 03:05:33,898 views 25 140039061292736 自動保存エラー: 'super' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:05:33,898 views 25 140039061292736 自動保存エラー: 'super' object has no attribute 'save_m2m'
+ERROR 2025-03-02 03:05:33,901 views 25 140039061292736 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 719, in auto_save_app
+    app = form.save()  # これでsave_m2mメソッドが利用可能になる
+          ^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 135, in save
+    super().save_m2m()  # 直接親クラスのsave_m2mを呼び出す
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'save_m2m'
+
+ERROR 2025-03-02 03:05:33,901 views 25 140039061292736 Traceback (most recent call last):
+  File "/code/apps_gallery/views.py", line 719, in auto_save_app
+    app = form.save()  # これでsave_m2mメソッドが利用可能になる
+          ^^^^^^^^^^^
+  File "/code/apps_gallery/forms.py", line 135, in save
+    super().save_m2m()  # 直接親クラスのsave_m2mを呼び出す
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'super' object has no attribute 'save_m2m'
+
+INFO 2025-03-02 03:06:37,353 views 25 140564122490560 Request method: GET
+INFO 2025-03-02 03:06:37,353 views 25 140564122490560 Request method: GET
+INFO 2025-03-02 03:06:37,369 views 25 140564122490560 App found: None
+INFO 2025-03-02 03:06:37,369 views 25 140564122490560 App found: None
+INFO 2025-03-02 03:06:37,373 views 25 140564122490560 Screenshots: [{'public_id': 'app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740851472/app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq.png', 'description': ''}]
+INFO 2025-03-02 03:06:37,373 views 25 140564122490560 Screenshots: [{'public_id': 'app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740851472/app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq.png', 'description': ''}]
+INFO 2025-03-02 03:06:48,661 views 25 140564130883264 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:06:48,661 views 25 140564130883264 自動保存処理開始: app_id=None
+INFO 2025-03-02 03:06:48,663 views 25 140564130883264 新規アプリを自動保存
+INFO 2025-03-02 03:06:48,663 views 25 140564130883264 新規アプリを自動保存
+INFO 2025-03-02 03:06:48,699 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:06:48,699 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:06:58,979 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:06:58,979 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:06:58,990 views 25 140564130883264 既存アプリを自動保存: neNo
+INFO 2025-03-02 03:06:58,990 views 25 140564130883264 既存アプリを自動保存: neNo
+INFO 2025-03-02 03:06:59,032 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:06:59,032 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:02,142 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:02,142 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:02,151 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:02,151 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:02,179 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:02,179 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:05,589 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:05,589 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:05,600 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:05,600 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:05,640 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:05,640 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:12,439 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:12,439 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:12,449 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:12,449 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:12,508 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:12,508 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:18,665 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:18,665 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:18,676 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:18,676 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:18,708 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:18,708 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:25,506 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:25,506 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:25,521 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:25,521 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:25,557 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:25,557 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:30,827 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:30,827 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:30,839 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:30,839 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:30,869 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:30,869 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:37,405 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:37,405 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:37,414 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:37,414 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:37,443 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:37,443 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:44,142 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:44,142 views 25 140564130883264 自動保存処理開始: app_id=64
+INFO 2025-03-02 03:07:44,155 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:44,155 views 25 140564130883264 既存アプリを自動保存: どうやああ？？
+INFO 2025-03-02 03:07:44,185 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:07:44,185 views 25 140564130883264 自動保存完了: app_id=64
+INFO 2025-03-02 03:12:14,643 views 25 140564130883264 Request method: GET
+INFO 2025-03-02 03:12:14,643 views 25 140564130883264 Request method: GET
+INFO 2025-03-02 03:12:14,660 views 25 140564130883264 App found: None
+INFO 2025-03-02 03:12:14,660 views 25 140564130883264 App found: None
+INFO 2025-03-02 03:12:14,664 views 25 140564130883264 Screenshots: [{'public_id': 'app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740851472/app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq.png', 'description': ''}]
+INFO 2025-03-02 03:12:14,664 views 25 140564130883264 Screenshots: [{'public_id': 'app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740851472/app_screenshots/app_43/hwoojcz3s0mqpxqs2ydq.png', 'description': ''}]
+INFO 2025-03-02 03:13:40,974 views 25 140564130883264 Request method: GET
+INFO 2025-03-02 03:13:40,974 views 25 140564130883264 Request method: GET
+INFO 2025-03-02 03:13:40,987 views 25 140564130883264 App found: どうやああ？？
+INFO 2025-03-02 03:13:40,987 views 25 140564130883264 App found: どうやああ？？
+INFO 2025-03-02 03:13:40,990 views 25 140564130883264 Screenshots: []
+INFO 2025-03-02 03:13:40,990 views 25 140564130883264 Screenshots: []
+INFO 2025-03-02 08:56:05,586 views 25 139711421089472 Request method: GET
+INFO 2025-03-02 08:56:05,586 views 25 139711421089472 Request method: GET
+INFO 2025-03-02 08:56:05,598 views 25 139711429482176 Request method: GET
+INFO 2025-03-02 08:56:05,598 views 25 139711429482176 Request method: GET
+INFO 2025-03-02 08:56:05,602 views 25 139711421089472 App found: どうやああ？？
+INFO 2025-03-02 08:56:05,602 views 25 139711421089472 App found: どうやああ？？
+INFO 2025-03-02 08:56:05,604 views 25 139711421089472 Screenshots: []
+INFO 2025-03-02 08:56:05,604 views 25 139711421089472 Screenshots: []
+INFO 2025-03-02 08:56:05,614 views 25 139711429482176 App found: どうやああ？？
+INFO 2025-03-02 08:56:05,614 views 25 139711429482176 App found: どうやああ？？
+INFO 2025-03-02 08:56:05,617 views 25 139711429482176 Screenshots: []
+INFO 2025-03-02 08:56:05,617 views 25 139711429482176 Screenshots: []
+INFO 2025-03-02 08:56:14,682 views 25 139711429482176 Request method: POST
+INFO 2025-03-02 08:56:14,682 views 25 139711429482176 Request method: POST
+INFO 2025-03-02 08:56:14,690 views 25 139711429482176 App found: どうやああ？？
+INFO 2025-03-02 08:56:14,690 views 25 139711429482176 App found: どうやああ？？
+INFO 2025-03-02 08:56:14,694 views 25 139711429482176 Screenshots: []
+INFO 2025-03-02 08:56:14,694 views 25 139711429482176 Screenshots: []
+INFO 2025-03-02 08:56:19,805 views 25 139711429482176 Request method: GET
+INFO 2025-03-02 08:56:19,806 views 25 139711421089472 Request method: GET
+INFO 2025-03-02 08:56:19,805 views 25 139711429482176 Request method: GET
+INFO 2025-03-02 08:56:19,806 views 25 139711421089472 Request method: GET
+INFO 2025-03-02 08:56:19,820 views 25 139711429482176 App found: どうやああ？？
+INFO 2025-03-02 08:56:19,822 views 25 139711421089472 App found: どうやああ？？
+INFO 2025-03-02 08:56:19,820 views 25 139711429482176 App found: どうやああ？？
+INFO 2025-03-02 08:56:19,822 views 25 139711421089472 App found: どうやああ？？
+INFO 2025-03-02 08:56:19,827 views 25 139711429482176 Screenshots: []
+INFO 2025-03-02 08:56:19,828 views 25 139711421089472 Screenshots: []
+INFO 2025-03-02 08:56:19,827 views 25 139711429482176 Screenshots: []
+INFO 2025-03-02 08:56:19,828 views 25 139711421089472 Screenshots: []
+INFO 2025-03-02 08:56:26,502 views 25 139711421089472 Request method: POST
+INFO 2025-03-02 08:56:26,502 views 25 139711421089472 Request method: POST
+INFO 2025-03-02 08:56:26,509 views 25 139711421089472 App found: どうやああ？？
+INFO 2025-03-02 08:56:26,509 views 25 139711421089472 App found: どうやああ？？
+INFO 2025-03-02 08:56:26,511 views 25 139711421089472 Screenshots: []
+INFO 2025-03-02 08:56:26,511 views 25 139711421089472 Screenshots: []
+INFO 2025-03-02 08:56:33,388 views 25 139711421089472 Request method: GET
+INFO 2025-03-02 08:56:33,388 views 25 139711421089472 Request method: GET
+INFO 2025-03-02 08:56:33,401 views 25 139711421089472 App found: どうやああ？？
+INFO 2025-03-02 08:56:33,401 views 25 139711421089472 App found: どうやああ？？
+INFO 2025-03-02 08:56:33,403 views 25 139711421089472 Screenshots: []
+INFO 2025-03-02 08:56:33,403 views 25 139711421089472 Screenshots: []
+INFO 2025-03-02 09:02:03,741 views 25 140608438007488 Request method: POST
+INFO 2025-03-02 09:02:03,741 views 25 140608438007488 Request method: POST
+INFO 2025-03-02 09:02:03,757 views 25 140608438007488 App found: どうやああ？？
+INFO 2025-03-02 09:02:03,757 views 25 140608438007488 App found: どうやああ？？
+INFO 2025-03-02 09:02:03,763 views 25 140608438007488 Screenshots: []
+INFO 2025-03-02 09:02:03,763 views 25 140608438007488 Screenshots: []
+INFO 2025-03-02 09:02:15,588 views 25 140608438007488 Request method: GET
+INFO 2025-03-02 09:02:15,588 views 25 140608438007488 Request method: GET
+INFO 2025-03-02 09:02:15,611 views 25 140608438007488 App found: どうやああ？？
+INFO 2025-03-02 09:02:15,611 views 25 140608438007488 App found: どうやああ？？
+INFO 2025-03-02 09:02:15,617 views 25 140608438007488 Screenshots: []
+INFO 2025-03-02 09:02:15,617 views 25 140608438007488 Screenshots: []
+INFO 2025-03-02 09:06:57,256 views 25 139786043991744 Request method: GET
+INFO 2025-03-02 09:06:57,256 views 25 139786043991744 Request method: GET
+INFO 2025-03-02 09:06:57,279 views 25 139786043991744 App found: どうやああ？？
+INFO 2025-03-02 09:06:57,279 views 25 139786043991744 App found: どうやああ？？
+INFO 2025-03-02 09:06:57,289 views 25 139786043991744 Screenshots: []
+INFO 2025-03-02 09:06:57,289 views 25 139786043991744 Screenshots: []
+INFO 2025-03-02 09:07:03,857 views 25 139786043991744 Request method: POST
+INFO 2025-03-02 09:07:03,857 views 25 139786043991744 Request method: POST
+INFO 2025-03-02 09:07:03,867 views 25 139786043991744 App found: どうやああ？？
+INFO 2025-03-02 09:07:03,867 views 25 139786043991744 App found: どうやああ？？
+INFO 2025-03-02 09:07:03,870 views 25 139786043991744 Screenshots: []
+INFO 2025-03-02 09:07:03,870 views 25 139786043991744 Screenshots: []
+INFO 2025-03-02 09:07:14,235 views 25 139786043991744 Request method: GET
+INFO 2025-03-02 09:07:14,235 views 25 139786043991744 Request method: GET
+INFO 2025-03-02 09:07:14,251 views 25 139786043991744 App found: どうやああ？？
+INFO 2025-03-02 09:07:14,251 views 25 139786043991744 App found: どうやああ？？
+INFO 2025-03-02 09:07:14,256 views 25 139786043991744 Screenshots: []
+INFO 2025-03-02 09:07:14,256 views 25 139786043991744 Screenshots: []
+INFO 2025-03-02 09:11:48,068 views 26 140028839999168 Request method: GET
+INFO 2025-03-02 09:11:48,068 views 26 140028839999168 Request method: GET
+INFO 2025-03-02 09:11:48,092 views 26 140028839999168 App found: どうやああ？？
+INFO 2025-03-02 09:11:48,092 views 26 140028839999168 App found: どうやああ？？
+INFO 2025-03-02 09:11:48,097 views 26 140028839999168 Screenshots: []
+INFO 2025-03-02 09:11:48,097 views 26 140028839999168 Screenshots: []
+INFO 2025-03-02 09:12:04,410 views 25 139868285347520 Request method: GET
+INFO 2025-03-02 09:12:04,410 views 25 139868285347520 Request method: GET
+INFO 2025-03-02 09:12:04,425 views 25 139868285347520 App found: どうやああ？？
+INFO 2025-03-02 09:12:04,425 views 25 139868285347520 App found: どうやああ？？
+INFO 2025-03-02 09:12:04,429 views 25 139868285347520 Screenshots: []
+INFO 2025-03-02 09:12:04,429 views 25 139868285347520 Screenshots: []
+INFO 2025-03-02 09:12:24,265 views 25 139868285347520 Request method: GET
+INFO 2025-03-02 09:12:24,265 views 25 139868285347520 Request method: GET
+INFO 2025-03-02 09:12:24,298 views 25 139868285347520 App found: 超短編小説会Ⅳ
+INFO 2025-03-02 09:12:24,298 views 25 139868285347520 App found: 超短編小説会Ⅳ
+INFO 2025-03-02 09:12:24,304 views 25 139868285347520 Screenshots: [{'public_id': 'app_screenshots/app_12/f1zckqrtyoqtrkj7yo1w', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025570/app_screenshots/app_12/f1zckqrtyoqtrkj7yo1w.png', 'description': ''}, {'public_id': 'app_screenshots/app_12/mt4zsra77iqq3crf7mw8', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025931/app_screenshots/app_12/mt4zsra77iqq3crf7mw8.png', 'description': ''}, {'public_id': 'app_screenshots/app_12/ovaooiaqlodb0flsr0sx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025941/app_screenshots/app_12/ovaooiaqlodb0flsr0sx.png', 'description': ''}]
+INFO 2025-03-02 09:12:24,304 views 25 139868285347520 Screenshots: [{'public_id': 'app_screenshots/app_12/f1zckqrtyoqtrkj7yo1w', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025570/app_screenshots/app_12/f1zckqrtyoqtrkj7yo1w.png', 'description': ''}, {'public_id': 'app_screenshots/app_12/mt4zsra77iqq3crf7mw8', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025931/app_screenshots/app_12/mt4zsra77iqq3crf7mw8.png', 'description': ''}, {'public_id': 'app_screenshots/app_12/ovaooiaqlodb0flsr0sx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025941/app_screenshots/app_12/ovaooiaqlodb0flsr0sx.png', 'description': ''}]
+INFO 2025-03-02 09:12:25,844 views 25 139868285347520 Request method: POST
+INFO 2025-03-02 09:12:25,844 views 25 139868285347520 Request method: POST
+INFO 2025-03-02 09:12:25,855 views 25 139868285347520 App found: 超短編小説会Ⅳ
+INFO 2025-03-02 09:12:25,855 views 25 139868285347520 App found: 超短編小説会Ⅳ
+INFO 2025-03-02 09:12:25,860 views 25 139868285347520 Screenshots: [{'public_id': 'app_screenshots/app_12/f1zckqrtyoqtrkj7yo1w', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025570/app_screenshots/app_12/f1zckqrtyoqtrkj7yo1w.png', 'description': ''}, {'public_id': 'app_screenshots/app_12/mt4zsra77iqq3crf7mw8', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025931/app_screenshots/app_12/mt4zsra77iqq3crf7mw8.png', 'description': ''}, {'public_id': 'app_screenshots/app_12/ovaooiaqlodb0flsr0sx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025941/app_screenshots/app_12/ovaooiaqlodb0flsr0sx.png', 'description': ''}]
+INFO 2025-03-02 09:12:25,860 views 25 139868285347520 Screenshots: [{'public_id': 'app_screenshots/app_12/f1zckqrtyoqtrkj7yo1w', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025570/app_screenshots/app_12/f1zckqrtyoqtrkj7yo1w.png', 'description': ''}, {'public_id': 'app_screenshots/app_12/mt4zsra77iqq3crf7mw8', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025931/app_screenshots/app_12/mt4zsra77iqq3crf7mw8.png', 'description': ''}, {'public_id': 'app_screenshots/app_12/ovaooiaqlodb0flsr0sx', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739025941/app_screenshots/app_12/ovaooiaqlodb0flsr0sx.png', 'description': ''}]
+INFO 2025-03-02 09:12:31,588 views 25 139868285347520 Request method: GET
+INFO 2025-03-02 09:12:31,588 views 25 139868285347520 Request method: GET
+INFO 2025-03-02 09:12:31,623 views 25 139868285347520 App found: けにおアプリや！
+INFO 2025-03-02 09:12:31,623 views 25 139868285347520 App found: けにおアプリや！
+INFO 2025-03-02 09:12:31,638 views 25 139868285347520 Screenshots: [{'public_id': 'app_screenshots/app_13/qo3z7yer95fvlmmigk4p', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740491758/app_screenshots/app_13/qo3z7yer95fvlmmigk4p.png', 'description': ''}, {'public_id': 'app_screenshots/app_None/tuuftyllmcrd9go3lmu7', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739084502/app_screenshots/app_None/tuuftyllmcrd9go3lmu7.png', 'description': ''}, {'public_id': 'app_screenshots/app_13/mvwqxtanibdj59m5d7d5', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739281567/app_screenshots/app_13/mvwqxtanibdj59m5d7d5.png', 'description': ''}]
+INFO 2025-03-02 09:12:31,638 views 25 139868285347520 Screenshots: [{'public_id': 'app_screenshots/app_13/qo3z7yer95fvlmmigk4p', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740491758/app_screenshots/app_13/qo3z7yer95fvlmmigk4p.png', 'description': ''}, {'public_id': 'app_screenshots/app_None/tuuftyllmcrd9go3lmu7', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739084502/app_screenshots/app_None/tuuftyllmcrd9go3lmu7.png', 'description': ''}, {'public_id': 'app_screenshots/app_13/mvwqxtanibdj59m5d7d5', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739281567/app_screenshots/app_13/mvwqxtanibdj59m5d7d5.png', 'description': ''}]
+INFO 2025-03-02 09:15:09,352 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 09:15:09,352 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 09:15:09,377 views 25 139679776106176 App found: けにおアプリや！
+INFO 2025-03-02 09:15:09,377 views 25 139679776106176 App found: けにおアプリや！
+INFO 2025-03-02 09:15:09,381 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_13/qo3z7yer95fvlmmigk4p', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740491758/app_screenshots/app_13/qo3z7yer95fvlmmigk4p.png', 'description': ''}, {'public_id': 'app_screenshots/app_None/tuuftyllmcrd9go3lmu7', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739084502/app_screenshots/app_None/tuuftyllmcrd9go3lmu7.png', 'description': ''}, {'public_id': 'app_screenshots/app_13/mvwqxtanibdj59m5d7d5', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739281567/app_screenshots/app_13/mvwqxtanibdj59m5d7d5.png', 'description': ''}]
+INFO 2025-03-02 09:15:09,381 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_13/qo3z7yer95fvlmmigk4p', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740491758/app_screenshots/app_13/qo3z7yer95fvlmmigk4p.png', 'description': ''}, {'public_id': 'app_screenshots/app_None/tuuftyllmcrd9go3lmu7', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739084502/app_screenshots/app_None/tuuftyllmcrd9go3lmu7.png', 'description': ''}, {'public_id': 'app_screenshots/app_13/mvwqxtanibdj59m5d7d5', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739281567/app_screenshots/app_13/mvwqxtanibdj59m5d7d5.png', 'description': ''}]
+INFO 2025-03-02 09:15:44,836 views 25 139679784498880 自動保存処理開始: app_id=None
+INFO 2025-03-02 09:15:44,836 views 25 139679784498880 自動保存処理開始: app_id=None
+INFO 2025-03-02 09:15:44,839 views 25 139679784498880 新規アプリを自動保存
+INFO 2025-03-02 09:15:44,839 views 25 139679784498880 新規アプリを自動保存
+INFO 2025-03-02 09:15:44,877 views 25 139679784498880 自動保存完了: app_id=65
+INFO 2025-03-02 09:15:44,877 views 25 139679784498880 自動保存完了: app_id=65
+INFO 2025-03-02 09:15:49,370 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:15:49,370 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:15:49,389 views 25 139679784498880 App found: けにおアプリや！
+INFO 2025-03-02 09:15:49,389 views 25 139679784498880 App found: けにおアプリや！
+INFO 2025-03-02 09:15:49,394 views 25 139679784498880 Screenshots: [{'public_id': 'app_screenshots/app_13/qo3z7yer95fvlmmigk4p', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740491758/app_screenshots/app_13/qo3z7yer95fvlmmigk4p.png', 'description': ''}, {'public_id': 'app_screenshots/app_None/tuuftyllmcrd9go3lmu7', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739084502/app_screenshots/app_None/tuuftyllmcrd9go3lmu7.png', 'description': ''}, {'public_id': 'app_screenshots/app_13/mvwqxtanibdj59m5d7d5', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739281567/app_screenshots/app_13/mvwqxtanibdj59m5d7d5.png', 'description': ''}]
+INFO 2025-03-02 09:15:49,394 views 25 139679784498880 Screenshots: [{'public_id': 'app_screenshots/app_13/qo3z7yer95fvlmmigk4p', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740491758/app_screenshots/app_13/qo3z7yer95fvlmmigk4p.png', 'description': ''}, {'public_id': 'app_screenshots/app_None/tuuftyllmcrd9go3lmu7', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739084502/app_screenshots/app_None/tuuftyllmcrd9go3lmu7.png', 'description': ''}, {'public_id': 'app_screenshots/app_13/mvwqxtanibdj59m5d7d5', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739281567/app_screenshots/app_13/mvwqxtanibdj59m5d7d5.png', 'description': ''}]
+INFO 2025-03-02 09:16:47,538 views 25 139679784498880 自動保存処理開始: app_id=None
+INFO 2025-03-02 09:16:47,538 views 25 139679784498880 自動保存処理開始: app_id=None
+INFO 2025-03-02 09:16:47,542 views 25 139679784498880 新規アプリを自動保存
+INFO 2025-03-02 09:16:47,542 views 25 139679784498880 新規アプリを自動保存
+INFO 2025-03-02 09:16:47,590 views 25 139679784498880 自動保存完了: app_id=66
+INFO 2025-03-02 09:16:47,590 views 25 139679784498880 自動保存完了: app_id=66
+INFO 2025-03-02 09:17:03,146 views 25 139679784498880 自動保存処理開始: app_id=66
+INFO 2025-03-02 09:17:03,146 views 25 139679784498880 自動保存処理開始: app_id=66
+INFO 2025-03-02 09:17:03,165 views 25 139679784498880 既存アプリを自動保存: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 09:17:03,165 views 25 139679784498880 既存アプリを自動保存: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 09:17:03,261 views 25 139679784498880 自動保存完了: app_id=66
+INFO 2025-03-02 09:17:03,261 views 25 139679784498880 自動保存完了: app_id=66
+INFO 2025-03-02 09:17:10,163 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:17:10,163 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:17:10,176 views 25 139679784498880 App found: けにおアプリや！
+INFO 2025-03-02 09:17:10,176 views 25 139679784498880 App found: けにおアプリや！
+INFO 2025-03-02 09:17:10,178 views 25 139679784498880 Screenshots: [{'public_id': 'app_screenshots/app_13/qo3z7yer95fvlmmigk4p', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740491758/app_screenshots/app_13/qo3z7yer95fvlmmigk4p.png', 'description': ''}, {'public_id': 'app_screenshots/app_None/tuuftyllmcrd9go3lmu7', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739084502/app_screenshots/app_None/tuuftyllmcrd9go3lmu7.png', 'description': ''}, {'public_id': 'app_screenshots/app_13/mvwqxtanibdj59m5d7d5', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739281567/app_screenshots/app_13/mvwqxtanibdj59m5d7d5.png', 'description': ''}]
+INFO 2025-03-02 09:17:10,178 views 25 139679784498880 Screenshots: [{'public_id': 'app_screenshots/app_13/qo3z7yer95fvlmmigk4p', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740491758/app_screenshots/app_13/qo3z7yer95fvlmmigk4p.png', 'description': ''}, {'public_id': 'app_screenshots/app_None/tuuftyllmcrd9go3lmu7', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739084502/app_screenshots/app_None/tuuftyllmcrd9go3lmu7.png', 'description': ''}, {'public_id': 'app_screenshots/app_13/mvwqxtanibdj59m5d7d5', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1739281567/app_screenshots/app_13/mvwqxtanibdj59m5d7d5.png', 'description': ''}]
+INFO 2025-03-02 09:21:38,258 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:21:38,258 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:21:38,276 views 25 139679784498880 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 09:21:38,276 views 25 139679784498880 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 09:21:38,281 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 09:21:38,281 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 09:22:29,528 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:22:29,528 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:22:29,539 views 25 139679784498880 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 09:22:29,539 views 25 139679784498880 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 09:22:29,544 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 09:22:29,544 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 09:22:40,125 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:22:40,125 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:22:40,138 views 25 139679784498880 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 09:22:40,138 views 25 139679784498880 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 09:22:40,142 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 09:22:40,142 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 09:23:12,239 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:23:12,239 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 09:23:12,260 views 25 139679784498880 App found: どうやああ？？
+INFO 2025-03-02 09:23:12,260 views 25 139679784498880 App found: どうやああ？？
+INFO 2025-03-02 09:23:12,267 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 09:23:12,267 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 12:15:47,900 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 12:15:47,900 views 25 139679784498880 Request method: GET
+INFO 2025-03-02 12:15:47,922 views 25 139679784498880 App found: どうやああ？？
+INFO 2025-03-02 12:15:47,922 views 25 139679784498880 App found: どうやああ？？
+INFO 2025-03-02 12:15:47,928 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 12:15:47,928 views 25 139679784498880 Screenshots: []
+INFO 2025-03-02 12:16:11,798 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:16:11,798 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:16:11,810 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:11,810 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:11,813 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:16:11,813 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:16:20,184 views 25 139679776106176 Request method: POST
+INFO 2025-03-02 12:16:20,184 views 25 139679776106176 Request method: POST
+INFO 2025-03-02 12:16:20,196 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:20,196 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:20,199 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:16:20,199 views 25 139679776106176 Screenshots: []
+DEBUG 2025-03-02 12:16:20,342 connectionpool 25 139679776106176 Starting new HTTPS connection (1): api.cloudinary.com:443
+DEBUG 2025-03-02 12:16:22,766 connectionpool 25 139679776106176 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 12:16:23,169 views 25 139679776106176 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:16:23,169 views 25 139679776106176 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:16:23,174 views 25 139679776106176 新規アプリを自動保存
+INFO 2025-03-02 12:16:23,174 views 25 139679776106176 新規アプリを自動保存
+INFO 2025-03-02 12:16:23,229 views 25 139679776106176 自動保存完了: app_id=67
+INFO 2025-03-02 12:16:23,229 views 25 139679776106176 自動保存完了: app_id=67
+INFO 2025-03-02 12:16:25,373 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:16:25,373 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:16:25,389 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:25,389 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:25,394 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-02 12:16:25,394 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-02 12:16:46,335 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:16:46,335 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:16:46,348 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:46,348 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:46,351 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-02 12:16:46,351 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-02 12:16:56,024 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:16:56,024 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:16:56,034 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:56,034 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:16:56,037 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-02 12:16:56,037 views 25 139679776106176 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-02 12:17:00,452 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:17:00,452 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:17:00,465 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:17:00,465 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:17:00,471 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:17:00,471 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:17:51,095 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:17:51,095 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:17:51,109 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:17:51,109 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:17:51,113 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:17:51,113 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:18:06,906 views 25 139679776106176 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:18:06,906 views 25 139679776106176 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:18:06,908 views 25 139679776106176 新規アプリを自動保存
+INFO 2025-03-02 12:18:06,908 views 25 139679776106176 新規アプリを自動保存
+INFO 2025-03-02 12:18:06,940 views 25 139679776106176 自動保存完了: app_id=68
+INFO 2025-03-02 12:18:06,940 views 25 139679776106176 自動保存完了: app_id=68
+INFO 2025-03-02 12:18:18,887 views 25 139679776106176 自動保存処理開始: app_id=68
+INFO 2025-03-02 12:18:18,887 views 25 139679776106176 自動保存処理開始: app_id=68
+INFO 2025-03-02 12:18:18,897 views 25 139679776106176 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　どないなってんねんな？
+INFO 2025-03-02 12:18:18,897 views 25 139679776106176 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　どないなってんねんな？
+INFO 2025-03-02 12:18:18,928 views 25 139679776106176 自動保存完了: app_id=68
+INFO 2025-03-02 12:18:18,928 views 25 139679776106176 自動保存完了: app_id=68
+INFO 2025-03-02 12:18:27,664 views 25 139679776106176 Request method: POST
+INFO 2025-03-02 12:18:27,664 views 25 139679776106176 Request method: POST
+INFO 2025-03-02 12:18:27,674 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:18:27,674 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-02 12:18:27,678 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:18:27,678 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:18:45,565 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:18:45,565 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:18:45,575 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない　どないなってんねんな？
+INFO 2025-03-02 12:18:45,575 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない　どないなってんねんな？
+INFO 2025-03-02 12:18:45,581 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:18:45,581 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:21:00,397 views 25 139679776106176 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:21:00,397 views 25 139679776106176 自動保存処理開始: app_id=None
+INFO 2025-03-02 12:21:00,401 views 25 139679776106176 新規アプリを自動保存
+INFO 2025-03-02 12:21:00,401 views 25 139679776106176 新規アプリを自動保存
+INFO 2025-03-02 12:21:00,440 views 25 139679776106176 自動保存完了: app_id=69
+INFO 2025-03-02 12:21:00,440 views 25 139679776106176 自動保存完了: app_id=69
+INFO 2025-03-02 12:25:13,295 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:25:13,295 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:25:13,312 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない　どないなってんねんな？
+INFO 2025-03-02 12:25:13,312 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない　どないなってんねんな？
+INFO 2025-03-02 12:25:13,316 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:25:13,316 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:25:25,216 views 25 139679776106176 自動保存処理開始: app_id=68
+INFO 2025-03-02 12:25:25,216 views 25 139679776106176 自動保存処理開始: app_id=68
+INFO 2025-03-02 12:25:25,225 views 25 139679776106176 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　どないなってんねんな？
+INFO 2025-03-02 12:25:25,225 views 25 139679776106176 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　どないなってんねんな？
+INFO 2025-03-02 12:25:25,251 views 25 139679776106176 自動保存完了: app_id=68
+INFO 2025-03-02 12:25:25,251 views 25 139679776106176 自動保存完了: app_id=68
+INFO 2025-03-02 12:25:42,258 views 25 139679776106176 自動保存処理開始: app_id=68
+INFO 2025-03-02 12:25:42,258 views 25 139679776106176 自動保存処理開始: app_id=68
+INFO 2025-03-02 12:25:42,268 views 25 139679776106176 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-02 12:25:42,268 views 25 139679776106176 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-02 12:25:42,297 views 25 139679776106176 自動保存完了: app_id=68
+INFO 2025-03-02 12:25:42,297 views 25 139679776106176 自動保存完了: app_id=68
+INFO 2025-03-02 12:28:02,885 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:28:02,885 views 25 139679776106176 Request method: GET
+INFO 2025-03-02 12:28:02,900 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-02 12:28:02,900 views 25 139679776106176 App found: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-02 12:28:02,901 views 25 139679776106176 Screenshots: []
+INFO 2025-03-02 12:28:02,901 views 25 139679776106176 Screenshots: []
