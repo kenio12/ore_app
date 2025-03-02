@@ -227,6 +227,30 @@
                        value="{{ app.github_url }}"
                        {% if readonly %}readonly{% endif %}>
             </div>
+
+            <!-- アプリ名変更時にタイトルを更新するスクリプト -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const titleInput = document.getElementById('title');
+                    if (titleInput) {
+                        titleInput.addEventListener('input', function() {
+                            // h2タイトルの更新
+                            const appTitleElement = document.querySelector('h2:not([class*="card-title"])');
+                            if (appTitleElement) {
+                                const newTitle = titleInput.value.trim() || '新規アプリ';
+                                appTitleElement.textContent = newTitle + 'の編集';
+                            }
+                            
+                            // ブラウザのタイトルも更新
+                            const pageTitle = document.querySelector('title');
+                            if (pageTitle) {
+                                const newTitle = titleInput.value.trim() || '新規アプリ';
+                                pageTitle.textContent = newTitle + ' を編集 | アプリギャラリー';
+                            }
+                        });
+                    }
+                });
+            </script>
         </div>
     </div>
 </div> 

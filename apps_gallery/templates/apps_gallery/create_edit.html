@@ -30,19 +30,6 @@
 <link rel="stylesheet" href="{% static 'apps_gallery/css/cyber-theme.css' %}">
 
 <div class="container-fluid mt-3">
-    {% if messages %}
-        <div class="row mb-3">
-            <div class="col-md-12">
-                {% for message in messages %}
-                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-
     <div class="row">
         <div class="col-md-12">
             <h2>
@@ -202,6 +189,23 @@
             
             lastScrollTop = scrollTop;
         });
+
+        // Djangoのメッセージを自動的に閉じる
+        const alerts = document.querySelectorAll('.alert');
+        if (alerts.length > 0) {
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    // Bootstrapの閉じるボタンをクリックしたのと同じ効果
+                    const closeBtn = alert.querySelector('.btn-close');
+                    if (closeBtn) {
+                        closeBtn.click();
+                    } else {
+                        // 閉じるボタンがない場合は要素を非表示にする
+                        alert.style.display = 'none';
+                    }
+                }, 3000); // 3秒後に自動的に閉じる
+            });
+        }
     });
 </script>
 {% endblock %} 

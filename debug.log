@@ -6819,3 +6819,133 @@ INFO 2025-03-02 14:45:55,676 views 419 140499767637696 既存アプリを自動�
 INFO 2025-03-02 14:45:55,676 views 419 140499767637696 既存アプリを自動保存: なんやねん
 INFO 2025-03-02 14:45:55,719 views 419 140499767637696 自動保存完了: app_id=69
 INFO 2025-03-02 14:45:55,719 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:48:27,728 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:48:27,728 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:48:27,740 views 419 140499767637696 App found: なんやねん
+INFO 2025-03-02 14:48:27,740 views 419 140499767637696 App found: なんやねん
+INFO 2025-03-02 14:48:27,742 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:48:27,742 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:48:31,661 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:48:31,661 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:48:31,671 views 419 140499767637696 App found: なんやねん
+INFO 2025-03-02 14:48:31,671 views 419 140499767637696 App found: なんやねん
+INFO 2025-03-02 14:48:31,673 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:48:31,673 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:48:50,521 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:48:50,521 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:48:50,531 views 419 140499767637696 App found: おい
+INFO 2025-03-02 14:48:50,531 views 419 140499767637696 App found: おい
+INFO 2025-03-02 14:48:50,533 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/efdg08pfheib4udc6nua', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894127/app_screenshots/app_74/efdg08pfheib4udc6nua.png', 'description': ''}]
+INFO 2025-03-02 14:48:50,533 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_74/efdg08pfheib4udc6nua', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894127/app_screenshots/app_74/efdg08pfheib4udc6nua.png', 'description': ''}]
+INFO 2025-03-02 14:48:58,813 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:48:58,813 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:48:58,819 views 419 140499767637696 App found: doya
+INFO 2025-03-02 14:48:58,819 views 419 140499767637696 App found: doya
+INFO 2025-03-02 14:48:58,821 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:48:58,821 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:48:58,895 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:48:58,895 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:48:58,906 views 419 140499767637696 App found: doya
+INFO 2025-03-02 14:48:58,906 views 419 140499767637696 App found: doya
+INFO 2025-03-02 14:48:58,908 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:48:58,908 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:49:02,697 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:49:02,697 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:49:02,705 views 419 140499767637696 App found: doya
+INFO 2025-03-02 14:49:02,705 views 419 140499767637696 App found: doya
+INFO 2025-03-02 14:49:02,707 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:49:02,707 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:49:16,428 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:49:16,428 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:49:16,433 views 419 140499767637696 既存アプリを自動保存: doya
+INFO 2025-03-02 14:49:16,433 views 419 140499767637696 既存アプリを自動保存: doya
+INFO 2025-03-02 14:49:16,487 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:49:16,487 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:49:22,685 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:49:22,685 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:49:22,695 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:49:22,695 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:49:22,697 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:49:22,697 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:49:24,236 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:49:24,236 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:49:24,245 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:49:24,245 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:49:24,247 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:49:24,247 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:49:31,880 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:49:31,880 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:49:31,895 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:49:31,895 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:49:31,899 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:49:31,899 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:49:34,852 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:49:34,852 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:49:34,857 views 419 140499767637696 既存アプリを自動保存: どうなってんねん？
+INFO 2025-03-02 14:49:34,857 views 419 140499767637696 既存アプリを自動保存: どうなってんねん？
+INFO 2025-03-02 14:49:34,908 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:49:34,908 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:50:14,117 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:50:14,117 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:50:14,132 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:50:14,132 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:50:14,134 views 419 140499767637696 Screenshots: []
+INFO 2025-03-02 14:50:14,134 views 419 140499767637696 Screenshots: []
+DEBUG 2025-03-02 14:50:14,482 connectionpool 419 140499767637696 Starting new HTTPS connection (2): api.cloudinary.com:443
+DEBUG 2025-03-02 14:50:16,435 connectionpool 419 140499767637696 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 14:50:17,046 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:50:17,046 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:50:17,055 views 419 140499767637696 既存アプリを自動保存: どうなってんねん？
+INFO 2025-03-02 14:50:17,055 views 419 140499767637696 既存アプリを自動保存: どうなってんねん？
+INFO 2025-03-02 14:50:17,128 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:50:17,128 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:50:19,025 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:50:19,025 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:50:19,039 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:50:19,039 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:50:19,041 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}]
+INFO 2025-03-02 14:50:19,041 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}]
+INFO 2025-03-02 14:51:02,094 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:51:02,094 views 419 140499767637696 Request method: POST
+INFO 2025-03-02 14:51:02,101 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:51:02,101 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:51:02,103 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}]
+INFO 2025-03-02 14:51:02,103 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}]
+DEBUG 2025-03-02 14:51:03,935 connectionpool 419 140499767637696 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 14:51:05,028 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:51:05,028 views 419 140499767637696 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:51:05,037 views 419 140499767637696 既存アプリを自動保存: どうなってんねん？
+INFO 2025-03-02 14:51:05,037 views 419 140499767637696 既存アプリを自動保存: どうなってんねん？
+INFO 2025-03-02 14:51:05,087 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:51:05,087 views 419 140499767637696 自動保存完了: app_id=69
+INFO 2025-03-02 14:51:06,547 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:51:06,547 views 419 140499767637696 Request method: GET
+INFO 2025-03-02 14:51:06,556 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:51:06,556 views 419 140499767637696 App found: どうなってんねん？
+INFO 2025-03-02 14:51:06,558 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}]
+INFO 2025-03-02 14:51:06,558 views 419 140499767637696 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}]
+INFO 2025-03-02 14:54:35,517 views 419 140499758196416 Request method: GET
+INFO 2025-03-02 14:54:35,517 views 419 140499758196416 Request method: GET
+INFO 2025-03-02 14:54:35,541 views 419 140499758196416 App found: どうなってんねん？
+INFO 2025-03-02 14:54:35,541 views 419 140499758196416 App found: どうなってんねん？
+INFO 2025-03-02 14:54:35,546 views 419 140499758196416 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}]
+INFO 2025-03-02 14:54:35,546 views 419 140499758196416 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}]
+INFO 2025-03-02 14:54:42,484 views 419 140499758196416 Request method: POST
+INFO 2025-03-02 14:54:42,484 views 419 140499758196416 Request method: POST
+INFO 2025-03-02 14:54:42,502 views 419 140499758196416 App found: どうなってんねん？
+INFO 2025-03-02 14:54:42,502 views 419 140499758196416 App found: どうなってんねん？
+INFO 2025-03-02 14:54:42,505 views 419 140499758196416 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}]
+INFO 2025-03-02 14:54:42,505 views 419 140499758196416 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}]
+DEBUG 2025-03-02 14:54:44,503 connectionpool 419 140499758196416 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-02 14:54:45,462 views 419 140499758196416 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:54:45,462 views 419 140499758196416 自動保存処理開始: app_id=69
+INFO 2025-03-02 14:54:45,469 views 419 140499758196416 既存アプリを自動保存: どうなってんねん？
+INFO 2025-03-02 14:54:45,469 views 419 140499758196416 既存アプリを自動保存: どうなってんねん？
+INFO 2025-03-02 14:54:45,516 views 419 140499758196416 自動保存完了: app_id=69
+INFO 2025-03-02 14:54:45,516 views 419 140499758196416 自動保存完了: app_id=69
+INFO 2025-03-02 14:54:47,064 views 419 140499758196416 Request method: GET
+INFO 2025-03-02 14:54:47,064 views 419 140499758196416 Request method: GET
+INFO 2025-03-02 14:54:47,075 views 419 140499758196416 App found: どうなってんねん？
+INFO 2025-03-02 14:54:47,075 views 419 140499758196416 App found: どうなってんねん？
+INFO 2025-03-02 14:54:47,077 views 419 140499758196416 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/mauilitx4lq4c1hrbcfk', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894883/app_screenshots/app_69/mauilitx4lq4c1hrbcfk.png', 'description': ''}]
+INFO 2025-03-02 14:54:47,077 views 419 140499758196416 Screenshots: [{'public_id': 'app_screenshots/app_69/vzspbvhajis9pn3pwle4', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894615/app_screenshots/app_69/vzspbvhajis9pn3pwle4.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/brgm0vmnffk9chtp4wff', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894663/app_screenshots/app_69/brgm0vmnffk9chtp4wff.png', 'description': ''}, {'public_id': 'app_screenshots/app_69/mauilitx4lq4c1hrbcfk', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740894883/app_screenshots/app_69/mauilitx4lq4c1hrbcfk.png', 'description': ''}]
