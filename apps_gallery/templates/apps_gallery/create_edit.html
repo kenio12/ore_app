@@ -49,6 +49,16 @@
         </div>
     </div>
 
+    {% if not readonly %}
+    <!-- 編集モード表示のフローティング要素 -->
+    <div class="editing-mode-indicator">
+        <div class="editing-content">
+            <i class="bi bi-pencil-fill"></i>
+            <span>編集中</span>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- アプリ作成フォーム -->
     <form id="appForm" method="post" {% if readonly %}data-readonly="true"{% endif %} {% if app.id %}data-app-id="{{ app.id }}"{% endif %}>
         {% csrf_token %}
@@ -205,6 +215,167 @@
                     }
                 }, 3000); // 3秒後に自動的に閉じる
             });
+        }
+    });
+</script>
+
+<!-- 編集モードインジケーターのスタイル -->
+<style>
+    .editing-mode-indicator {
+        position: fixed;
+        top: 50%;
+        right: 30px;
+        transform: translateY(-50%);
+        z-index: 1100;
+        animation: pulse 2s infinite alternate;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    
+    .editing-mode-indicator.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .editing-content {
+        background: linear-gradient(45deg, rgba(255, 0, 160, 0.7), rgba(0, 255, 255, 0.7));
+        color: white;
+        padding: 12px 20px;
+        border-radius: 20px;
+        box-shadow: 0 0 15px rgba(255, 0, 160, 0.5), 
+                   0 0 30px rgba(0, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    
+    .editing-content i {
+        margin-right: 8px;
+        font-size: 1.3rem;
+    }
+    
+    @keyframes pulse {
+        0% { transform: translateY(-50%) scale(1); opacity: 0.8; }
+        100% { transform: translateY(-50%) scale(1.05); opacity: 1; }
+    }
+    
+    /* モバイル対応 */
+    @media (max-width: 768px) {
+        .editing-mode-indicator {
+            right: 15px;
+        }
+        
+        .editing-content {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* タブナビゲーションの修正スタイル */
+    .nav-tabs .nav-link.text-neon.active:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 4px;
+        background: transparent;
+        z-index: -1;
+        box-shadow: 0 0 15px 3px currentColor !important;
+        opacity: 0.7;
+        animation: tab-pulse 1.5s infinite alternate;
+    }
+
+    @keyframes tab-pulse {
+        0% { opacity: 0.4; }
+        100% { opacity: 0.7; }
+    }
+    
+    /* タブのアクティブ状態を修正 */
+    .nav-tabs .nav-link.active {
+        background-color: rgba(0, 0, 0, 0.7) !important;
+        border-color: currentColor currentColor transparent !important;
+        border-width: 2px 2px 0 2px !important;
+        z-index: 2 !important;
+    }
+
+    /* タブコンテンツを微調整 */
+    .nav-link.text-neon {
+        margin: 0 10px !important;
+        padding: 0.6rem 0.7rem !important;
+        position: relative !important;
+    }
+    
+    /* タブ同士の間に区切り線を追加 */
+    .nav-item:not(:first-child) .nav-link.text-neon:before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 25%;
+        height: 50%;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* タブパネル全体の調整 */
+    .app-tabs {
+        padding: 15px 10px 10px 10px !important;
+    }
+    
+    /* タブとコンテンツの間のスペースを追加 */
+    .tab-content {
+        margin-top: 2rem !important;
+    }
+</style>
+
+<!-- 編集モードインジケーター制御用スクリプト -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!document.querySelector('form[data-readonly="true"]')) {
+            const editingIndicator = document.querySelector('.editing-mode-indicator');
+            let indicatorTimer;
+            
+            // タブ切り替え時に表示するイベントリスナー
+            const tabButtons = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+            tabButtons.forEach(button => {
+                button.addEventListener('shown.bs.tab', function() {
+                    showEditingIndicator();
+                });
+            });
+
+            // フォームの入力フィールド変更時にも表示
+            const formInputs = document.querySelectorAll('input, textarea, select');
+            formInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    showEditingIndicator();
+                });
+            });
+            
+            // 初回表示（ページ読み込み時）
+            setTimeout(() => {
+                showEditingIndicator();
+            }, 500);
+            
+            // インジケーター表示関数
+            function showEditingIndicator() {
+                // 既存のタイマーをクリア
+                clearTimeout(indicatorTimer);
+                
+                // インジケーターを表示
+                editingIndicator.classList.add('show');
+                
+                // 10秒後に非表示
+                indicatorTimer = setTimeout(() => {
+                    editingIndicator.classList.remove('show');
+                }, 10000);
+            }
         }
     });
 </script>

@@ -178,6 +178,7 @@
     z-index: 1000 !important;
     transition: transform 0.3s ease !important;
     margin-bottom: 2rem !important;  /* タブと下のセクションの間隔を追加 */
+    padding: 15px 10px 10px 10px !important;
 }
 
 /* タブのスタイル */
@@ -235,6 +236,58 @@
         padding: 0.4rem 0.2rem !important;
         font-size: 0.8rem !important;
     }
+}
+
+/* タブ間隔の調整 */
+.nav-link.text-neon {
+    margin: 0 10px !important;
+    padding: 0.6rem 0.7rem !important;
+    position: relative !important;
+}
+
+/* タブ同士の間に区切り線を追加 */
+.nav-item:not(:first-child) .nav-link.text-neon:before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* タブのアクティブ状態の改良 */
+.nav-tabs .nav-link.text-neon.active:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    background: transparent;
+    z-index: -1;
+    box-shadow: 0 0 15px 3px currentColor !important;
+    opacity: 0.7;
+    animation: tab-pulse 1.5s infinite alternate;
+}
+
+@keyframes tab-pulse {
+    0% { opacity: 0.4; }
+    100% { opacity: 0.7; }
+}
+
+/* タブのアクティブ状態を修正 */
+.nav-tabs .nav-link.active {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    border-color: currentColor currentColor transparent !important;
+    border-width: 2px 2px 0 2px !important;
+    z-index: 2 !important;
+}
+
+/* タブとコンテンツの間のスペースを追加 */
+.tab-content {
+    margin-top: 2rem !important;
 }
 </style>
 
