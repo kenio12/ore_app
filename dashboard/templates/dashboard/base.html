@@ -17,7 +17,11 @@
                         <a href="{% url 'dashboard:apps' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'apps' %}active{% endif %}">
                             <i class="bi bi-cpu me-2"></i>アプリ管理
                         </a>
-                        <a href="{% url 'profiles:profile_detail' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.view_name == 'profiles:profile_detail' %}active{% endif %}">
+                        <!-- アナリティクスへのリンク -->
+                        <a href="{% url 'dashboard:analytics' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
+                            <i class="bi bi-graph-up me-2"></i>アナリティクス
+                        </a>
+                        <a href="{% url 'dashboard:profile' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
                             <i class="bi bi-person-circle me-2"></i>プロフィール
                         </a>
                         <a href="{% url 'dashboard:account' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'account' %}active{% endif %}">
@@ -57,18 +61,12 @@
     text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
 }
 
-.cyber-nav-item:hover {
-    background: rgba(127, 255, 0, 0.1);
-    border-left: 3px solid #7fff00;
-    transform: translateX(5px);
-    text-shadow: 0 0 15px rgba(127, 255, 0, 0.8);
-}
-
-.cyber-nav-item.active {
-    background: rgba(127, 255, 0, 0.2);
-    border-left: 3px solid #7fff00;
-    box-shadow: inset 0 0 10px rgba(127, 255, 0, 0.2);
-    text-shadow: 0 0 20px rgba(127, 255, 0, 1);
+.cyber-nav-item:hover, .cyber-nav-item.active {
+    background-color: rgba(127, 255, 0, 0.2);
+    border: 1px solid #7fff00;
+    box-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
+    transform: translateY(-2px);
+    text-shadow: 0 0 15px #7fff00;
 }
 
 /* グローエフェクト */
@@ -169,6 +167,23 @@ body {
     transform: scale(1.05);
 }
 
+/* サイバーパンクグリーンボタンのスタイル */
+.btn-cyber-green {
+    background-color: #00ff00;
+    border: 1px solid #00ff00;
+    color: #000 !important;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+    text-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-green:hover {
+    background-color: #7fff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.9);
+    transform: translateY(-2px) scale(1.05);
+}
+
 @keyframes neonPulse {
     0% { box-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00; }
     50% { box-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
@@ -212,6 +227,26 @@ body {
 /* プレースホルダーテキストも緑に */
 .text-center {
     color: #00ff00 !important;
+}
+
+/* アナリティクスナビアイテムのスタイル */
+.cyber-nav-item-analytics {
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.cyber-nav-item-analytics:hover, .cyber-nav-item-analytics.active {
+    background-color: rgba(0, 255, 255, 0.2);
+    border: 1px solid #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    transform: translateY(-2px);
+    text-shadow: 0 0 15px #00ffff;
 }
 </style>
 {% endblock %} 

@@ -254,6 +254,12 @@ class AppAnalytics(models.Model):
         """閲覧数をインクリメントし、関連するアナリティクスデータも更新する"""
         from datetime import datetime
         
+        # 作者の閲覧はカウントしない
+        if request and request.user.is_authenticated:
+            if request.user == self.app.author:
+                # 作者自身の閲覧の場合はカウントしない
+                return
+        
         # 閲覧数インクリメント
         self.view_count += 1
         

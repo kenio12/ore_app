@@ -10,20 +10,8 @@ import cloudinary.uploader
 @login_required
 def profile_detail(request):
     """プロフィール詳細表示"""
-    context = {
-        'user': request.user,
-        'profile': request.user.profile,
-        # ハードウェア情報の選択肢
-        'pc_types': get_pc_types(),
-        'device_types': get_device_types(),
-        'cpu_types': get_cpu_types(),
-        'memory_sizes': get_memory_sizes(),
-        'storage_types': get_storage_types(),
-        'monitor_counts': get_monitor_counts(),
-        'internet_types': get_internet_types(),
-        'maker_examples': get_maker_examples(),
-    }
-    return render(request, 'profiles/profile_detail.html', context)
+    # ダッシュボードのプロフィールページにリダイレクト
+    return redirect('dashboard:profile')
 
 @login_required
 def profile_edit(request):

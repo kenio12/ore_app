@@ -1,0 +1,218 @@
+{% extends 'dashboard/base.html' %}
+{% load profile_filters %}
+
+{% block title %}プロフィール - {{ user.username }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-header text-cyber">
+                    <h3 class="mb-0">プロフィール情報</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            {% if profile.avatar_url %}
+                                <img src="{{ profile.avatar_url }}" alt="プロフィール画像" class="img-fluid rounded-circle" style="max-width: 150px; border: 2px solid #00ff00; box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
+                            {% else %}
+                                <div class="cyber-avatar-placeholder" style="width: 150px; height: 150px; margin: 0 auto;">
+                                    <i class="bi bi-person-circle" style="font-size: 5rem; color: #00ff00;"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <h4 class="text-cyber">{{ user.username }}</h4>
+                            
+                            <p class="text-light">
+                                {{ user.email }}
+                                <span class="badge bg-dark text-cyber border border-success ms-2" style="font-size: 0.7rem;">本人のみ表示</span>
+                            </p>
+                            
+                            {% if profile.bio %}
+                                <h5 class="text-cyber mt-3">自己紹介</h5>
+                                <p class="text-light">{{ profile.bio }}</p>
+                            {% endif %}
+                            
+                            <div class="mt-3">
+                                {% if profile.social_github %}
+                                    {% if 'github.com' in profile.social_github %}
+                                        <a href="{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-success me-2">
+                                            <i class="bi bi-github"></i> GitHub
+                                        </a>
+                                    {% else %}
+                                        <a href="https://github.com/{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-success me-2">
+                                            <i class="bi bi-github"></i> GitHub
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                                
+                                {% if profile.social_twitter %}
+                                    {% if 'x.com' in profile.social_twitter or 'twitter.com' in profile.social_twitter %}
+                                        <a href="{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-success me-2">
+                                            <i class="bi bi-twitter-x"></i> X
+                                        </a>
+                                    {% else %}
+                                        <a href="https://x.com/{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-success me-2">
+                                            <i class="bi bi-twitter-x"></i> X
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ハードウェア情報 -->
+                    {% if profile.hardware_specs %}
+                    <div class="mt-4">
+                        <h4 class="text-cyber mb-3">
+                            <i class="bi bi-cpu"></i> 開発に使用したパソコン環境
+                        </h4>
+                        <div class="card bg-black" style="border: 1px solid #00ff00; box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
+                            <div class="card-body bg-black">
+                                <div class="row">
+                                    <!-- ハードウェア情報をテーブル形式で表示 -->
+                                    <div class="col-md-12">
+                                        <div class="hardware-specs-table">
+                                            <div class="row">
+                                                <!-- メーカーと機種情報 -->
+                                                {% if profile.hardware_specs.maker %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-black">
+                                                        <tr class="bg-black">
+                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">メーカー:</td>
+                                                            <td class="text-light" style="background-color: #000000 !important;">{{ profile.hardware_specs.maker }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.model %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-black">
+                                                        <tr class="bg-black">
+                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">機種名:</td>
+                                                            <td class="text-light" style="background-color: #000000 !important;">{{ profile.hardware_specs.model }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- PCタイプとデバイスタイプ -->
+                                                {% if profile.hardware_specs.pc_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-black">
+                                                        <tr class="bg-black">
+                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">PCタイプ:</td>
+                                                            <td class="text-light" style="background-color: #000000 !important;">{{ pc_types|get_item:profile.hardware_specs.pc_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.device_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-black">
+                                                        <tr class="bg-black">
+                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">PC種類:</td>
+                                                            <td class="text-light" style="background-color: #000000 !important;">{{ device_types|get_item:profile.hardware_specs.device_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- CPU・メモリ・ストレージ -->
+                                                {% if profile.hardware_specs.cpu_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-black">
+                                                        <tr class="bg-black">
+                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">CPU:</td>
+                                                            <td class="text-light" style="background-color: #000000 !important;">{{ cpu_types|get_item:profile.hardware_specs.cpu_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.memory_size %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-black">
+                                                        <tr class="bg-black">
+                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">メモリ:</td>
+                                                            <td class="text-light" style="background-color: #000000 !important;">{{ memory_sizes|get_item:profile.hardware_specs.memory_size }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.storage_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-black">
+                                                        <tr class="bg-black">
+                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">ストレージ:</td>
+                                                            <td class="text-light" style="background-color: #000000 !important;">{{ storage_types|get_item:profile.hardware_specs.storage_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- モニター数・インターネット回線 -->
+                                                {% if profile.hardware_specs.monitor_count %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-black">
+                                                        <tr class="bg-black">
+                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">使用モニター数:</td>
+                                                            <td class="text-light" style="background-color: #000000 !important;">{{ monitor_counts|get_item:profile.hardware_specs.monitor_count }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.internet_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-black">
+                                                        <tr class="bg-black">
+                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">インターネット回線:</td>
+                                                            <td class="text-light" style="background-color: #000000 !important;">{{ internet_types|get_item:profile.hardware_specs.internet_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer border-top">
+                    <a href="{% url 'profiles:profile_edit' %}" class="btn btn-cyber-green" style="color: #000 !important; font-weight: bold; text-shadow: none;">
+                        <i class="bi bi-pencil-square"></i> プロフィールを編集
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.cyber-avatar-placeholder {
+    border-radius: 50%;
+    border: 2px solid #00ff00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.text-cyber {
+    color: #00ff00 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+}
+
+/* ボタンスタイルは削除し、ダッシュボードの共通スタイルを使用 */
+</style>
+{% endblock %} 

@@ -40,14 +40,14 @@
                     </thead>
                     <tbody>
                         {% for app in apps %}
-                            <tr style="cursor: pointer;" onclick="window.location='{% url 'apps_gallery:edit' pk=app.pk %}'">
+                            <tr>
                                 <td class="text-cyber">{{ app.title }}</td>
                                 <td class="text-cyber">
-                                    <span class="badge {% if app.status == 'published' %}badge-cyber-published{% elif app.status == 'draft' %}badge-cyber-draft{% else %}badge-cyber-none{% endif %}" 
+                                    <span class="badge {% if app.get_status_display == '公開' %}badge-cyber-published{% elif app.get_status_display == '非公開' %}badge-cyber-draft{% elif app.get_status_display == '未選択' %}badge-cyber-none{% else %}badge-cyber-none{% endif %}" 
                                           data-bs-toggle="tooltip" 
                                           data-bs-placement="top" 
                                           title="{% if app.status == 'published' %}公開中：このアプリは全ユーザーに公開されています{% elif app.status == 'draft' %}下書き：このアプリはまだ非公開です{% else %}未選択：ステータスが設定されていません{% endif %}">
-                                        {{ app.get_status_display }}
+                                        {% if app.get_status_display %}{{ app.get_status_display }}{% else %}未選択{% endif %}
                                     </span>
                                 </td>
                                 <td class="text-cyber">{{ app.created_at|date:"Y/m/d" }}</td>
@@ -58,6 +58,9 @@
                                         </a>
                                         <a href="{% url 'apps_gallery:edit' pk=app.pk %}" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-pencil"></i> 編集
+                                        </a>
+                                        <a href="{% url 'apps_gallery:analytics' pk=app.pk %}" class="btn btn-sm btn-outline-success btn-cyber-analytics">
+                                            <i class="bi bi-graph-up"></i> アナリティクス
                                         </a>
                                         <a href="{% url 'apps_gallery:delete' pk=app.pk %}" class="btn btn-sm btn-outline-danger">
                                             <i class="bi bi-trash"></i> 削除
@@ -129,27 +132,33 @@
 
 /* サイバーパンクスタイルのバッジ */
 .badge-cyber-published {
-    background: rgba(0, 255, 0, 0.1);
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+    background: rgba(0, 170, 255, 0.2);
+    color: #00aaff;
+    border: 1px solid #00aaff;
+    text-shadow: 0 0 10px rgba(0, 170, 255, 0.7);
+    box-shadow: 0 0 15px rgba(0, 170, 255, 0.3);
+    font-weight: bold;
+    padding: 5px 10px;
 }
 
 .badge-cyber-draft {
-    background: rgba(255, 0, 0, 0.1);
-    color: #ff0000;
-    border: 1px solid #ff0000;
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff5555;
+    border: 1px solid #ff5555;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    font-weight: bold;
+    padding: 5px 10px;
 }
 
 .badge-cyber-none {
-    background: rgba(255, 215, 0, 0.1);
+    background: rgba(255, 215, 0, 0.2);
     color: #ffd700;
     border: 1px solid #ffd700;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    font-weight: bold;
+    padding: 5px 10px;
 }
 
 /* ホバー効果 */
@@ -162,7 +171,7 @@
 }
 
 .badge-cyber-published:hover {
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+    box-shadow: 0 0 20px rgba(0, 170, 255, 0.4);
 }
 
 .badge-cyber-draft:hover {
@@ -171,6 +180,22 @@
 
 .badge-cyber-none:hover {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+/* アナリティクスボタンのサイバーパンクスタイル */
+.btn-cyber-analytics {
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+    border: 1px solid #00ffff;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.btn-cyber-analytics:hover {
+    background: rgba(0, 255, 255, 0.3);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    transform: translateY(-2px);
 }
 </style>
 
