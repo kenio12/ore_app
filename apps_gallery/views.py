@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from .models import AppGallery
+from .models import AppGallery, AppAnalytics
 from .forms import AppForm
 from .constants import (
     APP_TYPES,
@@ -370,6 +370,16 @@ def app_detail(request, pk):
     print(f"Security Measures: {app.security.get('measures', [])}")
     
     context = get_common_context(app=app, readonly=True)
+    
+    # アナリティクスを更新
+    try:
+        analytics, created = AppAnalytics.objects.get_or_create(app=app)
+        analytics.increment_view(request)
+    except Exception as e:
+        # エラーが発生してもページを表示できるようにする
+        logger.error(f"アナリティクス更新中にエラーが発生しました: {e}")
+    
+    context['show_action_buttons'] = True
     return render(request, 'apps_gallery/app_view_detail.html', context)
 
 @login_required
@@ -786,3 +796,52 @@ def delete_empty_app(request, app_id):
             'success': False,
             'error': str(e)
         }, status=500)
+
+# アナリティクス関連の新しいビュー
+@login_required
+def app_analytics(request, pk):
+    """アプリのアナリティクスデータを表示するビュー"""
+    app = get_object_or_404(AppGallery, pk=pk)
+    
+    # 所有者チェック - 自分のアプリのみ閲覧可能
+    if app.author != request.user:
+        raise PermissionDenied("このアプリのアナリティクスを閲覧する権限がありません。")
+    
+    # アナリティクスがなければ作成
+    analytics, created = AppAnalytics.objects.get_or_create(app=app)
+    
+    # 過去30日間のデータを準備
+    from datetime import datetime, timedelta
+    import json
+    
+    today = datetime.now()
+    date_labels = []
+    view_data = []
+    
+    for i in range(30, -1, -1):
+        date = (today - timedelta(days=i)).strftime('%Y-%m-%d')
+        date_labels.append(date)
+        view_data.append(analytics.daily_views.get(date, 0))
+    
+    # デバイスタイプの分布
+    device_labels = list(analytics.device_types.keys())
+    device_data = list(analytics.device_types.values())
+    
+    # リファラーの上位10件を取得
+    referrers = sorted(
+        analytics.referrers.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:10]
+    
+    context = {
+        'app': app,
+        'analytics': analytics,
+        'date_labels': json.dumps(date_labels),
+        'view_data': json.dumps(view_data),
+        'device_labels': json.dumps(device_labels),
+        'device_data': json.dumps(device_data),
+        'top_referrers': referrers,
+    }
+    
+    return render(request, 'apps_gallery/analytics.html', context)

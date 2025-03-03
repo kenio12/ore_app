@@ -196,3 +196,121 @@ class AppGallery(models.Model):
     
     def __str__(self):
         return self.title
+
+# ==================== アナリティクスモデル ====================
+class AppAnalytics(models.Model):
+    """アプリ使用統計データモデル"""
+    
+    app = models.OneToOneField(
+        AppGallery,
+        on_delete=models.CASCADE,
+        related_name='analytics',
+        verbose_name='アプリ'
+    )
+    
+    # 基本統計情報
+    view_count = models.IntegerField('閲覧数', default=0)
+    like_count = models.IntegerField('いいね数', default=0)
+    comment_count = models.IntegerField('コメント数', default=0)
+    share_count = models.IntegerField('共有数', default=0)
+    
+    # 詳細アナリティクスデータ
+    daily_views = models.JSONField(
+        '日別閲覧数',
+        default=dict,
+        help_text='各日付の閲覧数を記録'
+    )
+    
+    regional_views = models.JSONField(
+        '地域別閲覧数',
+        default=dict,
+        help_text='各地域からの閲覧数を記録'
+    )
+    
+    referrers = models.JSONField(
+        'リファラー情報',
+        default=dict,
+        help_text='アクセス元サイトと回数を記録'
+    )
+    
+    device_types = models.JSONField(
+        'デバイスタイプ',
+        default=dict,
+        help_text='閲覧に使用されたデバイスタイプ（PC, モバイル, タブレット）'
+    )
+    
+    # 管理フィールド
+    last_updated = models.DateTimeField('最終更新日時', auto_now=True)
+    created_at = models.DateTimeField('作成日時', auto_now_add=True)
+    
+    class Meta:
+        verbose_name = 'アプリアナリティクス'
+        verbose_name_plural = 'アプリアナリティクス'
+    
+    def __str__(self):
+        return f"{self.app.title}のアナリティクス"
+    
+    def increment_view(self, request=None):
+        """閲覧数をインクリメントし、関連するアナリティクスデータも更新する"""
+        from datetime import datetime
+        
+        # 閲覧数インクリメント
+        self.view_count += 1
+        
+        # 日付ごとのビュー数を更新
+        today = datetime.now().strftime('%Y-%m-%d')
+        daily = self.daily_views.copy()
+        daily[today] = daily.get(today, 0) + 1
+        self.daily_views = daily
+        
+        if request:
+            # リファラー情報の更新
+            referrer = request.META.get('HTTP_REFERER', 'direct')
+            referrers = self.referrers.copy()
+            referrers[referrer] = referrers.get(referrer, 0) + 1
+            self.referrers = referrers
+            
+            # デバイスタイプの更新
+            user_agent = request.META.get('HTTP_USER_AGENT', '')
+            device = 'unknown'
+            if 'Mobile' in user_agent:
+                device = 'mobile'
+            elif 'Tablet' in user_agent:
+                device = 'tablet'
+            else:
+                device = 'desktop'
+            
+            devices = self.device_types.copy()
+            devices[device] = devices.get(device, 0) + 1
+            self.device_types = devices
+            
+            # 地域情報の更新（IPアドレスから取得できる場合）
+            ip = self.get_client_ip(request)
+            if ip:
+                # 簡易的な実装（実際にはGeoIPなどのライブラリを使用するとよい）
+                region = 'unknown'
+                regions = self.regional_views.copy()
+                regions[region] = regions.get(region, 0) + 1
+                self.regional_views = regions
+        
+        # 変更を保存
+        self.save()
+    
+    def get_client_ip(self, request):
+        """クライアントのIPアドレスを取得する"""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
+# 既存のapp_detailビューを修正する代わりに、シグナルを使用してアクセス時にアナリティクスを更新
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=AppGallery)
+def create_analytics(sender, instance, created, **kwargs):
+    """AppGalleryが作成されたときに、対応するAnalyticsも作成する"""
+    if created:
+        AppAnalytics.objects.create(app=instance)

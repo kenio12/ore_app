@@ -1,0 +1,244 @@
+{% extends 'dashboard/base.html' %}
+
+{% block dashboard_content %}
+<div class="card bg-dark text-cyber">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 text-cyber">「{{ app.title }}」のアナリティクス</h4>
+        <a href="{% url 'apps_gallery:detail' pk=app.pk %}" class="btn btn-outline-info">
+            <i class="bi bi-arrow-left"></i> アプリに戻る
+        </a>
+    </div>
+    <div class="card-body">
+        <!-- サマリー統計 -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-dark border-cyber">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-cyber">総閲覧数</h5>
+                        <h2 class="text-cyber">{{ analytics.view_count }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-dark border-cyber">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-cyber">いいね数</h5>
+                        <h2 class="text-cyber">{{ analytics.like_count }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-dark border-cyber">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-cyber">コメント数</h5>
+                        <h2 class="text-cyber">{{ analytics.comment_count }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-dark border-cyber">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-cyber">共有数</h5>
+                        <h2 class="text-cyber">{{ analytics.share_count }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 閲覧数グラフ -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card bg-dark border-cyber">
+                    <div class="card-header text-cyber">
+                        過去30日間の閲覧数推移
+                    </div>
+                    <div class="card-body">
+                        <canvas id="viewsChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-dark border-cyber">
+                    <div class="card-header text-cyber">
+                        デバイス別閲覧数
+                    </div>
+                    <div class="card-body">
+                        <canvas id="devicesChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- リファラーテーブル -->
+        <div class="card bg-dark border-cyber">
+            <div class="card-header text-cyber">
+                リファラー（アクセス元）
+            </div>
+            <div class="card-body">
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th class="text-cyber">リファラー</th>
+                            <th class="text-cyber">閲覧数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for referrer, count in top_referrers %}
+                        <tr>
+                            <td class="text-cyber">{{ referrer }}</td>
+                            <td class="text-cyber">{{ count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center text-cyber">データがありません</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js ライブラリ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 閲覧数グラフの設定
+    const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+    const viewsChart = new Chart(viewsCtx, {
+        type: 'line',
+        data: {
+            labels: {{ date_labels|safe }},
+            datasets: [{
+                label: '閲覧数',
+                data: {{ view_data|safe }},
+                backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                borderColor: '#00ff00',
+                borderWidth: 2,
+                pointBackgroundColor: '#00ff00',
+                pointBorderColor: '#00ff00',
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    grid: {
+                        color: 'rgba(0, 255, 0, 0.1)'
+                    },
+                    ticks: {
+                        color: '#00ff00'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 255, 0, 0.1)'
+                    },
+                    ticks: {
+                        color: '#00ff00'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#00ff00'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(13, 25, 45, 0.8)',
+                    titleColor: '#00ff00',
+                    bodyColor: '#00ff00',
+                    borderColor: '#00ff00',
+                    borderWidth: 1
+                }
+            }
+        }
+    });
+    
+    // デバイス別グラフの設定
+    const devicesCtx = document.getElementById('devicesChart').getContext('2d');
+    const devicesChart = new Chart(devicesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ device_labels|safe }},
+            datasets: [{
+                data: {{ device_data|safe }},
+                backgroundColor: [
+                    'rgba(0, 255, 0, 0.7)',
+                    'rgba(0, 255, 255, 0.7)',
+                    'rgba(255, 0, 255, 0.7)',
+                    'rgba(255, 255, 0, 0.7)'
+                ],
+                borderColor: '#000',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#00ff00'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(13, 25, 45, 0.8)',
+                    titleColor: '#00ff00',
+                    bodyColor: '#00ff00',
+                    borderColor: '#00ff00',
+                    borderWidth: 1
+                }
+            }
+        }
+    });
+});
+</script>
+
+<style>
+.border-cyber {
+    border: 2px solid #00ff00 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3) !important;
+}
+
+.text-cyber {
+    color: #00ff00 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+/* サイバーパンクスタイルのカード */
+.card {
+    background-color: rgba(13, 25, 45, 0.9) !important;
+    border: 1px solid #00ff00 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2) !important;
+}
+
+.card-header {
+    border-bottom: 1px solid #00ff00 !important;
+    background-color: rgba(0, 255, 0, 0.1) !important;
+}
+
+/* テーブルスタイル */
+.table-dark {
+    background-color: transparent !important;
+}
+
+.table-dark th, 
+.table-dark td {
+    border-color: rgba(0, 255, 0, 0.2) !important;
+}
+
+.table-dark th {
+    border-bottom: 2px solid #00ff00 !important;
+}
+</style>
+{% endblock %} 

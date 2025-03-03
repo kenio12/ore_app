@@ -15,8 +15,9 @@ urlpatterns = [
     path('set-thumbnail/', views.set_thumbnail, name='set_thumbnail'),  # サムネイル設定
     path('reset-screenshots/<int:pk>/', views.reset_screenshots, name='reset_screenshots'),
     
-    # 技術情報関連のURLを削除
-
+    # アナリティクス関連のURL
+    path('<int:pk>/analytics/', views.app_analytics, name='analytics'),
+    
     # 自動保存関連のURL
     path('auto-save/<int:app_id>/', views.auto_save_app, name='auto_save_with_id'),
     path('auto-save/', views.auto_save_app, name='auto_save'),  # 新規作成時用

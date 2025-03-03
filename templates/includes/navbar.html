@@ -9,13 +9,6 @@
         <div class="ms-auto">
             {% if user.is_authenticated %}
                 <div class="d-flex align-items-center">
-                    <div class="action-buttons me-3">
-                        <a href="{% url 'apps_gallery:create' %}" class="action-btn create">
-                            <i class="bi bi-plus-circle"></i>
-                            アプリを投稿
-                        </a>
-                    </div>
-                    
                     <div class="action-buttons">
                         <a href="{% url 'dashboard:index' %}" class="action-btn profile">
                             <i class="bi bi-person"></i>

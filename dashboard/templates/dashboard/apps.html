@@ -22,7 +22,7 @@
 <div class="card bg-dark text-cyber">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0 text-cyber">アプリ管理</h4>
-        <a href="{% url 'apps_gallery:create' %}" class="btn btn-cyber-purple">
+        <a href="{% url 'apps_gallery:create' %}" class="btn btn-cyber-create">
             <i class="bi bi-plus me-2"></i>新規作成
         </a>
     </div>
@@ -43,10 +43,10 @@
                             <tr style="cursor: pointer;" onclick="window.location='{% url 'apps_gallery:edit' pk=app.pk %}'">
                                 <td class="text-cyber">{{ app.title }}</td>
                                 <td class="text-cyber">
-                                    <span class="badge bg-{% if app.status == 'published' %}success{% else %}warning{% endif %}" 
+                                    <span class="badge {% if app.status == 'published' %}badge-cyber-published{% elif app.status == 'draft' %}badge-cyber-draft{% else %}badge-cyber-none{% endif %}" 
                                           data-bs-toggle="tooltip" 
                                           data-bs-placement="top" 
-                                          title="{% if app.status == 'published' %}公開中：このアプリは全ユーザーに公開されています{% else %}下書き：このアプリはまだ非公開です{% endif %}">
+                                          title="{% if app.status == 'published' %}公開中：このアプリは全ユーザーに公開されています{% elif app.status == 'draft' %}下書き：このアプリはまだ非公開です{% else %}未選択：ステータスが設定されていません{% endif %}">
                                         {{ app.get_status_display }}
                                     </span>
                                 </td>
@@ -93,6 +93,84 @@
     color: #ffffff;
     box-shadow: 0 0 15px rgba(255, 68, 68, 0.5);
     transform: translateY(-2px);
+}
+
+/* 新規作成ボタンのサイバーパンクスタイル */
+.btn-cyber-create {
+    background: rgba(127, 255, 0, 0.1);
+    color: #7fff00;
+    border: 2px solid #7fff00;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
+    box-shadow: 0 0 15px rgba(127, 255, 0, 0.2);
+}
+
+.btn-cyber-create:hover {
+    background: rgba(127, 255, 0, 0.2);
+    color: #7fff00;
+    transform: translateY(-2px);
+    text-shadow: 0 0 15px rgba(127, 255, 0, 0.8);
+    box-shadow: 0 0 25px rgba(127, 255, 0, 0.4),
+                inset 0 0 15px rgba(127, 255, 0, 0.2);
+}
+
+.btn-cyber-create:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 10px rgba(127, 255, 0, 0.3);
+}
+
+.btn-cyber-create i {
+    filter: drop-shadow(0 0 5px rgba(127, 255, 0, 0.5));
+}
+
+/* サイバーパンクスタイルのバッジ */
+.badge-cyber-published {
+    background: rgba(0, 255, 0, 0.1);
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+}
+
+.badge-cyber-draft {
+    background: rgba(255, 0, 0, 0.1);
+    color: #ff0000;
+    border: 1px solid #ff0000;
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+}
+
+.badge-cyber-none {
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    border: 1px solid #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+/* ホバー効果 */
+.badge[class*="badge-cyber-"] {
+    transition: all 0.3s ease;
+}
+
+.badge[class*="badge-cyber-"]:hover {
+    transform: translateY(-1px);
+}
+
+.badge-cyber-published:hover {
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+}
+
+.badge-cyber-draft:hover {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+}
+
+.badge-cyber-none:hover {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
 }
 </style>
 

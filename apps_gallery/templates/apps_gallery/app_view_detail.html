@@ -42,6 +42,14 @@
                 <span class="fs-4 me-2 cyber-emoji" style="display: inline-block; font-size: 1.5rem;">&#x1F916;</span>
             </a>
         </li>
+        <!-- アナリティクスへのリンク（アプリの作成者にのみ表示） -->
+        {% if request.user == app.author %}
+        <li class="nav-item" role="presentation">
+            <a href="{% url 'apps_gallery:analytics' app.pk %}" class="nav-link cyber-analytics" title="アナリティクス" style="color: var(--cyber-teal) !important; text-shadow: 0 0 10px var(--cyber-teal) !important; border-color: var(--cyber-teal) !important;">
+                <i class="fas fa-chart-line me-1"></i> アナリティクス
+            </a>
+        </li>
+        {% endif %}
         <li class="nav-item" role="presentation">
             <button class="nav-link active text-neon" id="screenshots-tab" data-bs-toggle="tab" data-bs-target="#screenshots-section" type="button" role="tab" aria-controls="screenshots-section" aria-selected="true" style="color: var(--cyber-purple) !important; text-shadow: 0 0 10px var(--cyber-purple) !important; border-color: var(--cyber-purple) !important;">スクリーンショット</button>
         </li>
