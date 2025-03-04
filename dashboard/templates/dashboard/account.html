@@ -3,277 +3,290 @@
 {% block title %}アカウント設定 - 俺のアプリ{% endblock %}
 
 {% block dashboard_content %}
-<div class="container-fluid py-4">
+<style>
+/* サイバーパンクスタイル（base.htmlからコピー） */
+.cyber-card {
+    background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+    border: 1px solid #7fff00;
+    box-shadow: 0 0 15px rgba(127, 255, 0, 0.2);
+}
+
+.session-card {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(0, 255, 0, 0.2) !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+    margin-bottom: 10px !important;
+    position: relative !important;
+}
+
+.session-card.current {
+    background: rgba(0, 80, 0, 0.2) !important;
+    border: 1px solid rgba(0, 255, 0, 0.5) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3) !important;
+}
+
+.session-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 5px !important;
+}
+
+.session-item {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.session-label {
+    font-size: 0.85rem !important;
+    color: rgba(0, 255, 0, 0.7) !important;
+    min-width: 100px !important;
+}
+
+.session-value {
+    font-size: 0.9rem !important;
+    color: #00ff00 !important;
+}
+
+.session-action {
+    margin-top: 10px !important;
+    text-align: right !important;
+}
+
+/* 現在使用中バッジのスタイル強化 */
+.current-badge {
+    display: inline-block !important;
+    margin-bottom: 15px !important;
+    background: #00cc00 !important;
+    color: #000 !important;
+    font-weight: bold !important;
+    padding: 5px 10px !important;
+    border-radius: 15px !important;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.7) !important;
+    animation: pulse 2s infinite !important;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 255, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
+}
+
+/* テキストカラーなど */
+.card-text {
+    color: #00ff00 !important; /* ネオングリーン */
+}
+.text-danger {
+    color: #ff5555 !important; /* 明るい赤色 */
+}
+.form-label, .form-text, .form-check-label {
+    color: #00ff00 !important; /* ラベルも明るく */
+}
+
+/* カードの余白を確保 */
+.account-card {
+    margin-bottom: 2rem !important;
+}
+
+/* サイバーパンクグリーンボタン */
+.btn-cyber-green {
+    background-color: #00ff00;
+    border: 1px solid #00ff00;
+    color: #000 !important;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+    text-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-green:hover {
+    background-color: #7fff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.9);
+    transform: translateY(-2px) scale(1.05);
+}
+</style>
+
+<div class="container mt-4">
+    <!-- ナビゲーションバックを削除 -->
+    
     <h2 class="display-6 mb-4 text-light">アカウント設定</h2>
     
-    <style>
-    /* ウルトラ強力な1列レイアウト強制スタイル */
-    .account-override-container {
-        display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        float: none !important;
-        clear: both !important;
-    }
-    
-    /* 親要素のBootstrapグリッドを強制的に上書き */
-    .col-md-9, 
-    .col-lg-10, 
-    .col-md-6, 
-    .col-12,
-    [class*="col-"] {
-        width: 100% !important;
-        max-width: 100% !important;
-        flex: 0 0 100% !important;
-        padding-right: 0 !important;
-        padding-left: 0 !important;
-    }
-    
-    /* カード自体のスタイルも強制上書き */
-    .account-card {
-        display: block !important;
-        width: 100% !important;
-        float: none !important;
-        margin-bottom: 2rem !important;
-        position: relative !important;
-        left: 0 !important;
-        right: 0 !important;
-    }
-    
-    /* テキストカラーなど */
-    .card-text {
-        color: #00ff00 !important; /* ネオングリーン */
-    }
-    .text-danger {
-        color: #ff5555 !important; /* 明るい赤色 */
-    }
-    .form-label, .form-text, .form-check-label {
-        color: #00ff00 !important; /* ラベルも明るく */
-    }
-    .table {
-        color: #00ff00 !important;
-    }
-    
-    /* セッションテーブルのためのコンパクトデザイン */
-    .compact-table-container {
-        border: 1px solid rgba(0, 255, 0, 0.3) !important;
-        border-radius: 5px !important;
-        position: relative !important;
-        overflow-x: auto !important;
-        max-width: 100% !important;
-        margin-bottom: 15px !important;
-    }
-    
-    .compact-table-container::after {
-        content: '→ スクロールできます →';
-        position: absolute;
-        bottom: 5px;
-        right: 10px;
-        font-size: 11px;
-        color: #00ff00;
-        background: rgba(0, 0, 0, 0.7);
-        padding: 3px 6px;
-        border-radius: 3px;
-        opacity: 0.7;
-    }
-    
-    .compact-table {
-        margin-bottom: 0 !important;
-        font-size: 0.85rem !important;
-    }
-    
-    .compact-table th {
-        font-size: 0.9rem !important;
-        padding: 0.5rem !important;
-    }
-    
-    .compact-table td {
-        padding: 0.5rem !important;
-    }
-    
-    .compact-table .badge {
-        font-size: 0.75rem !important;
-        padding: 0.25rem 0.5rem !important;
-    }
-    
-    .compact-table .btn-sm {
-        padding: 0.2rem 0.5rem !important;
-        font-size: 0.75rem !important;
-    }
-    </style>
-    
-    <div class="account-override-container">
-        <!-- パスワード変更 -->
-        <div class="account-card">
-            <div class="card cyber-card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="bi bi-key me-2"></i>パスワード変更
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">セキュリティのため、定期的にパスワードを変更することをお勧めします。</p>
-                    <form method="post" action="{% url 'dashboard:change_password' %}">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="old_password" class="form-label">現在のパスワード</label>
-                            <input type="password" class="form-control" id="old_password" name="old_password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="new_password1" class="form-label">新しいパスワード</label>
-                            <input type="password" class="form-control" id="new_password1" name="new_password1" required>
-                            <div class="form-text">• 8文字以上<br>• 数字だけのパスワードは使えません<br>• よく使われるパスワードは使えません</div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="new_password2" class="form-label">新しいパスワード（確認）</label>
-                            <input type="password" class="form-control" id="new_password2" name="new_password2" required>
-                        </div>
-                        <button type="submit" class="btn btn-cyber-green">
-                            <i class="bi bi-check2-circle me-2"></i>パスワードを変更する
-                        </button>
-                    </form>
-                </div>
+    <!-- パスワード変更 -->
+    <div class="account-card">
+        <div class="card cyber-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-key me-2"></i>パスワード変更
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">セキュリティのため、定期的にパスワードを変更することをお勧めします。</p>
+                <form method="post" action="{% url 'dashboard:change_password' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="old_password" class="form-label">現在のパスワード</label>
+                        <input type="password" class="form-control" id="old_password" name="old_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password1" class="form-label">新しいパスワード</label>
+                        <input type="password" class="form-control" id="new_password1" name="new_password1" required>
+                        <div class="form-text">• 8文字以上<br>• 数字だけのパスワードは使えません<br>• よく使われるパスワードは使えません</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password2" class="form-label">新しいパスワード（確認）</label>
+                        <input type="password" class="form-control" id="new_password2" name="new_password2" required>
+                    </div>
+                    <button type="submit" class="btn btn-cyber-green">
+                        <i class="bi bi-check2-circle me-2"></i>パスワードを変更する
+                    </button>
+                </form>
             </div>
         </div>
-        
-        <!-- メールアドレス変更 -->
-        <div class="account-card">
-            <div class="card cyber-card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="bi bi-envelope me-2"></i>メールアドレス変更
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">現在のメールアドレス: <strong>{{ user.email }}</strong></p>
-                    <p class="card-text">メールアドレスを変更すると、新しいアドレスに確認メールが送信されます。</p>
-                    <form method="post" action="{% url 'dashboard:change_email' %}">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="password" class="form-label">現在のパスワード</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="new_email" class="form-label">新しいメールアドレス</label>
-                            <input type="email" class="form-control" id="new_email" name="new_email" required>
-                        </div>
-                        <button type="submit" class="btn btn-cyber-green">
-                            <i class="bi bi-envelope-check me-2"></i>メールアドレスを変更する
-                        </button>
-                    </form>
-                </div>
+    </div>
+    
+    <!-- メールアドレス変更 -->
+    <div class="account-card">
+        <div class="card cyber-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-envelope me-2"></i>メールアドレス変更
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">現在のメールアドレス: <strong>{{ user.email }}</strong></p>
+                <p class="card-text">メールアドレスを変更すると、新しいアドレスに確認メールが送信されます。</p>
+                <form method="post" action="{% url 'dashboard:change_email' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="password" class="form-label">現在のパスワード</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_email" class="form-label">新しいメールアドレス</label>
+                        <input type="email" class="form-control" id="new_email" name="new_email" required>
+                    </div>
+                    <button type="submit" class="btn btn-cyber-green">
+                        <i class="bi bi-envelope-check me-2"></i>メールアドレスを変更する
+                    </button>
+                </form>
             </div>
         </div>
-        
-        <!-- セッション管理 -->
-        <div class="account-card">
-            <div class="card cyber-card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="bi bi-display me-2"></i>ログインセッション管理
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">現在アクティブなセッション一覧</p>
-                    
-                    <div class="compact-table-container">
-                        <table class="table table-dark table-hover compact-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 35%">デバイス</th>
-                                    <th style="width: 25%">IPアドレス</th>
-                                    <th style="width: 25%">最終アクセス</th>
-                                    <th style="width: 15%">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for session in sessions %}
-                                <tr>
-                                    <td>
+    </div>
+    
+    <!-- セッション管理 -->
+    <div class="account-card">
+        <div class="card cyber-card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-display me-2"></i>ログインセッション管理
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">現在アクティブなセッション一覧</p>
+                
+                <!-- カード形式でセッション表示 -->
+                <div class="session-list">
+                    {% for session in sessions %}
+                        <div class="session-card {% if session.is_current %}current{% endif %}">
+                            {% if session.is_current %}
+                                <div style="text-align: center; margin-bottom: 10px;">
+                                    <span class="current-badge">
+                                        <i class="bi bi-check-circle me-1"></i>現在使用中
+                                    </span>
+                                </div>
+                            {% endif %}
+                            <div class="session-info">
+                                <div class="session-item">
+                                    <span class="session-label">デバイス:</span>
+                                    <span class="session-value">
                                         <i class="bi {% if session.is_current %}bi-laptop text-success{% else %}bi-device-unknown{% endif %} me-1"></i>
                                         {{ session.device }}
-                                    </td>
-                                    <td>{{ session.ip_address }}</td>
-                                    <td>{{ session.last_activity }}</td>
-                                    <td>
-                                        {% if session.is_current %}
-                                        <span class="badge bg-success">現在使用中</span>
-                                        {% else %}
-                                        <form method="post" action="{% url 'dashboard:terminate_session' %}" class="d-inline">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="session_key" value="{{ session.key }}">
-                                            <button type="submit" class="btn btn-outline-danger btn-sm">
-                                                <i class="bi bi-x-circle"></i>終了
-                                            </button>
-                                        </form>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center">セッション情報が利用できません</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <form method="post" action="{% url 'dashboard:terminate_all_sessions' %}" class="mt-3">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-danger">
-                            <i class="bi bi-power me-2"></i>すべてのセッションをログアウト（現在のセッションを除く）
-                        </button>
-                    </form>
+                                    </span>
+                                </div>
+                                <div class="session-item">
+                                    <span class="session-label">IPアドレス:</span>
+                                    <span class="session-value">{{ session.ip_address }}</span>
+                                </div>
+                                <div class="session-item">
+                                    <span class="session-label">最終アクセス:</span>
+                                    <span class="session-value">{{ session.last_activity }}</span>
+                                </div>
+                            </div>
+                            
+                            {% if not session.is_current %}
+                            <div class="session-action">
+                                <form method="post" action="{% url 'dashboard:terminate_session' %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="session_key" value="{{ session.key }}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-x-circle"></i> このセッションを終了
+                                    </button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div class="alert alert-info text-center">
+                            セッション情報が利用できません
+                        </div>
+                    {% endfor %}
                 </div>
+                
+                <form method="post" action="{% url 'dashboard:terminate_all_sessions' %}" class="mt-3">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-power me-2"></i>すべてのセッションをログアウト（現在のセッションを除く）
+                    </button>
+                </form>
             </div>
         </div>
-        
-        <!-- アカウント削除 -->
-        <div class="account-card">
-            <div class="card cyber-card border-danger">
-                <div class="card-header bg-danger bg-opacity-25">
-                    <h5 class="card-title mb-0 text-danger">
-                        <i class="bi bi-exclamation-triangle me-2"></i>アカウント削除
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text text-danger">警告: アカウントを削除すると、すべてのデータが完全に削除され、復元できなくなります。</p>
-                    <p class="card-text">削除前に、必要なデータのバックアップを行ってください。</p>
-                    
-                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                        <i class="bi bi-trash me-2"></i>アカウントを削除する
-                    </button>
-                    
-                    <!-- アカウント削除確認モーダル -->
-                    <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-danger" id="deleteAccountModalLabel">アカウント削除の確認</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>本当にアカウントを削除しますか？この操作は取り消せません。</p>
-                                    <form method="post" action="{% url 'dashboard:delete_account' %}" id="deleteAccountForm">
-                                        {% csrf_token %}
-                                        <div class="mb-3">
-                                            <label for="confirm_password" class="form-label">パスワードを入力して確認</label>
-                                            <input type="password" class="form-control" id="confirm_password" name="password" required>
-                                        </div>
-                                        <div class="mb-3 form-check">
-                                            <input type="checkbox" class="form-check-input" id="confirm_delete" name="confirm_delete" required>
-                                            <label class="form-check-label" for="confirm_delete">
-                                                私は、アカウントとすべてのデータが完全に削除されることを理解し、同意します。
-                                            </label>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
-                                    <button type="submit" form="deleteAccountForm" class="btn btn-danger">
-                                        <i class="bi bi-trash me-2"></i>削除を実行する
-                                    </button>
-                                </div>
+    </div>
+    
+    <!-- アカウント削除 -->
+    <div class="account-card">
+        <div class="card cyber-card border-danger">
+            <div class="card-header bg-danger bg-opacity-25">
+                <h5 class="card-title mb-0 text-danger">
+                    <i class="bi bi-exclamation-triangle me-2"></i>アカウント削除
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text text-danger">警告: アカウントを削除すると、すべてのデータが完全に削除され、復元できなくなります。</p>
+                <p class="card-text">削除前に、必要なデータのバックアップを行ってください。</p>
+                
+                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                    <i class="bi bi-trash me-2"></i>アカウントを削除する
+                </button>
+                
+                <!-- アカウント削除確認モーダル -->
+                <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title text-danger" id="deleteAccountModalLabel">アカウント削除の確認</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>本当にアカウントを削除しますか？この操作は取り消せません。</p>
+                                <form method="post" action="{% url 'dashboard:delete_account' %}" id="deleteAccountForm">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="confirm_password" class="form-label">パスワードを入力して確認</label>
+                                        <input type="password" class="form-control" id="confirm_password" name="password" required>
+                                    </div>
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" class="form-check-input" id="confirm_delete" name="confirm_delete" required>
+                                        <label class="form-check-label" for="confirm_delete">
+                                            私は、アカウントとすべてのデータが完全に削除されることを理解し、同意します。
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                                <button type="submit" form="deleteAccountForm" class="btn btn-danger">
+                                    <i class="bi bi-trash me-2"></i>削除を実行する
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -282,4 +295,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock dashboard_content %} 
