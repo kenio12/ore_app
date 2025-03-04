@@ -25,11 +25,9 @@
                             <i class="bi bi-person-circle me-2"></i>プロフィール
                         </a>
                         <a href="{% url 'dashboard:account' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'account' %}active{% endif %}">
-                            <i class="bi bi-gear me-2"></i>システム設定
+                            <i class="bi bi-gear me-2"></i>アカウント設定
                         </a>
-                        <a href="{% url 'dashboard:notifications' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
-                            <i class="bi bi-broadcast me-2"></i>通信設定
-                        </a>
+                        <!-- 通信設定は削除しました -->
                     </div>
                 </div>
             </div>
