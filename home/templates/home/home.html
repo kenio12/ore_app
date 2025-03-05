@@ -9,121 +9,189 @@
 </div>
 
 <div class="min-vh-100">
-    <!-- アプリの説明セクション -->
-    <div class="container mb-4 mt-4">
-        <div class="col-12">
-            <div class="card cyber-card">
-                <div class="card-body">
-                    <h3 class="card-title cyber-title mb-3">あぷり色々</h3>
-                    <div class="cyber-button-grid">
-                        <button class="cyber-button" onclick="window.location.href='{% url 'dashboard:apps' %}'">
-                            <span class="button-text">開発したアプリの宣伝・共有</span>
-                            <span class="button-glitch"></span>
-                        </button>
-                        <button class="cyber-button">
-                            <span class="button-text">お仕事の依頼・受注</span>
-                            <span class="button-glitch"></span>
-                        </button>
-                        <button class="cyber-button">
-                            <span class="button-text">共同開発者の募集・参加</span>
-                            <span class="button-glitch"></span>
-                        </button>
-                        <button class="cyber-button">
-                            <span class="button-text">プログラミング教育・メンタリング</span>
-                            <span class="button-glitch"></span>
-                        </button>
-                        <button class="cyber-button">
-                            <span class="button-text">開発の苦労話・成功体験のブログ共有</span>
-                            <span class="button-glitch"></span>
-                        </button>
-                        <button class="cyber-button">
-                            <span class="button-text">天下一アプリ大会</span>
-                            <span class="button-glitch"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- タブナビゲーション -->
+    <div class="container mt-5">
+        <ul class="nav nav-tabs cyber-tabs" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active cyber-tab" id="apps-tab" data-bs-toggle="tab" data-bs-target="#apps-content" type="button" role="tab" aria-controls="apps-content" aria-selected="true">
+                    <i class="bi bi-app"></i> 公開アプリ
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link cyber-tab" id="programmers-tab" data-bs-toggle="tab" data-bs-target="#programmers-content" type="button" role="tab" aria-controls="programmers-content" aria-selected="false">
+                    <i class="bi bi-people"></i> プログラマー達
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link cyber-tab" id="blogs-tab" data-bs-toggle="tab" data-bs-target="#blogs-content" type="button" role="tab" aria-controls="blogs-content" aria-selected="false">
+                    <i class="bi bi-journal-code"></i> 開発ブログ
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link cyber-tab" id="contest-tab" data-bs-toggle="tab" data-bs-target="#contest-content" type="button" role="tab" aria-controls="contest-content" aria-selected="false">
+                    <i class="bi bi-trophy"></i> アプリ開発大会
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link cyber-tab" id="jobs-tab" data-bs-toggle="tab" data-bs-target="#jobs-content" type="button" role="tab" aria-controls="jobs-content" aria-selected="false">
+                    <i class="bi bi-briefcase"></i> お仕事依頼
+                </button>
+            </li>
+        </ul>
     </div>
 
-    <!-- アプリ一覧 -->
-    <div class="container mb-5">
-        <div class="row">
-            {% for app in apps %}
-                <div class="col-12 mb-4">
-                    <div class="card cyber-card">
-                        <div class="position-relative">
-                            <!-- カテゴリーバッジを削除 -->
-                            <div class="row g-0" id="card-content-{{ app.id }}">
-                                {% if app.thumbnail %}
-                                    <div class="col-md-4">
-                                        <div class="h-100">
-                                            <img src="{{ app.thumbnail.url }}" 
-                                                 class="img-fluid cyber-image rounded-start h-100"
-                                                 style="object-fit: cover;"
-                                                 onload="checkImageOrientation(this, '{{ app.id }}')"
-                                                 data-title="{{ app.title }}"
-                                                 data-overview="{{ app.overview }}"
-                                                 data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                                 data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                                        </div>
-                                    </div>
-                                {% elif app.screenshots %}
-                                    <div class="col-md-4">
-                                        <div class="h-100">
-                                            <img src="{{ app.screenshots.0.url }}" 
-                                                 class="img-fluid cyber-image rounded-start h-100"
-                                                 style="object-fit: cover;"
-                                                 onload="checkImageOrientation(this, '{{ app.id }}')"
-                                                 data-title="{{ app.title }}"
-                                                 data-overview="{{ app.overview }}"
-                                                 data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                                 data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                                        </div>
-                                    </div>
-                                {% endif %}
-                                <div class="{% if app.thumbnail or app.screenshots %}col-md-8{% else %}col-12{% endif %}">
-                                    <div class="card-body">
-                                        <h3 class="card-title cyber-title">{{ app.title }}</h3>
-                                        <p class="card-text cyber-description">{{ app.overview }}</p>
-                                        
-                                        <!-- アプリの種類とジャンル -->
-                                        <div class="mb-3">
-                                            <div class="mb-2">
-                                                {% for type in app.app_types %}
-                                                    <span class="badge cyber-type me-2">{{ APP_TYPES|get_dict_value:type }}</span>
-                                                {% endfor %}
+    <!-- タブコンテンツ -->
+    <div class="tab-content" id="mainTabsContent">
+        <!-- 公開アプリタブ -->
+        <div class="tab-pane fade show active" id="apps-content" role="tabpanel" aria-labelledby="apps-tab">
+            <!-- アプリ一覧 -->
+            <div class="container mb-5 mt-3">
+                <div class="row">
+                    {% for app in apps %}
+                        <div class="col-12 mb-4">
+                            <div class="card cyber-card">
+                                <div class="position-relative">
+                                    <!-- カテゴリーバッジを削除 -->
+                                    <div class="row g-0" id="card-content-{{ app.id }}">
+                                        {% if app.thumbnail %}
+                                            <div class="col-md-4">
+                                                <div class="h-100">
+                                                    <img src="{{ app.thumbnail.url }}" 
+                                                         class="img-fluid cyber-image rounded-start h-100"
+                                                         style="object-fit: cover;"
+                                                         onload="checkImageOrientation(this, '{{ app.id }}')"
+                                                         data-title="{{ app.title }}"
+                                                         data-overview="{{ app.overview }}"
+                                                         data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                                         data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                                </div>
                                             </div>
-                                            <div>
-                                                {% for genre in app.genres %}
-                                                    <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
-                                                {% endfor %}
+                                        {% elif app.screenshots %}
+                                            <div class="col-md-4">
+                                                <div class="h-100">
+                                                    <img src="{{ app.screenshots.0.url }}" 
+                                                         class="img-fluid cyber-image rounded-start h-100"
+                                                         style="object-fit: cover;"
+                                                         onload="checkImageOrientation(this, '{{ app.id }}')"
+                                                         data-title="{{ app.title }}"
+                                                         data-overview="{{ app.overview }}"
+                                                         data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                                         data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                                </div>
                                             </div>
-                                        </div>
-                                        
-                                        <!-- アクションボタン -->
-                                        <div class="d-flex justify-content-end gap-2">
-                                            <a href="{% url 'apps_gallery:detail' app.id %}" class="btn btn-cyber-secondary">
-                                                <i class="bi bi-search"></i> 詳細を見る
-                                            </a>
-                                            {% if request.user == app.author %}
-                                                <a href="{% url 'apps_gallery:edit' app.id %}" class="btn btn-cyber-edit">
-                                                    <i class="bi bi-pencil-square"></i> 編集する
-                                                </a>
-                                            {% endif %}
+                                        {% endif %}
+                                        <div class="{% if app.thumbnail or app.screenshots %}col-md-8{% else %}col-12{% endif %}">
+                                            <div class="card-body">
+                                                <h3 class="card-title cyber-title">{{ app.title }}</h3>
+                                                <p class="card-text cyber-description">{{ app.overview }}</p>
+                                                
+                                                <!-- アプリの種類とジャンル -->
+                                                <div class="mb-3">
+                                                    <div class="mb-2">
+                                                        {% for type in app.app_types %}
+                                                            <span class="badge cyber-type me-2">{{ APP_TYPES|get_dict_value:type }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div>
+                                                        {% for genre in app.genres %}
+                                                            <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- アクションボタン -->
+                                                <div class="d-flex justify-content-end gap-2">
+                                                    <a href="{% url 'apps_gallery:detail' app.id %}" class="btn btn-cyber-secondary">
+                                                        <i class="bi bi-search"></i> 詳細を見る
+                                                    </a>
+                                                    {% if request.user == app.author %}
+                                                        <a href="{% url 'apps_gallery:edit' app.id %}" class="btn btn-cyber-edit">
+                                                            <i class="bi bi-pencil-square"></i> 編集する
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    {% empty %}
+                        <div class="col-12 text-center py-5">
+                            <p class="fs-4 cyber-empty-text">まだアプリがありません。</p>
+                            <p class="cyber-empty-subtext">開発中のアプリが追加されるのをお待ちください！</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- プログラマー達タブ -->
+        <div class="tab-pane fade" id="programmers-content" role="tabpanel" aria-labelledby="programmers-tab">
+            <div class="container mb-5 mt-3">
+                <div class="row">
+                    <div class="col-12 text-center py-5">
+                        <div class="cyber-placeholder-content">
+                            <h3 class="cyber-title mb-4">プログラマー達</h3>
+                            <p class="cyber-description">ここにはサイトに登録されたプログラマーの一覧が表示されます。</p>
+                            <div class="cyber-coming-soon">
+                                <span class="cyber-glitch-text">COMING SOON</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            {% empty %}
-                <div class="col-12 text-center py-5">
-                    <p class="fs-4 cyber-empty-text">まだアプリがありません。</p>
-                    <p class="cyber-empty-subtext">開発中のアプリが追加されるのをお待ちください！</p>
+            </div>
+        </div>
+
+        <!-- 開発ブログタブ -->
+        <div class="tab-pane fade" id="blogs-content" role="tabpanel" aria-labelledby="blogs-tab">
+            <div class="container mb-5 mt-3">
+                <div class="row">
+                    <div class="col-12 text-center py-5">
+                        <div class="cyber-placeholder-content">
+                            <h3 class="cyber-title mb-4">開発ブログ</h3>
+                            <p class="cyber-description">ここには開発者たちが投稿した開発ブログ記事が表示されます。</p>
+                            <div class="cyber-coming-soon">
+                                <span class="cyber-glitch-text">COMING SOON</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
+        </div>
+
+        <!-- アプリ開発大会タブ -->
+        <div class="tab-pane fade" id="contest-content" role="tabpanel" aria-labelledby="contest-tab">
+            <div class="container mb-5 mt-3">
+                <div class="row">
+                    <div class="col-12 text-center py-5">
+                        <div class="cyber-placeholder-content">
+                            <h3 class="cyber-title mb-4">アプリ開発大会</h3>
+                            <p class="cyber-description">ここには現在開催中のアプリ開発大会情報が表示されます。</p>
+                            <div class="cyber-coming-soon">
+                                <span class="cyber-glitch-text">COMING SOON</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- お仕事依頼タブ -->
+        <div class="tab-pane fade" id="jobs-content" role="tabpanel" aria-labelledby="jobs-tab">
+            <div class="container mb-5 mt-3">
+                <div class="row">
+                    <div class="col-12 text-center py-5">
+                        <div class="cyber-placeholder-content">
+                            <h3 class="cyber-title mb-4">お仕事依頼掲示板</h3>
+                            <p class="cyber-description">ここにはお仕事の依頼や募集情報が表示されます。</p>
+                            <div class="cyber-coming-soon">
+                                <span class="cyber-glitch-text">COMING SOON</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -824,6 +892,132 @@ document.addEventListener('DOMContentLoaded', function() {
 .cyber-category-badge:hover {
     background: rgba(0, 255, 159, 0.2);
     box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+}
+
+/* タブナビゲーションのスタイル */
+.cyber-tabs {
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+}
+
+.cyber-tab {
+    color: rgba(255, 255, 255, 0.7) !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0.75rem 1.5rem;
+    margin-right: 2px;
+    background: transparent;
+    position: relative;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.cyber-tab:hover {
+    color: #00ffff !important;
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.cyber-tab.active {
+    color: #00ffff !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    border: none;
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+.cyber-tab.active:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #00ffff, #00ff9f);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.cyber-tab i {
+    margin-right: 8px;
+}
+
+/* プレースホルダーコンテンツのスタイル */
+.cyber-placeholder-content {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+}
+
+.cyber-placeholder-content:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(45deg, transparent 49%, rgba(0, 255, 255, 0.1) 50%, transparent 51%),
+        linear-gradient(-45deg, transparent 49%, rgba(0, 255, 255, 0.1) 50%, transparent 51%);
+    background-size: 30px 30px;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.cyber-coming-soon {
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    background: rgba(255, 0, 255, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.cyber-glitch-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff00ff;
+    text-shadow: 
+        0 0 5px #ff00ff,
+        0 0 10px #ff00ff,
+        0 0 15px #ff00ff;
+    position: relative;
+    display: inline-block;
+    animation: textGlitch 2s infinite;
+}
+
+@keyframes textGlitch {
+    0% {
+        transform: translateX(0);
+        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+    }
+    2% {
+        transform: translateX(3px);
+        text-shadow: 0 0 10px #00ffff, 0 0 15px #00ffff;
+    }
+    4% {
+        transform: translateX(-3px);
+        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+    }
+    6% {
+        transform: translateX(0);
+        text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+    }
+    8% {
+        transform: translateX(2px);
+        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+    }
+    10% {
+        transform: translateX(0);
+        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+    }
+    100% {
+        transform: translateX(0);
+        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+    }
 }
 </style>
 {% endblock %} 
