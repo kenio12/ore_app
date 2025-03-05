@@ -32,6 +32,7 @@
                 <table class="table table-dark table-hover">
                     <thead>
                         <tr>
+                            <th class="text-cyber">サムネイル</th>
                             <th class="text-cyber">タイトル</th>
                             <th class="text-cyber">ステータス</th>
                             <th class="text-cyber">作成日</th>
@@ -41,6 +42,17 @@
                     <tbody>
                         {% for app in apps %}
                             <tr>
+                                <td class="text-cyber">
+                                    <div class="thumbnail-container">
+                                        {% if app.thumbnail and app.thumbnail.get.url %}
+                                            <img src="{{ app.thumbnail.get.url }}" alt="{{ app.title }}" class="app-thumbnail">
+                                        {% elif app.thumbnail and app.thumbnail.url %}
+                                            <img src="{{ app.thumbnail.url }}" alt="{{ app.title }}" class="app-thumbnail">
+                                        {% else %}
+                                            <div class="no-thumbnail">No Image</div>
+                                        {% endif %}
+                                    </div>
+                                </td>
                                 <td class="text-cyber">{{ app.title }}</td>
                                 <td class="text-cyber">
                                     <span class="badge {% if app.get_status_display == '公開' %}badge-cyber-published{% elif app.get_status_display == '非公開' %}badge-cyber-draft{% elif app.get_status_display == '未選択' %}badge-cyber-none{% else %}badge-cyber-none{% endif %}" 
@@ -58,9 +70,6 @@
                                         </a>
                                         <a href="{% url 'apps_gallery:edit' pk=app.pk %}" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-pencil"></i> 編集
-                                        </a>
-                                        <a href="{% url 'apps_gallery:analytics' pk=app.pk %}" class="btn btn-sm btn-outline-success btn-cyber-analytics">
-                                            <i class="bi bi-graph-up"></i> アナリティクス
                                         </a>
                                         <a href="{% url 'apps_gallery:delete' pk=app.pk %}" class="btn btn-sm btn-outline-danger">
                                             <i class="bi bi-trash"></i> 削除
@@ -182,20 +191,39 @@
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
 }
 
-/* アナリティクスボタンのサイバーパンクスタイル */
-.btn-cyber-analytics {
-    background: rgba(0, 255, 255, 0.1);
-    color: #00ffff;
-    border: 1px solid #00ffff;
+/* サムネイル用のスタイル追加 */
+.thumbnail-container {
+    width: 90px;
+    height: 90px;
+    overflow: hidden;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    background-color: rgba(0, 20, 0, 0.5);
 }
 
-.btn-cyber-analytics:hover {
-    background: rgba(0, 255, 255, 0.3);
-    color: #ffffff;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-    transform: translateY(-2px);
+.thumbnail-container:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+}
+
+.app-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.no-thumbnail {
+    color: #00ff00;
+    font-size: 0.7rem;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
 }
 </style>
 
