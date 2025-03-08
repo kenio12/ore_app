@@ -1,0 +1,80 @@
+<!-- アプリ一覧 -->
+<div class="container mb-5 mt-3">
+    <div class="row">
+        {% for app in apps %}
+            <div class="col-12 mb-4">
+                <div class="card cyber-card">
+                    <div class="position-relative">
+                        <!-- カテゴリーバッジを削除 -->
+                        <div class="row g-0" id="card-content-{{ app.id }}">
+                            {% if app.thumbnail %}
+                                <div class="col-md-4">
+                                    <div class="h-100">
+                                        <img src="{{ app.thumbnail.url }}" 
+                                             class="img-fluid cyber-image rounded-start h-100"
+                                             style="object-fit: cover;"
+                                             onload="checkImageOrientation(this, '{{ app.id }}')"
+                                             data-title="{{ app.title }}"
+                                             data-overview="{{ app.overview }}"
+                                             data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                             data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                    </div>
+                                </div>
+                            {% elif app.screenshots %}
+                                <div class="col-md-4">
+                                    <div class="h-100">
+                                        <img src="{{ app.screenshots.0.url }}" 
+                                             class="img-fluid cyber-image rounded-start h-100"
+                                             style="object-fit: cover;"
+                                             onload="checkImageOrientation(this, '{{ app.id }}')"
+                                             data-title="{{ app.title }}"
+                                             data-overview="{{ app.overview }}"
+                                             data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
+                                             data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="{% if app.thumbnail or app.screenshots %}col-md-8{% else %}col-12{% endif %}">
+                                <div class="card-body">
+                                    <h3 class="card-title cyber-title">{{ app.title }}</h3>
+                                    <p class="card-text cyber-description">{{ app.overview }}</p>
+                                    
+                                    <!-- アプリの種類とジャンル -->
+                                    <div class="mb-3">
+                                        <div class="mb-2">
+                                            {% for type in app.app_types %}
+                                                <span class="badge cyber-type me-2">{{ APP_TYPES|get_dict_value:type }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        <div>
+                                            {% for genre in app.genres %}
+                                                <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- アクションボタン -->
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a href="{% url 'apps_gallery:detail' app.id %}" class="btn btn-cyber-secondary">
+                                            <i class="bi bi-search"></i> 詳細を見る
+                                        </a>
+                                        {% if request.user == app.author %}
+                                            <a href="{% url 'apps_gallery:edit' app.id %}" class="btn btn-cyber-edit">
+                                                <i class="bi bi-pencil-square"></i> 編集する
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="fs-4 cyber-empty-text">まだアプリがありません。</p>
+                <p class="cyber-empty-subtext">開発中のアプリが追加されるのをお待ちください！</p>
+            </div>
+        {% endfor %}
+    </div>
+</div> 

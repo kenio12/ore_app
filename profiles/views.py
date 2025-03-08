@@ -405,6 +405,7 @@ def programmers_data(request):
         
         profile_data = {
             'id': profile.id,
+            'user_id': profile.user.id,
             'username': profile.user.username,
             'bio': profile.bio,
             'avatar_url': profile.avatar_url,

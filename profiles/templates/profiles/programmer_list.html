@@ -27,7 +27,8 @@
                 <div class="card cyber-card h-100">
                     <div class="card-body">
                         <h5 class="card-title cyber-name">{{ profile.user.username }}</h5>
-                        <p class="card-text">{{ profile.bio|default:"自己紹介はまだありません"|truncatechars:100 }}</p>
+                        <p class="card-text">{{ profile.bio|default:"自己紹介はまだありません"|truncatechars:80 }}</p>
+                        <!-- スキル関連の表示をすべて削除 -->
                     </div>
                 </div>
             </div>

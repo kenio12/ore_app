@@ -184,12 +184,18 @@
                             return response.json();
                         })
                         .then(data => {
+                            // デバッグ用：APIレスポンスの構造を確認
+                            console.log('API Response:', data);
+                            
                             // コンテナをクリア
                             programmersContainer.innerHTML = '';
                             
                             if (data.profiles && data.profiles.length > 0) {
                                 // プログラマーデータをループしてカードを表示
                                 data.profiles.forEach(profile => {
+                                    // デバッグ用：各プロファイルデータの構造を確認
+                                    console.log('Profile Data:', profile);
+                                    
                                     const card = createProgrammerCard(profile);
                                     programmersContainer.appendChild(card);
                                 });
@@ -215,6 +221,9 @@
                 }
 
                 function createProgrammerCard(profile) {
+                    // デバッグ用：個別のプロファイルデータを確認
+                    console.log('Creating card for profile:', profile);
+                    
                     // カードのDIV要素を作成
                     const cardDiv = document.createElement('div');
                     cardDiv.className = 'col-md-6 col-lg-4 mb-4';
@@ -250,7 +259,7 @@
                     // アプリタイプの表示名を取得
                     const getAppTypeLabel = (appType) => {
                         const appTypeMap = {
-                            'web_app': 'Webアプリ',
+                            'web_app': 'Webアプリケーション',
                             'ios_app': 'iOSアプリ',
                             'android_app': 'Androidアプリ',
                             'windows_app': 'Windowsアプリ',
@@ -262,83 +271,31 @@
                         return appTypeMap[appType] || appType;
                     };
                     
-                    // 技術スタック情報を整形
-                    let skillsHtml = '';
-                    
-                    // 技術スタック表示方法1: top_languages と top_frameworks を使用
-                    if ((profile.top_languages && profile.top_languages.length > 0) || 
-                        (profile.top_frameworks && profile.top_frameworks.length > 0)) {
-                        
-                        // 言語
-                        if (profile.top_languages && profile.top_languages.length > 0) {
-                            skillsHtml += `
-                            <div class="mt-2">
-                                <small class="text-muted">主要言語:</small>
-                                ${profile.top_languages.map(lang => 
-                                    `<span class="badge cyber-language-badge me-1">${lang}</span>`
-                                ).join('')}
-                            </div>`;
-                        }
-                        
-                        // フレームワーク
-                        if (profile.top_frameworks && profile.top_frameworks.length > 0) {
-                            skillsHtml += `
-                            <div class="mt-2">
-                                <small class="text-muted">フレームワーク:</small>
-                                ${profile.top_frameworks.map(fw => 
-                                    `<span class="badge cyber-framework-badge me-1">${fw}</span>`
-                                ).join('')}
-                            </div>`;
-                        }
-                    }
-                    // 技術スタック表示方法2: skills.data から直接取得（従来のコード）
-                    else if (profile.skills && profile.skills.data) {
-                        // バックエンド言語
-                        const backendLangs = profile.skills.data.backend_languages;
-                        if (backendLangs && Object.keys(backendLangs).length > 0) {
-                            const topLangs = Object.keys(backendLangs).slice(0, 3);
-                            skillsHtml += `
-                            <div class="mt-2">
-                                <small class="text-muted">バックエンド:</small>
-                                ${topLangs.map(lang => 
-                                    `<span class="badge cyber-backend-badge me-1">${lang}</span>`
-                                ).join('')}
-                            </div>`;
-                        }
-                        
-                        // フロントエンド言語
-                        const frontendLangs = profile.skills.data.frontend_languages;
-                        if (frontendLangs && Object.keys(frontendLangs).length > 0) {
-                            const topLangs = Object.keys(frontendLangs).slice(0, 3);
-                            skillsHtml += `
-                            <div class="mt-2">
-                                <small class="text-muted">フロントエンド:</small>
-                                ${topLangs.map(lang => 
-                                    `<span class="badge cyber-frontend-badge me-1">${lang}</span>`
-                                ).join('')}
-                            </div>`;
-                        }
-                        
-                        // データベース
-                        const databases = profile.skills.data.databases;
-                        if (databases && Object.keys(databases).length > 0) {
-                            const topDbs = Object.keys(databases).slice(0, 3);
-                            skillsHtml += `
-                            <div class="mt-2">
-                                <small class="text-muted">データベース:</small>
-                                ${topDbs.map(db => 
-                                    `<span class="badge cyber-db-badge me-1">${db}</span>`
-                                ).join('')}
-                            </div>`;
-                        }
-                    }
-                    
                     // 開発実績情報を整形
                     let developmentStatsHtml = '';
                     if (profile.app_count > 0) {
                         developmentStatsHtml = `
                             <div class="d-flex align-items-center">
                                 <span class="text-white">投稿アプリ: ${profile.app_count}件</span>
+                            </div>
+                        `;
+                    }
+                    
+                    // アプリ種類の情報を整形
+                    let appTypesHtml = '';
+                    
+                    // APIデータのみを使用（ダミーデータは完全に削除）
+                    const appTypeCounts = profile.app_type_counts || {};
+                    
+                    // アプリタイプが存在する場合のみバッジを生成
+                    if (Object.keys(appTypeCounts).length > 0) {
+                        appTypesHtml = `
+                            <div class="mt-3">
+                                <div class="d-flex flex-wrap">
+                                    ${Object.keys(appTypeCounts).map(type => 
+                                        `<span class="badge app-type-badge me-1 mb-1">${getAppTypeLabel(type)} (${appTypeCounts[type]})</span>`
+                                    ).join('')}
+                                </div>
                             </div>
                         `;
                     }
@@ -384,30 +341,13 @@
                                     </div>` : ''
                                 }
                                 
-                                ${skillsHtml ? 
-                                    `<div class="mt-3">
-                                        <h6 class="cyber-subtitle mb-2">技術スタック</h6>
-                                        ${skillsHtml}
-                                    </div>` : ''
-                                }
-
+                                ${appTypesHtml}
+                                
                                 ${profile.job_types && profile.job_types.length > 0 ? 
                                     `<div class="mt-3">
-                                        <h6 class="cyber-subtitle mb-2">対応業務</h6>
-                                        <div>
-                                            ${profile.job_types.map(job => 
-                                                `<span class="badge cyber-job-badge me-1 mb-1">${getJobTypeLabel(job)}</span>`
-                                            ).join('')}
-                                        </div>
-                                    </div>` : ''
-                                }
-
-                                ${profile.app_type_counts && Object.keys(profile.app_type_counts).length > 0 ? 
-                                    `<div class="mt-3">
-                                        <h6 class="cyber-subtitle mb-2">開発アプリ種類</h6>
-                                        <div>
-                                            ${Object.entries(profile.app_type_counts).map(([type, count]) => 
-                                                `<span class="badge cyber-app-type-badge me-1 mb-1">${getAppTypeLabel(type)} (${count})</span>`
+                                        <div class="d-flex flex-wrap">
+                                            ${profile.job_types.map(jobType => 
+                                                `<span class="badge bg-info text-white me-1 mb-1">${getJobTypeLabel(jobType)}</span>`
                                             ).join('')}
                                         </div>
                                     </div>` : ''
@@ -415,10 +355,10 @@
                             </div>
                             <div class="card-footer cyber-card-footer">
                                 <div class="d-flex justify-content-between">
-                                    <a href="/profiles/detail/${profile.id}/" class="btn btn-sm btn-cyber-secondary">
+                                    <a href="/profiles/detail/${profile.user_id}/" class="btn btn-sm btn-cyber-secondary">
                                         <i class="bi bi-info-circle"></i> 詳細
                                     </a>
-                                    <a href="/profiles/contact/${profile.id}/" class="btn btn-sm btn-cyber-primary">
+                                    <a href="/profiles/contact/${profile.user_id}/" class="btn btn-sm btn-cyber-primary">
                                         <i class="bi bi-chat-text"></i> コンタクト
                                     </a>
                                 </div>
@@ -680,6 +620,61 @@
                     border-radius: 4px;
                     background: rgba(52, 58, 64, 0.8) !important;
                     border: 1px solid rgba(255, 255, 255, 0.2);
+                }
+                
+                /* 技術バッジスタイル */
+                .tech-badge {
+                    font-size: 1rem;
+                    padding: 0.1em 0.4em;
+                    border-radius: 50%;
+                }
+                
+                /* バックエンド言語バッジ - シルバー */
+                .backend-badge {
+                    background: rgba(192, 192, 192, 0.2);
+                    color: #c0c0c0;
+                    border: 1px solid rgba(192, 192, 192, 0.6);
+                    text-shadow: 0 0 5px rgba(192, 192, 192, 0.5);
+                }
+                
+                /* フロントエンド言語バッジ - ピンク */
+                .frontend-badge {
+                    background: rgba(255, 105, 180, 0.2);
+                    color: #ff69b4;
+                    border: 1px solid rgba(255, 105, 180, 0.6);
+                    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+                }
+                
+                /* データベースバッジ - ゴールド */
+                .db-badge {
+                    background: rgba(255, 215, 0, 0.2);
+                    color: #ffd700;
+                    border: 1px solid rgba(255, 215, 0, 0.6);
+                    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+                }
+                
+                /* フレームワークバッジ - オレンジ */
+                .framework-badge {
+                    background: rgba(255, 153, 0, 0.2);
+                    color: #ff9900;
+                    border: 1px solid rgba(255, 153, 0, 0.6);
+                    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
+                }
+                
+                /* アプリ種類バッジ - 黄色 */
+                .app-type-badge {
+                    background: rgba(255, 255, 0, 0.2);
+                    color: #ffff00;
+                    border: 1px solid rgba(255, 255, 0, 0.6);
+                    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+                }
+                
+                /* 対応業務バッジ - 紫 */
+                .job-badge {
+                    background: rgba(162, 0, 255, 0.2);
+                    color: #c17bff;
+                    border: 1px solid rgba(162, 0, 255, 0.6);
+                    text-shadow: 0 0 5px rgba(162, 0, 255, 0.5);
                 }
                 
                 .cyber-job-badge {
@@ -1647,6 +1642,61 @@ document.addEventListener('DOMContentLoaded', function() {
         transform: translateX(0);
         text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
     }
+}
+
+/* カテゴリーラベルのスタイル */
+.category-label {
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* バックエンドカテゴリーラベル - シルバー */
+.backend-label {
+    color: #c0c0c0;
+    text-shadow: 0 0 5px rgba(192, 192, 192, 0.5);
+}
+
+/* フロントエンドカテゴリーラベル - ピンク */
+.frontend-label {
+    color: #ff69b4;
+    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+}
+
+/* データベースカテゴリーラベル - ゴールド */
+.db-label {
+    color: #ffd700;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* フレームワークカテゴリーラベル - オレンジ */
+.framework-label {
+    color: #ff9900;
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
+}
+
+/* アプリ種類カテゴリーラベル - 黄色 */
+.app-type-label {
+    color: #ffff00;
+    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+}
+
+/* 対応業務カテゴリーラベル - 紫 */
+.job-label {
+    color: #c17bff;
+    text-shadow: 0 0 5px rgba(162, 0, 255, 0.5);
+}
+
+/* アプリタイプのバッジスタイル */
+.app-type-badge {
+    background: rgba(255, 255, 0, 0.2);
+    color: #ffff00;
+    border: 1px solid rgba(255, 255, 0, 0.6);
+    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+    font-size: 0.85rem;
+    padding: 0.4em 0.6em;
+    border-radius: 4px;
 }
 </style>
 {% endblock %} 

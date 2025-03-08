@@ -1,0 +1,394 @@
+<div class="container mb-5 mt-3">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="cyber-title">
+                <i class="bi bi-people"></i> プログラマー達
+            </h1>
+            <p class="text-light">各プログラマーのスキルや専門分野を確認してコンタクトしよう！</p>
+        </div>
+    </div>
+
+    <!-- フィルターやソート機能（後で実装） -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card cyber-card">
+                <div class="card-body">
+                    <p class="text-center mb-0">
+                        <span class="cyber-blue">フィルター機能は近日実装予定...</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- プログラマーカード一覧（Ajax読み込み予定） -->
+    <div class="row" id="programmers-list">
+        <div class="col-12 text-center py-5">
+            <div class="cyber-loading">
+                <div class="cyber-spinner"></div>
+                <p class="mt-3 cyber-loading-text">プログラマーデータを読み込み中...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- プログラマーロード用のスクリプト -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // プログラマータブがアクティブになったときにデータを読み込む
+        document.getElementById('programmers-tab').addEventListener('shown.bs.tab', function() {
+            loadProgrammers();
+        });
+    });
+
+    function loadProgrammers() {
+        // プログラマーリストのコンテナ
+        const programmersContainer = document.getElementById('programmers-list');
+        
+        // Ajaxリクエストでプログラマーデータを取得
+        fetch('/profiles/api/programmers/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('プログラマーデータの取得に失敗しました');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // デバッグ用にAPIレスポンスをコンソールに出力
+                console.log('プログラマーデータ:', data);
+                
+                // コンテナをクリア
+                programmersContainer.innerHTML = '';
+                
+                if (data.profiles && data.profiles.length > 0) {
+                    // プログラマーデータをループしてカードを表示
+                    data.profiles.forEach(profile => {
+                        // デバッグ用にプロファイル情報をコンソールに出力
+                        console.log('プロファイル:', profile.username, profile);
+                        
+                        const card = createProgrammerCard(profile);
+                        programmersContainer.appendChild(card);
+                    });
+                } else {
+                    // プログラマーがいない場合
+                    programmersContainer.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <p class="fs-4 cyber-empty-text">まだプログラマーが登録されていません。</p>
+                            <p class="cyber-empty-subtext">登録して最初のプログラマーになろう！</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                programmersContainer.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <p class="fs-4 cyber-empty-text">データの読み込みに失敗しました。</p>
+                        <p class="cyber-empty-subtext">しばらくしてから再度お試しください。</p>
+                    </div>
+                `;
+            });
+    }
+
+    function createProgrammerCard(profile) {
+        // カードのDIV要素を作成
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'col-md-6 col-lg-4 mb-4';
+        
+        // デバッグ用：APIレスポンスの確認
+        console.log(`プロファイル(${profile.username})のデータ:`, profile);
+        
+        // 仕事依頼ステータスのスタイルを取得
+        const getJobStatusStyle = (status) => {
+            switch (status) {
+                case 'available':
+                    return 'bg-info text-white';
+                case 'limited':
+                    return 'bg-warning text-dark';
+                default:
+                    return 'bg-danger text-white';
+            }
+        };
+        
+        // アプリタイプの表示名を取得
+        const getAppTypeLabel = (appType) => {
+            const appTypeMap = {
+                'web_app': 'Webアプリケーション',
+                'ios_app': 'iOSアプリ',
+                'android_app': 'Androidアプリ',
+                'windows_app': 'Windowsアプリ',
+                'mac_app': 'macOSアプリ',
+                'linux_app': 'Linuxアプリ',
+                'game': 'ゲーム',
+                'other': 'その他'
+            };
+            return appTypeMap[appType] || appType;
+        };
+        
+        // 開発実績情報を整形
+        let developmentStatsHtml = '';
+        if (profile.app_count > 0) {
+            developmentStatsHtml = `
+                <div class="d-flex align-items-center">
+                    <span class="text-white">投稿アプリ: ${profile.app_count}件</span>
+                </div>
+            `;
+        }
+        
+        // アプリ種類の情報を整形
+        let appTypesHtml = '';
+        
+        // APIからのデータを使用
+        if (profile.app_type_counts && Object.keys(profile.app_type_counts).length > 0) {
+            console.log(`${profile.username}のアプリタイプカウント:`, profile.app_type_counts);
+            appTypesHtml = `
+                <div class="mt-3">
+                    <div class="d-flex flex-wrap">
+                        ${Object.keys(profile.app_type_counts).map(type => 
+                            `<span class="badge app-type-badge me-1 mb-1">${getAppTypeLabel(type)} (${profile.app_type_counts[type]})</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        } else if (profile.app_categories && profile.app_categories.length > 0) {
+            console.log(`${profile.username}のアプリカテゴリ:`, profile.app_categories);
+            appTypesHtml = `
+                <div class="mt-3">
+                    <div class="d-flex flex-wrap">
+                        ${profile.app_categories.map(type => 
+                            `<span class="badge app-type-badge me-1 mb-1">${getAppTypeLabel(type)}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // カードのHTMLを設定
+        cardDiv.innerHTML = `
+            <div class="card cyber-card h-100">
+                <div class="card-header cyber-card-header d-flex align-items-center">
+                    <div class="programmer-avatar me-3">
+                        ${profile.avatar_url ? 
+                            `<img src="${profile.avatar_url}" alt="${profile.username}" class="rounded-circle">` : 
+                            `<div class="default-avatar"><i class="bi bi-person-fill"></i></div>`
+                        }
+                        <div class="programmer-status ${profile.is_active ? 'status-active' : 'status-inactive'}"></div>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 cyber-name">${profile.username}</h5>
+                        <small class="text-muted">最終ログイン: ${profile.last_login || profile.updated_at}</small>
+                    </div>
+                    
+                    ${profile.job_status ? 
+                        `<div class="ms-auto">
+                            <span class="badge ${getJobStatusStyle(profile.job_status)} job-status-badge" 
+                                  title="${profile.job_status === 'available' ? '依頼受付中' : profile.job_status === 'limited' ? '一部依頼のみ' : '依頼停止中'}">
+                                ${profile.job_status === 'available' ? '<i class="bi bi-check-circle"></i> ' : profile.job_status === 'limited' ? '<i class="bi bi-dash-circle"></i> ' : ''}
+                                ${profile.job_status === 'available' ? '受注可' : profile.job_status === 'limited' ? '一部可' : '非受注'}
+                            </span>
+                        </div>` : ''
+                    }
+                </div>
+                <div class="card-body">
+                    ${profile.work_rate ? 
+                        `<div class="mt-2">
+                            <span class="badge bg-dark text-light ms-2 rate-badge">
+                                <i class="bi bi-currency-yen"></i> ${profile.work_rate}
+                            </span>
+                        </div>` : ''
+                    }
+                    
+                    ${developmentStatsHtml ? 
+                        `<div class="mt-3">
+                            ${developmentStatsHtml}
+                        </div>` : ''
+                    }
+                    
+                    ${appTypesHtml}
+                    
+                    ${profile.job_types && profile.job_types.length > 0 ? 
+                        `<div class="mt-3">
+                            <div class="d-flex flex-wrap">
+                                ${profile.job_types.map(jobType => {
+                                    const jobTypeMap = {
+                                        'frontend': 'フロントエンド開発',
+                                        'backend': 'バックエンド開発',
+                                        'fullstack': 'フルスタック開発',
+                                        'mobile': 'モバイルアプリ開発',
+                                        'database': 'データベース設計',
+                                        'infrastructure': 'インフラ構築',
+                                        'design': 'UI/UXデザイン',
+                                        'consulting': '技術コンサルティング',
+                                        'other': 'その他'
+                                    };
+                                    return `<span class="badge bg-info text-white me-1 mb-1">${jobTypeMap[jobType] || jobType}</span>`;
+                                }).join('')}
+                            </div>
+                        </div>` : ''
+                    }
+                </div>
+                <div class="card-footer cyber-card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a href="/profiles/detail/${profile.id}/" class="btn btn-sm btn-cyber-secondary">
+                            <i class="bi bi-info-circle"></i> 詳細
+                        </a>
+                        <a href="/profiles/contact/${profile.id}/" class="btn btn-sm btn-cyber-primary">
+                            <i class="bi bi-chat-text"></i> コンタクト
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        return cardDiv;
+    }
+</script>
+
+<!-- プログラマーカードのスタイル -->
+<style>
+    .programmer-avatar {
+        position: relative;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .programmer-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 2px solid rgba(0, 255, 255, 0.5);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    
+    .default-avatar {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.5rem;
+    }
+    
+    .programmer-status {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid #000;
+    }
+    
+    .status-active {
+        background: #00ff9f;
+        box-shadow: 0 0 8px rgba(0, 255, 159, 0.8);
+    }
+    
+    .status-inactive {
+        background: #ff6b6b;
+    }
+    
+    .cyber-card-header {
+        background: rgba(0, 0, 0, 0.7);  /* 少し暗く */
+        border-bottom: 1px solid rgba(0, 255, 255, 0.3);  /* 境界線を明るく */
+    }
+    
+    .cyber-card-footer {
+        background: rgba(0, 0, 0, 0.7);  /* 少し暗く */
+        border-top: 1px solid rgba(0, 255, 255, 0.3);  /* 境界線を明るく */
+    }
+    
+    /* テキストカラーの追加クラス */
+    #programmers-list .text-light {
+        color: #b8b8ff !important;
+    }
+    
+    #programmers-list .text-white {
+        color: #ffffff !important;
+        font-weight: bold;
+    }
+    
+    #programmers-list .text-info {
+        color: #00ffff !important;
+    }
+    
+    /* カードをさらに明るく */
+    #programmers-list .cyber-card {
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        box-shadow: 0 0 15px rgba(0, 100, 200, 0.3);
+    }
+    
+    #programmers-list .cyber-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0, 200, 255, 0.4);
+        border: 1px solid rgba(0, 255, 255, 0.5);
+    }
+    
+    /* ジョブステータスバッジスタイル */
+    .badge.bg-info {
+        background: rgba(0, 123, 255, 0.8) !important;
+        color: white !important;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
+    }
+    
+    .badge.bg-warning {
+        background: rgba(255, 193, 7, 0.8) !important;
+        box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+    }
+    
+    .badge.bg-danger {
+        background: rgba(220, 53, 69, 0.8) !important;
+        color: white !important;
+        box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
+    }
+    
+    .rate-badge {
+        font-size: 0.85rem;
+        padding: 0.4em 0.6em;
+        border-radius: 4px;
+        background: rgba(52, 58, 64, 0.8) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    /* アプリタイプのバッジスタイル */
+    .app-type-badge {
+        background: rgba(255, 255, 0, 0.2);
+        color: #ffff00;
+        border: 1px solid rgba(255, 255, 0, 0.6);
+        text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
+        font-size: 0.85rem;
+        padding: 0.4em 0.6em;
+        border-radius: 4px;
+    }
+    
+    /* 読み込み中のスピナースタイル */
+    .cyber-loading {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    
+    .cyber-spinner {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(0, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #00ffff;
+        animation: cyber-spin 1s linear infinite;
+    }
+    
+    @keyframes cyber-spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    .cyber-loading-text {
+        color: #00ffff;
+        text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        font-size: 1.2rem;  /* 少し大きく */
+        font-weight: bold;  /* 太字に */
+    }
+</style> 
