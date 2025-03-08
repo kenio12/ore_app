@@ -12,6 +12,7 @@ from django.db.models import Count
 from django.utils import timezone
 import json
 import logging
+from apps_gallery.constants.app_info import APP_TYPES
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +32,15 @@ def user_profile_detail(request, user_id):
     
     # テンプレートで使用するコンテキスト変数を設定
     is_own_profile = request.user.is_authenticated and request.user.id == user_id
+    
+    # ユーザーが投稿したアプリのタイプ別カウントを集計
+    app_type_counts = {}
+    if hasattr(profile_user, 'apps'):
+        user_apps = profile_user.apps.all()
+        for app in user_apps:
+            if hasattr(app, 'app_types') and app.app_types:
+                for app_type in app.app_types:
+                    app_type_counts[app_type] = app_type_counts.get(app_type, 0) + 1
     
     # PCタイプなどの選択肢マッピング（実際のappのデータに合わせて調整必要）
     pc_types = {
@@ -105,7 +115,9 @@ def user_profile_detail(request, user_id):
         'memory_sizes': memory_sizes,
         'storage_types': storage_types,
         'monitor_counts': monitor_counts,
-        'internet_types': internet_types
+        'internet_types': internet_types,
+        'app_type_counts': app_type_counts,
+        'APP_TYPES': APP_TYPES,
     }
     
     return render(request, 'profiles/profile_detail.html', context)

@@ -639,38 +639,151 @@ class HomeView(ListView):
         }
         return context
 
+def handle_development_environment_fields(request_data, app):
+    """開発環境フィールドの処理"""
+    logger.info("開発環境フィールドの処理を開始")
+    
+    # 開発環境JSONデータの初期化
+    development_environment = {}
+    
+    # エディタ
+    editors = request_data.getlist('development_environment_editors')
+    if editors:
+        development_environment['editors'] = editors
+        logger.info(f"エディタ: {editors}")
+    
+    # バージョン管理
+    version_control = request_data.getlist('development_environment_version_control')
+    if version_control:
+        development_environment['version_control'] = version_control
+        logger.info(f"バージョン管理: {version_control}")
+    
+    # 仮想化ツール
+    virtualization = request_data.getlist('development_environment_virtualization')
+    if virtualization:
+        development_environment['virtualization'] = virtualization
+        logger.info(f"仮想化ツール: {virtualization}")
+    
+    # チームサイズ
+    team_size = request_data.get('development_environment_team_size')
+    if team_size:
+        development_environment['team_size'] = team_size
+        logger.info(f"チームサイズ: {team_size}")
+    
+    # コミュニケーションツール
+    communication_tools = request_data.getlist('development_environment_communication_tools')
+    if communication_tools:
+        development_environment['communication_tools'] = communication_tools
+        logger.info(f"コミュニケーションツール: {communication_tools}")
+    
+    # CI/CD
+    ci_cd = request_data.getlist('development_environment_ci_cd')
+    if ci_cd:
+        development_environment['ci_cd'] = ci_cd
+        logger.info(f"CI/CD: {ci_cd}")
+    
+    # インフラストラクチャ
+    infrastructure = request_data.getlist('development_environment_infrastructure')
+    if infrastructure:
+        development_environment['infrastructure'] = infrastructure
+        logger.info(f"インフラストラクチャ: {infrastructure}")
+    
+    # APIツール
+    api_tools = request_data.getlist('development_environment_api_tools')
+    if api_tools:
+        development_environment['api_tools'] = api_tools
+        logger.info(f"APIツール: {api_tools}")
+    
+    # モニタリングツール
+    monitoring_tools = request_data.getlist('development_environment_monitoring_tools')
+    if monitoring_tools:
+        development_environment['monitoring_tools'] = monitoring_tools
+        logger.info(f"モニタリングツール: {monitoring_tools}")
+    
+    # 収集したデータが空でなければ更新
+    if development_environment:
+        logger.info(f"収集した開発環境データ: {development_environment}")
+        app.development_environment = development_environment
+    else:
+        logger.warning("開発環境データは空です")
+    
+    return app
+
 @login_required
 @require_http_methods(["POST"])
 def auto_save_app(request, app_id=None):
-    """自動保存用APIエンドポイント"""
-    logger.info(f"自動保存処理開始: app_id={app_id}")
-    
+    """アプリの自動保存処理"""
     try:
-        # 自動保存フラグをチェック
-        is_auto_save = request.headers.get('X-Auto-Save') == 'true'
+        # リクエスト内容をログに出力
+        logger.info(f"自動保存処理開始: app_id={app_id}")
         
-        # JSONフィールドの既存値を保持する変数
-        existing_security = None
-        existing_frontend = None
-        existing_database = None
+        # POSTメソッドでない場合はエラー
+        if request.method != 'POST':
+            return JsonResponse({'error': 'POSTメソッドが必要です'}, status=400)
         
-        if app_id and app_id != 'undefined':
-            # 既存アプリの更新
-            app = get_object_or_404(AppGallery, id=app_id, author=request.user)
-            logger.info(f"既存アプリを自動保存: {app.title}")
-            
-            # 既存のJSONフィールド値を保存
-            existing_security = app.security
-            existing_frontend = app.frontend
-            existing_database = app.database
+        # POSTデータをログに出力
+        logger.info("======== POST データ ========")
+        for key, value in request.POST.items():
+            # 長すぎるデータや重要な情報は省略
+            if key in ['csrfmiddlewaretoken']:
+                logger.info(f"POST['{key}'] = {value}")
+            else:
+                logger.info(f"POST['{key}'] = {value}")
+        logger.info("============================")
+        
+        # 自動保存かどうか
+        is_auto_save = request.POST.get('is_auto_save') == 'true'
+        
+        # app_idが指定されている場合は既存アプリを編集
+        if app_id:
+            try:
+                app = AppGallery.objects.get(pk=app_id)
+                logger.info(f"既存アプリを自動保存: {app.title}")
+                
+                # 既存データをログに出力
+                logger.info("======== 既存データ ========")
+                existing_development_environment = app.development_environment
+                existing_architecture = app.architecture if hasattr(app, 'architecture') else None
+                existing_backend = app.backend if hasattr(app, 'backend') else None
+                existing_frontend = app.frontend if hasattr(app, 'frontend') else None
+                existing_database = app.database if hasattr(app, 'database') else None
+                existing_security = app.security if hasattr(app, 'security') else None
+                existing_development_story = app.development_story if hasattr(app, 'development_story') else None
+                
+                logger.info(f"既存 development_environment: {existing_development_environment}")
+                logger.info(f"既存 architecture: {existing_architecture}")
+                logger.info(f"既存 backend: {existing_backend}")
+                logger.info(f"既存 frontend: {existing_frontend}")
+                logger.info(f"既存 database: {existing_database}")
+                logger.info(f"既存 security: {existing_security}")
+                logger.info(f"既存 development_story: {existing_development_story}")
+                logger.info("===========================")
+            except AppGallery.DoesNotExist:
+                # 存在しない場合は新規作成
+                app = AppGallery()
+                logger.info("新規アプリを自動保存")
+                
+                # 新規の場合は既存データなし
+                existing_development_environment = {}
+                existing_architecture = {}
+                existing_backend = {}
+                existing_frontend = {}
+                existing_database = {}
+                existing_security = {}
+                existing_development_story = {}
         else:
-            # 新規アプリの作成
-            app = AppGallery(
-                author=request.user,
-                status='draft',
-                title=request.POST.get('title', '無題')
-            )
+            # app_idがない場合は新規作成
+            app = AppGallery()
             logger.info("新規アプリを自動保存")
+            
+            # 新規の場合は既存データなし
+            existing_development_environment = {}
+            existing_architecture = {}
+            existing_backend = {}
+            existing_frontend = {}
+            existing_database = {}
+            existing_security = {}
+            existing_development_story = {}
         
         # フォームのデータを取得
         form = AppForm(request.POST, request.FILES, instance=app)
@@ -682,33 +795,143 @@ def auto_save_app(request, app_id=None):
                 # formを使って直接保存する（save_m2mは内部で処理される）
                 app = form.save()
             else:
+                # フォームエラーをログ出力（デバッグ用）
+                logger.error(f"フォームエラー: {form.errors}")
                 # フォームが無効な場合でも最低限のデータは保存する
                 app.save()
             
-            # 既存のJSONフィールド値を復元（上書きされないように）
-            if existing_security is not None:
-                app.security = existing_security
-            if existing_frontend is not None:
+            # 開発環境フィールドを処理
+            app = handle_development_environment_fields(request.POST, app)
+            
+            # 各タブのフィールドを処理
+            app = handle_architecture_fields(request.POST, app)
+            app = handle_backend_fields(request.POST, app)
+            app = handle_frontend_fields(request.POST, app)
+            app = handle_hosting_fields(request.POST, app)
+            app = handle_database_fields(request.POST, app)
+            app = handle_security_fields(request.POST, app)
+            app = handle_hardware_fields(request.POST, app)
+            app = handle_development_story_fields(request.POST, app)
+            
+            # 既存のJSONフィールド値をマージ（上書きではなく、結合する）
+            # アーキテクチャデータのマージ
+            if existing_architecture and app.architecture:
+                # 既存データと新データをマージ
+                merged_architecture = existing_architecture.copy()
+                merged_architecture.update(app.architecture)
+                app.architecture = merged_architecture
+            elif existing_architecture:
+                app.architecture = existing_architecture
+                
+            # バックエンドデータのマージ
+            if existing_backend and app.backend:
+                # 既存データと新データをマージ
+                merged_backend = existing_backend.copy()
+                merged_backend.update(app.backend)
+                app.backend = merged_backend
+            elif existing_backend:
+                app.backend = existing_backend
+                
+            # フロントエンドデータのマージ
+            if existing_frontend and app.frontend:
+                # 既存データと新データをマージ
+                merged_frontend = existing_frontend.copy()
+                merged_frontend.update(app.frontend)
+                app.frontend = merged_frontend
+            elif existing_frontend:
                 app.frontend = existing_frontend
-            if existing_database is not None:
+                
+            # データベースデータのマージ
+            if existing_database and app.database:
+                # 既存データと新データをマージ
+                merged_database = existing_database.copy()
+                merged_database.update(app.database)
+                app.database = merged_database
+            elif existing_database:
                 app.database = existing_database
                 
+            # セキュリティデータのマージ
+            if existing_security and app.security:
+                # 既存データと新データをマージ
+                merged_security = existing_security.copy()
+                merged_security.update(app.security)
+                app.security = merged_security
+            elif existing_security:
+                app.security = existing_security
+
+            # 開発ストーリーデータのマージ
+            if existing_development_story and app.development_story:
+                # 既存データと新データをマージ
+                merged_story = existing_development_story.copy()
+                merged_story.update(app.development_story)
+                app.development_story = merged_story
+            elif existing_development_story:
+                app.development_story = existing_development_story
+            
             # フォームデータに対応するフィールドがある場合のみ更新
             data = request.POST
-            if 'security' in data:
-                app.security = json.loads(data['security']) if isinstance(data['security'], str) else data['security']
+            
+            # architecture フィールドの処理
+            if 'architecture' in data:
+                try:
+                    logger.info(f"architecture データを処理中: {data['architecture'][:100]}...")
+                    app.architecture = json.loads(data['architecture']) if isinstance(data['architecture'], str) else data['architecture']
+                except Exception as e:
+                    logger.error(f"architecture の処理でエラー: {str(e)}")
+            
+            # backend フィールドの処理
+            if 'backend' in data:
+                try:
+                    logger.info(f"backend データを処理中: {data['backend'][:100]}...")
+                    app.backend = json.loads(data['backend']) if isinstance(data['backend'], str) else data['backend']
+                except Exception as e:
+                    logger.error(f"backend の処理でエラー: {str(e)}")
+            
+            # frontend フィールドの処理
             if 'frontend' in data:
-                app.frontend = json.loads(data['frontend']) if isinstance(data['frontend'], str) else data['frontend']
+                try:
+                    logger.info(f"frontend データを処理中: {data['frontend'][:100]}...")
+                    app.frontend = json.loads(data['frontend']) if isinstance(data['frontend'], str) else data['frontend']
+                except Exception as e:
+                    logger.error(f"frontend の処理でエラー: {str(e)}")
+            
+            # database フィールドの処理
             if 'database' in data:
-                app.database = json.loads(data['database']) if isinstance(data['database'], str) else data['database']
-                
+                try:
+                    logger.info(f"database データを処理中: {data['database'][:100]}...")
+                    app.database = json.loads(data['database']) if isinstance(data['database'], str) else data['database']
+                except Exception as e:
+                    logger.error(f"database の処理でエラー: {str(e)}")
+            
+            # security フィールドの処理
+            if 'security' in data:
+                try:
+                    logger.info(f"security データを処理中: {data['security'][:100]}...")
+                    app.security = json.loads(data['security']) if isinstance(data['security'], str) else data['security']
+                except Exception as e:
+                    logger.error(f"security の処理でエラー: {str(e)}")
+                    
+            # development_story フィールドの処理
+            if 'development_story' in data:
+                try:
+                    logger.info(f"development_story データを処理中: {data['development_story'][:100]}...")
+                    app.development_story = json.loads(data['development_story']) if isinstance(data['development_story'], str) else data['development_story']
+                except Exception as e:
+                    logger.error(f"development_story の処理でエラー: {str(e)}")
+                    
             # 変更を保存
             app.save()
             
             # デバッグ用にJSONフィールドの状態をログ出力
-            print(f"自動保存後の状態 - Security: {app.security}")
-            print(f"自動保存後の状態 - Frontend: {app.frontend}")
-            print(f"自動保存後の状態 - Database: {app.database}")
+            logger.info("======== 保存後の状態 ========")
+            logger.info(f"保存後 development_environment: {app.development_environment}")
+            logger.info(f"保存後 architecture: {app.architecture if hasattr(app, 'architecture') else None}")
+            logger.info(f"保存後 backend: {app.backend if hasattr(app, 'backend') else None}")
+            logger.info(f"保存後 frontend: {app.frontend if hasattr(app, 'frontend') else None}")
+            logger.info(f"保存後 database: {app.database if hasattr(app, 'database') else None}")
+            logger.info(f"保存後 security: {app.security if hasattr(app, 'security') else None}")
+            logger.info(f"保存後 development_story: {app.development_story if hasattr(app, 'development_story') else None}")
+            logger.info("============================")
             
             logger.info(f"自動保存完了: app_id={app.id}")
             
@@ -722,22 +945,124 @@ def auto_save_app(request, app_id=None):
             if form.is_valid():
                 app = form.save()
                 
-                # 既存のJSONフィールド値を復元（上書きされないように）
-                if existing_security is not None:
-                    app.security = existing_security
-                if existing_frontend is not None:
+                # 開発環境フィールドを処理
+                app = handle_development_environment_fields(request.POST, app)
+                
+                # 各タブのフィールドを処理
+                app = handle_architecture_fields(request.POST, app)
+                app = handle_backend_fields(request.POST, app)
+                app = handle_frontend_fields(request.POST, app)
+                app = handle_hosting_fields(request.POST, app)
+                app = handle_database_fields(request.POST, app)
+                app = handle_security_fields(request.POST, app)
+                app = handle_hardware_fields(request.POST, app)
+                app = handle_development_story_fields(request.POST, app)
+                
+                # 既存のJSONフィールド値をマージ（上書きではなく、結合する）
+                # アーキテクチャデータのマージ
+                if existing_architecture and app.architecture:
+                    # 既存データと新データをマージ
+                    merged_architecture = existing_architecture.copy()
+                    merged_architecture.update(app.architecture)
+                    app.architecture = merged_architecture
+                elif existing_architecture:
+                    app.architecture = existing_architecture
+                    
+                # バックエンドデータのマージ
+                if existing_backend and app.backend:
+                    # 既存データと新データをマージ
+                    merged_backend = existing_backend.copy()
+                    merged_backend.update(app.backend)
+                    app.backend = merged_backend
+                elif existing_backend:
+                    app.backend = existing_backend
+                    
+                # フロントエンドデータのマージ
+                if existing_frontend and app.frontend:
+                    # 既存データと新データをマージ
+                    merged_frontend = existing_frontend.copy()
+                    merged_frontend.update(app.frontend)
+                    app.frontend = merged_frontend
+                elif existing_frontend:
                     app.frontend = existing_frontend
-                if existing_database is not None:
+                    
+                # データベースデータのマージ
+                if existing_database and app.database:
+                    # 既存データと新データをマージ
+                    merged_database = existing_database.copy()
+                    merged_database.update(app.database)
+                    app.database = merged_database
+                elif existing_database:
                     app.database = existing_database
+                    
+                # セキュリティデータのマージ
+                if existing_security and app.security:
+                    # 既存データと新データをマージ
+                    merged_security = existing_security.copy()
+                    merged_security.update(app.security)
+                    app.security = merged_security
+                elif existing_security:
+                    app.security = existing_security
+                
+                # 開発ストーリーデータのマージ
+                if existing_development_story and app.development_story:
+                    # 既存データと新データをマージ
+                    merged_story = existing_development_story.copy()
+                    merged_story.update(app.development_story)
+                    app.development_story = merged_story
+                elif existing_development_story:
+                    app.development_story = existing_development_story
                 
                 # フォームデータに対応するフィールドがある場合のみ更新
                 data = request.POST
-                if 'security' in data:
-                    app.security = json.loads(data['security']) if isinstance(data['security'], str) else data['security']
+                
+                # architecture フィールドの処理
+                if 'architecture' in data:
+                    try:
+                        logger.info(f"architecture データを処理中: {data['architecture'][:100]}...")
+                        app.architecture = json.loads(data['architecture']) if isinstance(data['architecture'], str) else data['architecture']
+                    except Exception as e:
+                        logger.error(f"architecture の処理でエラー: {str(e)}")
+                
+                # backend フィールドの処理
+                if 'backend' in data:
+                    try:
+                        logger.info(f"backend データを処理中: {data['backend'][:100]}...")
+                        app.backend = json.loads(data['backend']) if isinstance(data['backend'], str) else data['backend']
+                    except Exception as e:
+                        logger.error(f"backend の処理でエラー: {str(e)}")
+                
+                # frontend フィールドの処理
                 if 'frontend' in data:
-                    app.frontend = json.loads(data['frontend']) if isinstance(data['frontend'], str) else data['frontend']
+                    try:
+                        logger.info(f"frontend データを処理中: {data['frontend'][:100]}...")
+                        app.frontend = json.loads(data['frontend']) if isinstance(data['frontend'], str) else data['frontend']
+                    except Exception as e:
+                        logger.error(f"frontend の処理でエラー: {str(e)}")
+                
+                # database フィールドの処理
                 if 'database' in data:
-                    app.database = json.loads(data['database']) if isinstance(data['database'], str) else data['database']
+                    try:
+                        logger.info(f"database データを処理中: {data['database'][:100]}...")
+                        app.database = json.loads(data['database']) if isinstance(data['database'], str) else data['database']
+                    except Exception as e:
+                        logger.error(f"database の処理でエラー: {str(e)}")
+                
+                # security フィールドの処理
+                if 'security' in data:
+                    try:
+                        logger.info(f"security データを処理中: {data['security'][:100]}...")
+                        app.security = json.loads(data['security']) if isinstance(data['security'], str) else data['security']
+                    except Exception as e:
+                        logger.error(f"security の処理でエラー: {str(e)}")
+                    
+                # development_story フィールドの処理
+                if 'development_story' in data:
+                    try:
+                        logger.info(f"development_story データを処理中: {data['development_story'][:100]}...")
+                        app.development_story = json.loads(data['development_story']) if isinstance(data['development_story'], str) else data['development_story']
+                    except Exception as e:
+                        logger.error(f"development_story の処理でエラー: {str(e)}")
                     
                 # 変更を保存
                 app.save()
@@ -752,13 +1077,12 @@ def auto_save_app(request, app_id=None):
                     'success': False,
                     'errors': form.errors
                 })
-                
     except Exception as e:
         logger.error(f"自動保存エラー: {str(e)}")
         import traceback
         logger.error(traceback.format_exc())
         return JsonResponse({
-            'success': False, 
+            'success': False,
             'error': str(e)
         }, status=500)
 
@@ -845,3 +1169,291 @@ def app_analytics(request, pk):
     }
     
     return render(request, 'apps_gallery/analytics.html', context)
+
+def handle_architecture_fields(request_data, app):
+    """アーキテクチャフィールドの処理"""
+    logger.info("アーキテクチャフィールドの処理を開始")
+    
+    # アーキテクチャJSONデータの初期化
+    architecture = {}
+    
+    # アーキテクチャパターン
+    patterns = request_data.getlist('architecture_patterns')
+    if patterns:
+        architecture['patterns'] = patterns
+        logger.info(f"アーキテクチャパターン: {patterns}")
+    
+    # デザインパターン
+    design_patterns = request_data.getlist('architecture_design_patterns')
+    if design_patterns:
+        architecture['design_patterns'] = design_patterns
+        logger.info(f"デザインパターン: {design_patterns}")
+    
+    # 説明
+    description = request_data.get('architecture_description')
+    if description:
+        architecture['description'] = description
+        logger.info(f"説明: {description[:50]}...")  # 最初の50文字だけ表示
+    
+    # 収集したデータが空でなければ更新
+    if architecture:
+        logger.info(f"収集したアーキテクチャデータ: {architecture}")
+        app.architecture = architecture
+    else:
+        logger.warning("アーキテクチャデータは空です")
+    
+    return app
+
+def handle_backend_fields(request_data, app):
+    """バックエンドフィールドの処理"""
+    logger.info("バックエンドフィールドの処理を開始")
+    
+    # バックエンドJSONデータの初期化
+    backend = {}
+    
+    # メイン言語
+    main_language = request_data.get('backend_main_language')
+    if main_language:
+        backend['main_language'] = main_language
+        logger.info(f"メイン言語: {main_language}")
+    
+    # フレームワーク
+    framework = request_data.get('backend_framework')
+    if framework:
+        backend['framework'] = framework
+        logger.info(f"フレームワーク: {framework}")
+    
+    # パッケージ
+    packages = request_data.getlist('backend_packages')
+    if packages:
+        backend['packages'] = packages
+        logger.info(f"パッケージ: {packages}")
+    
+    # 収集したデータが空でなければ更新
+    if backend:
+        logger.info(f"収集したバックエンドデータ: {backend}")
+        app.backend = backend
+    else:
+        logger.warning("バックエンドデータは空です")
+    
+    return app
+
+def handle_frontend_fields(request_data, app):
+    """フロントエンドフィールドの処理"""
+    logger.info("フロントエンドフィールドの処理を開始")
+    
+    # フロントエンドJSONデータの初期化
+    frontend = {}
+    
+    # 言語
+    languages = request_data.getlist('frontend_languages')
+    if languages:
+        frontend['languages'] = languages
+        logger.info(f"言語: {languages}")
+    
+    # フレームワーク
+    frameworks = request_data.getlist('frontend_frameworks')
+    if frameworks:
+        frontend['frameworks'] = frameworks
+        logger.info(f"フレームワーク: {frameworks}")
+    
+    # CSSフレームワーク
+    css_frameworks = request_data.getlist('css_frameworks')
+    if css_frameworks:
+        frontend['css_frameworks'] = css_frameworks
+        logger.info(f"CSSフレームワーク: {css_frameworks}")
+    
+    # 収集したデータが空でなければ更新
+    if frontend:
+        logger.info(f"収集したフロントエンドデータ: {frontend}")
+        app.frontend = frontend
+    else:
+        logger.warning("フロントエンドデータは空です")
+    
+    return app
+
+def handle_hosting_fields(request_data, app):
+    """ホスティングフィールドの処理"""
+    logger.info("ホスティングフィールドの処理を開始")
+    
+    # ホスティングJSONデータの初期化
+    hosting_data = {}
+    
+    # Webアプリケーションホスティングサービス
+    services = request_data.getlist('hosting_services')
+    if services:
+        hosting_data['services'] = services
+        logger.info(f"ホスティングサービス: {services}")
+    
+    # デプロイ方法
+    deployment_methods = request_data.getlist('deployment_methods')
+    if deployment_methods:
+        hosting_data['deployment_methods'] = deployment_methods
+        logger.info(f"デプロイ方法: {deployment_methods}")
+    
+    # 備考
+    notes = request_data.get('hosting_notes')
+    if notes:
+        hosting_data['notes'] = notes
+        logger.info(f"ホスティング備考: {notes}")
+    
+    # 収集したデータが空でなければ更新
+    if hosting_data:
+        logger.info(f"収集したホスティングデータ: {hosting_data}")
+        app.hosting = hosting_data
+    else:
+        logger.warning("ホスティングデータは空です")
+    
+    return app
+
+def handle_database_fields(request_data, app):
+    """データベースフィールドの処理"""
+    logger.info("データベースフィールドの処理を開始")
+    
+    # データベースJSONデータの初期化
+    database = {}
+    
+    # データベース種類
+    types = request_data.getlist('database_types')
+    if types:
+        database['types'] = types
+        logger.info(f"データベース種類: {types}")
+    
+    # ホスティングサービス
+    hosting = request_data.getlist('database_hosting')
+    if hosting:
+        database['hosting'] = hosting
+        logger.info(f"ホスティングサービス: {hosting}")
+    
+    # ORM
+    orms = request_data.getlist('database_orms')
+    if orms:
+        database['orms'] = orms
+        logger.info(f"ORM: {orms}")
+    
+    # 収集したデータが空でなければ更新
+    if database:
+        logger.info(f"収集したデータベースデータ: {database}")
+        app.database = database
+    else:
+        logger.warning("データベースデータは空です")
+    
+    return app
+
+def handle_security_fields(request_data, app):
+    logger.info("Processing security fields...")
+    
+    security_data = {}
+    
+    # 認証方法の取得
+    authentication_methods = request_data.getlist('authentication_methods', [])
+    if authentication_methods:
+        security_data['authentication_methods'] = authentication_methods
+        logger.info(f"Authentication methods: {authentication_methods}")
+    
+    # セキュリティ対策の取得
+    security_measures = request_data.getlist('security_measures', [])
+    if security_measures:
+        security_data['measures'] = security_measures
+        logger.info(f"Security measures: {security_measures}")
+    
+    # データがあれば更新
+    if security_data:
+        app.security = security_data
+        logger.info("Security data collected successfully")
+    else:
+        logger.warning("No security data found in request")
+    
+    return app
+
+def handle_hardware_fields(request_data, app):
+    """ハードウェア関連のフィールドを処理する"""
+    logger.info("Processing hardware fields...")
+    
+    # 収集するデータ
+    hardware_data = {}
+    
+    # ハードウェアメーカー
+    maker = request_data.get('maker')
+    if maker:
+        hardware_data['maker'] = maker
+        logger.info(f"Hardware maker: {maker}")
+    
+    # ハードウェアモデル
+    model = request_data.get('model')
+    if model:
+        hardware_data['model'] = model
+        logger.info(f"Hardware model: {model}")
+    
+    # 収集したデータがある場合はアプリに設定
+    if hardware_data:
+        app.hardware_specs = hardware_data
+        logger.info("Hardware data collected successfully")
+    else:
+        logger.warning("No hardware data found in request")
+    
+    return app
+
+def handle_development_story_fields(request_data, app):
+    """開発ストーリー関連のフィールドを処理する"""
+    logger.info("開発ストーリーフィールドの処理を開始")
+    
+    # 収集するデータ
+    story_data = {}
+    
+    # 開発開始日
+    start_date = request_data.get('development_start_date')
+    if start_date:
+        story_data['start_date'] = start_date
+        logger.info(f"開発開始日: {start_date}")
+    
+    # 開発終了日
+    end_date = request_data.get('development_end_date')
+    if end_date:
+        story_data['end_date'] = end_date
+        logger.info(f"開発終了日: {end_date}")
+    
+    # 開発期間
+    duration = request_data.get('development_duration')
+    if duration:
+        story_data['duration'] = duration
+        logger.info(f"開発期間: {duration}")
+    
+    # 開発の動機
+    motivation = request_data.get('development_motivation')
+    if motivation:
+        story_data['motivation'] = motivation
+        logger.info(f"開発の動機: {motivation}")
+    
+    # 工夫したポイント
+    innovations = request_data.get('development_innovations')
+    if innovations:
+        story_data['innovations'] = innovations
+        logger.info(f"工夫したポイント: {innovations}")
+    
+    # 諦めた機能
+    abandoned = request_data.get('development_abandoned')
+    if abandoned:
+        story_data['abandoned'] = abandoned
+        logger.info(f"諦めた機能: {abandoned}")
+    
+    # 今後の予定
+    future_plans = request_data.get('development_future_plans')
+    if future_plans:
+        story_data['future_plans'] = future_plans
+        logger.info(f"今後の予定: {future_plans}")
+    
+    # 振り返り
+    reflections = request_data.get('development_reflections')
+    if reflections:
+        story_data['reflections'] = reflections
+        logger.info(f"振り返り: {reflections}")
+    
+    # 収集したデータがある場合はアプリに設定
+    if story_data:
+        app.development_story = story_data
+        logger.info(f"収集した開発ストーリーデータ: {story_data}")
+    else:
+        logger.warning("開発ストーリーデータは空です")
+    
+    return app

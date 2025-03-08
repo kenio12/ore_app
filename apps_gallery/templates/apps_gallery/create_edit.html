@@ -83,10 +83,10 @@
                 <button class="nav-link text-neon" id="appeal-tab" data-bs-toggle="tab" data-bs-target="#appeal-section" type="button" role="tab" aria-controls="appeal-section" aria-selected="false" style="color: var(--cyber-green) !important; text-shadow: 0 0 10px var(--cyber-green) !important; border-color: var(--cyber-green) !important;">アピール</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link text-neon" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-section" type="button" role="tab" aria-controls="hardware-section" aria-selected="false" style="color: var(--cyber-blue) !important; text-shadow: 0 0 10px var(--cyber-blue) !important; border-color: var(--cyber-blue) !important;">ハードウェア</button>
+                <button class="nav-link text-neon" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-section" type="button" role="tab" aria-controls="hardware-section" aria-selected="false" style="color: var(--cyber-blue) !important; text-shadow: 0 0 10px var(--cyber-blue) !important; border-color: var(--cyber-blue) !important;">ハード環境</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link text-neon" id="dev-env-tab" data-bs-toggle="tab" data-bs-target="#dev-env-section" type="button" role="tab" aria-controls="dev-env-section" aria-selected="false" style="color: var(--cyber-orange) !important; text-shadow: 0 0 10px var(--cyber-orange) !important; border-color: var(--cyber-orange) !important;">開発環境</button>
+                <button class="nav-link text-neon" id="dev-env-tab" data-bs-toggle="tab" data-bs-target="#dev-env-section" type="button" role="tab" aria-controls="dev-env-section" aria-selected="false" style="color: var(--cyber-orange) !important; text-shadow: 0 0 10px var(--cyber-orange) !important; border-color: var(--cyber-orange) !important;">ソフト環境</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link text-neon" id="architecture-tab" data-bs-toggle="tab" data-bs-target="#architecture-section" type="button" role="tab" aria-controls="architecture-section" aria-selected="false" style="color: var(--cyber-lime) !important; text-shadow: 0 0 10px var(--cyber-lime) !important; border-color: var(--cyber-lime) !important;">アーキテクチャ</button>
@@ -96,6 +96,9 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link text-neon" id="frontend-tab" data-bs-toggle="tab" data-bs-target="#frontend-section" type="button" role="tab" aria-controls="frontend-section" aria-selected="false" style="color: var(--cyber-pink) !important; text-shadow: 0 0 10px var(--cyber-pink) !important; border-color: var(--cyber-pink) !important;">フロントエンド</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link text-neon" id="hosting-tab" data-bs-toggle="tab" data-bs-target="#hosting-section" type="button" role="tab" aria-controls="hosting-section" aria-selected="false" style="color: #ffffff !important; text-shadow: 0 0 10px #ffffff !important; border-color: #ffffff !important;">ホスティング</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link text-neon" id="database-tab" data-bs-toggle="tab" data-bs-target="#database-section" type="button" role="tab" aria-controls="database-section" aria-selected="false" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 10px var(--cyber-emerald) !important; border-color: var(--cyber-emerald) !important;">データベース</button>
@@ -150,6 +153,11 @@
                 {% include 'apps_gallery/tabs/08_frontend_tab.html' %}
             </div>
 
+            <!-- ホスティングタブ -->
+            <div class="tab-pane fade" id="hosting-section" role="tabpanel" aria-labelledby="hosting-tab">
+                {% include 'apps_gallery/tabs/10_hosting_tab.html' %}
+            </div>
+
             <!-- データベースタブ -->
             <div class="tab-pane fade" id="database-section" role="tabpanel" aria-labelledby="database-tab">
                 {% include 'apps_gallery/tabs/09_database_tab.html' %}
@@ -157,12 +165,12 @@
 
             <!-- セキュリティタブ -->
             <div class="tab-pane fade" id="security-section" role="tabpanel" aria-labelledby="security-tab">
-                {% include 'apps_gallery/tabs/10_security_tab.html' %}
+                {% include 'apps_gallery/tabs/11_security_tab.html' %}
             </div>
 
             <!-- 開発ストーリータブ -->
             <div class="tab-pane fade" id="development-section" role="tabpanel" aria-labelledby="development-tab">
-                {% include 'apps_gallery/tabs/11_development_tab.html' %}
+                {% include 'apps_gallery/tabs/12_development_tab.html' %}
             </div>
         </div>
 
@@ -180,6 +188,39 @@
 
 <!-- 自動保存のJavaScriptファイルを読み込む -->
 <script src="{% static 'apps_gallery/js/auto-save.js' %}"></script>
+
+<!-- タブ状態保存のためのスクリプト -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Bootstrap 5のタブオブジェクトを取得するためのヘルパー関数
+        function getTabInstance(tabElement) {
+            return bootstrap.Tab.getInstance(tabElement) || new bootstrap.Tab(tabElement);
+        }
+        
+        // タブ切り替え時にローカルストレージに現在のタブIDを保存
+        const tabLinks = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+        tabLinks.forEach(tabLink => {
+            tabLink.addEventListener('shown.bs.tab', function (e) {
+                const targetId = e.target.getAttribute('id');
+                localStorage.setItem('activeAppFormTab', targetId);
+                console.log('タブ保存: ' + targetId); // デバッグ用
+            });
+        });
+        
+        // ページロード時に保存されたタブを復元（タイマーで遅延実行）
+        setTimeout(function() {
+            const activeTabId = localStorage.getItem('activeAppFormTab');
+            if (activeTabId) {
+                console.log('タブ復元: ' + activeTabId); // デバッグ用
+                const tabToActivate = document.getElementById(activeTabId);
+                if (tabToActivate) {
+                    // 直接クリックイベントを発火
+                    tabToActivate.click();
+                }
+            }
+        }, 100); // 少し遅延させて実行
+    });
+</script>
 
 <!-- スクロール時にナビゲーションを隠すためのスクリプト -->
 <script>

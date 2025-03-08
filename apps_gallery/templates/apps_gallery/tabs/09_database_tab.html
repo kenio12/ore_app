@@ -8,7 +8,7 @@
                 <span class="text-cyber-emerald">データベース</span>
             </h2>
 
-            <form id="database-form">
+            <div class="database-inputs">
                 <!-- データベース種類 -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-emerald">データベース種類</label>
@@ -24,29 +24,6 @@
                                            {% if key in app.database.types %}checked{% endif %}
                                            {% if readonly %}disabled{% endif %}>
                                     <label class="form-check-label" for="db-type-{{ key }}">
-                                        {{ value }}
-                                    </label>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- データベースホスティング -->
-                <div class="mb-4">
-                    <label class="form-label text-cyber-emerald">ホスティングサービス</label>
-                    <div class="row g-3">
-                        {% for key, value in DATABASE_HOSTING.items %}
-                            <div class="col-md-3">
-                                <div class="form-check">
-                                    <input type="checkbox"
-                                           id="db-hosting-{{ key }}"
-                                           name="database_hosting"
-                                           value="{{ key }}"
-                                           class="form-check-input"
-                                           {% if key in app.database.hosting %}checked{% endif %}
-                                           {% if readonly %}disabled{% endif %}>
-                                    <label class="form-check-label" for="db-hosting-{{ key }}">
                                         {{ value }}
                                     </label>
                                 </div>
@@ -77,7 +54,7 @@
                         {% endfor %}
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

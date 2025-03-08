@@ -84,6 +84,8 @@ class Profile(models.Model):
             'frontend_languages': {},
             'frontend_frameworks': {},
             'databases': {},
+            'devops_tools': {},  # DevOps技術用の辞書を追加
+            'cloud_services': {},  # クラウド技術用の辞書を追加
             'other_techs': {},
         }
         
@@ -110,17 +112,65 @@ class Profile(models.Model):
                 if 'language' in app.frontend and app.frontend['language']:
                     lang = app.frontend['language']
                     skills_data['frontend_languages'][lang] = skills_data['frontend_languages'].get(lang, 0) + 1
+                    
+                    # TypeScriptの特別処理（フロントエンド言語として登録）
+                    if lang.lower() == 'typescript':
+                        skills_data['frontend_languages']['TypeScript'] = skills_data['frontend_languages'].get('TypeScript', 0) + 1
                 
                 # フレームワーク
                 if 'framework' in app.frontend and app.frontend['framework']:
                     fw = app.frontend['framework']
                     skills_data['frontend_frameworks'][fw] = skills_data['frontend_frameworks'].get(fw, 0) + 1
+                    
+                    # Next.js, Nuxt.jsの特別処理
+                    if fw.lower() in ['next.js', 'nextjs']:
+                        skills_data['frontend_frameworks']['Next.js'] = skills_data['frontend_frameworks'].get('Next.js', 0) + 1
+                    elif fw.lower() in ['nuxt.js', 'nuxtjs']:
+                        skills_data['frontend_frameworks']['Nuxt.js'] = skills_data['frontend_frameworks'].get('Nuxt.js', 0) + 1
             
             # データベース情報
             if hasattr(app, 'database') and app.database:
                 if 'type' in app.database and app.database['type']:
                     db = app.database['type']
                     skills_data['databases'][db] = skills_data['databases'].get(db, 0) + 1
+            
+            # 開発環境情報からDevOps技術を抽出
+            if hasattr(app, 'development_environment') and app.development_environment:
+                # Dockerを使用しているかチェック
+                if 'virtualization' in app.development_environment:
+                    virtualization = app.development_environment['virtualization']
+                    if virtualization:
+                        if 'docker' in virtualization.lower():
+                            skills_data['devops_tools']['Docker'] = skills_data['devops_tools'].get('Docker', 0) + 1
+                        if 'docker-compose' in virtualization.lower() or 'docker compose' in virtualization.lower():
+                            skills_data['devops_tools']['Docker Compose'] = skills_data['devops_tools'].get('Docker Compose', 0) + 1
+                
+                # CI/CDツールを抽出
+                if 'ci_cd' in app.development_environment and app.development_environment['ci_cd']:
+                    ci_cd = app.development_environment['ci_cd']
+                    if ci_cd:
+                        skills_data['devops_tools'][ci_cd] = skills_data['devops_tools'].get(ci_cd, 0) + 1
+                
+                # インフラ情報からクラウド技術を抽出
+                if 'infrastructure' in app.development_environment and app.development_environment['infrastructure']:
+                    infra = app.development_environment['infrastructure']
+                    if infra:
+                        # AWSやAzure、GCPなどのクラウドサービスが含まれているか確認
+                        cloud_providers = ['aws', 'azure', 'gcp', 'google cloud', 'heroku', 'vercel', 'netlify']
+                        for provider in cloud_providers:
+                            if provider in infra.lower():
+                                # プロバイダー名を整形（例：awsをAWS、gcpをGCP）
+                                if provider == 'aws':
+                                    clean_name = 'AWS'
+                                elif provider == 'gcp' or provider == 'google cloud':
+                                    clean_name = 'Google Cloud'
+                                else:
+                                    clean_name = provider.capitalize()
+                                skills_data['cloud_services'][clean_name] = skills_data['cloud_services'].get(clean_name, 0) + 1
+                
+                # PythonAnywhereも追加
+                if 'pythonanywhere' in str(app.development_environment).lower():
+                    skills_data['cloud_services']['PythonAnywhere'] = skills_data['cloud_services'].get('PythonAnywhere', 0) + 1
             
             # アプリの種類から専門分野を推測
             if hasattr(app, 'app_types') and app.app_types:

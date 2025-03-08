@@ -3,10 +3,18 @@
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
                 <i class="bi bi-cpu text-cyber-blue"></i> 
-                <span class="text-cyber-blue">開発に使用したパソコン環境</span>
+                <span class="text-cyber-blue">ハードウェア環境</span>
             </h2>
 
-            <form id="hardware-form">
+            <div class="hardware-inputs">
+                <!-- タブの説明文 -->
+                <div class="mb-4">
+                    <p class="text-cyber-blue mb-3" style="font-size: 1.05rem;">
+                        このセクションでは、アプリケーション開発に使用した物理的なハードウェア環境（機種、CPU、メモリなど）について教えてください。
+                        開発に使用したソフトウェア（エディタ、バージョン管理など）については、「ソフトウェア環境」タブで入力できます。
+                    </p>
+                </div>
+                
                 <!-- メーカーと機種情報（一番上に移動） -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-blue">使用パソコンのメーカー</label>
@@ -208,7 +216,7 @@
                         {% endfor %}
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

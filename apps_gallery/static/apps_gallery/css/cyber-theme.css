@@ -12,6 +12,7 @@
     --cyber-emerald: #50c878;   /* データベース用 */
     --cyber-red: #ff3e3e;       /* セキュリティ用 */
     --cyber-yellow: #ffff00;    /* 開発ストーリー用 */
+    --cyber-teal: #008080;      /* ホスティング用 */
     
     --cyber-bg-dark: rgba(13, 25, 45, 0.8);
     --cyber-bg-darker: rgba(0, 20, 50, 0.8);
@@ -47,6 +48,7 @@ h2, h3, h4, h5, label {
 #backend-section { --section-color: var(--cyber-aqua) !important; }
 #frontend-section { --section-color: var(--cyber-pink) !important; }
 #database-section { --section-color: var(--cyber-emerald) !important; }
+#hosting-section { --section-color: var(--cyber-teal) !important; }
 #security-section { --section-color: var(--cyber-red) !important; }
 #development-section { --section-color: var(--cyber-yellow) !important; }
 
@@ -137,6 +139,12 @@ button#database-tab.nav-link.text-neon {
     color: var(--cyber-emerald) !important; 
     text-shadow: 0 0 10px var(--cyber-emerald) !important;
     border-color: var(--cyber-emerald) !important;
+}
+.nav-tabs .nav-item .nav-link.text-neon#hosting-tab,
+button#hosting-tab.nav-link.text-neon { 
+    color: var(--cyber-teal) !important; 
+    text-shadow: 0 0 10px var(--cyber-teal) !important;
+    border-color: var(--cyber-teal) !important;
 }
 .nav-tabs .nav-item .nav-link.text-neon#security-tab,
 button#security-tab.nav-link.text-neon { 

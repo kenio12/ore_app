@@ -5,10 +5,18 @@
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
                 <i class="bi bi-tools text-cyber-orange"></i>
-                <span class="text-cyber-orange">開発環境</span>
+                <span class="text-cyber-orange">ソフトウェア環境</span>
             </h2>
 
-            <form id="dev-env-form">
+            <div class="dev-env-inputs">
+                <!-- タブの説明文 -->
+                <div class="mb-4">
+                    <p class="text-cyber-orange mb-3" style="font-size: 1.05rem;">
+                        このセクションでは、アプリケーション開発に使用したソフトウェア環境（エディタ、バージョン管理、CI/CDなど）について教えてください。
+                        物理的なパソコン機器（機種、CPU、メモリなど）については、「ハードウェア環境」タブで入力できます。
+                    </p>
+                </div>
+                
                 <!-- IDE/エディタ -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-orange">使用したIDE/エディタ <span class="text-danger">*</span></label>
@@ -23,7 +31,7 @@
                                 <input type="checkbox" 
                                        id="editor-{{ key }}"
                                        class="form-check-input cyber-orange-focus"
-                                       name="editors"
+                                       name="development_environment_editors"
                                        value="{{ key }}"
                                        {% if app.development_environment and app.development_environment.editors and key in app.development_environment.editors %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -51,7 +59,7 @@
                                 <input type="checkbox" 
                                        id="vc-{{ key }}"
                                        class="form-check-input cyber-orange-focus"
-                                       name="version_control"
+                                       name="development_environment_version_control"
                                        value="{{ key }}"
                                        {% if app.development_environment and key in app.development_environment.version_control %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -83,7 +91,7 @@
                                 <input type="checkbox" 
                                        id="virt-{{ key }}"
                                        class="form-check-input cyber-orange-focus"
-                                       name="virtualization"
+                                       name="development_environment_virtualization"
                                        value="{{ key }}"
                                        {% if app.development_environment and key in app.development_environment.virtualization %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -108,7 +116,7 @@
                                 <input type="radio" 
                                        id="team-size-{{ key }}"
                                        class="form-check-input cyber-orange-focus"
-                                       name="team_size"
+                                       name="development_environment_team_size"
                                        value="{{ key }}"
                                        {% if app.development_environment and app.development_environment.team_size == key %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -135,7 +143,7 @@
                                 <input type="checkbox" 
                                        id="comm-{{ key }}"
                                        class="form-check-input cyber-orange-focus"
-                                       name="communication_tools"
+                                       name="development_environment_communication_tools"
                                        value="{{ key }}"
                                        {% if app.development_environment and key in app.development_environment.communication_tools %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -158,7 +166,7 @@
                                 <input type="checkbox" 
                                        id="cicd-{{ key }}"
                                        class="form-check-input cyber-orange-focus"
-                                       name="ci_cd"
+                                       name="development_environment_ci_cd"
                                        value="{{ key }}"
                                        {% if app.development_environment and app.development_environment.ci_cd and key in app.development_environment.ci_cd %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -188,7 +196,7 @@
                                 <input type="checkbox" 
                                        id="infra-{{ key }}"
                                        class="form-check-input cyber-orange-focus"
-                                       name="infrastructure"
+                                       name="development_environment_infrastructure"
                                        value="{{ key }}"
                                        {% if app.development_environment and key in app.development_environment.infrastructure %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -213,7 +221,7 @@
                                 <input type="checkbox" 
                                        id="api-tool-{{ key }}"
                                        class="form-check-input cyber-orange-focus"
-                                       name="api_tools"
+                                       name="development_environment_api_tools"
                                        value="{{ key }}"
                                        {% if app.development_environment and key in app.development_environment.api_tools %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -238,7 +246,7 @@
                                 <input type="checkbox" 
                                        id="monitoring-{{ key }}"
                                        class="form-check-input cyber-orange-focus"
-                                       name="monitoring_tools"
+                                       name="development_environment_monitoring_tools"
                                        value="{{ key }}"
                                        {% if app.development_environment and key in app.development_environment.monitoring_tools %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
@@ -248,7 +256,7 @@
                         {% endfor %}
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

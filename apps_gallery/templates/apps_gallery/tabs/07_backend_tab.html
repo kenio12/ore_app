@@ -15,7 +15,7 @@
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
                 <i class="bi bi-server text-cyber-aqua"></i>
-                <span class="cyber-title">バックエンド</span>
+                <span class="text-cyber-aqua">バックエンド</span>
             </h2>
 
             <!-- メイン使用言語 -->
@@ -30,7 +30,7 @@
                         <div class="form-check">
                             <input type="radio" 
                                    class="form-check-input cyber-form-check-input"
-                                   name="backend[main_language]"
+                                   name="backend_main_language"
                                    value="{{ key }}"
                                    {% if key == app.backend.main_language %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
@@ -64,7 +64,7 @@
                         <div class="form-check">
                             <input type="checkbox" 
                                    class="form-check-input cyber-form-check-input"
-                                   name="backend[packages][]"
+                                   name="backend_packages"
                                    value="{{ hint }}"
                                    {% if hint in app.backend.packages %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="form-check">
                         <input type="radio" 
                                class="form-check-input cyber-form-check-input"
-                               name="backend[framework]"
+                               name="backend_framework"
                                value="${key}"
                                ${currentBackend.framework === key ? 'checked' : ''}
                                {% if readonly %}disabled{% endif %}>
@@ -188,13 +188,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // 初期表示時の処理
-        const selectedLanguage = document.querySelector('input[name="backend[main_language]"]:checked');
+        const selectedLanguage = document.querySelector('input[name="backend_main_language"]:checked');
         if (selectedLanguage) {
             updateFrameworks(selectedLanguage.value);
         }
 
         // 言語選択時の処理
-        document.querySelectorAll('input[name="backend[main_language]"]').forEach(function(input) {
+        document.querySelectorAll('input[name="backend_main_language"]').forEach(function(input) {
             input.addEventListener('change', function(e) {
                 updateFrameworks(e.target.value);
             });

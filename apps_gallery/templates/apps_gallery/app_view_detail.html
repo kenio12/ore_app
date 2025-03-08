@@ -42,14 +42,6 @@
                 <span class="fs-4 me-2 cyber-emoji" style="display: inline-block; font-size: 1.5rem;">&#x1F916;</span>
             </a>
         </li>
-        <!-- アナリティクスへのリンク（アプリの作成者にのみ表示） -->
-        {% if request.user == app.author %}
-        <li class="nav-item" role="presentation">
-            <a href="{% url 'apps_gallery:analytics' app.pk %}" class="nav-link cyber-analytics" title="アナリティクス" style="color: var(--cyber-teal) !important; text-shadow: 0 0 10px var(--cyber-teal) !important; border-color: var(--cyber-teal) !important;">
-                <i class="fas fa-chart-line me-1"></i> アナリティクス
-            </a>
-        </li>
-        {% endif %}
         <li class="nav-item" role="presentation">
             <button class="nav-link active text-neon" id="screenshots-tab" data-bs-toggle="tab" data-bs-target="#screenshots-section" type="button" role="tab" aria-controls="screenshots-section" aria-selected="true" style="color: var(--cyber-purple) !important; text-shadow: 0 0 10px var(--cyber-purple) !important; border-color: var(--cyber-purple) !important;">スクリーンショット</button>
         </li>
@@ -60,10 +52,10 @@
             <button class="nav-link text-neon" id="appeal-tab" data-bs-toggle="tab" data-bs-target="#appeal-section" type="button" role="tab" aria-controls="appeal-section" aria-selected="false" style="color: var(--cyber-green) !important; text-shadow: 0 0 10px var(--cyber-green) !important; border-color: var(--cyber-green) !important;">アピール</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-section" type="button" role="tab" aria-controls="hardware-section" aria-selected="false" style="color: var(--cyber-blue) !important; text-shadow: 0 0 10px var(--cyber-blue) !important; border-color: var(--cyber-blue) !important;">ハードウェア</button>
+            <button class="nav-link text-neon" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-section" type="button" role="tab" aria-controls="hardware-section" aria-selected="false" style="color: var(--cyber-blue) !important; text-shadow: 0 0 10px var(--cyber-blue) !important; border-color: var(--cyber-blue) !important;">ハード環境</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="dev-env-tab" data-bs-toggle="tab" data-bs-target="#dev-env-section" type="button" role="tab" aria-controls="dev-env-section" aria-selected="false" style="color: var(--cyber-orange) !important; text-shadow: 0 0 10px var(--cyber-orange) !important; border-color: var(--cyber-orange) !important;">開発環境</button>
+            <button class="nav-link text-neon" id="dev-env-tab" data-bs-toggle="tab" data-bs-target="#dev-env-section" type="button" role="tab" aria-controls="dev-env-section" aria-selected="false" style="color: var(--cyber-orange) !important; text-shadow: 0 0 10px var(--cyber-orange) !important; border-color: var(--cyber-orange) !important;">ソフト環境</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link text-neon" id="architecture-tab" data-bs-toggle="tab" data-bs-target="#architecture-section" type="button" role="tab" aria-controls="architecture-section" aria-selected="false" style="color: var(--cyber-lime) !important; text-shadow: 0 0 10px var(--cyber-lime) !important; border-color: var(--cyber-lime) !important;">アーキテクチャ</button>
@@ -76,6 +68,9 @@
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link text-neon" id="database-tab" data-bs-toggle="tab" data-bs-target="#database-section" type="button" role="tab" aria-controls="database-section" aria-selected="false" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 10px var(--cyber-emerald) !important; border-color: var(--cyber-emerald) !important;">データベース</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="hosting-tab" data-bs-toggle="tab" data-bs-target="#hosting-section" type="button" role="tab" aria-controls="hosting-section" aria-selected="false" style="color: var(--cyber-teal) !important; text-shadow: 0 0 10px var(--cyber-teal) !important; border-color: var(--cyber-teal) !important;">ホスティング</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link text-neon" id="security-tab" data-bs-toggle="tab" data-bs-target="#security-section" type="button" role="tab" aria-controls="security-section" aria-selected="false" style="color: var(--cyber-red) !important; text-shadow: 0 0 10px var(--cyber-red) !important; border-color: var(--cyber-red) !important;">セキュリティ</button>
@@ -132,14 +127,19 @@
             {% include 'apps_gallery/tabs/09_database_tab.html' %}
         </div>
 
+        <!-- ホスティングタブ -->
+        <div class="tab-pane fade" id="hosting-section" role="tabpanel" aria-labelledby="hosting-tab">
+            {% include 'apps_gallery/tabs/10_hosting_tab.html' %}
+        </div>
+
         <!-- セキュリティタブ -->
         <div class="tab-pane fade" id="security-section" role="tabpanel" aria-labelledby="security-tab">
-            {% include 'apps_gallery/tabs/10_security_tab.html' %}
+            {% include 'apps_gallery/tabs/11_security_tab.html' %}
         </div>
 
         <!-- 開発ストーリータブ -->
         <div class="tab-pane fade" id="development-section" role="tabpanel" aria-labelledby="development-tab">
-            {% include 'apps_gallery/tabs/11_development_tab.html' %}
+            {% include 'apps_gallery/tabs/12_development_tab.html' %}
         </div>
     </div>
 
@@ -336,41 +336,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 3000); // 3秒後に自動的に閉じる
         });
-    }
-    
-    // ハードウェア情報の展開（既存のコード）
-    const hardwareSection = document.getElementById('hardware-section');
-    if (hardwareSection) {
-        const specs = {
-            pc_type: "{{ app.hardware_specs.pc_type|default:'' }}",
-            device_type: "{{ app.hardware_specs.device_type|default:'' }}",
-            cpu_type: "{{ app.hardware_specs.cpu_type|default:'' }}",
-            memory_size: "{{ app.hardware_specs.memory_size|default:'' }}",
-            storage_type: "{{ app.hardware_specs.storage_type|default:'' }}",
-            monitor_count: "{{ app.hardware_specs.monitor_count|default:'' }}",
-            internet_type: "{{ app.hardware_specs.internet_type|default:'' }}"
-        };
-        
-        // 各ラジオボタンの設定
-        Object.entries(specs).forEach(([key, value]) => {
-            if (!value) return; // 空の値はスキップ
-            
-            const selector = `input[name="hardware_specs[${key}]"][value="${value}"]`;
-            const radioInput = document.querySelector(selector);
-            if (radioInput) {
-                radioInput.checked = true;
-            }
-        });
-
-        // メーカーと機種名
-        const maker = "{{ app.hardware_specs.maker|default:'' }}";
-        const model = "{{ app.hardware_specs.model|default:'' }}";
-        
-        const makerInput = document.getElementById('maker');
-        const modelInput = document.getElementById('model');
-        
-        if (makerInput && maker) makerInput.value = maker;
-        if (modelInput && model) modelInput.value = model;
     }
 });
 </script>

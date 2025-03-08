@@ -162,6 +162,14 @@ class AppGallery(models.Model):
         help_text='フロントエンド関連の情報（言語、フレームワーク、CSSフレームワークなど）'
     )
 
+    # ホスティング情報
+    hosting = models.JSONField(
+        'ホスティング情報',
+        default=dict,
+        blank=True,
+        help_text='ホスティング関連の情報（Webアプリケーションホスティング、デプロイ方法など）'
+    )
+
     # データベース情報
     database = models.JSONField(
         'データベース情報',

@@ -22,14 +22,485 @@ function logFormChangedState(source, value) {
     console.trace(); // スタックトレースを出力
 }
 
+// 各タブのフォームからJSONデータを収集してメインフォームに追加する関数
+function collectTabsFormData(formData) {
+    console.log('タブフォームデータの収集を開始します');
+    
+    // 開発環境タブのフォームデータ収集
+    const devEnvData = collectDevEnvFormData();
+    if (devEnvData) {
+        formData.append('development_environment', JSON.stringify(devEnvData));
+        console.log('開発環境データを追加しました', devEnvData);
+    }
+    
+    // バックエンドタブのフォームデータ収集
+    const backendData = collectBackendFormData();
+    if (backendData) {
+        formData.append('backend', JSON.stringify(backendData));
+        console.log('バックエンドデータを追加しました', backendData);
+    }
+    
+    // フロントエンドタブのフォームデータ収集
+    const frontendData = collectFrontendFormData();
+    if (frontendData) {
+        formData.append('frontend', JSON.stringify(frontendData));
+        console.log('フロントエンドデータを追加しました', frontendData);
+    }
+    
+    // ホスティングタブのフォームデータ収集
+    const hostingData = collectHostingFormData();
+    if (hostingData) {
+        formData.append('hosting', JSON.stringify(hostingData));
+        console.log('ホスティングデータを追加しました', hostingData);
+    }
+    
+    // データベースタブのフォームデータ収集
+    const databaseData = collectDatabaseFormData();
+    if (databaseData) {
+        formData.append('database', JSON.stringify(databaseData));
+        console.log('データベースデータを追加しました', databaseData);
+    }
+    
+    // セキュリティタブのフォームデータ収集
+    const securityData = collectSecurityFormData();
+    if (securityData) {
+        formData.append('security', JSON.stringify(securityData));
+        console.log('セキュリティデータを追加しました', securityData);
+    }
+    
+    // アーキテクチャタブのフォームデータ収集
+    const architectureData = collectArchitectureFormData();
+    if (architectureData) {
+        formData.append('architecture', JSON.stringify(architectureData));
+        console.log('アーキテクチャデータを追加しました', architectureData);
+    }
+    
+    // 開発ストーリータブのフォームデータ収集
+    const developmentStoryData = collectDevelopmentStoryFormData();
+    if (developmentStoryData) {
+        formData.append('development_story', JSON.stringify(developmentStoryData));
+        console.log('開発ストーリーデータを追加しました', developmentStoryData);
+    }
+    
+    // デバッグ情報: フォームデータの内容を確認
+    console.log('===== FormData内容確認 (collectTabsFormData後) =====');
+    console.log('FormDataのキー:');
+    for (let key of formData.keys()) {
+        console.log('- ' + key);
+    }
+    
+    // 実際にJSONフィールドが含まれているか確認
+    console.log('JSONフィールドの確認:');
+    const jsonFields = ['development_environment', 'architecture', 'backend', 'frontend', 'hosting', 'database', 'security', 'development_story'];
+    jsonFields.forEach(field => {
+        const value = formData.get(field);
+        if (value) {
+            console.log(`${field}が存在: 文字数=${value.length}`);
+            try {
+                const jsonData = JSON.parse(value);
+                console.log(`${field}の内容:`, jsonData);
+            } catch (e) {
+                console.error(`${field}はJSON形式ではありません:`, e);
+            }
+        } else {
+            console.warn(`${field}はFormDataに含まれていません`);
+        }
+    });
+    console.log('============================================');
+    
+    return formData;
+}
+
+// 開発環境タブのフォームデータ収集
+function collectDevEnvFormData() {
+    console.log('開発環境タブのデータ収集を開始');
+    
+    // 開発環境タブが存在するか確認
+    const devEnvTab = document.getElementById('dev-env-section');
+    if (!devEnvTab) {
+        console.warn('開発環境タブが見つかりません');
+        return null;
+    }
+    
+    console.log('開発環境タブが見つかりました:', devEnvTab);
+    
+    // 開発環境タブの内部構造を確認
+    console.log('=== 開発環境タブの内部構造 ===');
+    console.log('タブ内のフォームID:', devEnvTab.querySelector('form')?.id || 'フォームなし');
+    console.log('タブ内の入力要素数:', devEnvTab.querySelectorAll('input').length);
+    console.log('タブ内のチェックボックス数:', devEnvTab.querySelectorAll('input[type="checkbox"]').length);
+    console.log('タブ内のラジオボタン数:', devEnvTab.querySelectorAll('input[type="radio"]').length);
+    
+    // タブ内のIDを持つ要素を表示
+    const elementsWithId = devEnvTab.querySelectorAll('[id]');
+    console.log('タブ内のIDを持つ要素:', Array.from(elementsWithId).map(el => el.id));
+    
+    const data = {};
+    
+    // エディタのチェックボックス
+    data.editors = [];
+    devEnvTab.querySelectorAll('input[name="editors"]:checked').forEach(input => {
+        data.editors.push(input.value);
+    });
+    
+    // デバッグ: editors要素の確認
+    console.log('=== editors要素の確認 ===');
+    const allEditorsInputs = devEnvTab.querySelectorAll('input[name="editors"]');
+    console.log('editors入力要素の総数:', allEditorsInputs.length);
+    console.log('チェック済みeditors要素数:', devEnvTab.querySelectorAll('input[name="editors"]:checked').length);
+    if (allEditorsInputs.length > 0) {
+        console.log('最初のeditors要素のID:', allEditorsInputs[0].id);
+        console.log('最初のeditors要素の値:', allEditorsInputs[0].value);
+    } else {
+        console.warn('editors要素が見つかりません');
+        // 名前に"editor"を含む要素も探す（名前付けの問題の可能性）
+        const editorLikeInputs = devEnvTab.querySelectorAll('input[id*="editor"]');
+        console.log('editorという名前を含む要素数:', editorLikeInputs.length);
+        if (editorLikeInputs.length > 0) {
+            console.log('editorという名前を含む最初の要素のID:', editorLikeInputs[0].id);
+            console.log('editorという名前を含む最初の要素のname属性:', editorLikeInputs[0].name);
+        }
+    }
+    
+    // バージョン管理システム
+    data.version_control = [];
+    devEnvTab.querySelectorAll('input[name="version_control"]:checked').forEach(input => {
+        data.version_control.push(input.value);
+    });
+    
+    // 仮想化ツール
+    data.virtualization = [];
+    devEnvTab.querySelectorAll('input[name="virtualization"]:checked').forEach(input => {
+        data.virtualization.push(input.value);
+    });
+    
+    // チームサイズ
+    const teamSizeInput = devEnvTab.querySelector('input[name="team_size"]:checked');
+    if (teamSizeInput) {
+        data.team_size = teamSizeInput.value;
+    }
+    
+    // コミュニケーションツール
+    data.communication_tools = [];
+    devEnvTab.querySelectorAll('input[name="communication_tools"]:checked').forEach(input => {
+        data.communication_tools.push(input.value);
+    });
+    
+    // CI/CD
+    data.ci_cd = [];
+    devEnvTab.querySelectorAll('input[name="ci_cd"]:checked').forEach(input => {
+        data.ci_cd.push(input.value);
+    });
+    
+    // インフラストラクチャ
+    data.infrastructure = [];
+    devEnvTab.querySelectorAll('input[name="infrastructure"]:checked').forEach(input => {
+        data.infrastructure.push(input.value);
+    });
+    
+    // APIツール
+    data.api_tools = [];
+    devEnvTab.querySelectorAll('input[name="api_tools"]:checked').forEach(input => {
+        data.api_tools.push(input.value);
+    });
+    
+    // モニタリングツール
+    data.monitoring_tools = [];
+    devEnvTab.querySelectorAll('input[name="monitoring_tools"]:checked').forEach(input => {
+        data.monitoring_tools.push(input.value);
+    });
+    
+    // 収集したデータの要約
+    console.log('=== 収集した開発環境データの要約 ===');
+    for (const [key, value] of Object.entries(data)) {
+        if (Array.isArray(value)) {
+            console.log(`${key}: ${value.length}項目`);
+        } else {
+            console.log(`${key}: ${value || '未設定'}`);
+        }
+    }
+    console.log('===============================');
+    
+    console.log('収集した開発環境データ:', data);
+    return data;
+}
+
+// バックエンドタブのフォームデータ収集
+function collectBackendFormData() {
+    console.log('バックエンドタブのデータ収集を開始');
+    
+    // バックエンドタブが存在するか確認
+    const backendTab = document.getElementById('backend-section');
+    if (!backendTab) {
+        console.warn('バックエンドタブが見つかりません');
+        return null;
+    }
+    
+    const data = {};
+    
+    // バックエンド言語
+    data.languages = [];
+    backendTab.querySelectorAll('input[name="backend_languages"]:checked').forEach(input => {
+        data.languages.push(input.value);
+    });
+    
+    // バックエンドフレームワーク
+    data.frameworks = [];
+    backendTab.querySelectorAll('input[name="backend_frameworks"]:checked').forEach(input => {
+        data.frameworks.push(input.value);
+    });
+    
+    // バックエンドライブラリ
+    data.libraries = [];
+    backendTab.querySelectorAll('input[name="backend_libraries"]:checked').forEach(input => {
+        data.libraries.push(input.value);
+    });
+    
+    console.log('収集したバックエンドデータ:', data);
+    return data;
+}
+
+// フロントエンドタブのフォームデータ収集
+function collectFrontendFormData() {
+    console.log('フロントエンドタブのデータ収集を開始');
+    
+    // フロントエンドタブが存在するか確認
+    const frontendTab = document.getElementById('frontend-section');
+    if (!frontendTab) {
+        console.warn('フロントエンドタブが見つかりません');
+        return null;
+    }
+    
+    const data = {};
+    
+    // フロントエンド言語
+    data.languages = [];
+    frontendTab.querySelectorAll('input[name="frontend_languages"]:checked').forEach(input => {
+        data.languages.push(input.value);
+    });
+    
+    // フロントエンドフレームワーク
+    data.frameworks = [];
+    frontendTab.querySelectorAll('input[name="frontend_frameworks"]:checked').forEach(input => {
+        data.frameworks.push(input.value);
+    });
+    
+    // UIライブラリ
+    data.ui_libraries = [];
+    frontendTab.querySelectorAll('input[name="ui_libraries"]:checked').forEach(input => {
+        data.ui_libraries.push(input.value);
+    });
+    
+    console.log('収集したフロントエンドデータ:', data);
+    return data;
+}
+
+// データベースタブのフォームデータ収集
+function collectDatabaseFormData() {
+    console.log('データベースタブのデータ収集を開始');
+    
+    // データベースタブが存在するか確認
+    const databaseTab = document.getElementById('database-section');
+    if (!databaseTab) {
+        console.warn('データベースタブが見つかりません');
+        return null;
+    }
+    
+    const data = {};
+    
+    // データベースタイプ
+    data.types = [];
+    databaseTab.querySelectorAll('input[name="database_types"]:checked').forEach(input => {
+        data.types.push(input.value);
+    });
+    
+    // データベース製品
+    data.products = [];
+    databaseTab.querySelectorAll('input[name="database_products"]:checked').forEach(input => {
+        data.products.push(input.value);
+    });
+    
+    // ORMツール
+    data.orm_tools = [];
+    databaseTab.querySelectorAll('input[name="orm_tools"]:checked').forEach(input => {
+        data.orm_tools.push(input.value);
+    });
+    
+    console.log('収集したデータベースデータ:', data);
+    return data;
+}
+
+// セキュリティタブのフォームデータ収集
+function collectSecurityFormData() {
+    console.log('セキュリティタブのデータ収集を開始');
+    
+    // セキュリティタブが存在するか確認
+    const securityTab = document.getElementById('security-section');
+    if (!securityTab) {
+        console.warn('セキュリティタブが見つかりません');
+        return null;
+    }
+    
+    const data = {};
+    
+    // 認証方式
+    data.auth_methods = [];
+    securityTab.querySelectorAll('input[name="authentication_methods"]:checked').forEach(input => {
+        data.auth_methods.push(input.value);
+    });
+    
+    // セキュリティ対策
+    data.measures = [];
+    securityTab.querySelectorAll('input[name="security_measures"]:checked').forEach(input => {
+        data.measures.push(input.value);
+    });
+    
+    console.log('収集したセキュリティデータ:', data);
+    return data;
+}
+
+// 開発ストーリータブのフォームデータ収集
+function collectDevelopmentStoryFormData() {
+    console.log('開発ストーリータブのデータ収集を開始');
+    
+    // 開発ストーリータブが存在するか確認
+    const developmentTab = document.getElementById('development-section');
+    if (!developmentTab) {
+        console.warn('開発ストーリータブが見つかりません');
+        return null;
+    }
+    
+    const data = {};
+    
+    // 開発開始日
+    const startDate = developmentTab.querySelector('input[name="development_start_date"]');
+    if (startDate && startDate.value) {
+        data.start_date = startDate.value;
+    }
+    
+    // 開発終了日
+    const endDate = developmentTab.querySelector('input[name="development_end_date"]');
+    if (endDate && endDate.value) {
+        data.end_date = endDate.value;
+    }
+    
+    // 開発期間
+    const duration = developmentTab.querySelector('input[name="development_duration"]');
+    if (duration && duration.value) {
+        data.duration = duration.value;
+    }
+    
+    // 開発の動機
+    const motivation = developmentTab.querySelector('textarea[name="development_motivation"]');
+    if (motivation && motivation.value) {
+        data.motivation = motivation.value;
+    }
+    
+    // 工夫したポイント
+    const innovations = developmentTab.querySelector('textarea[name="development_innovations"]');
+    if (innovations && innovations.value) {
+        data.innovations = innovations.value;
+    }
+    
+    // 諦めた機能
+    const abandoned = developmentTab.querySelector('textarea[name="development_abandoned"]');
+    if (abandoned && abandoned.value) {
+        data.abandoned = abandoned.value;
+    }
+    
+    // 今後の予定
+    const futurePlans = developmentTab.querySelector('textarea[name="development_future_plans"]');
+    if (futurePlans && futurePlans.value) {
+        data.future_plans = futurePlans.value;
+    }
+    
+    // 振り返り
+    const reflections = developmentTab.querySelector('textarea[name="development_reflections"]');
+    if (reflections && reflections.value) {
+        data.reflections = reflections.value;
+    }
+    
+    console.log('収集した開発ストーリーデータ:', data);
+    return data;
+}
+
+// アーキテクチャタブのフォームデータ収集
+function collectArchitectureFormData() {
+    console.log('アーキテクチャタブのデータ収集を開始');
+    
+    // アーキテクチャタブが存在するか確認
+    const architectureTab = document.getElementById('architecture-section');
+    if (!architectureTab) {
+        console.warn('アーキテクチャタブが見つかりません');
+        return null;
+    }
+    
+    const data = {};
+    
+    // アーキテクチャパターン
+    data.patterns = [];
+    architectureTab.querySelectorAll('input[name="architecture_patterns"]:checked').forEach(input => {
+        data.patterns.push(input.value);
+    });
+    
+    // デプロイ方法
+    data.deployment = [];
+    architectureTab.querySelectorAll('input[name="deployment_methods"]:checked').forEach(input => {
+        data.deployment.push(input.value);
+    });
+    
+    console.log('収集したアーキテクチャデータ:', data);
+    return data;
+}
+
+// ホスティングタブのフォームデータ収集
+function collectHostingFormData() {
+    console.log('ホスティングタブのデータ収集を開始');
+    
+    // ホスティングタブが存在するか確認
+    const hostingTab = document.getElementById('hosting-section');
+    if (!hostingTab) {
+        console.warn('ホスティングタブが見つかりません');
+        return null;
+    }
+    
+    const data = {};
+    
+    // Webアプリケーションホスティングサービス
+    data.services = [];
+    hostingTab.querySelectorAll('input[name="hosting_services"]:checked').forEach(input => {
+        data.services.push(input.value);
+    });
+    
+    // デプロイ方法
+    data.deployment_methods = [];
+    hostingTab.querySelectorAll('input[name="deployment_methods"]:checked').forEach(input => {
+        data.deployment_methods.push(input.value);
+    });
+    
+    // 備考
+    const notes = hostingTab.querySelector('textarea[name="hosting_notes"]');
+    if (notes && notes.value) {
+        data.notes = notes.value;
+    }
+    
+    console.log('収集したホスティングデータ:', data);
+    return data;
+}
+
 // フォームデータをシリアライズする関数
 function serializeForm() {
     const form = document.getElementById('appForm');
     if (!form) return {};
     
-    const formData = new FormData(form);
-    const serialized = {};
+    // FormData オブジェクトを作成
+    let formData = new FormData(form);
     
+    // 各タブのフォームデータを収集して追加
+    formData = collectTabsFormData(formData);
+    
+    // シリアライズ
+    const serialized = {};
     for (let [key, value] of formData.entries()) {
         if (value instanceof File) {
             serialized[key] = value.name || 'file-selected';
@@ -38,6 +509,7 @@ function serializeForm() {
         }
     }
     
+    console.log('シリアライズされたフォームデータ:', serialized);
     return serialized;
 }
 
@@ -49,24 +521,92 @@ function setupChangeListeners() {
     
     formElements.forEach(element => {
         element.addEventListener('change', handleFormChange);
-        element.addEventListener('input', handleFormChange);
+        
+        // テキスト入力要素の場合は入力イベントも監視
+        if (element.tagName === 'TEXTAREA' || 
+            (element.tagName === 'INPUT' && 
+             ['text', 'email', 'url', 'number'].includes(element.type))) {
+            element.addEventListener('input', handleFormChange);
+        }
     });
     
-    console.log(`${formElements.length}個の入力フィールドに変更リスナーを設定しました`);
+    // 各タブの独立フォーム要素も監視
+    const tabForms = document.querySelectorAll('.tab-pane form');
+    tabForms.forEach(form => {
+        const tabFormElements = form.querySelectorAll(
+            'input:not([type=hidden]), textarea, select'
+        );
+        
+        tabFormElements.forEach(element => {
+            element.addEventListener('change', handleFormChange);
+            
+            // テキスト入力要素の場合は入力イベントも監視
+            if (element.tagName === 'TEXTAREA' || 
+                (element.tagName === 'INPUT' && 
+                 ['text', 'email', 'url', 'number'].includes(element.type))) {
+                element.addEventListener('input', handleFormChange);
+            }
+        });
+    });
+    
+    // フォームの直接送信を防止
+    const appForm = document.getElementById('appForm');
+    if (appForm) {
+        appForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            console.log('フォームの直接送信を防止しました - 自動保存が有効です');
+        });
+    }
 }
 
-// フォームの変更を処理する関数
-function handleFormChange() {
+// フォーム変更時の処理
+function handleFormChange(event) {
+    // 変更されたフォーム要素の情報をログ出力
+    const element = event.target;
+    console.log('=== フォーム要素が変更されました ===');
+    console.log('変更要素:', element.tagName);
+    console.log('要素ID:', element.id);
+    console.log('要素名:', element.name);
+    console.log('要素タイプ:', element.type);
+    console.log('要素値:', element.value);
+    
+    // どのタブ内の要素か特定
+    let tabElement = element.closest('.tab-pane');
+    if (tabElement) {
+        console.log('変更タブID:', tabElement.id);
+    } else {
+        console.log('タブ外の要素が変更されました');
+    }
+    
+    // 変更フラグを設定
     if (!appState.formChanged) {
         appState.formChanged = true;
         logFormChangedState('handleFormChange', true);
         
-        // 保存状態表示を更新
-        updateSaveStatus('unsaved', '未保存の変更があります');
+        // 自動保存をスケジュール
+        scheduleAutoSave();
+        
+        console.log('フォーム変更フラグをONにしました → 自動保存をスケジュールしました');
+    } else {
+        console.log('フォーム変更フラグは既にONです → 自動保存は既にスケジュール済み');
     }
     
-    // 自動保存をスケジュール
-    scheduleAutoSave();
+    // 変更ボックスを表示（自作関数）
+    const changedBox = document.createElement('div');
+    changedBox.style.position = 'fixed';
+    changedBox.style.bottom = '20px';
+    changedBox.style.right = '20px';
+    changedBox.style.padding = '10px';
+    changedBox.style.backgroundColor = 'rgba(0, 255, 0, 0.7)';
+    changedBox.style.borderRadius = '5px';
+    changedBox.style.zIndex = '9999';
+    changedBox.textContent = `変更検知: ${element.name || element.id || '名前なし要素'}`;
+    document.body.appendChild(changedBox);
+    
+    // 3秒後に変更ボックスを削除
+    setTimeout(() => {
+        document.body.removeChild(changedBox);
+    }, 3000);
 }
 
 // 自動保存をスケジュールする関数
@@ -108,7 +648,10 @@ function performAutoSave() {
     updateSaveStatus('saving', '保存中...');
     
     // フォームデータを取得
-    const formData = new FormData(form);
+    let formData = new FormData(form);
+    
+    // 各タブのフォームデータを収集して追加
+    formData = collectTabsFormData(formData);
     
     // アプリIDを取得
     const appId = form.getAttribute('data-app-id') || '';
@@ -453,24 +996,64 @@ function saveAndGoHome() {
     }
 }
 
+// 現在のタブ状態を保存する関数
+function saveCurrentTab(tabId) {
+    const appId = document.querySelector('#appForm').getAttribute('data-app-id');
+    const storageKey = `active_tab_${appId || 'new'}`;
+    localStorage.setItem(storageKey, tabId);
+    console.log(`現在のタブ(${tabId})を保存しました`);
+}
+
+// 保存されたタブ状態を復元する関数
+function restoreTabState() {
+    const appId = document.querySelector('#appForm').getAttribute('data-app-id');
+    const storageKey = `active_tab_${appId || 'new'}`;
+    const savedTabId = localStorage.getItem(storageKey);
+    
+    if (savedTabId) {
+        console.log(`保存されたタブ(${savedTabId})を復元します`);
+        // タブエレメントを取得
+        const tabElement = document.getElementById(savedTabId);
+        
+        if (tabElement) {
+            // Bootstrapのタブを使って表示
+            const tabInstance = new bootstrap.Tab(tabElement);
+            tabInstance.show();
+        }
+    }
+}
+
+// タブ切り替え時のイベントリスナーを追加
+document.addEventListener('shown.bs.tab', function(event) {
+    // タブIDを取得してローカルストレージに保存
+    const tabId = event.target.id;
+    saveCurrentTab(tabId);
+});
+
+// セットアップ自動保存
+function setupFormAutosave() {
+    setupChangeListeners();
+    
+    // 定期的に保存状態を確認
+    setInterval(checkSaveStatus, 3000);
+    
+    // ページを離れる前の警告
+    window.addEventListener('beforeunload', function(e) {
+        if (formIsDirty && !justSaved) {
+            const confirmationMessage = '変更が保存されていません。このページを離れますか？';
+            e.returnValue = confirmationMessage;
+            return confirmationMessage;
+        }
+    });
+    
+    console.log('フォーム自動保存が設定されました');
+    showToastMessage('自動保存機能が有効です');
+}
+
 // 自動保存機能を初期化
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOMContentLoadedイベント発生');
     
-    // 変更フラグを強制的にリセット
-    appState.formChanged = false;
-    logFormChangedState('DOMContentLoaded', false);
-    
-    // appStateの状態を確認
-    console.log('appState初期状態:', JSON.stringify(appState));
-    
-    // ホームダイアログを完全に削除（不要になったため）
-    const homeDialog = document.getElementById('homeDialog');
-    if (homeDialog) {
-        homeDialog.parentNode.removeChild(homeDialog);
-        console.log('ホームダイアログを完全に削除しました');
-    }
-
     // ホームボタンのイベントリスナーを設定
     const homeButton = document.getElementById('homeButton');
     if (homeButton) {
@@ -495,31 +1078,30 @@ document.addEventListener('DOMContentLoaded', function() {
         const isReadOnly = form.getAttribute('data-readonly') === "true";
         if (isReadOnly) {
             console.log('読み取り専用モードのため自動保存は無効です');
-            return;
-        }
+        } else {
+            // URLチェック - アプリIDがあるのにURLがcreateの場合は修正する
+            const appId = form.getAttribute('data-app-id');
+            if (appId && window.location.pathname.includes('/create/')) {
+                // 現在のURLを取得
+                const currentPath = window.location.pathname;
+                // createをedit/{app_id}/に置き換え
+                const newPath = currentPath.replace('/create/', `/edit/${appId}/`);
+                // URLを更新（履歴を置き換え）
+                window.history.replaceState({}, '', newPath);
+                console.log(`ページロード時にURLを更新しました: ${newPath}`);
+            }
 
-        // URLチェック - アプリIDがあるのにURLがcreateの場合は修正する
-        const appId = form.getAttribute('data-app-id');
-        if (appId && window.location.pathname.includes('/create/')) {
-            // 現在のURLを取得
-            const currentPath = window.location.pathname;
-            // createをedit/{app_id}/に置き換え
-            const newPath = currentPath.replace('/create/', `/edit/${appId}/`);
-            // URLを更新（履歴を置き換え）
-            window.history.replaceState({}, '', newPath);
-            console.log(`ページロード時にURLを更新しました: ${newPath}`);
+            // 初期データを保存
+            appState.initialData = serializeForm();
+            
+            // 自動保存機能をセットアップ
+            setupFormAutosave();
+            
+            // フォームにresetDirty関数を追加
+            form.resetDirty = resetFormDirty;
+            
+            console.log('自動保存機能が初期化されました');
         }
-
-        // 初期データを保存
-        appState.initialData = serializeForm();
-        
-        // 変更リスナーを設定
-        setupChangeListeners();
-        
-        // フォームにresetDirty関数を追加
-        form.resetDirty = resetFormDirty;
-        
-        console.log('自動保存機能が初期化されました');
     } else {
         console.warn('[DEBUG] フォームが見つかりません');
     }
@@ -561,6 +1143,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
         window.location.reload(true);  // 強制的にページを再読み込み
     }
+    
+    // 保存されたタブ状態を復元
+    restoreTabState();
 });
 
 // バックフォワードキャッシュ対策を強化

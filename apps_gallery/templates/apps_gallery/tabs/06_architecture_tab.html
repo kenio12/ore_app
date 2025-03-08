@@ -32,7 +32,7 @@
                             <input type="checkbox" 
                                    id="arch-{{ key }}"
                                    class="form-check-input cyber-form-check-input"
-                                   name="architecture[patterns][]"
+                                   name="architecture_patterns"
                                    value="{{ key }}"
                                    {% if app.architecture.patterns and key in app.architecture.patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
@@ -59,7 +59,7 @@
                             <input type="checkbox" 
                                    id="design-{{ key }}"
                                    class="form-check-input cyber-form-check-input"
-                                   name="architecture[design_patterns][]"
+                                   name="architecture_design_patterns"
                                    value="{{ key }}"
                                    {% if app.architecture.design_patterns and key in app.architecture.design_patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
@@ -79,7 +79,7 @@
                     ※選択したアーキテクチャについて、なぜそれを選んだのか、
                     どのように実装したのかを自由に説明してください。
                 </p>
-                <textarea name="architecture[description]"
+                <textarea name="architecture_description"
                           class="form-control cyber-green-focus"
                           rows="4"
                           placeholder="採用したアーキテクチャとその理由を説明してください..."

@@ -1,0 +1,616 @@
+{% include 'apps_gallery/shared/disabled_styles.html' %}
+
+<div id="hosting" class="container" style="margin: 0 !important; padding: 0 !important;">
+    <div class="card border-0 shadow-lg" style="background-color: rgba(13, 25, 45, 0.8) !important;">
+        <div class="card-body">
+            <h2 class="card-title h3 mb-4">
+                <i class="bi bi-cloud text-cyber-teal"></i>
+                <span class="text-cyber-teal">ホスティング</span>
+            </h2>
+
+            <div class="hosting-inputs">
+                <!-- Webアプリケーションホスティング -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-teal" style="color: #ffffff !important;">Webアプリケーションホスティング</label>
+                    <p class="text-muted small mb-3 text-cyber-teal" style="color: #ffffff !important;">
+                        ※アプリケーション全体のホスティングサービスを選択してください
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-aws"
+                                       name="hosting_services"
+                                       value="aws"
+                                       class="form-check-input"
+                                       {% if 'aws' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-aws">
+                                    AWS (EC2, Elastic Beanstalk)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-gcp"
+                                       name="hosting_services"
+                                       value="gcp"
+                                       class="form-check-input"
+                                       {% if 'gcp' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-gcp">
+                                    Google Cloud Platform
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-azure"
+                                       name="hosting_services"
+                                       value="azure"
+                                       class="form-check-input"
+                                       {% if 'azure' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-azure">
+                                    Microsoft Azure
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-heroku"
+                                       name="hosting_services"
+                                       value="heroku"
+                                       class="form-check-input"
+                                       {% if 'heroku' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-heroku">
+                                    Heroku
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-vercel"
+                                       name="hosting_services"
+                                       value="vercel"
+                                       class="form-check-input"
+                                       {% if 'vercel' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-vercel">
+                                    Vercel
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-netlify"
+                                       name="hosting_services"
+                                       value="netlify"
+                                       class="form-check-input"
+                                       {% if 'netlify' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-netlify">
+                                    Netlify
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-digital-ocean"
+                                       name="hosting_services"
+                                       value="digital_ocean"
+                                       class="form-check-input"
+                                       {% if 'digital_ocean' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-digital-ocean">
+                                    Digital Ocean
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-render"
+                                       name="hosting_services"
+                                       value="render"
+                                       class="form-check-input"
+                                       {% if 'render' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-render">
+                                    Render
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-pythonanywhere"
+                                       name="hosting_services"
+                                       value="pythonanywhere"
+                                       class="form-check-input"
+                                       {% if 'pythonanywhere' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-pythonanywhere">
+                                    PythonAnywhere
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-firebase"
+                                       name="hosting_services"
+                                       value="firebase"
+                                       class="form-check-input"
+                                       {% if 'firebase' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-firebase">
+                                    Firebase Hosting
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-github-pages"
+                                       name="hosting_services"
+                                       value="github_pages"
+                                       class="form-check-input"
+                                       {% if 'github_pages' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-github-pages">
+                                    GitHub Pages
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="hosting-other"
+                                       name="hosting_services"
+                                       value="other"
+                                       class="form-check-input"
+                                       {% if 'other' in app.hosting.services %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="hosting-other">
+                                    その他
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- デプロイ方法 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-teal">デプロイ方法</label>
+                    <p class="text-muted small mb-3 text-cyber-teal">
+                        ※アプリケーションをデプロイする方法を選択してください
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="deploy-manual"
+                                       name="deployment_methods"
+                                       value="manual"
+                                       class="form-check-input"
+                                       {% if 'manual' in app.hosting.deployment_methods %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="deploy-manual">
+                                    手動デプロイ
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="deploy-git"
+                                       name="deployment_methods"
+                                       value="git"
+                                       class="form-check-input"
+                                       {% if 'git' in app.hosting.deployment_methods %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="deploy-git">
+                                    Git連携
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="deploy-ci-cd"
+                                       name="deployment_methods"
+                                       value="ci_cd"
+                                       class="form-check-input"
+                                       {% if 'ci_cd' in app.hosting.deployment_methods %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="deploy-ci-cd">
+                                    CI/CDパイプライン
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="deploy-docker"
+                                       name="deployment_methods"
+                                       value="docker"
+                                       class="form-check-input"
+                                       {% if 'docker' in app.hosting.deployment_methods %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="deploy-docker">
+                                    Docker/コンテナ
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="deploy-serverless"
+                                       name="deployment_methods"
+                                       value="serverless"
+                                       class="form-check-input"
+                                       {% if 'serverless' in app.hosting.deployment_methods %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="deploy-serverless">
+                                    サーバーレス
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="deploy-other"
+                                       name="deployment_methods"
+                                       value="other"
+                                       class="form-check-input"
+                                       {% if 'other' in app.hosting.deployment_methods %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="deploy-other">
+                                    その他
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- データベースホスティング -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-teal">データベースホスティング</label>
+                    <p class="text-muted small mb-3 text-cyber-teal">
+                        ※データベース専用のホスティングサービスを選択してください
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="db-hosting-aws-rds"
+                                       name="database_hosting"
+                                       value="aws_rds"
+                                       class="form-check-input"
+                                       {% if 'aws_rds' in app.database.hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="db-hosting-aws-rds">
+                                    AWS RDS
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="db-hosting-gcp-sql"
+                                       name="database_hosting"
+                                       value="gcp_sql"
+                                       class="form-check-input"
+                                       {% if 'gcp_sql' in app.database.hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="db-hosting-gcp-sql">
+                                    Google Cloud SQL
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="db-hosting-azure-db"
+                                       name="database_hosting"
+                                       value="azure_db"
+                                       class="form-check-input"
+                                       {% if 'azure_db' in app.database.hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="db-hosting-azure-db">
+                                    Azure Database
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="db-hosting-heroku-postgres"
+                                       name="database_hosting"
+                                       value="heroku_postgres"
+                                       class="form-check-input"
+                                       {% if 'heroku_postgres' in app.database.hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="db-hosting-heroku-postgres">
+                                    Heroku Postgres
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="db-hosting-mongodb-atlas"
+                                       name="database_hosting"
+                                       value="mongodb_atlas"
+                                       class="form-check-input"
+                                       {% if 'mongodb_atlas' in app.database.hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="db-hosting-mongodb-atlas">
+                                    MongoDB Atlas
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="db-hosting-planetscale"
+                                       name="database_hosting"
+                                       value="planetscale"
+                                       class="form-check-input"
+                                       {% if 'planetscale' in app.database.hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="db-hosting-planetscale">
+                                    PlanetScale
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="db-hosting-supabase"
+                                       name="database_hosting"
+                                       value="supabase"
+                                       class="form-check-input"
+                                       {% if 'supabase' in app.database.hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="db-hosting-supabase">
+                                    Supabase
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="db-hosting-other"
+                                       name="database_hosting"
+                                       value="other"
+                                       class="form-check-input"
+                                       {% if 'other' in app.database.hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="db-hosting-other">
+                                    その他
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- フロントエンドホスティング -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-teal">フロントエンドホスティング</label>
+                    <p class="text-muted small mb-3 text-cyber-teal">
+                        ※フロントエンド専用のホスティングサービスを選択してください
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-hosting-netlify"
+                                       name="frontend_hosting"
+                                       value="netlify"
+                                       class="form-check-input"
+                                       {% if 'netlify' in app.hosting.frontend_hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="frontend-hosting-netlify">
+                                    Netlify
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-hosting-vercel"
+                                       name="frontend_hosting"
+                                       value="vercel"
+                                       class="form-check-input"
+                                       {% if 'vercel' in app.hosting.frontend_hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="frontend-hosting-vercel">
+                                    Vercel
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-hosting-github-pages"
+                                       name="frontend_hosting"
+                                       value="github_pages"
+                                       class="form-check-input"
+                                       {% if 'github_pages' in app.hosting.frontend_hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="frontend-hosting-github-pages">
+                                    GitHub Pages
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-hosting-firebase"
+                                       name="frontend_hosting"
+                                       value="firebase"
+                                       class="form-check-input"
+                                       {% if 'firebase' in app.hosting.frontend_hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="frontend-hosting-firebase">
+                                    Firebase Hosting
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-hosting-aws-s3"
+                                       name="frontend_hosting"
+                                       value="aws_s3"
+                                       class="form-check-input"
+                                       {% if 'aws_s3' in app.hosting.frontend_hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="frontend-hosting-aws-s3">
+                                    AWS S3 + CloudFront
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-hosting-cloudflare-pages"
+                                       name="frontend_hosting"
+                                       value="cloudflare_pages"
+                                       class="form-check-input"
+                                       {% if 'cloudflare_pages' in app.hosting.frontend_hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="frontend-hosting-cloudflare-pages">
+                                    Cloudflare Pages
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-hosting-surge"
+                                       name="frontend_hosting"
+                                       value="surge"
+                                       class="form-check-input"
+                                       {% if 'surge' in app.hosting.frontend_hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="frontend-hosting-surge">
+                                    Surge.sh
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-hosting-other"
+                                       name="frontend_hosting"
+                                       value="other"
+                                       class="form-check-input"
+                                       {% if 'other' in app.hosting.frontend_hosting %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label" for="frontend-hosting-other">
+                                    その他
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 備考 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-teal">ホスティングに関する備考</label>
+                    <p class="text-muted small mb-3 text-cyber-teal">
+                        ※ホスティングやデプロイに関する追加情報があれば入力してください
+                    </p>
+                    <textarea name="hosting_notes"
+                              class="form-control cyber-blue-focus"
+                              rows="4"
+                              placeholder="例：特定のホスティングサービスを選んだ理由や、デプロイ時の工夫など"
+                              {% if readonly %}readonly{% endif %}>{{ app.hosting.notes }}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* ホスティングタブのスタイル */
+#hosting-section .card-title,
+#hosting-section .text-cyber-teal {
+    color: #ffffff !important; /* 白色に変更 */
+    text-shadow: 0 0 10px #ffffff,
+                0 0 20px #ffffff !important;
+}
+
+#hosting-section .form-control,
+#hosting-section .form-select,
+#hosting-section .form-check-input {
+    border: 2px solid #ffffff !important;
+    color: #ffffff !important;
+}
+
+#hosting-section .form-check-input:checked {
+    background-color: #ffffff !important;
+    box-shadow: 0 0 10px #ffffff !important;
+}
+
+#hosting-section .form-label,
+#hosting-section .form-check-label {
+    color: #ffffff !important;
+    text-shadow: 0 0 5px #ffffff !important;
+}
+
+/* サイバーパンク風のスタイル */
+#hosting .text-cyber-teal {
+    color: #ffffff !important;
+    text-shadow: 0 0 5px #ffffff !important;
+}
+
+#hosting .form-check-input:checked {
+    background-color: #ffffff !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 5px #ffffff !important;
+}
+
+#hosting .form-check-input:hover {
+    border-color: #ffffff !important;
+}
+
+#hosting .form-check-label {
+    color: #ffffff !important;
+    text-shadow: 0 0 2px #ffffff !important;
+}
+
+#hosting textarea.form-control {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+}
+
+#hosting ::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* disabled状態のスタイル */
+#hosting .form-check-input:disabled:checked {
+    background-color: #ffffff !important;
+    border-color: #ffffff !important;
+    opacity: 0.7 !important;
+}
+
+#hosting textarea:disabled {
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    color: #ffffff !important;
+    opacity: 0.7 !important;
+}
+</style> 

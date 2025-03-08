@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}スキル情報の再計算 | ORE APP{% endblock %}
+
+{% block content %}
+<!-- サイバーパンク風の背景 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card cyber-card mb-4">
+                <div class="card-header">
+                    <h3 class="mb-0 cyber-title">
+                        <i class="bi bi-arrow-clockwise"></i> スキル情報を再計算
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-light">あなたが登録したアプリの情報を元に、技術スキルを再計算します。</p>
+                    
+                    <div class="alert cyber-alert alert-info">
+                        <h5 class="text-info">
+                            <i class="bi bi-info-circle"></i> 新機能が追加されました！
+                        </h5>
+                        <p>
+                            技術スキルの集計機能が強化され、以下の技術情報も表示できるようになりました：
+                        </p>
+                        <ul>
+                            <li>DevOps技術 (Docker, Docker Compose 等)</li>
+                            <li>クラウドサービス (AWS, Azure, GCP, PythonAnywhere 等)</li>
+                            <li>特定のフレームワーク (Next.js, Nuxt.js 等)</li>
+                        </ul>
+                        <p>
+                            この機能を活用するには、アプリの技術情報に上記の技術が登録されている必要があります。
+                            スキル情報を最新のデータで更新するには「再計算する」ボタンをクリックしてください。
+                        </p>
+                    </div>
+                    
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-cyber-primary">
+                                <i class="bi bi-arrow-repeat"></i> 再計算する
+                            </button>
+                            <a href="{% url 'profiles:profile_detail' %}" class="btn btn-cyber-secondary">
+                                <i class="bi bi-arrow-left"></i> プロフィールに戻る
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* サイバーパンク風の背景 */
+    .cyber-background {
+        background: linear-gradient(45deg, #001e54, #0066cc);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    .cyber-grid {
+        background-image: 
+            linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+        background-size: 20px 20px;
+        width: 100%;
+        height: 100%;
+        animation: gridGlow 4s ease-in-out infinite;
+    }
+
+    /* カードの背景色を調整 */
+    .cyber-card {
+        background-color: rgba(13, 25, 45, 0.9) !important;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+    }
+
+    /* ボタンスタイル */
+    .btn-cyber-primary {
+        background: rgba(0, 123, 255, 0.2);
+        color: #00ffff;
+        border: 1px solid rgba(0, 123, 255, 0.5);
+        transition: all 0.3s ease;
+        font-weight: bold;
+        padding: 10px 20px;
+    }
+
+    .btn-cyber-primary:hover {
+        background: rgba(0, 123, 255, 0.3);
+        color: #00ffff;
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .btn-cyber-secondary {
+        background: rgba(100, 100, 100, 0.5);
+        color: #ffffff;
+        border: 1px solid rgba(200, 200, 200, 0.5);
+        transition: all 0.3s ease;
+        font-weight: bold;
+        padding: 10px 20px;
+    }
+
+    .btn-cyber-secondary:hover {
+        background: rgba(120, 120, 120, 0.6);
+        color: #ffffff;
+        box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .cyber-title {
+        color: #00ffff;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    /* アラートのスタイル */
+    .cyber-alert {
+        background-color: rgba(0, 0, 30, 0.6);
+        border: 1px solid rgba(0, 123, 255, 0.5);
+        color: #e0e0ff;
+    }
+
+    /* アニメーション */
+    @keyframes gridGlow {
+        0% { opacity: 0.5; }
+        50% { opacity: 0.8; }
+        100% { opacity: 0.5; }
+    }
+</style>
+{% endblock %} 
