@@ -4,6 +4,8 @@ from django.contrib import messages
 from .forms import ProfileForm
 import cloudinary
 import cloudinary.uploader
+from .models import Profile
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -163,3 +165,47 @@ def get_maker_examples():
         'Acer', 'Microsoft', 'MSI', 'Toshiba', 'VAIO', 
         'Fujitsu', 'NEC', 'EPSON', 'Panasonic', 'マウスコンピューター'
     ]
+
+def programmer_list(request):
+    """プログラマー一覧ページ - シンプル版"""
+    profiles = Profile.objects.all()
+    
+    # デバッグ用の出力
+    print("=== プログラマー一覧デバッグ - シンプル版 ===")
+    print(f"プロフィール数: {profiles.count()}")
+    for profile in profiles:
+        print(f"ユーザー: {profile.user.username}")
+    print("=====================")
+    
+    return render(request, 'profiles/programmer_list.html', {
+        'profiles': profiles,
+    })
+
+def programmers_data(request):
+    """プログラマーデータをJSON形式で提供するAPI"""
+    profiles = Profile.objects.all().order_by('-updated_at')
+    
+    # JSONレスポンス用のデータ整形
+    profiles_data = []
+    for profile in profiles:
+        # 最終更新日から3日以内かどうかでアクティブ状態を判定
+        from datetime import datetime, timedelta
+        is_active = (datetime.now().date() - profile.updated_at.date()) <= timedelta(days=3)
+        
+        profile_data = {
+            'id': profile.id,
+            'username': profile.user.username,
+            'bio': profile.bio,
+            'avatar_url': profile.avatar_url,
+            'updated_at': profile.updated_at.strftime('%Y/%m/%d'),
+            'is_active': is_active,
+            'hardware_specs': profile.hardware_specs,
+            'social_github': profile.social_github,
+            'social_twitter': profile.social_twitter,
+        }
+        profiles_data.append(profile_data)
+    
+    return JsonResponse({
+        'profiles': profiles_data,
+        'count': len(profiles_data)
+    })

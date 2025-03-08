@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}プログラマー達 | ORE APP{% endblock %}
+
+{% block content %}
+<!-- サイバーパンク風の背景 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<div class="container mt-5 mb-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="cyber-title">
+                <i class="bi bi-people"></i> プログラマー達
+            </h1>
+            <p class="text-light">各プログラマーのスキルや専門分野を確認してコンタクトしよう！</p>
+            <p class="text-warning">登録プログラマー数: {{ profiles|length }}</p>
+        </div>
+    </div>
+
+    <!-- 極シンプルなプログラマーカード一覧 -->
+    <div class="row">
+        {% for profile in profiles %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card cyber-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title cyber-name">{{ profile.user.username }}</h5>
+                        <p class="card-text">{{ profile.bio|default:"自己紹介はまだありません"|truncatechars:100 }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="fs-4 cyber-empty-text">まだプログラマーが登録されていません。</p>
+                <p class="cyber-empty-subtext">登録して最初のプログラマーになろう！</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- 最小限のスタイル -->
+<style>
+    .cyber-name {
+        color: #ffcc00;
+        text-shadow: 0 0 5px rgba(255, 204, 0, 0.3);
+    }
+    
+    .cyber-empty-text {
+        color: #ffd700;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+    
+    .cyber-empty-subtext {
+        color: rgba(255, 255, 255, 0.6);
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    }
+</style>
+{% endblock %} 

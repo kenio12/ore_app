@@ -7269,3 +7269,61 @@ INFO 2025-03-05 22:17:52,771 views 24 139819764147904 App found: None
 INFO 2025-03-05 22:17:52,771 views 24 139819764147904 App found: None
 INFO 2025-03-05 22:17:52,774 views 24 139819764147904 Screenshots: []
 INFO 2025-03-05 22:17:52,774 views 24 139819764147904 Screenshots: []
+INFO 2025-03-08 10:03:21,919 views 25 140156390602432 Request method: GET
+INFO 2025-03-08 10:03:21,919 views 25 140156390602432 Request method: GET
+INFO 2025-03-08 10:03:21,938 views 25 140156390602432 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:21,938 views 25 140156390602432 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:21,939 views 25 140156390602432 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-08 10:03:21,939 views 25 140156390602432 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-08 10:03:31,035 views 25 140156372768448 Request method: POST
+INFO 2025-03-08 10:03:31,035 views 25 140156372768448 Request method: POST
+INFO 2025-03-08 10:03:31,045 views 25 140156372768448 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:31,045 views 25 140156372768448 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:31,048 views 25 140156372768448 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-08 10:03:31,048 views 25 140156372768448 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+DEBUG 2025-03-08 10:03:31,250 connectionpool 25 140156372768448 Starting new HTTPS connection (1): api.cloudinary.com:443
+DEBUG 2025-03-08 10:03:33,935 connectionpool 25 140156372768448 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-08 10:03:34,073 views 25 140156382209728 自動保存処理開始: app_id=66
+INFO 2025-03-08 10:03:34,073 views 25 140156382209728 自動保存処理開始: app_id=66
+INFO 2025-03-08 10:03:34,083 views 25 140156382209728 既存アプリを自動保存: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:34,083 views 25 140156382209728 既存アプリを自動保存: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:34,144 views 25 140156382209728 自動保存完了: app_id=66
+INFO 2025-03-08 10:03:34,144 views 25 140156382209728 自動保存完了: app_id=66
+INFO 2025-03-08 10:03:36,596 views 25 140156382209728 Request method: GET
+INFO 2025-03-08 10:03:36,596 views 25 140156382209728 Request method: GET
+INFO 2025-03-08 10:03:36,606 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:36,606 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:36,608 views 25 140156382209728 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}, {'public_id': 'app_screenshots/app_66/fi0pdpjj9dmu0ylkr5fv', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1741395815/app_screenshots/app_66/fi0pdpjj9dmu0ylkr5fv.png', 'description': ''}]
+INFO 2025-03-08 10:03:36,608 views 25 140156382209728 Screenshots: [{'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}, {'public_id': 'app_screenshots/app_66/fi0pdpjj9dmu0ylkr5fv', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1741395815/app_screenshots/app_66/fi0pdpjj9dmu0ylkr5fv.png', 'description': ''}]
+INFO 2025-03-08 10:03:42,184 views 25 140156382209728 Request method: GET
+INFO 2025-03-08 10:03:42,184 views 25 140156382209728 Request method: GET
+INFO 2025-03-08 10:03:42,193 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:42,193 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない
+INFO 2025-03-08 10:03:42,194 views 25 140156382209728 Screenshots: [{'public_id': 'app_screenshots/app_66/fi0pdpjj9dmu0ylkr5fv', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1741395815/app_screenshots/app_66/fi0pdpjj9dmu0ylkr5fv.png', 'description': ''}, {'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-08 10:03:42,194 views 25 140156382209728 Screenshots: [{'public_id': 'app_screenshots/app_66/fi0pdpjj9dmu0ylkr5fv', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1741395815/app_screenshots/app_66/fi0pdpjj9dmu0ylkr5fv.png', 'description': ''}, {'public_id': 'app_screenshots/app_66/gme9tj4gvu4drxb3zlbd', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1740885382/app_screenshots/app_66/gme9tj4gvu4drxb3zlbd.png', 'description': ''}]
+INFO 2025-03-08 10:13:37,784 views 25 140156382209728 Request method: GET
+INFO 2025-03-08 10:13:37,784 views 25 140156382209728 Request method: GET
+INFO 2025-03-08 10:13:37,795 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-08 10:13:37,795 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-08 10:13:37,798 views 25 140156382209728 Screenshots: []
+INFO 2025-03-08 10:13:37,798 views 25 140156382209728 Screenshots: []
+INFO 2025-03-08 10:13:44,090 views 25 140156382209728 Request method: POST
+INFO 2025-03-08 10:13:44,090 views 25 140156382209728 Request method: POST
+INFO 2025-03-08 10:13:44,108 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-08 10:13:44,108 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-08 10:13:44,111 views 25 140156382209728 Screenshots: []
+INFO 2025-03-08 10:13:44,111 views 25 140156382209728 Screenshots: []
+DEBUG 2025-03-08 10:13:44,217 connectionpool 25 140156382209728 Resetting dropped connection: api.cloudinary.com
+DEBUG 2025-03-08 10:13:46,262 connectionpool 25 140156382209728 https://api.cloudinary.com:443 "POST /v1_1/dzpketlhv/image/upload HTTP/1.1" 200 None
+INFO 2025-03-08 10:13:47,077 views 25 140156382209728 自動保存処理開始: app_id=68
+INFO 2025-03-08 10:13:47,077 views 25 140156382209728 自動保存処理開始: app_id=68
+INFO 2025-03-08 10:13:47,083 views 25 140156382209728 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-08 10:13:47,083 views 25 140156382209728 既存アプリを自動保存: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-08 10:13:47,128 views 25 140156382209728 自動保存完了: app_id=68
+INFO 2025-03-08 10:13:47,128 views 25 140156382209728 自動保存完了: app_id=68
+INFO 2025-03-08 10:13:48,863 views 25 140156382209728 Request method: GET
+INFO 2025-03-08 10:13:48,863 views 25 140156382209728 Request method: GET
+INFO 2025-03-08 10:13:48,871 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-08 10:13:48,871 views 25 140156382209728 App found: けにおアプリや！しかし自動保存されない　だいじょうぶかこれで
+INFO 2025-03-08 10:13:48,873 views 25 140156382209728 Screenshots: [{'public_id': 'app_screenshots/app_68/tuzco9u1atyocfmuajdq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1741396427/app_screenshots/app_68/tuzco9u1atyocfmuajdq.png', 'description': ''}]
+INFO 2025-03-08 10:13:48,873 views 25 140156382209728 Screenshots: [{'public_id': 'app_screenshots/app_68/tuzco9u1atyocfmuajdq', 'url': 'https://res.cloudinary.com/dzpketlhv/image/upload/v1741396427/app_screenshots/app_68/tuzco9u1atyocfmuajdq.png', 'description': ''}]

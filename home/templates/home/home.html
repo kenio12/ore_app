@@ -129,18 +129,334 @@
         <!-- プログラマー達タブ -->
         <div class="tab-pane fade" id="programmers-content" role="tabpanel" aria-labelledby="programmers-tab">
             <div class="container mb-5 mt-3">
-                <div class="row">
-                    <div class="col-12 text-center py-5">
-                        <div class="cyber-placeholder-content">
-                            <h3 class="cyber-title mb-4">プログラマー達</h3>
-                            <p class="cyber-description">ここにはサイトに登録されたプログラマーの一覧が表示されます。</p>
-                            <div class="cyber-coming-soon">
-                                <span class="cyber-glitch-text">COMING SOON</span>
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h1 class="cyber-title">
+                            <i class="bi bi-people"></i> プログラマー達
+                        </h1>
+                        <p class="text-light">各プログラマーのスキルや専門分野を確認してコンタクトしよう！</p>
+                    </div>
+                </div>
+
+                <!-- フィルターやソート機能（後で実装） -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card cyber-card">
+                            <div class="card-body">
+                                <p class="text-center mb-0">
+                                    <span class="cyber-blue">フィルター機能は近日実装予定...</span>
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- プログラマーカード一覧（Ajax読み込み予定） -->
+                <div class="row" id="programmers-list">
+                    <div class="col-12 text-center py-5">
+                        <div class="cyber-loading">
+                            <div class="cyber-spinner"></div>
+                            <p class="mt-3 cyber-loading-text">プログラマーデータを読み込み中...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- プログラマーロード用のスクリプト -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // プログラマータブがアクティブになったときにデータを読み込む
+                    document.getElementById('programmers-tab').addEventListener('shown.bs.tab', function() {
+                        loadProgrammers();
+                    });
+                });
+
+                function loadProgrammers() {
+                    // プログラマーリストのコンテナ
+                    const programmersContainer = document.getElementById('programmers-list');
+                    
+                    // Ajaxリクエストでプログラマーデータを取得
+                    fetch('/profiles/programmers-data/')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('プログラマーデータの取得に失敗しました');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // コンテナをクリア
+                            programmersContainer.innerHTML = '';
+                            
+                            if (data.profiles && data.profiles.length > 0) {
+                                // プログラマーデータをループしてカードを表示
+                                data.profiles.forEach(profile => {
+                                    const card = createProgrammerCard(profile);
+                                    programmersContainer.appendChild(card);
+                                });
+                            } else {
+                                // プログラマーがいない場合
+                                programmersContainer.innerHTML = `
+                                    <div class="col-12 text-center py-5">
+                                        <p class="fs-4 cyber-empty-text">まだプログラマーが登録されていません。</p>
+                                        <p class="cyber-empty-subtext">登録して最初のプログラマーになろう！</p>
+                                    </div>
+                                `;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            programmersContainer.innerHTML = `
+                                <div class="col-12 text-center py-5">
+                                    <p class="fs-4 cyber-empty-text">データの読み込みに失敗しました。</p>
+                                    <p class="cyber-empty-subtext">しばらくしてから再度お試しください。</p>
+                                </div>
+                            `;
+                        });
+                }
+
+                function createProgrammerCard(profile) {
+                    // カードのDIV要素を作成
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'col-md-6 col-lg-4 mb-4';
+                    
+                    // カードのHTMLを設定
+                    cardDiv.innerHTML = `
+                        <div class="card cyber-card h-100">
+                            <div class="card-header cyber-card-header d-flex align-items-center">
+                                <div class="programmer-avatar me-3">
+                                    ${profile.avatar_url ? 
+                                        `<img src="${profile.avatar_url}" alt="${profile.username}" class="rounded-circle">` : 
+                                        `<div class="default-avatar"><i class="bi bi-person-fill"></i></div>`
+                                    }
+                                    <div class="programmer-status ${profile.is_active ? 'status-active' : 'status-inactive'}"></div>
+                                </div>
+                                <div>
+                                    <h5 class="mb-0 cyber-name">${profile.username}</h5>
+                                    <small class="text-muted">最終更新: ${profile.updated_at}</small>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">${profile.bio || '<span class="text-light">自己紹介はまだありません</span>'}</p>
+                                ${profile.hardware_specs ? `
+                                <div class="mt-3">
+                                    <h6 class="cyber-subtitle">開発環境</h6>
+                                    <ul class="list-unstyled cyber-specs-list">
+                                        ${profile.hardware_specs.device_type ? `
+                                        <li>
+                                            <i class="bi bi-pc-display me-2 text-info"></i>
+                                            <span class="text-light">デバイス:</span> 
+                                            <span class="text-white">${profile.hardware_specs.device_type}</span>
+                                        </li>` : ''}
+                                        ${profile.hardware_specs.cpu_type ? `
+                                        <li>
+                                            <i class="bi bi-cpu me-2 text-info"></i>
+                                            <span class="text-light">CPU:</span> 
+                                            <span class="text-white">${profile.hardware_specs.cpu_type}</span>
+                                        </li>` : ''}
+                                    </ul>
+                                </div>` : ''}
+                            </div>
+                            <div class="card-footer cyber-card-footer">
+                                <div class="d-flex justify-content-between">
+                                    <a href="/profiles/detail/${profile.id}/" class="btn btn-sm btn-cyber-secondary">
+                                        <i class="bi bi-info-circle"></i> 詳細
+                                    </a>
+                                    <a href="/profiles/contact/${profile.id}/" class="btn btn-sm btn-cyber-primary">
+                                        <i class="bi bi-chat-text"></i> コンタクト
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    return cardDiv;
+                }
+            </script>
+
+            <!-- プログラマーカードのスタイル -->
+            <style>
+                .programmer-avatar {
+                    position: relative;
+                    width: 50px;
+                    height: 50px;
+                }
+                
+                .programmer-avatar img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border: 2px solid rgba(0, 255, 255, 0.5);
+                    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+                }
+                
+                .default-avatar {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(0, 0, 0, 0.6);
+                    border: 2px solid rgba(255, 255, 255, 0.2);
+                    border-radius: 50%;
+                    color: rgba(255, 255, 255, 0.6);
+                    font-size: 1.5rem;
+                }
+                
+                .programmer-status {
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    border: 2px solid #000;
+                }
+                
+                .status-active {
+                    background: #00ff9f;
+                    box-shadow: 0 0 8px rgba(0, 255, 159, 0.8);
+                }
+                
+                .status-inactive {
+                    background: #ff6b6b;
+                }
+                
+                .cyber-card-header {
+                    background: rgba(0, 0, 0, 0.7);  /* 少し暗く */
+                    border-bottom: 1px solid rgba(0, 255, 255, 0.3);  /* 境界線を明るく */
+                }
+                
+                .cyber-card-footer {
+                    background: rgba(0, 0, 0, 0.7);  /* 少し暗く */
+                    border-top: 1px solid rgba(0, 255, 255, 0.3);  /* 境界線を明るく */
+                }
+                
+                .cyber-name {
+                    color: #ffd700;  /* ゴールドの色はそのまま */
+                    text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);  /* シャドウを強く */
+                    font-weight: bold;  /* 太字に */
+                }
+                
+                .cyber-subtitle {
+                    color: #00ffff;  /* シアンの色はそのまま */
+                    font-size: 0.9rem;
+                    margin-bottom: 0.5rem;
+                    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);  /* シャドウを強く */
+                    font-weight: bold;  /* 太字に */
+                }
+                
+                /* カードの背景を少し明るく */
+                .cyber-card {
+                    background: rgba(20, 30, 50, 0.9) !important;  /* 濃いめの青背景でコントラスト確保 */
+                }
+                
+                /* テキストを明るく */
+                .card-text {
+                    color: #ffffff !important;  /* 白色で明るく */
+                    font-weight: normal;
+                    text-shadow: none;  /* シャドウなしでクリアに */
+                }
+
+                /* 日付テキストを明るく */
+                .text-muted {
+                    color: #b0e0ff !important;  /* 薄い青色に変更 */
+                }
+                
+                .btn-cyber-primary {
+                    background: rgba(0, 255, 255, 0.2);
+                    color: #00ffff;
+                    border: 1px solid rgba(0, 255, 255, 0.5);
+                    transition: all 0.3s ease;
+                    font-weight: bold;  /* 太字に */
+                }
+                
+                .btn-cyber-primary:hover {
+                    background: rgba(0, 255, 255, 0.3);
+                    color: #00ffff;
+                    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);  /* 光る効果を強く */
+                    transform: translateY(-2px);
+                }
+
+                .btn-cyber-secondary {
+                    background: rgba(100, 100, 100, 0.5);  /* 少し明るく */
+                    color: #ffffff;  /* テキストを白に */
+                    border: 1px solid rgba(200, 200, 200, 0.5);
+                    transition: all 0.3s ease;
+                    font-weight: bold;  /* 太字に */
+                }
+                
+                .btn-cyber-secondary:hover {
+                    background: rgba(120, 120, 120, 0.6);
+                    color: #ffffff;
+                    box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);  /* 光る効果を強く */
+                    transform: translateY(-2px);
+                }
+
+                /* 読み込み中のスピナースタイル */
+                .cyber-loading {
+                    text-align: center;
+                    padding: 2rem 0;
+                }
+                
+                .cyber-spinner {
+                    display: inline-block;
+                    width: 50px;
+                    height: 50px;
+                    border: 3px solid rgba(0, 255, 255, 0.3);
+                    border-radius: 50%;
+                    border-top-color: #00ffff;
+                    animation: cyber-spin 1s linear infinite;
+                }
+                
+                @keyframes cyber-spin {
+                    to { transform: rotate(360deg); }
+                }
+                
+                .cyber-loading-text {
+                    color: #00ffff;
+                    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+                    font-size: 1.2rem;  /* 少し大きく */
+                    font-weight: bold;  /* 太字に */
+                }
+            </style>
+
+            <!-- プログラマーカードのための追加スタイル -->
+            <style>
+                /* スペックリストの見た目向上 */
+                .cyber-specs-list li {
+                    margin-bottom: 0.5rem;
+                    padding: 0.3rem 0.5rem;
+                    border-radius: 4px;
+                    background: rgba(0, 20, 40, 0.5);
+                    border-left: 3px solid rgba(0, 255, 255, 0.5);
+                }
+
+                /* テキストカラーの追加クラス */
+                #programmers-list .text-light {
+                    color: #b8b8ff !important;
+                }
+                
+                #programmers-list .text-white {
+                    color: #ffffff !important;
+                    font-weight: bold;
+                }
+                
+                #programmers-list .text-info {
+                    color: #00ffff !important;
+                }
+                
+                /* カードをさらに明るく */
+                #programmers-list .cyber-card {
+                    border: 1px solid rgba(0, 255, 255, 0.3);
+                    box-shadow: 0 0 15px rgba(0, 100, 200, 0.3);
+                }
+                
+                #programmers-list .cyber-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 5px 20px rgba(0, 200, 255, 0.4);
+                    border: 1px solid rgba(0, 255, 255, 0.5);
+                }
+            </style>
         </div>
 
         <!-- 開発ブログタブ -->
@@ -324,6 +640,55 @@ document.addEventListener('DOMContentLoaded', function() {
     heroSection.style.height = '';
     heroSection.style.opacity = '1';
 });
+
+// タブの状態を保持するためのスクリプト
+document.addEventListener('DOMContentLoaded', function() {
+    // ローカルストレージからアクティブなタブを取得
+    const activeTabId = localStorage.getItem('activeTabId');
+    
+    // タブの要素を全て取得
+    const tabButtons = document.querySelectorAll('.cyber-tab');
+    const tabContents = document.querySelectorAll('.tab-pane');
+    
+    // 保存されたタブIDがあれば、そのタブをアクティブにする
+    if (activeTabId) {
+        // 全てのタブとコンテンツからアクティブクラスを削除
+        tabButtons.forEach(button => {
+            button.classList.remove('active');
+            button.setAttribute('aria-selected', 'false');
+        });
+        
+        tabContents.forEach(content => {
+            content.classList.remove('show', 'active');
+        });
+        
+        // 保存されていたタブをアクティブにする
+        const savedTabButton = document.getElementById(activeTabId);
+        if (savedTabButton) {
+            savedTabButton.classList.add('active');
+            savedTabButton.setAttribute('aria-selected', 'true');
+            
+            const targetId = savedTabButton.getAttribute('data-bs-target');
+            const targetContent = document.querySelector(targetId);
+            if (targetContent) {
+                targetContent.classList.add('show', 'active');
+            }
+            
+            // プログラマータブが選択されていた場合はデータを読み込む
+            if (activeTabId === 'programmers-tab') {
+                loadProgrammers();
+            }
+        }
+    }
+    
+    // タブが変更されたときの処理を追加
+    tabButtons.forEach(button => {
+        button.addEventListener('shown.bs.tab', function(event) {
+            // 選択されたタブのIDをローカルストレージに保存
+            localStorage.setItem('activeTabId', event.target.id);
+        });
+    });
+});
 </script>
 
 <style>
@@ -489,17 +854,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* ボタンのスタイル追加 */
 .btn-cyber-secondary {
-    background: linear-gradient(45deg, #4a4a4a, #6a6a6a);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    background: rgba(100, 100, 100, 0.5);  /* 少し明るく */
+    color: #ffffff;  /* テキストを白に */
+    border: 1px solid rgba(200, 200, 200, 0.5);
     transition: all 0.3s ease;
+    font-weight: bold;  /* 太字に */
 }
 
 .btn-cyber-secondary:hover {
-    background: linear-gradient(45deg, #5a5a5a, #7a7a7a);
-    color: #fff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    background: rgba(120, 120, 120, 0.6);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);  /* 光る効果を強く */
     transform: translateY(-2px);
 }
 
@@ -545,7 +910,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /* PC画面用の追加設定 */
 @media (min-width: 992px) {
     .screenshot-image img {
-        max-height: 250px;
+        max-height: 220px;
     }
     
     .screenshot-wrapper {
@@ -555,6 +920,14 @@ document.addEventListener('DOMContentLoaded', function() {
     /* カードボディの上部余白を調整 */
     .card-body {
         padding-top: 0.5rem;  /* 上部のパディングを小さく */
+    }
+    
+    /* 縦長画像をPC画面で小さくする */
+    .col-md-4 .cyber-image {
+        max-height: 320px !important;
+        width: auto !important;
+        margin: 0 auto;
+        object-fit: contain !important;
     }
 }
 
@@ -654,7 +1027,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /* カード内の縦長画像のサイズと位置調整 */
     .cyber-image {
-        max-height: 350px !important;     /* 最大高さを350pxに調整 */
+        max-height: 280px !important;     /* 最大高さを350pxに調整 */
         width: auto !important;
         object-fit: contain !important;
         margin: 0 auto !important;
@@ -670,7 +1043,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /* PC画面用の横長画像設定を維持 */
 @media (min-width: 992px) {
     .screenshot-image img {
-        max-height: 250px;  /* PC用の高さ制限を維持 */
+        max-height: 180px;  /* PC用の高さ制限を維持 */
     }
 }
 
