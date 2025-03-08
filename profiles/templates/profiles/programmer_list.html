@@ -56,5 +56,39 @@
         color: rgba(255, 255, 255, 0.6);
         text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
     }
+
+    /* サイバーパンク風の背景 */
+    .cyber-background {
+        background: linear-gradient(45deg, #001e54, #0066cc);
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
+
+    .cyber-grid {
+        background-image: 
+            linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+        background-size: 20px 20px;
+        width: 100%;
+        height: 100%;
+        animation: gridGlow 4s ease-in-out infinite;
+    }
+
+    /* カードの背景色を調整 */
+    .cyber-card {
+        background-color: rgba(13, 25, 45, 0.9) !important;
+        border: 1px solid rgba(0, 255, 255, 0.3);
+    }
+
+    /* アニメーション */
+    @keyframes gridGlow {
+        0% { opacity: 0.5; }
+        50% { opacity: 0.8; }
+        100% { opacity: 0.5; }
+    }
 </style>
 {% endblock %} 

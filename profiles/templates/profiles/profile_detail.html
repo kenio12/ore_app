@@ -1,0 +1,497 @@
+{% extends 'base.html' %}
+{% load profile_filters %}
+
+{% block title %}プロフィール - {{ user.username }}{% endblock %}
+
+{% block content %}
+<!-- サイバーパンク風の背景 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<div class="container mt-4 mb-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card cyber-card mb-4">
+                <div class="card-header d-flex align-items-center">
+                    <h3 class="mb-0 cyber-title">プロフィール情報</h3>
+                    <!-- 受注状況バッジを表示 -->
+                    {% if profile.job_status %}
+                        <div class="ms-auto">
+                            <span class="badge 
+                                {% if profile.job_status == 'available' %}
+                                    bg-info text-white
+                                {% elif profile.job_status == 'limited' %}
+                                    bg-warning text-dark
+                                {% else %}
+                                    bg-danger text-white
+                                {% endif %}
+                                job-status-badge">
+                                {% if profile.job_status == 'available' %}
+                                    <i class="bi bi-check-circle"></i> 受注可
+                                {% elif profile.job_status == 'limited' %}
+                                    <i class="bi bi-dash-circle"></i> 一部可
+                                {% else %}
+                                    非受注
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            {% if profile.avatar_url %}
+                                <img src="{{ profile.avatar_url }}" alt="プロフィール画像" class="img-fluid rounded-circle" style="max-width: 150px; border: 2px solid rgb(0, 123, 255); box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);">
+                            {% else %}
+                                <div class="cyber-avatar-placeholder">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <h4 class="cyber-name">{{ user.username }}</h4>
+                            
+                            {% if is_own_profile %}
+                            <p class="text-light">
+                                {{ user.email }}
+                                <span class="badge bg-dark text-info ms-2" style="font-size: 0.7rem;">本人のみ表示</span>
+                            </p>
+                            {% endif %}
+                            
+                            {% if profile.bio %}
+                                <h5 class="text-info mt-3">自己紹介</h5>
+                                <p class="text-light">{{ profile.bio }}</p>
+                            {% endif %}
+                            
+                            <div class="mt-3">
+                                {% if profile.social_github %}
+                                    {% if 'github.com' in profile.social_github %}
+                                        <a href="{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-info me-2">
+                                            <i class="bi bi-github"></i> GitHub
+                                        </a>
+                                    {% else %}
+                                        <a href="https://github.com/{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-info me-2">
+                                            <i class="bi bi-github"></i> GitHub
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                                
+                                {% if profile.social_twitter %}
+                                    {% if 'x.com' in profile.social_twitter or 'twitter.com' in profile.social_twitter %}
+                                        <a href="{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-info me-2">
+                                            <i class="bi bi-twitter-x"></i> X
+                                        </a>
+                                    {% else %}
+                                        <a href="https://x.com/{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-info me-2">
+                                            <i class="bi bi-twitter-x"></i> X
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 技術スタック情報（APIから取得） -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3">
+                            <i class="bi bi-code-slash"></i> 技術スタック
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- 技術スキル情報を表示 -->
+                                    <div class="col-md-12">
+                                        <div class="skills-section">
+                                            {% if profile.skills and profile.skills.data %}
+                                                <!-- バックエンド言語 -->
+                                                {% if profile.skills.data.backend_languages %}
+                                                <div class="mb-3">
+                                                    <h5 class="text-info">バックエンド言語</h5>
+                                                    <div>
+                                                        {% for lang, level in profile.skills.data.backend_languages.items %}
+                                                            <span class="badge cyber-backend-badge me-1 mb-1">{{ lang }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- フロントエンド言語 -->
+                                                {% if profile.skills.data.frontend_languages %}
+                                                <div class="mb-3">
+                                                    <h5 class="text-info">フロントエンド言語</h5>
+                                                    <div>
+                                                        {% for lang, level in profile.skills.data.frontend_languages.items %}
+                                                            <span class="badge cyber-frontend-badge me-1 mb-1">{{ lang }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- データベース -->
+                                                {% if profile.skills.data.databases %}
+                                                <div class="mb-3">
+                                                    <h5 class="text-info">データベース</h5>
+                                                    <div>
+                                                        {% for db, level in profile.skills.data.databases.items %}
+                                                            <span class="badge cyber-db-badge me-1 mb-1">{{ db }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            {% else %}
+                                                <p class="text-muted">スキル情報はまだありません</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 対応可能な仕事 -->
+                    {% if profile.job_types %}
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3">
+                            <i class="bi bi-briefcase"></i> 対応可能な仕事
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div>
+                                    {% for job_type in profile.job_types %}
+                                        <span class="badge cyber-job-badge me-1 mb-1">
+                                            {% if job_type == 'frontend' %}
+                                                フロントエンド開発
+                                            {% elif job_type == 'backend' %}
+                                                バックエンド開発
+                                            {% elif job_type == 'fullstack' %}
+                                                フルスタック開発
+                                            {% elif job_type == 'mobile' %}
+                                                モバイルアプリ開発
+                                            {% elif job_type == 'database' %}
+                                                データベース設計
+                                            {% elif job_type == 'infrastructure' %}
+                                                インフラ構築
+                                            {% elif job_type == 'design' %}
+                                                UI/UXデザイン
+                                            {% elif job_type == 'consulting' %}
+                                                技術コンサルティング
+                                            {% else %}
+                                                その他
+                                            {% endif %}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- ハードウェア情報 -->
+                    {% if profile.hardware_specs %}
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3">
+                            <i class="bi bi-cpu"></i> 開発に使用したパソコン環境
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- ハードウェア情報をテーブル形式で表示 -->
+                                    <div class="col-md-12">
+                                        <div class="hardware-specs-table">
+                                            <div class="row">
+                                                <!-- メーカーと機種情報 -->
+                                                {% if profile.hardware_specs.maker %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-transparent">
+                                                        <tr>
+                                                            <td class="text-info" style="width: 40%; white-space: nowrap;">メーカー:</td>
+                                                            <td class="text-light">{{ profile.hardware_specs.maker }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.model %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-transparent">
+                                                        <tr>
+                                                            <td class="text-info" style="width: 40%; white-space: nowrap;">機種名:</td>
+                                                            <td class="text-light">{{ profile.hardware_specs.model }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- PCタイプとデバイスタイプ -->
+                                                {% if profile.hardware_specs.pc_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-transparent">
+                                                        <tr>
+                                                            <td class="text-info" style="width: 40%; white-space: nowrap;">PCタイプ:</td>
+                                                            <td class="text-light">{{ pc_types|get_item:profile.hardware_specs.pc_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.device_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-transparent">
+                                                        <tr>
+                                                            <td class="text-info" style="width: 40%; white-space: nowrap;">PC種類:</td>
+                                                            <td class="text-light">{{ device_types|get_item:profile.hardware_specs.device_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- CPU・メモリ・ストレージ -->
+                                                {% if profile.hardware_specs.cpu_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-transparent">
+                                                        <tr>
+                                                            <td class="text-info" style="width: 40%; white-space: nowrap;">CPU:</td>
+                                                            <td class="text-light">{{ cpu_types|get_item:profile.hardware_specs.cpu_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.memory_size %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-transparent">
+                                                        <tr>
+                                                            <td class="text-info" style="width: 40%; white-space: nowrap;">メモリ:</td>
+                                                            <td class="text-light">{{ memory_sizes|get_item:profile.hardware_specs.memory_size }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.storage_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-transparent">
+                                                        <tr>
+                                                            <td class="text-info" style="width: 40%; white-space: nowrap;">ストレージ:</td>
+                                                            <td class="text-light">{{ storage_types|get_item:profile.hardware_specs.storage_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- モニター数・インターネット回線 -->
+                                                {% if profile.hardware_specs.monitor_count %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-transparent">
+                                                        <tr>
+                                                            <td class="text-info" style="width: 40%; white-space: nowrap;">使用モニター数:</td>
+                                                            <td class="text-light">{{ monitor_counts|get_item:profile.hardware_specs.monitor_count }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.internet_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <table class="table table-borderless mb-2 bg-transparent">
+                                                        <tr>
+                                                            <td class="text-info" style="width: 40%; white-space: nowrap;">インターネット回線:</td>
+                                                            <td class="text-light">{{ internet_types|get_item:profile.hardware_specs.internet_type }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer border-top">
+                    {% if is_own_profile %}
+                        <a href="{% url 'profiles:profile_edit' %}" class="btn btn-cyber-primary">
+                            <i class="bi bi-pencil-square"></i> プロフィールを編集
+                        </a>
+                    {% else %}
+                        <a href="{% url 'profiles:contact' user.id %}" class="btn btn-cyber-primary">
+                            <i class="bi bi-chat-text"></i> コンタクトする
+                        </a>
+                    {% endif %}
+                    <a href="javascript:history.back()" class="btn btn-cyber-secondary ms-2">
+                        <i class="bi bi-arrow-left"></i> 戻る
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.cyber-avatar-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 123, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 20, 0.5);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    margin: 0 auto;
+}
+
+.cyber-avatar-placeholder i {
+    font-size: 4rem;
+    color: rgba(0, 123, 255, 0.7);
+}
+
+.cyber-name {
+    color: #ffd700;  /* ゴールドの色 */
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);  /* シャドウ */
+    font-weight: bold;
+}
+
+.cyber-subtitle {
+    color: #00ffff;
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.text-info {
+    color: #00ffff !important;
+}
+
+/* バッジスタイル */
+.cyber-backend-badge {
+    background: rgba(0, 128, 255, 0.2);
+    color: #00a8ff;
+    border: 1px solid rgba(0, 128, 255, 0.6);
+    text-shadow: 0 0 5px rgba(0, 128, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-frontend-badge {
+    background: rgba(255, 105, 180, 0.2);
+    color: #ff69b4;
+    border: 1px solid rgba(255, 105, 180, 0.6);
+    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-db-badge {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.6);
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-job-badge {
+    background: rgba(162, 0, 255, 0.2);
+    color: #c17bff;
+    border: 1px solid rgba(162, 0, 255, 0.6);
+    text-shadow: 0 0 5px rgba(162, 0, 255, 0.5);
+    font-size: 0.8rem;
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+}
+
+/* ボタンスタイル */
+.btn-cyber-primary {
+    background: rgba(0, 123, 255, 0.2);
+    color: #00ffff;
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.btn-cyber-primary:hover {
+    background: rgba(0, 123, 255, 0.3);
+    color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-cyber-secondary {
+    background: rgba(100, 100, 100, 0.5);
+    color: #ffffff;
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.btn-cyber-secondary:hover {
+    background: rgba(120, 120, 120, 0.6);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);
+    transform: translateY(-2px);
+}
+
+/* ステータスバッジ */
+.job-status-badge {
+    font-size: 0.85rem;
+    padding: 0.4em 0.6em;
+    border-radius: 4px;
+}
+
+.badge.bg-info {
+    background: rgba(0, 123, 255, 0.8) !important;
+    color: white !important;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
+}
+
+.badge.bg-warning {
+    background: rgba(255, 193, 7, 0.8) !important;
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+.badge.bg-danger {
+    background: rgba(220, 53, 69, 0.8) !important;
+    color: white !important;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
+}
+
+/* サイバーパンク風の背景 */
+.cyber-background {
+    background: linear-gradient(45deg, #001e54, #0066cc);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+/* カードの背景色を調整 */
+.cyber-card {
+    background-color: rgba(13, 25, 45, 0.9) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+/* テーブルの背景を透明に */
+.table.bg-transparent {
+    background-color: transparent !important;
+}
+
+/* アニメーション */
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+</style>
+{% endblock %} 

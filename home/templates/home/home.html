@@ -10,7 +10,7 @@
 
 <div class="min-vh-100">
     <!-- タブナビゲーション -->
-    <div class="container mt-5">
+    <div class="container mt-2">
         <ul class="nav nav-tabs cyber-tabs" id="mainTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active cyber-tab" id="apps-tab" data-bs-toggle="tab" data-bs-target="#apps-content" type="button" role="tab" aria-controls="apps-content" aria-selected="true">
@@ -176,7 +176,7 @@
                     const programmersContainer = document.getElementById('programmers-list');
                     
                     // Ajaxリクエストでプログラマーデータを取得
-                    fetch('/profiles/programmers-data/')
+                    fetch('/profiles/api/programmers/')
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error('プログラマーデータの取得に失敗しました');
@@ -219,6 +219,130 @@
                     const cardDiv = document.createElement('div');
                     cardDiv.className = 'col-md-6 col-lg-4 mb-4';
                     
+                    // 仕事依頼ステータスのスタイルを取得
+                    const getJobStatusStyle = (status) => {
+                        switch (status) {
+                            case 'available':
+                                return 'bg-info text-white';
+                            case 'limited':
+                                return 'bg-warning text-dark';
+                            default:
+                                return 'bg-danger text-white';
+                        }
+                    };
+                    
+                    // 仕事タイプの表示名を取得
+                    const getJobTypeLabel = (jobType) => {
+                        const jobTypeMap = {
+                            'frontend': 'フロントエンド開発',
+                            'backend': 'バックエンド開発',
+                            'fullstack': 'フルスタック開発',
+                            'mobile': 'モバイルアプリ開発',
+                            'database': 'データベース設計',
+                            'infrastructure': 'インフラ構築',
+                            'design': 'UI/UXデザイン',
+                            'consulting': '技術コンサルティング',
+                            'other': 'その他'
+                        };
+                        return jobTypeMap[jobType] || jobType;
+                    };
+                    
+                    // アプリタイプの表示名を取得
+                    const getAppTypeLabel = (appType) => {
+                        const appTypeMap = {
+                            'web_app': 'Webアプリ',
+                            'ios_app': 'iOSアプリ',
+                            'android_app': 'Androidアプリ',
+                            'windows_app': 'Windowsアプリ',
+                            'mac_app': 'macOSアプリ',
+                            'linux_app': 'Linuxアプリ',
+                            'game': 'ゲーム',
+                            'other': 'その他'
+                        };
+                        return appTypeMap[appType] || appType;
+                    };
+                    
+                    // 技術スタック情報を整形
+                    let skillsHtml = '';
+                    
+                    // 技術スタック表示方法1: top_languages と top_frameworks を使用
+                    if ((profile.top_languages && profile.top_languages.length > 0) || 
+                        (profile.top_frameworks && profile.top_frameworks.length > 0)) {
+                        
+                        // 言語
+                        if (profile.top_languages && profile.top_languages.length > 0) {
+                            skillsHtml += `
+                            <div class="mt-2">
+                                <small class="text-muted">主要言語:</small>
+                                ${profile.top_languages.map(lang => 
+                                    `<span class="badge cyber-language-badge me-1">${lang}</span>`
+                                ).join('')}
+                            </div>`;
+                        }
+                        
+                        // フレームワーク
+                        if (profile.top_frameworks && profile.top_frameworks.length > 0) {
+                            skillsHtml += `
+                            <div class="mt-2">
+                                <small class="text-muted">フレームワーク:</small>
+                                ${profile.top_frameworks.map(fw => 
+                                    `<span class="badge cyber-framework-badge me-1">${fw}</span>`
+                                ).join('')}
+                            </div>`;
+                        }
+                    }
+                    // 技術スタック表示方法2: skills.data から直接取得（従来のコード）
+                    else if (profile.skills && profile.skills.data) {
+                        // バックエンド言語
+                        const backendLangs = profile.skills.data.backend_languages;
+                        if (backendLangs && Object.keys(backendLangs).length > 0) {
+                            const topLangs = Object.keys(backendLangs).slice(0, 3);
+                            skillsHtml += `
+                            <div class="mt-2">
+                                <small class="text-muted">バックエンド:</small>
+                                ${topLangs.map(lang => 
+                                    `<span class="badge cyber-backend-badge me-1">${lang}</span>`
+                                ).join('')}
+                            </div>`;
+                        }
+                        
+                        // フロントエンド言語
+                        const frontendLangs = profile.skills.data.frontend_languages;
+                        if (frontendLangs && Object.keys(frontendLangs).length > 0) {
+                            const topLangs = Object.keys(frontendLangs).slice(0, 3);
+                            skillsHtml += `
+                            <div class="mt-2">
+                                <small class="text-muted">フロントエンド:</small>
+                                ${topLangs.map(lang => 
+                                    `<span class="badge cyber-frontend-badge me-1">${lang}</span>`
+                                ).join('')}
+                            </div>`;
+                        }
+                        
+                        // データベース
+                        const databases = profile.skills.data.databases;
+                        if (databases && Object.keys(databases).length > 0) {
+                            const topDbs = Object.keys(databases).slice(0, 3);
+                            skillsHtml += `
+                            <div class="mt-2">
+                                <small class="text-muted">データベース:</small>
+                                ${topDbs.map(db => 
+                                    `<span class="badge cyber-db-badge me-1">${db}</span>`
+                                ).join('')}
+                            </div>`;
+                        }
+                    }
+                    
+                    // 開発実績情報を整形
+                    let developmentStatsHtml = '';
+                    if (profile.app_count > 0) {
+                        developmentStatsHtml = `
+                            <div class="d-flex align-items-center">
+                                <span class="text-white">投稿アプリ: ${profile.app_count}件</span>
+                            </div>
+                        `;
+                    }
+                    
                     // カードのHTMLを設定
                     cardDiv.innerHTML = `
                         <div class="card cyber-card h-100">
@@ -232,29 +356,62 @@
                                 </div>
                                 <div>
                                     <h5 class="mb-0 cyber-name">${profile.username}</h5>
-                                    <small class="text-muted">最終更新: ${profile.updated_at}</small>
+                                    <small class="text-muted">最終ログイン: ${profile.last_login || profile.updated_at}</small>
                                 </div>
+                                
+                                ${profile.job_status ? 
+                                    `<div class="ms-auto">
+                                        <span class="badge ${getJobStatusStyle(profile.job_status)} job-status-badge" 
+                                              title="${profile.job_status === 'available' ? '依頼受付中' : profile.job_status === 'limited' ? '一部依頼のみ' : '依頼停止中'}">
+                                            ${profile.job_status === 'available' ? '<i class="bi bi-check-circle"></i> ' : profile.job_status === 'limited' ? '<i class="bi bi-dash-circle"></i> ' : ''}
+                                            ${profile.job_status === 'available' ? '受注可' : profile.job_status === 'limited' ? '一部可' : '非受注'}
+                                        </span>
+                                    </div>` : ''
+                                }
                             </div>
                             <div class="card-body">
-                                <p class="card-text">${profile.bio || '<span class="text-light">自己紹介はまだありません</span>'}</p>
-                                ${profile.hardware_specs ? `
-                                <div class="mt-3">
-                                    <h6 class="cyber-subtitle">開発環境</h6>
-                                    <ul class="list-unstyled cyber-specs-list">
-                                        ${profile.hardware_specs.device_type ? `
-                                        <li>
-                                            <i class="bi bi-pc-display me-2 text-info"></i>
-                                            <span class="text-light">デバイス:</span> 
-                                            <span class="text-white">${profile.hardware_specs.device_type}</span>
-                                        </li>` : ''}
-                                        ${profile.hardware_specs.cpu_type ? `
-                                        <li>
-                                            <i class="bi bi-cpu me-2 text-info"></i>
-                                            <span class="text-light">CPU:</span> 
-                                            <span class="text-white">${profile.hardware_specs.cpu_type}</span>
-                                        </li>` : ''}
-                                    </ul>
-                                </div>` : ''}
+                                ${profile.work_rate ? 
+                                    `<div class="mt-2">
+                                        <span class="badge bg-dark text-light ms-2 rate-badge">
+                                            <i class="bi bi-currency-yen"></i> ${profile.work_rate}
+                                        </span>
+                                    </div>` : ''
+                                }
+                                
+                                ${developmentStatsHtml ? 
+                                    `<div class="mt-3">
+                                        ${developmentStatsHtml}
+                                    </div>` : ''
+                                }
+                                
+                                ${skillsHtml ? 
+                                    `<div class="mt-3">
+                                        <h6 class="cyber-subtitle mb-2">技術スタック</h6>
+                                        ${skillsHtml}
+                                    </div>` : ''
+                                }
+
+                                ${profile.job_types && profile.job_types.length > 0 ? 
+                                    `<div class="mt-3">
+                                        <h6 class="cyber-subtitle mb-2">対応業務</h6>
+                                        <div>
+                                            ${profile.job_types.map(job => 
+                                                `<span class="badge cyber-job-badge me-1 mb-1">${getJobTypeLabel(job)}</span>`
+                                            ).join('')}
+                                        </div>
+                                    </div>` : ''
+                                }
+
+                                ${profile.app_type_counts && Object.keys(profile.app_type_counts).length > 0 ? 
+                                    `<div class="mt-3">
+                                        <h6 class="cyber-subtitle mb-2">開発アプリ種類</h6>
+                                        <div>
+                                            ${Object.entries(profile.app_type_counts).map(([type, count]) => 
+                                                `<span class="badge cyber-app-type-badge me-1 mb-1">${getAppTypeLabel(type)} (${count})</span>`
+                                            ).join('')}
+                                        </div>
+                                    </div>` : ''
+                                }
                             </div>
                             <div class="card-footer cyber-card-footer">
                                 <div class="d-flex justify-content-between">
@@ -333,15 +490,15 @@
                 
                 .cyber-name {
                     color: #ffd700;  /* ゴールドの色はそのまま */
-                    text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);  /* シャドウを強く */
+                    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);  /* シャドウを強く */
                     font-weight: bold;  /* 太字に */
                 }
                 
                 .cyber-subtitle {
-                    color: #00ffff;  /* シアンの色はそのまま */
+                    color: #00ff9f;  /* シアンの色はそのまま */
                     font-size: 0.9rem;
                     margin-bottom: 0.5rem;
-                    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);  /* シャドウを強く */
+                    text-shadow: 0 0 5px rgba(0, 255, 159, 0.5);  /* シャドウを強く */
                     font-weight: bold;  /* 太字に */
                 }
                 
@@ -455,6 +612,105 @@
                     transform: translateY(-5px);
                     box-shadow: 0 5px 20px rgba(0, 200, 255, 0.4);
                     border: 1px solid rgba(0, 255, 255, 0.5);
+                }
+                
+                /* 技術スキルバッジスタイル */
+                .cyber-backend-badge {
+                    background: rgba(0, 128, 255, 0.2);
+                    color: #00a8ff;
+                    border: 1px solid rgba(0, 128, 255, 0.6);
+                    text-shadow: 0 0 5px rgba(0, 128, 255, 0.5);
+                    font-size: 0.8rem;
+                }
+                
+                .cyber-frontend-badge {
+                    background: rgba(255, 105, 180, 0.2);
+                    color: #ff69b4;
+                    border: 1px solid rgba(255, 105, 180, 0.6);
+                    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+                    font-size: 0.8rem;
+                }
+                
+                .cyber-db-badge {
+                    background: rgba(255, 215, 0, 0.2);
+                    color: #ffd700;
+                    border: 1px solid rgba(255, 215, 0, 0.6);
+                    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+                    font-size: 0.8rem;
+                }
+                
+                /* 新しい言語とフレームワークのバッジスタイル */
+                .cyber-language-badge {
+                    background: rgba(102, 204, 255, 0.2);
+                    color: #66ccff;
+                    border: 1px solid rgba(102, 204, 255, 0.6);
+                    text-shadow: 0 0 5px rgba(102, 204, 255, 0.5);
+                    font-size: 0.8rem;
+                }
+                
+                .cyber-framework-badge {
+                    background: rgba(255, 153, 0, 0.2);
+                    color: #ff9900;
+                    border: 1px solid rgba(255, 153, 0, 0.6);
+                    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
+                    font-size: 0.8rem;
+                }
+                
+                /* ジョブステータスバッジスタイル */
+                .badge.bg-info {
+                    background: rgba(0, 123, 255, 0.8) !important;
+                    color: white !important;
+                    box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
+                }
+                
+                .badge.bg-warning {
+                    background: rgba(255, 193, 7, 0.8) !important;
+                    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+                }
+                
+                .badge.bg-danger {
+                    background: rgba(220, 53, 69, 0.8) !important;
+                    color: white !important;
+                    box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
+                }
+                
+                .rate-badge {
+                    font-size: 0.85rem;
+                    padding: 0.4em 0.6em;
+                    border-radius: 4px;
+                    background: rgba(52, 58, 64, 0.8) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                }
+                
+                .cyber-job-badge {
+                    background: rgba(162, 0, 255, 0.2);
+                    color: #c17bff;
+                    border: 1px solid rgba(162, 0, 255, 0.6);
+                    text-shadow: 0 0 5px rgba(162, 0, 255, 0.5);
+                    font-size: 0.8rem;
+                    margin-right: 0.3rem;
+                    margin-bottom: 0.3rem;
+                }
+                
+                /* アプリタイプのバッジスタイル */
+                .cyber-app-type-badge {
+                    background: rgba(255, 165, 0, 0.2);
+                    color: #ffa500;
+                    border: 1px solid rgba(255, 165, 0, 0.6);
+                    text-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
+                    font-size: 0.8rem;
+                    margin-right: 0.3rem;
+                    margin-bottom: 0.3rem;
+                }
+                
+                /* 開発環境折りたたみ用スタイル */
+                .cyber-specs-list-small li {
+                    margin-bottom: 0.3rem;
+                    padding: 0.2rem 0.4rem;
+                    border-radius: 4px;
+                    background: rgba(0, 20, 40, 0.3);
+                    border-left: 2px solid rgba(0, 255, 255, 0.3);
+                    font-size: 0.8rem;
                 }
             </style>
         </div>
