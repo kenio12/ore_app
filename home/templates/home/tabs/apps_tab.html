@@ -73,7 +73,7 @@
                                         <!-- バックエンド言語 -->
                                         {% if app.backend.main_language %}
                                         <div class="mt-2">
-                                            <span class="badge bg-primary cyber-backend-lang me-2">{{ BACKEND_STACK|get_dict_value:app.backend.main_language|get_dict_value:"name" }}</span>
+                                            <span class="badge bg-primary cyber-backend-lang me-2">{{ BACKEND_STACK.languages|get_dict_value:app.backend.main_language }}</span>
                                         </div>
                                         {% endif %}
                                     </div>

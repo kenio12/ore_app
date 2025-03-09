@@ -47,5 +47,6 @@ def home(request):
         'apps_data': apps_data,
         'APP_TYPES': dict(APP_TYPES),
         'GENRES': dict(GENRES),
+        'BACKEND_STACK': BACKEND_STACK,
     }
     return render(request, 'home/home.html', context)
