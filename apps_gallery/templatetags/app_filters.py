@@ -48,3 +48,9 @@ def json_decode(value):
         return json.loads(value) if value else []
     except (json.JSONDecodeError, TypeError):
         return [] 
+
+@register.filter(name='genre_display')
+def genre_display(genre_key):
+    """英語のジャンルキーを日本語表示に変換するフィルター"""
+    from apps_gallery.constants.app_info import ジャンル表示
+    return ジャンル表示.get(genre_key, genre_key) 

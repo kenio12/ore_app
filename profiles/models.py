@@ -77,20 +77,10 @@ class Profile(models.Model):
     )
     
     # 開発状況の統計情報
-    dev_status_stats = models.JSONField(
-        '開発状況統計', 
-        default=dict, 
-        blank=True,
-        help_text='ユーザーのアプリの開発状況の統計'
-    )
+    dev_status_stats = None
     
     # 公開状態の統計情報
-    publish_status_stats = models.JSONField(
-        '公開状態統計', 
-        default=dict, 
-        blank=True,
-        help_text='ユーザーのアプリの公開状態の統計'
-    )
+    publish_status_stats = None
     
     # ハードウェア環境の統計情報
     pc_type_stats = models.JSONField(
@@ -895,36 +885,6 @@ class Profile(models.Model):
         # ジャンル統計を更新
         if genres_count:
             self.genres_stats = genres_count
-        
-        # 開発状況統計を更新
-        if dev_status_count:
-            self.dev_status_stats = dev_status_count
-        
-        # 公開状態統計を更新
-        if publish_status_count:
-            self.publish_status_stats = publish_status_count
-        
-        # ハードウェア統計を更新
-        if pc_type_count:
-            self.pc_type_stats = pc_type_count
-            
-        if device_type_count:
-            self.device_type_stats = device_type_count
-            
-        if cpu_type_count:
-            self.cpu_type_stats = cpu_type_count
-            
-        if memory_size_count:
-            self.memory_size_stats = memory_size_count
-            
-        if storage_type_count:
-            self.storage_type_stats = storage_type_count
-            
-        if monitor_count_count:
-            self.monitor_count_stats = monitor_count_count
-            
-        if internet_type_count:
-            self.internet_type_stats = internet_type_count
         
         # 開発環境統計を更新
         if editor_count:

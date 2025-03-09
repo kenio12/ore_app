@@ -25,7 +25,7 @@ def home(request):
             'thumbnail': thumbnail_url,
             'screenshots': screenshots_urls,
             'app_types': [APP_TYPES[t] for t in app.app_types],
-            'genres': [GENRES[g] for g in app.genres],
+            'genres': [ジャンル表示[g] if g in ジャンル表示 else GENRES[g] for g in app.genres],
             'detail_url': reverse('apps_gallery:detail', args=[app.pk]),
             'edit_url': reverse('apps_gallery:edit', args=[app.pk]),
             'is_author': request.user == app.author,

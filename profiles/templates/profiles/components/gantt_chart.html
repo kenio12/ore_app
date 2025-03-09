@@ -1,0 +1,363 @@
+<!-- 開発期間ガンチャート -->
+{% if profile.app_development_periods %}
+<div class="mb-4">
+    <h5 class="text-info">アプリ開発期間チャート（ビジュアル表示）</h5>
+    <div class="cyber-gantt-chart" id="app-gantt-chart">
+        <!-- タイムラインヘッダー（日付スケール） -->
+        <div class="gantt-timeline-header">
+            <div class="timeline-label"></div>
+            <div class="timeline-scale">
+                <span class="timeline-start-date">{{ profile.first_app_date|date:"Y年n月j日" }}</span>
+                <span class="timeline-end-date">{{ profile.last_app_date|date:"Y年n月j日" }}</span>
+                <!-- 現在日マーカーはJavaScriptで追加 -->
+            </div>
+        </div>
+        
+        <!-- ガンチャートの各アプリ行を作成 -->
+        {% for app in profile.app_development_periods %}
+        <div class="gantt-app-row" 
+             data-app-id="{{ app.app_id }}" 
+             data-title="{{ app.title }}" 
+             data-start="{{ app.start_date }}" 
+             data-end="{{ app.end_date }}" 
+             data-duration="{{ app.duration }}">
+            <div class="app-name" title="{{ app.title }}">{{ app.title }}</div>
+            <div class="gantt-timeline">
+                <!-- JavaScriptでここに開発期間バーを追加 -->
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded for Gantt Chart');
+    
+    // ガンチャート要素の取得
+    const ganttChart = document.getElementById('app-gantt-chart');
+    if (!ganttChart) {
+        console.warn('Gantt chart element not found');
+        return;
+    }
+    
+    // 既に作成されたアプリ行の取得
+    const rows = ganttChart.querySelectorAll('.gantt-app-row');
+    if (!rows.length) {
+        console.warn('No app rows found in gantt chart');
+        return;
+    }
+    
+    // タイムラインスケールの取得
+    const timelineScale = ganttChart.querySelector('.timeline-scale');
+    if (!timelineScale) {
+        console.warn('Timeline scale element not found');
+        return;
+    }
+    
+    // デバッグ情報
+    console.log('Debug - Profile start date:', '{{ profile.first_app_date|date:"Y-m-d" }}');
+    console.log('Debug - Profile end date:', '{{ profile.last_app_date|date:"Y-m-d" }}');
+    console.log('Debug - App count:', rows.length);
+    
+    // 最初と最後の日付を取得する
+    let firstDate = new Date('{{ profile.first_app_date|date:"Y-m-d" }}');
+    let lastDate = new Date('{{ profile.last_app_date|date:"Y-m-d" }}');
+    
+    console.log('Debug - Parsed first date:', firstDate);
+    console.log('Debug - Parsed last date:', lastDate);
+    
+    if (isNaN(firstDate.getTime()) || isNaN(lastDate.getTime())) {
+        console.error('Invalid date format in first_app_date or last_app_date');
+        // デフォルト値として現在の日付を基準に1年間のスパンを設定
+        const now = new Date();
+        firstDate = new Date(now);
+        firstDate.setFullYear(now.getFullYear() - 1);
+        lastDate = now;
+        console.log('Using default date range:', firstDate, 'to', lastDate);
+    }
+    
+    // 総日数を計算
+    const totalDays = Math.ceil((lastDate - firstDate) / (1000 * 60 * 60 * 24)) + 1;
+    console.log('Debug - Total days:', totalDays);
+    
+    // 現在の日付を取得
+    const currentDate = new Date();
+    
+    // 現在日マーカーを追加
+    const nowMarker = document.createElement('div');
+    nowMarker.className = 'now-marker';
+    
+    // 現在日の位置を計算（タイムラインに対する割合）
+    let nowPosition = 50; // デフォルトは中央
+    
+    if (currentDate >= firstDate && currentDate <= lastDate) {
+        // 現在日が開発期間内の場合
+        const daysPassed = Math.ceil((currentDate - firstDate) / (1000 * 60 * 60 * 24));
+        nowPosition = (daysPassed / totalDays) * 100;
+    } else if (currentDate < firstDate) {
+        // 開発開始前の場合
+        nowPosition = 0;
+    } else {
+        // 開発終了後の場合
+        nowPosition = 100;
+    }
+    
+    // 現在日マーカーのスタイル設定
+    nowMarker.style.left = `${nowPosition}%`;
+    timelineScale.appendChild(nowMarker);
+    
+    // 現在日ラベルを追加
+    const nowLabel = document.createElement('span');
+    nowLabel.className = 'timeline-now-date';
+    nowLabel.textContent = '今日';
+    nowLabel.style.left = `${nowPosition}%`;
+    timelineScale.appendChild(nowLabel);
+    
+    // 各アプリの行を処理する
+    rows.forEach((row, index) => {
+        // データ属性から情報を取得
+        const appId = row.dataset.appId;
+        const title = row.dataset.title;
+        const startDateStr = row.dataset.start;
+        const endDateStr = row.dataset.end;
+        const durationStr = row.dataset.duration;
+        
+        console.log(`Debug - App ${index}:`, { title, startDateStr, endDateStr, durationStr });
+        
+        // タイムライン部分を取得
+        const timeline = row.querySelector('.gantt-timeline');
+        if (!timeline) {
+            console.warn(`Timeline element not found for app ${title}`);
+            return;
+        }
+        
+        try {
+            // 日付をパース
+            const startDate = new Date(startDateStr);
+            const endDate = new Date(endDateStr);
+            
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                throw new Error('Invalid date format');
+            }
+            
+            // 開発期間バーを作成
+            const appBar = document.createElement('div');
+            
+            // アプリの状態を判定（過去/現在/未来）
+            let appStatus = 'past';
+            if (currentDate >= startDate && currentDate <= endDate) {
+                appStatus = 'current';
+            } else if (currentDate < startDate) {
+                appStatus = 'future';
+            }
+            
+            appBar.className = `app-bar ${appStatus}`;
+            
+            // 開始位置と長さを計算（%単位）
+            const startOffset = Math.max(0, (startDate - firstDate) / (1000 * 60 * 60 * 24));
+            const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            
+            const startPercent = (startOffset / totalDays) * 100;
+            const widthPercent = (duration / totalDays) * 100;
+            
+            console.log(`Debug - App ${title} - Position:`, { startPercent, widthPercent });
+            
+            // スタイルを設定
+            appBar.style.left = `${startPercent}%`;
+            appBar.style.width = `${widthPercent}%`;
+            
+            // ツールチップ情報
+            appBar.title = `${title}: ${startDateStr} 〜 ${endDateStr} (${durationStr})`;
+            
+            // 期間日数の表示（短すぎる場合は非表示）
+            if (widthPercent > 10) {
+                const durationText = document.createElement('span');
+                durationText.className = 'app-duration';
+                durationText.textContent = durationStr;
+                appBar.appendChild(durationText);
+            }
+            
+            // タイムラインに追加
+            timeline.appendChild(appBar);
+            
+        } catch (error) {
+            console.error(`Error processing app ${title}:`, error);
+            
+            // エラー表示
+            const errorBar = document.createElement('div');
+            errorBar.className = 'app-bar-error';
+            errorBar.title = '日付処理エラー';
+            
+            const errorText = document.createElement('span');
+            errorText.className = 'error-text';
+            errorText.textContent = 'エラー';
+            
+            errorBar.appendChild(errorText);
+            timeline.appendChild(errorBar);
+        }
+        
+        // 各行にも現在日マーカーを追加（オプション）
+        if (nowPosition > 0 && nowPosition < 100) {
+            const rowNowMarker = document.createElement('div');
+            rowNowMarker.className = 'now-marker row-marker';
+            rowNowMarker.style.left = `${nowPosition}%`;
+            timeline.appendChild(rowNowMarker);
+        }
+    });
+});
+</script>
+
+<!-- ガンチャートのスタイル -->
+<style>
+.cyber-gantt-chart {
+    width: 100%;
+    border: 1px solid #0ff;
+    background-color: rgba(0, 15, 30, 0.7);
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+/* タイムラインヘッダースタイル */
+.gantt-timeline-header {
+    display: flex;
+    margin-bottom: 15px;
+    height: 30px;
+}
+
+.timeline-label {
+    width: 150px;
+    padding-right: 10px;
+}
+
+.timeline-scale {
+    flex-grow: 1;
+    position: relative;
+    border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
+}
+
+.timeline-start-date, .timeline-end-date, .timeline-now-date {
+    position: absolute;
+    font-size: 0.7rem;
+    color: #0ff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.timeline-start-date {
+    left: 0;
+    bottom: 5px;
+}
+
+.timeline-end-date {
+    right: 0;
+    bottom: 5px;
+}
+
+.timeline-now-date {
+    transform: translateX(-50%);
+    bottom: 15px;
+    color: #ff9900;
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
+    font-weight: bold;
+}
+
+.now-marker {
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    background-color: #ff9900;
+    box-shadow: 0 0 5px rgba(255, 153, 0, 0.7);
+    z-index: 10;
+}
+
+.row-marker {
+    height: 100%;
+    top: 0;
+}
+
+.gantt-app-row {
+    display: flex;
+    height: 35px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.gantt-app-row:last-child {
+    margin-bottom: 0;
+}
+
+.app-name {
+    width: 150px;
+    padding-right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #0ff;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.gantt-timeline {
+    flex-grow: 1;
+    position: relative;
+    height: 25px;
+    background-color: rgba(0, 30, 60, 0.5);
+    border-radius: 3px;
+}
+
+.app-bar {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    min-width: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.app-bar.past {
+    background: linear-gradient(to right, rgba(0, 123, 255, 0.4), rgba(0, 123, 255, 0.7));
+    border: 1px solid rgba(0, 123, 255, 0.8);
+    color: #ffffff;
+}
+
+.app-bar.current {
+    background: linear-gradient(to right, rgba(255, 193, 7, 0.4), rgba(255, 193, 7, 0.7));
+    border: 1px solid rgba(255, 193, 7, 0.8);
+    color: #000000;
+}
+
+.app-bar.future {
+    background: linear-gradient(to right, rgba(40, 167, 69, 0.4), rgba(40, 167, 69, 0.7));
+    border: 1px solid rgba(40, 167, 69, 0.8);
+    color: #ffffff;
+}
+
+.app-bar-error {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid #f00;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-text {
+    color: #f55;
+    font-size: 0.8rem;
+}
+
+.app-duration {
+    font-size: 0.75rem;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+</style>
+{% endif %} 

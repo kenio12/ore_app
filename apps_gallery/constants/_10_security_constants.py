@@ -3,7 +3,7 @@
 """
 
 # 認証方式
-AUTHENTICATION_METHODS = {
+認証方式 = {
     'jwt': 'JWT',
     'oauth': 'OAuth',
     'session': 'セッション認証',
@@ -13,7 +13,7 @@ AUTHENTICATION_METHODS = {
 }
 
 # セキュリティ対策
-SECURITY_MEASURES = {
+セキュリティ対策 = {
     'csrf': 'CSRF対策',
     'xss': 'XSS対策',
     'sql_injection': 'SQLインジェクション対策',

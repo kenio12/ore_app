@@ -3,22 +3,28 @@
 """
 
 # マークアップ・スタイリング言語
-MARKUP_LANGUAGES = {
+マークアップ言語 = {
     'html': 'HTML',
     'css': 'CSS',
     'other': 'その他'
 }
 
+# 互換性のために英語変数名を残す
+MARKUP_LANGUAGES = マークアップ言語
+
 # フロントエンド言語
-FRONTEND_LANGUAGES = {
+フロントエンド言語 = {
     'javascript': 'JavaScript',
     'typescript': 'TypeScript',
     'dart': 'Dart',
     'other': 'その他'
 }
 
+# 互換性のために英語変数名を残す
+FRONTEND_LANGUAGES = フロントエンド言語
+
 # フロントエンドフレームワーク
-FRONTEND_FRAMEWORKS = {
+フロントエンドフレームワーク = {
     'react': 'React',
     'vue': 'Vue.js',
     'angular': 'Angular',
@@ -34,11 +40,17 @@ FRONTEND_FRAMEWORKS = {
     'other': 'その他'
 }
 
+# 互換性のために英語変数名を残す
+FRONTEND_FRAMEWORKS = フロントエンドフレームワーク
+
 # CSSフレームワーク
-CSS_FRAMEWORKS = {
+CSSフレームワーク = {
     'bootstrap': 'Bootstrap',
     'tailwind': 'Tailwind CSS',
     'bulma': 'Bulma',
     'sass': 'Sass/SCSS',
     'other': 'その他'
-} 
+}
+
+# 互換性のために英語変数名を残す
+CSS_FRAMEWORKS = CSSフレームワーク 

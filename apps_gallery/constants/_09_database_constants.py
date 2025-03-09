@@ -3,7 +3,7 @@
 """
 
 # データベース
-DATABASE_TYPES = {
+データベース種類 = {
     'mysql': 'MySQL',
     'postgresql': 'PostgreSQL',
     'mongodb': 'MongoDB',
@@ -16,7 +16,7 @@ DATABASE_TYPES = {
 }
 
 # データベースホスティングサービス
-DATABASE_HOSTING = {
+データベースホスティング = {
     'aws_rds': 'AWS RDS',
     'gcp_sql': 'Google Cloud SQL',
     'azure_db': 'Azure Database',
@@ -28,7 +28,7 @@ DATABASE_HOSTING = {
 }
 
 # ORM
-ORMS = {
+オーアールエム = {
     'eloquent': 'Eloquent',
     'doctrine': 'Doctrine',
     'prisma': 'Prisma',

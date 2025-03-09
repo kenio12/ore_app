@@ -1,0 +1,46 @@
+{% if profile.app_development_periods %}
+<div class="mb-4">
+    <h5 class="text-info">アプリ開発期間 (シンプル表示)</h5>
+    <div class="simple-gantt">
+        {% for app in profile.app_development_periods %}
+            <div class="app-row">
+                <div class="app-title">{{ app.title }}</div>
+                <div class="app-dates">{{ app.start_date }} 〜 {{ app.end_date }}</div>
+                <div class="app-duration">{{ app.duration }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.simple-gantt {
+    border: 1px solid #0ff;
+    background-color: rgba(0, 15, 30, 0.7);
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+.app-row {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: rgba(0, 30, 60, 0.5);
+    border-radius: 5px;
+    border-left: 3px solid #00ffff;
+}
+.app-title {
+    color: #00ffff;
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+.app-dates {
+    color: #ffd700;
+}
+.app-duration {
+    color: #ff69b4;
+    font-style: italic;
+    margin-top: 5px;
+}
+</style>
+{% endif %} 

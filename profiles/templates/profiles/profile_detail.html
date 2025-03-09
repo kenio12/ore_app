@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load profile_filters %}
+{% load app_filters %}
 
 {% block title %}プロフィール - {{ user.username }}{% endblock %}
 
@@ -96,7 +97,7 @@
                     {% if profile.hardware_specs %}
                     <div class="mt-4">
                         <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
-                            <i class="bi bi-cpu"></i> 開発に使用したパソコン環境
+                            <i class="bi bi-cpu"></i> 現在のパソコン環境
                         </h4>
                         <div class="card" style="background-color: rgba(0, 40, 80, 0.9) !important; border: 2px solid rgba(0, 255, 255, 0.6); box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);">
                             <div class="card-body">
@@ -175,7 +176,7 @@
                                                 {% if profile.hardware_specs.monitor_count %}
                                                 <div class="col-md-6 col-sm-12">
                                                     <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
-                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">使用モニター数:</span>
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">今あるパソコン＋モニター:</span>
                                                         <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ monitor_counts|get_item:profile.hardware_specs.monitor_count }}</span>
                                                     </div>
                                                 </div>
@@ -198,101 +199,54 @@
                     </div>
                     {% endif %}
                     
-                    <!-- 技術スタック情報（APIから取得） -->
+                    <!-- 基本情報 -->
                     <div class="mt-4">
-                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
-                            <i class="bi bi-code-slash"></i> 技術スタック
+                        <h4 class="cyber-subtitle mb-3" style="color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); font-weight: bold;">
+                            <i class="bi bi-info-circle-fill"></i> 基本情報
                         </h4>
-                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                        <div class="card bg-dark" style="background-color: rgba(0, 20, 50, 0.8) !important; border: 2px solid #ffd700 !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);">
                             <div class="card-body">
                                 <div class="row">
-                                    <!-- 技術スキル情報を表示 -->
                                     <div class="col-md-12">
-                                        <div class="skills-section">
-                                            {% if profile.skills and profile.skills.data %}
-                                                <!-- バックエンド言語 -->
-                                                {% if profile.skills.data.backend_languages %}
-                                                <div class="mb-3">
-                                                    <h5 class="text-info">バックエンド言語</h5>
-                                                    <div>
-                                                        {% for lang, level in profile.skills.data.backend_languages.items %}
-                                                            <span class="badge cyber-backend-badge me-1 mb-1">{{ lang }}</span>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                <!-- フロントエンド言語 -->
-                                                {% if profile.skills.data.frontend_languages %}
-                                                <div class="mb-3">
-                                                    <h5 class="text-info">フロントエンド言語</h5>
-                                                    <div>
-                                                        {% for lang, level in profile.skills.data.frontend_languages.items %}
-                                                            <span class="badge cyber-frontend-badge me-1 mb-1">{{ lang }}</span>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                <!-- データベース -->
-                                                {% if profile.skills.data.databases %}
-                                                <div class="mb-3">
-                                                    <h5 class="text-info">データベース</h5>
-                                                    <div>
-                                                        {% for db, level in profile.skills.data.databases.items %}
-                                                            <span class="badge cyber-db-badge me-1 mb-1">{{ db }}</span>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                <!-- フレームワーク -->
-                                                {% if profile.skills.data.frontend_frameworks or profile.skills.data.backend_frameworks %}
-                                                <div class="mb-3">
-                                                    <h5 class="text-info">フレームワーク・ライブラリ</h5>
-                                                    <div>
-                                                        {% if profile.skills.data.frontend_frameworks %}
-                                                            {% for fw, level in profile.skills.data.frontend_frameworks.items %}
-                                                                <span class="badge cyber-framework-badge me-1 mb-1">{{ fw }}</span>
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                        
-                                                        {% if profile.skills.data.backend_frameworks %}
-                                                            {% for fw, level in profile.skills.data.backend_frameworks.items %}
-                                                                <span class="badge cyber-framework-badge me-1 mb-1">{{ fw }}</span>
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                <!-- DevOps技術 -->
-                                                {% if profile.skills.data.devops_tools %}
-                                                <div class="mb-3">
-                                                    <h5 class="text-info">DevOps技術</h5>
-                                                    <div>
-                                                        {% for tool, level in profile.skills.data.devops_tools.items %}
-                                                            <span class="badge cyber-devops-badge me-1 mb-1">{{ tool }}</span>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                <!-- クラウド技術 -->
-                                                {% if profile.skills.data.cloud_services %}
-                                                <div class="mb-3">
-                                                    <h5 class="text-info">クラウド技術</h5>
-                                                    <div>
-                                                        {% for service, level in profile.skills.data.cloud_services.items %}
-                                                            <span class="badge cyber-cloud-badge me-1 mb-1">{{ service }}</span>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                            {% else %}
-                                                <p class="text-cyber-blue">スキル情報はまだ登録されていません。プロフィール編集から追加できます。</p>
-                                            {% endif %}
+                                        <!-- アプリタイプ統計 -->
+                                        {% if profile.app_types_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-warning" style="text-shadow: 0 0 5px #ffd700;">制作アプリの種類</h5>
+                                            <div>
+                                                {% for app_type, count in profile.app_types_stats.items %}
+                                                    <span class="badge cyber-app-type-badge me-1 mb-1">{{ app_type }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
                                         </div>
+                                        {% endif %}
+                                        
+                                        <!-- ジャンル統計 -->
+                                        {% if profile.genres_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-warning" style="text-shadow: 0 0 5px #ffd700;">ジャンル</h5>
+                                            <div>
+                                                {% for genre, count in profile.genres_stats.items %}
+                                                    <span class="badge cyber-genre-badge me-1 mb-1">{{ genre|genre_display }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- アプリURL統計 -->
+                                        {% if profile.total_apps_with_url %}
+                                        <div class="mb-3">
+                                            <h5 class="text-warning" style="text-shadow: 0 0 5px #ffd700;">デプロイ済みアプリ</h5>
+                                            <p class="text-light">全{{ profile.total_apps }}アプリ中、{{ profile.total_apps_with_url }}アプリがデプロイ済み ({{ profile.deployed_percentage }}%)</p>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- GitHub統計 -->
+                                        {% if profile.total_apps_with_github %}
+                                        <div class="mb-3">
+                                            <h5 class="text-warning" style="text-shadow: 0 0 5px #ffd700;">GitHub公開状況</h5>
+                                            <p class="text-light">全{{ profile.total_apps }}アプリ中、{{ profile.total_apps_with_github }}アプリのコードをGitHubで公開中 ({{ profile.github_percentage }}%)</p>
+                                        </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -708,6 +662,43 @@
                     <a href="javascript:history.back()" class="btn btn-cyber-secondary ms-2">
                         <i class="bi bi-arrow-left"></i> 戻る
                     </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 開発アクティビティ -->
+<div class="mt-4">
+    <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+        <i class="bi bi-code-slash"></i> 開発アクティビティ
+    </h4>
+    <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- シンプルなガンチャートコンポーネントを先に表示 -->
+                    {% include 'profiles/components/simple_gantt.html' %}
+                    
+                    <!-- 元のガンチャートコンポーネント -->
+                    {% include 'profiles/components/gantt_chart.html' %}
+                    
+                    <!-- デバッグ情報 -->
+                    {% if profile.app_development_periods %}
+                    <div class="mt-4">
+                        <h5 class="text-info">デバッグ情報</h5>
+                        <div class="bg-dark p-3 rounded">
+                            <p>最初の開発日: {{ profile.first_app_date|date:"Y-m-d" }}</p>
+                            <p>最後の開発日: {{ profile.last_app_date|date:"Y-m-d" }}</p>
+                            <p>アプリ数: {{ profile.app_development_periods|length }}</p>
+                            {% for app in profile.app_development_periods %}
+                            <div class="mt-2">
+                                <strong>{{ app.title }}</strong>: {{ app.start_date }} 〜 {{ app.end_date }} ({{ app.duration }})
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -1308,7 +1299,7 @@
 }
 </style>
 
-<!-- アプリ開発期間ガントチャート用JavaScript -->
+<!-- アプリ開発期間ガンチャート用JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Content Loaded');
