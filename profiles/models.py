@@ -175,18 +175,20 @@ class Profile(models.Model):
         help_text='ユーザーが開発で使用しているCI/CDツールの統計'
     )
     
+    # APIツール統計情報を追加
     api_tools_stats = models.JSONField(
-        'APIツール統計', 
-        default=dict, 
+        'APIツール統計',
+        default=dict,
         blank=True,
-        help_text='ユーザーが開発で使用しているAPIツールの統計'
+        help_text='ユーザーが開発で使用しているAPIツール（Postman、Swagger、cURLなど）の統計'
     )
     
+    # モニタリングツール統計情報を追加
     monitoring_tools_stats = models.JSONField(
-        'モニタリングツール統計', 
-        default=dict, 
+        'モニタリングツール統計',
+        default=dict,
         blank=True,
-        help_text='ユーザーが開発で使用しているモニタリングツールの統計'
+        help_text='ユーザーが開発で使用しているモニタリングツール（Prometheus、Grafana、New Relicなど）の統計'
     )
     
     # アーキテクチャ情報の統計

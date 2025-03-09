@@ -393,6 +393,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const appTabs = document.querySelector('.app-tabs');
     let lastScrollTop = 0;
     
+    // タブの状態を保持する処理を追加
+    // 保存されたタブIDを取得して表示する
+    const savedTabId = localStorage.getItem('activeAppTab');
+    if (savedTabId) {
+        // 保存されたタブがあれば、それをアクティブにする
+        const tabToActivate = document.querySelector(savedTabId);
+        if (tabToActivate) {
+            const tab = new bootstrap.Tab(tabToActivate);
+            tab.show();
+        }
+    }
+    
+    // タブが切り替えられたときの処理をまとめる
+    const tabButtons = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+    tabButtons.forEach(button => {
+        button.addEventListener('shown.bs.tab', function(event) {
+            // クリックされたタブのIDを保存
+            localStorage.setItem('activeAppTab', '#' + event.target.id);
+            // インジケーターも表示
+            showViewingIndicator();
+        });
+    });
+    
     window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
@@ -497,14 +520,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', function() {
             hideViewingIndicator();
-        });
-    });
-    
-    // タブ切り替え時にも表示する
-    const tabButtons = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
-    tabButtons.forEach(button => {
-        button.addEventListener('shown.bs.tab', function() {
-            showViewingIndicator();
         });
     });
 });
