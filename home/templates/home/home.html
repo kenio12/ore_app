@@ -40,6 +40,49 @@
         </ul>
     </div>
 
+    <!-- タブインジケーター -->
+    <div class="tab-indicators">
+        <!-- 公開アプリタブのインジケーター -->
+        <div class="tab-indicator" id="apps-indicator" data-tab="apps-tab">
+            <div class="indicator-content">
+                <i class="bi bi-app"></i>
+                <span>公開アプリ</span>
+            </div>
+        </div>
+        
+        <!-- プログラマー達タブのインジケーター -->
+        <div class="tab-indicator" id="programmers-indicator" data-tab="programmers-tab">
+            <div class="indicator-content">
+                <i class="bi bi-people"></i>
+                <span>プログラマー達</span>
+            </div>
+        </div>
+        
+        <!-- 開発ブログタブのインジケーター -->
+        <div class="tab-indicator" id="blogs-indicator" data-tab="blogs-tab">
+            <div class="indicator-content">
+                <i class="bi bi-journal-code"></i>
+                <span>開発ブログ</span>
+            </div>
+        </div>
+        
+        <!-- アプリ開発大会タブのインジケーター -->
+        <div class="tab-indicator" id="contest-indicator" data-tab="contest-tab">
+            <div class="indicator-content">
+                <i class="bi bi-trophy"></i>
+                <span>アプリ開発大会</span>
+            </div>
+        </div>
+        
+        <!-- お仕事依頼タブのインジケーター -->
+        <div class="tab-indicator" id="jobs-indicator" data-tab="jobs-tab">
+            <div class="indicator-content">
+                <i class="bi bi-briefcase"></i>
+                <span>お仕事依頼</span>
+            </div>
+        </div>
+    </div>
+
     <!-- タブコンテンツ -->
     <div class="tab-content" id="mainTabsContent">
         <!-- 公開アプリタブ -->
@@ -141,8 +184,40 @@
             button.addEventListener('shown.bs.tab', function(e) {
                 const newTabId = e.target.id;
                 updateGridColor(newTabId);
+                
+                // インジケーターを表示
+                showTabIndicator(newTabId);
             });
         });
+        
+        // 初期タブのインジケーターを表示
+        setTimeout(() => {
+            showTabIndicator('apps-tab');
+        }, 500);
+        
+        // インジケーター表示関数
+        function showTabIndicator(tabId) {
+            // すべてのインジケーターを非表示
+            hideAllIndicators();
+            
+            // 対応するインジケーターを表示
+            const indicator = document.getElementById(tabId.replace('-tab', '-indicator'));
+            if (indicator) {
+                indicator.classList.add('show');
+                
+                // 5秒後に非表示
+                setTimeout(() => {
+                    indicator.classList.remove('show');
+                }, 3000);
+            }
+        }
+        
+        // すべてのインジケーターを非表示にする関数
+        function hideAllIndicators() {
+            document.querySelectorAll('.tab-indicator').forEach(indicator => {
+                indicator.classList.remove('show');
+            });
+        }
     });
 </script>
 
@@ -181,6 +256,94 @@
         0% { opacity: 0.5; }
         50% { opacity: 0.6; }
         100% { opacity: 0.5; }
+    }
+
+    /* タブインジケーターのスタイル */
+    .tab-indicators {
+        position: fixed;
+        top: 50%;
+        right: 30px;
+        transform: translateY(-50%);
+        z-index: 1100;
+    }
+
+    .tab-indicator {
+        position: fixed;
+        top: 50%;
+        right: 30px;
+        transform: translateY(-50%);
+        z-index: 1100;
+        animation: indicator-pulse 2s infinite alternate;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .tab-indicator.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* タブごとの色の設定 */
+    #apps-indicator .indicator-content {
+        background: linear-gradient(45deg, rgba(0, 255, 255, 0.7), rgba(0, 150, 255, 0.7));
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5), 0 0 30px rgba(0, 150, 255, 0.3);
+    }
+
+    #programmers-indicator .indicator-content {
+        background: linear-gradient(45deg, rgba(255, 0, 128, 0.7), rgba(255, 100, 200, 0.7));
+        box-shadow: 0 0 15px rgba(255, 0, 128, 0.5), 0 0 30px rgba(255, 100, 200, 0.3);
+    }
+
+    #blogs-indicator .indicator-content {
+        background: linear-gradient(45deg, rgba(128, 255, 0, 0.7), rgba(180, 255, 100, 0.7));
+        box-shadow: 0 0 15px rgba(128, 255, 0, 0.5), 0 0 30px rgba(180, 255, 100, 0.3);
+    }
+
+    #contest-indicator .indicator-content {
+        background: linear-gradient(45deg, rgba(255, 128, 0, 0.7), rgba(255, 180, 100, 0.7));
+        box-shadow: 0 0 15px rgba(255, 128, 0, 0.5), 0 0 30px rgba(255, 180, 100, 0.3);
+    }
+
+    #jobs-indicator .indicator-content {
+        background: linear-gradient(45deg, rgba(128, 0, 255, 0.7), rgba(180, 100, 255, 0.7));
+        box-shadow: 0 0 15px rgba(128, 0, 255, 0.5), 0 0 30px rgba(180, 100, 255, 0.3);
+    }
+
+    .indicator-content {
+        color: white;
+        padding: 12px 20px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+
+    .indicator-content i {
+        margin-right: 8px;
+        font-size: 1.3rem;
+    }
+
+    @keyframes indicator-pulse {
+        0% { transform: translateY(-50%) scale(1); opacity: 0.8; }
+        100% { transform: translateY(-50%) scale(1.05); opacity: 1; }
+    }
+
+    /* モバイル対応 */
+    @media (max-width: 768px) {
+        .tab-indicator {
+            right: 15px;
+        }
+        
+        .indicator-content {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
     }
 
     /* タブスタイル */
