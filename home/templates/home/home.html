@@ -19,7 +19,7 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link cyber-tab" id="programmers-tab" data-bs-toggle="tab" data-bs-target="#programmers-content" type="button" role="tab" aria-controls="programmers-content" aria-selected="false">
-                    <i class="bi bi-people d-none d-md-inline"></i> <span class="d-none d-md-inline">プログラマー達</span><span class="d-inline d-md-none">プログラマ</span>
+                    <i class="bi bi-people d-none d-md-inline"></i> <span class="d-none d-md-inline">プログラマー</span><span class="d-inline d-md-none">プログラマ</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -29,12 +29,12 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link cyber-tab" id="contest-tab" data-bs-toggle="tab" data-bs-target="#contest-content" type="button" role="tab" aria-controls="contest-content" aria-selected="false">
-                    <i class="bi bi-trophy d-none d-md-inline"></i> <span class="d-none d-md-inline">アプリ開発大会</span><span class="d-inline d-md-none">アプリ大会</span>
+                    <i class="bi bi-trophy d-none d-md-inline"></i> <span class="d-none d-md-inline">アプリ大会</span><span class="d-inline d-md-none">アプリ大会</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link cyber-tab" id="jobs-tab" data-bs-toggle="tab" data-bs-target="#jobs-content" type="button" role="tab" aria-controls="jobs-content" aria-selected="false">
-                    <i class="bi bi-briefcase d-none d-md-inline"></i> お仕事依頼
+                    <i class="bi bi-briefcase d-none d-md-inline"></i> <span class="d-none d-md-inline">お仕事</span><span class="d-inline d-md-none">お仕事</span>
                 </button>
             </li>
         </ul>
@@ -54,7 +54,7 @@
         <div class="tab-indicator" id="programmers-indicator" data-tab="programmers-tab">
             <div class="indicator-content">
                 <i class="bi bi-people"></i>
-                <span>プログラマー達</span>
+                <span>プログラマー</span>
             </div>
         </div>
         
@@ -70,7 +70,7 @@
         <div class="tab-indicator" id="contest-indicator" data-tab="contest-tab">
             <div class="indicator-content">
                 <i class="bi bi-trophy"></i>
-                <span>アプリ開発大会</span>
+                <span>アプリ大会</span>
             </div>
         </div>
         
@@ -78,7 +78,7 @@
         <div class="tab-indicator" id="jobs-indicator" data-tab="jobs-tab">
             <div class="indicator-content">
                 <i class="bi bi-briefcase"></i>
-                <span>お仕事依頼</span>
+                <span>お仕事</span>
             </div>
         </div>
     </div>
@@ -134,6 +134,13 @@
             
             if (isPortrait && card) {
                 card.classList.add('is-portrait');
+                // 縦長画像を適切なサイズに調整
+                img.style.maxHeight = '300px';
+                img.style.height = 'auto';
+                img.style.width = 'auto';
+                img.style.maxWidth = '100%';
+                img.parentElement.style.justifyContent = 'center';
+                img.parentElement.style.alignItems = 'center';
             }
         }
         
@@ -530,9 +537,12 @@
 
     /* ポートレート画像の場合のスタイル */
     .is-portrait .cyber-image {
-        max-height: 300px;
-        width: auto;
+        max-height: 300px !important;
+        height: auto !important;
+        width: auto !important;
         margin: 0 auto;
+        object-fit: contain !important;
+        display: block;
     }
 
     /* テキストスタイル */

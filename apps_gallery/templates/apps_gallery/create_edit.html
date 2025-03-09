@@ -96,10 +96,10 @@
                 <button class="nav-link text-neon" id="frontend-tab" data-bs-toggle="tab" data-bs-target="#frontend-section" type="button" role="tab" aria-controls="frontend-section" aria-selected="false" data-mobile-text="フロント" style="color: var(--cyber-pink) !important; text-shadow: 0 0 10px var(--cyber-pink) !important; border-color: var(--cyber-pink) !important;">フロントエンド</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link text-neon" id="hosting-tab" data-bs-toggle="tab" data-bs-target="#hosting-section" type="button" role="tab" aria-controls="hosting-section" aria-selected="false" data-mobile-text="ホステ" style="color: #ffffff !important; text-shadow: 0 0 10px #ffffff !important; border-color: #ffffff !important;">ホスティング</button>
+                <button class="nav-link text-neon" id="database-tab" data-bs-toggle="tab" data-bs-target="#database-section" type="button" role="tab" aria-controls="database-section" aria-selected="false" data-mobile-text="データ" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 10px var(--cyber-emerald) !important; border-color: var(--cyber-emerald) !important;">データベース</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link text-neon" id="database-tab" data-bs-toggle="tab" data-bs-target="#database-section" type="button" role="tab" aria-controls="database-section" aria-selected="false" data-mobile-text="データ" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 10px var(--cyber-emerald) !important; border-color: var(--cyber-emerald) !important;">データベース</button>
+                <button class="nav-link text-neon" id="hosting-tab" data-bs-toggle="tab" data-bs-target="#hosting-section" type="button" role="tab" aria-controls="hosting-section" aria-selected="false" data-mobile-text="ホステ" style="color: #ffffff !important; text-shadow: 0 0 10px #ffffff !important; border-color: #ffffff !important;">ホスティング</button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link text-neon" id="security-tab" data-bs-toggle="tab" data-bs-target="#security-section" type="button" role="tab" aria-controls="security-section" aria-selected="false" data-mobile-text="セキュ" style="color: var(--cyber-red) !important; text-shadow: 0 0 10px var(--cyber-red) !important; border-color: var(--cyber-red) !important;">セキュリティ</button>
@@ -151,14 +151,14 @@
                 {% include 'apps_gallery/tabs/08_frontend_tab.html' %}
             </div>
 
-            <!-- ホスティングタブ -->
-            <div class="tab-pane fade" id="hosting-section" role="tabpanel" aria-labelledby="hosting-tab">
-                {% include 'apps_gallery/tabs/10_hosting_tab.html' %}
-            </div>
-
             <!-- データベースタブ -->
             <div class="tab-pane fade" id="database-section" role="tabpanel" aria-labelledby="database-tab">
                 {% include 'apps_gallery/tabs/09_database_tab.html' %}
+            </div>
+
+            <!-- ホスティングタブ -->
+            <div class="tab-pane fade" id="hosting-section" role="tabpanel" aria-labelledby="hosting-tab">
+                {% include 'apps_gallery/tabs/10_hosting_tab.html' %}
             </div>
 
             <!-- セキュリティタブ -->

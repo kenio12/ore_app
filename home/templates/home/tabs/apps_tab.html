@@ -9,6 +9,11 @@
         
         if (isPortrait && card) {
             card.classList.add('is-portrait');
+            // 縦長画像を適切なサイズに調整
+            img.style.maxHeight = '300px';
+            img.style.height = 'auto';
+            img.style.width = 'auto';
+            img.style.maxWidth = '100%';
         }
     }
     
@@ -27,7 +32,7 @@
                         <div class="row g-0" id="card-content-{{ app.id }}">
                             {% if app.thumbnail %}
                                 <div class="col-md-4">
-                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px;">
+                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px; max-height: 300px; overflow: hidden;">
                                         <img src="{{ app.thumbnail.url }}" 
                                              class="img-fluid cyber-image rounded-start"
                                              style="object-fit: contain; max-height: 300px; width: auto; max-width: 100%;"
@@ -40,7 +45,7 @@
                                 </div>
                             {% elif app.screenshots %}
                                 <div class="col-md-4">
-                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px;">
+                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px; max-height: 300px; overflow: hidden;">
                                         <img src="{{ app.screenshots.0.url }}" 
                                              class="img-fluid cyber-image rounded-start"
                                              style="object-fit: contain; max-height: 300px; width: auto; max-width: 100%;"
