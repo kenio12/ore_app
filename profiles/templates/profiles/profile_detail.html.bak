@@ -1,0 +1,1671 @@
+{% extends 'base.html' %}
+{% load profile_filters %}
+
+{% block title %}プロフィール - {{ user.username }}{% endblock %}
+
+{% block content %}
+<!-- サイバーパンク風の背景 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<div class="container mt-4 mb-5">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card cyber-card mb-4">
+                <div class="card-header d-flex align-items-center">
+                    <h3 class="mb-0 cyber-title" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">プロフィール情報</h3>
+                    <!-- 受注状況バッジを表示 -->
+                    {% if profile.job_status %}
+                        <div class="ms-auto">
+                            <span class="badge 
+                                {% if profile.job_status == 'available' %}
+                                    bg-info text-white
+                                {% elif profile.job_status == 'limited' %}
+                                    bg-warning text-dark
+                                {% else %}
+                                    bg-danger text-white
+                                {% endif %}
+                                job-status-badge">
+                                {% if profile.job_status == 'available' %}
+                                    <i class="bi bi-check-circle"></i> 受注可
+                                {% elif profile.job_status == 'limited' %}
+                                    <i class="bi bi-dash-circle"></i> 一部可
+                                {% else %}
+                                    非受注
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-3 mb-md-0">
+                            {% if profile.avatar_url %}
+                                <img src="{{ profile.avatar_url }}" alt="プロフィール画像" class="img-fluid rounded-circle" style="max-width: 150px; border: 2px solid rgb(0, 123, 255); box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);">
+                            {% else %}
+                                <div class="cyber-avatar-placeholder">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <h4 class="cyber-name">{{ user.username }}</h4>
+                            
+                            {% if is_own_profile %}
+                            <p class="text-light">
+                                {{ user.email }}
+                                <span class="badge bg-dark text-info ms-2" style="font-size: 0.7rem;">本人のみ表示</span>
+                            </p>
+                            {% endif %}
+                            
+                            {% if profile.bio %}
+                                <h5 class="text-info mt-3">自己紹介</h5>
+                                <p class="text-light">{{ profile.bio }}</p>
+                            {% endif %}
+                            
+                            <div class="mt-3">
+                                {% if profile.social_github %}
+                                    {% if 'github.com' in profile.social_github %}
+                                        <a href="{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-info me-2">
+                                            <i class="bi bi-github"></i> GitHub
+                                        </a>
+                                    {% else %}
+                                        <a href="https://github.com/{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-info me-2">
+                                            <i class="bi bi-github"></i> GitHub
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                                
+                                {% if profile.social_twitter %}
+                                    {% if 'x.com' in profile.social_twitter or 'twitter.com' in profile.social_twitter %}
+                                        <a href="{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-info me-2">
+                                            <i class="bi bi-twitter-x"></i> X
+                                        </a>
+                                    {% else %}
+                                        <a href="https://x.com/{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-info me-2">
+                                            <i class="bi bi-twitter-x"></i> X
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ハードウェア情報 -->
+                    {% if profile.hardware_specs %}
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-cpu"></i> 開発に使用したパソコン環境
+                        </h4>
+                        <div class="card" style="background-color: rgba(0, 40, 80, 0.9) !important; border: 2px solid rgba(0, 255, 255, 0.6); box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- ハードウェア情報をテーブル形式で表示 -->
+                                    <div class="col-md-12">
+                                        <div class="hardware-specs-table">
+                                            <div class="row">
+                                                <!-- メーカーと機種情報 -->
+                                                {% if profile.hardware_specs.maker %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">メーカー:</span>
+                                                        <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ profile.hardware_specs.maker }}</span>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.model %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">機種名:</span>
+                                                        <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ profile.hardware_specs.model }}</span>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- PCタイプとデバイスタイプ -->
+                                                {% if profile.hardware_specs.pc_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">PCタイプ:</span>
+                                                        <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ pc_types|get_item:profile.hardware_specs.pc_type }}</span>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.device_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">PC種類:</span>
+                                                        <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ device_types|get_item:profile.hardware_specs.device_type }}</span>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- CPU・メモリ・ストレージ -->
+                                                {% if profile.hardware_specs.cpu_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">CPU:</span>
+                                                        <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ cpu_types|get_item:profile.hardware_specs.cpu_type }}</span>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.memory_size %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">メモリ:</span>
+                                                        <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ memory_sizes|get_item:profile.hardware_specs.memory_size }}</span>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.storage_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">ストレージ:</span>
+                                                        <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ storage_types|get_item:profile.hardware_specs.storage_type }}</span>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- モニター数・インターネット回線 -->
+                                                {% if profile.hardware_specs.monitor_count %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">使用モニター数:</span>
+                                                        <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ monitor_counts|get_item:profile.hardware_specs.monitor_count }}</span>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                {% if profile.hardware_specs.internet_type %}
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 20, 40, 0.9); border-radius: 5px; border-left: 3px solid #00ffff;">
+                                                        <span class="hw-label" style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);">インターネット回線:</span>
+                                                        <span class="hw-value" style="color: #ffd700; font-weight: bold; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); margin-left: 8px;">{{ internet_types|get_item:profile.hardware_specs.internet_type }}</span>
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- 技術スタック情報（APIから取得） -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-code-slash"></i> 技術スタック
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- 技術スキル情報を表示 -->
+                                    <div class="col-md-12">
+                                        <div class="skills-section">
+                                            {% if profile.skills and profile.skills.data %}
+                                                <!-- バックエンド言語 -->
+                                                {% if profile.skills.data.backend_languages %}
+                                                <div class="mb-3">
+                                                    <h5 class="text-info">バックエンド言語</h5>
+                                                    <div>
+                                                        {% for lang, level in profile.skills.data.backend_languages.items %}
+                                                            <span class="badge cyber-backend-badge me-1 mb-1">{{ lang }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- フロントエンド言語 -->
+                                                {% if profile.skills.data.frontend_languages %}
+                                                <div class="mb-3">
+                                                    <h5 class="text-info">フロントエンド言語</h5>
+                                                    <div>
+                                                        {% for lang, level in profile.skills.data.frontend_languages.items %}
+                                                            <span class="badge cyber-frontend-badge me-1 mb-1">{{ lang }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- データベース -->
+                                                {% if profile.skills.data.databases %}
+                                                <div class="mb-3">
+                                                    <h5 class="text-info">データベース</h5>
+                                                    <div>
+                                                        {% for db, level in profile.skills.data.databases.items %}
+                                                            <span class="badge cyber-db-badge me-1 mb-1">{{ db }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- フレームワーク -->
+                                                {% if profile.skills.data.frontend_frameworks or profile.skills.data.backend_frameworks %}
+                                                <div class="mb-3">
+                                                    <h5 class="text-info">フレームワーク・ライブラリ</h5>
+                                                    <div>
+                                                        {% if profile.skills.data.frontend_frameworks %}
+                                                            {% for fw, level in profile.skills.data.frontend_frameworks.items %}
+                                                                <span class="badge cyber-framework-badge me-1 mb-1">{{ fw }}</span>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                        
+                                                        {% if profile.skills.data.backend_frameworks %}
+                                                            {% for fw, level in profile.skills.data.backend_frameworks.items %}
+                                                                <span class="badge cyber-framework-badge me-1 mb-1">{{ fw }}</span>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- DevOps技術 -->
+                                                {% if profile.skills.data.devops_tools %}
+                                                <div class="mb-3">
+                                                    <h5 class="text-info">DevOps技術</h5>
+                                                    <div>
+                                                        {% for tool, level in profile.skills.data.devops_tools.items %}
+                                                            <span class="badge cyber-devops-badge me-1 mb-1">{{ tool }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- クラウド技術 -->
+                                                {% if profile.skills.data.cloud_services %}
+                                                <div class="mb-3">
+                                                    <h5 class="text-info">クラウド技術</h5>
+                                                    <div>
+                                                        {% for service, level in profile.skills.data.cloud_services.items %}
+                                                            <span class="badge cyber-cloud-badge me-1 mb-1">{{ service }}</span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                {% endif %}
+                                            {% else %}
+                                                <p class="text-cyber-blue">スキル情報はまだ登録されていません。プロフィール編集から追加できます。</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 開発環境 -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-tools"></i> 開発環境
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- エディタ統計 -->
+                                        {% if profile.editor_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">使用エディタ/IDE</h5>
+                                            <div>
+                                                {% for editor, count in profile.editor_stats.items %}
+                                                    <span class="badge cyber-tool-badge me-1 mb-1">{{ editor }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- バージョン管理統計 -->
+                                        {% if profile.version_control_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">バージョン管理</h5>
+                                            <div>
+                                                {% for vcs, count in profile.version_control_stats.items %}
+                                                    <span class="badge cyber-tool-badge me-1 mb-1">{{ vcs }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- 仮想化ツール統計 -->
+                                        {% if profile.virtualization_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">仮想化ツール</h5>
+                                            <div>
+                                                {% for tool, count in profile.virtualization_stats.items %}
+                                                    <span class="badge cyber-tool-badge me-1 mb-1">{{ tool }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- チームサイズ統計 -->
+                                        {% if profile.team_size_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">チームサイズ</h5>
+                                            <div>
+                                                {% for size, count in profile.team_size_stats.items %}
+                                                    <span class="badge cyber-tool-badge me-1 mb-1">{{ size }}人 ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- コミュニケーションツール統計 -->
+                                        {% if profile.communication_tools_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">コミュニケーションツール</h5>
+                                            <div>
+                                                {% for tool, count in profile.communication_tools_stats.items %}
+                                                    <span class="badge cyber-tool-badge me-1 mb-1">{{ tool }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- CI/CDツール統計 -->
+                                        {% if profile.ci_cd_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">CI/CDツール</h5>
+                                            <div>
+                                                {% for tool, count in profile.ci_cd_stats.items %}
+                                                    <span class="badge cyber-tool-badge me-1 mb-1">{{ tool }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- アーキテクチャ -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-diagram-3"></i> アーキテクチャ
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- アーキテクチャパターン統計 -->
+                                        {% if profile.architecture_pattern_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">アーキテクチャパターン</h5>
+                                            <div>
+                                                {% for pattern, count in profile.architecture_pattern_stats.items %}
+                                                    <span class="badge cyber-arch-badge me-1 mb-1">{{ pattern }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- デザインパターン統計 -->
+                                        {% if profile.design_pattern_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">デザインパターン</h5>
+                                            <div>
+                                                {% for pattern, count in profile.design_pattern_stats.items %}
+                                                    <span class="badge cyber-arch-badge me-1 mb-1">{{ pattern }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- バックエンド -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-server"></i> バックエンド
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- バックエンド言語統計 -->
+                                        {% if profile.backend_language_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">バックエンド言語</h5>
+                                            <div>
+                                                {% for lang, count in profile.backend_language_stats.items %}
+                                                    <span class="badge cyber-backend-badge me-1 mb-1">{{ lang }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- バックエンドフレームワーク統計 -->
+                                        {% if profile.backend_framework_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">バックエンドフレームワーク</h5>
+                                            <div>
+                                                {% for fw, count in profile.backend_framework_stats.items %}
+                                                    <span class="badge cyber-framework-badge me-1 mb-1">{{ fw }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- バックエンドパッケージ統計 -->
+                                        {% if profile.backend_package_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">よく使うパッケージ</h5>
+                                            <div>
+                                                {% for pkg, count in profile.backend_package_stats.items %}
+                                                    <span class="badge cyber-package-badge me-1 mb-1">{{ pkg }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- フロントエンド -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-window"></i> フロントエンド
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- マークアップ言語統計 -->
+                                        {% if profile.markup_language_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">マークアップ言語</h5>
+                                            <div>
+                                                {% for lang, count in profile.markup_language_stats.items %}
+                                                    <span class="badge cyber-frontend-badge me-1 mb-1">{{ lang }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- フロントエンド言語統計 -->
+                                        {% if profile.frontend_language_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">フロントエンド言語</h5>
+                                            <div>
+                                                {% for lang, count in profile.frontend_language_stats.items %}
+                                                    <span class="badge cyber-frontend-badge me-1 mb-1">{{ lang }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- フロントエンドフレームワーク統計 -->
+                                        {% if profile.frontend_framework_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">フロントエンドフレームワーク</h5>
+                                            <div>
+                                                {% for fw, count in profile.frontend_framework_stats.items %}
+                                                    <span class="badge cyber-framework-badge me-1 mb-1">{{ fw }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- CSSフレームワーク統計 -->
+                                        {% if profile.css_framework_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">CSSフレームワーク</h5>
+                                            <div>
+                                                {% for fw, count in profile.css_framework_stats.items %}
+                                                    <span class="badge cyber-css-badge me-1 mb-1">{{ fw }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- UIライブラリ統計 -->
+                                        {% if profile.ui_library_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">UIライブラリ</h5>
+                                            <div>
+                                                {% for lib, count in profile.ui_library_stats.items %}
+                                                    <span class="badge cyber-ui-badge me-1 mb-1">{{ lib }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- データベース -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-database"></i> データベース
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- データベース種類統計 -->
+                                        {% if profile.database_type_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">データベース種類</h5>
+                                            <div>
+                                                {% for db, count in profile.database_type_stats.items %}
+                                                    <span class="badge cyber-db-badge me-1 mb-1">{{ db }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- ORM統計 -->
+                                        {% if profile.orm_tool_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">ORMツール</h5>
+                                            <div>
+                                                {% for orm, count in profile.orm_tool_stats.items %}
+                                                    <span class="badge cyber-db-badge me-1 mb-1">{{ orm }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ホスティング -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-cloud"></i> ホスティング
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- ホスティングサービス統計 -->
+                                        {% if profile.hosting_service_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">ホスティングサービス</h5>
+                                            <div>
+                                                {% for service, count in profile.hosting_service_stats.items %}
+                                                    <span class="badge cyber-hosting-badge me-1 mb-1">{{ service }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- デプロイ方法統計 -->
+                                        {% if profile.deployment_method_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">デプロイ方法</h5>
+                                            <div>
+                                                {% for method, count in profile.deployment_method_stats.items %}
+                                                    <span class="badge cyber-deploy-badge me-1 mb-1">{{ method }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- データベースホスティング統計 -->
+                                        {% if profile.database_hosting_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">データベースホスティング</h5>
+                                            <div>
+                                                {% for hosting, count in profile.database_hosting_stats.items %}
+                                                    <span class="badge cyber-hosting-badge me-1 mb-1">{{ hosting }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- フロントエンドホスティング統計 -->
+                                        {% if profile.frontend_hosting_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">フロントエンドホスティング</h5>
+                                            <div>
+                                                {% for hosting, count in profile.frontend_hosting_stats.items %}
+                                                    <span class="badge cyber-hosting-badge me-1 mb-1">{{ hosting }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- セキュリティ -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-shield-lock"></i> セキュリティ
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- 認証方式統計 -->
+                                        {% if profile.auth_method_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">認証方式</h5>
+                                            <div>
+                                                {% for method, count in profile.auth_method_stats.items %}
+                                                    <span class="badge cyber-security-badge me-1 mb-1">{{ method }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- セキュリティ対策統計 -->
+                                        {% if profile.security_measure_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">セキュリティ対策</h5>
+                                            <div>
+                                                {% for measure, count in profile.security_measure_stats.items %}
+                                                    <span class="badge cyber-security-badge me-1 mb-1">{{ measure }} ({{ count }})</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 開発ストーリー -->
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-code-slash"></i> 開発ストーリー
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- 開発期間日付情報を追加 -->
+                                        {% if profile.first_app_date or profile.last_app_date %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">開発アクティビティ</h5>
+                                            
+                                            <!-- アプリ別開発期間のガントチャート -->
+                                            {% if profile.app_development_periods %}
+                                            <div class="cyber-gantt-container">
+                                                <div class="cyber-gantt-header">
+                                                    <div class="cyber-gantt-label">アプリ名</div>
+                                                    <div class="cyber-gantt-timeline">
+                                                        <span class="timeline-start">{{ profile.first_app_date|date:"Y年m月" }}</span>
+                                                        <div class="timeline-now" id="timeline-now-marker">現在</div>
+                                                        <span class="timeline-end">{{ profile.last_app_date|date:"Y年m月" }}</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="cyber-gantt-rows" id="app-gantt-chart">
+                                                    {% for app in profile.app_development_periods %}
+                                                    <div class="cyber-gantt-row" 
+                                                         data-app-id="{{ app.app_id }}"
+                                                         data-start="{{ app.start_date }}"
+                                                         data-end="{{ app.end_date }}"
+                                                         data-title="{{ app.title }}">
+                                                         <!-- JavaScriptで動的に生成される内容 -->
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            
+                                                <h6 class="text-info">デバッグ情報（一時的表示）</h6>
+                                                <ul>
+                                                    <li>最初のアプリ開発日: {{ profile.first_app_date|date:"Y-m-d" }}</li>
+                                                    <li>最新のアプリ開発日: {{ profile.last_app_date|date:"Y-m-d" }}</li>
+                                                    <li>アプリ数: {{ profile.app_development_periods|length }}</li>
+                                                    {% for app in profile.app_development_periods %}
+                                                    <li>{{ app.title }}: {{ app.start_date }} 〜 {{ app.end_date }} ({{ app.duration }})</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                        
+                                                            <div class="mb-3">
+                                                                <h6 class="text-info">開発のきっかけ</h6>
+                                                                <p class="cyber-story-text">{{ app.development_motivation|linebreaksbr }}</p>
+                                                            </div>
+
+                                                            
+                                                            {% if app.development_innovations %}
+                                                            <div class="mb-3">
+                                                                <h6 class="text-info">開発で工夫した点</h6>
+                                                                <p class="cyber-story-text">{{ app.development_innovations|linebreaksbr }}</p>
+                                                            </div>
+                                                            {% endif %}
+                                                            
+                                                            {% if app.development_abandoned %}
+                                                            <div class="mb-3">
+                                                                <h6 class="text-info">開発で断念した点</h6>
+                                                                <p class="cyber-story-text">{{ app.development_abandoned|linebreaksbr }}</p>
+                                                            </div>
+                                                            {% endif %}
+                                                            
+                                                            {% if app.development_future_plans %}
+                                                            <div class="mb-3">
+                                                                <h6 class="text-info">今後の増設予定</h6>
+                                                                <p class="cyber-story-text">{{ app.development_future_plans|linebreaksbr }}</p>
+                                                            </div>
+                                                            {% endif %}
+                                                            
+                                                            {% if app.development_reflections %}
+                                                            <div class="mb-3">
+                                                                <h6 class="text-info">開発を通して感じたこと</h6>
+                                                                <p class="cyber-story-text">{{ app.development_reflections|linebreaksbr }}</p>
+                                                            </div>
+                                                            {% endif %}
+                                                            
+                                                            <div class="text-center mt-3">
+                                                                <a href="{% url 'apps_gallery:detail' app.app_id %}" class="btn btn-cyber-primary">
+                                                                    <i class="bi bi-app"></i> アプリ詳細を見る
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer border-top border-info">
+                                                            <button type="button" class="btn btn-cyber-secondary" data-bs-dismiss="modal">閉じる</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        {% endif %}
+                                        
+                                        {% if profile.total_development_days > 0 %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">開発期間サマリー</h5>
+                                            <p class="text-cyber-blue mb-2">
+                                                <i class="bi bi-calendar-check"></i> 
+                                                合計開発日数: <span class="cyber-count">{{ profile.total_development_days }}日</span>
+                                            </p>
+                                            <p class="text-cyber-blue mb-2">
+                                                <i class="bi bi-calendar"></i> 
+                                                平均開発日数: <span class="cyber-count">{{ profile.avg_development_days|floatformat:1 }}日/アプリ</span>
+                                            </p>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- 開発期間分布 -->
+                                        {% if profile.development_duration_distribution %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">開発期間分布</h5>
+                                            <div>
+                                                {% for duration, count in profile.development_duration_distribution.items %}
+                                                    <span class="badge cyber-duration-badge me-1 mb-1">
+                                                        {% if duration == 'short' %}
+                                                            短期(30日以内)
+                                                        {% elif duration == 'medium' %}
+                                                            中期(31-180日)
+                                                        {% elif duration == 'long' %}
+                                                            長期(181日以上)
+                                                        {% else %}
+                                                            {{ duration }}
+                                                        {% endif %}
+                                                        : {{ count }}件
+                                                    </span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <!-- 開発期間統計 -->
+                                        {% if profile.development_duration_stats %}
+                                        <div class="mb-3">
+                                            <h5 class="text-info">詳細開発期間</h5>
+                                            <div>
+                                                {% for duration, count in profile.development_duration_stats.items %}
+                                                    <span class="badge cyber-duration-badge me-1 mb-1">{{ duration }}日: {{ count }}件</span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 対応可能な仕事 -->
+                    {% if profile.job_types %}
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-briefcase"></i> 対応可能な仕事
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div>
+                                    {% for job_type in profile.job_types %}
+                                        <span class="badge cyber-job-badge me-1 mb-1">
+                                            {% if job_type == 'frontend' %}
+                                                フロントエンド開発
+                                            {% elif job_type == 'backend' %}
+                                                バックエンド開発
+                                            {% elif job_type == 'fullstack' %}
+                                                フルスタック開発
+                                            {% elif job_type == 'mobile' %}
+                                                モバイルアプリ開発
+                                            {% elif job_type == 'database' %}
+                                                データベース設計
+                                            {% elif job_type == 'infrastructure' %}
+                                                インフラ構築
+                                            {% elif job_type == 'design' %}
+                                                UI/UXデザイン
+                                            {% elif job_type == 'consulting' %}
+                                                技術コンサルティング
+                                            {% else %}
+                                                その他
+                                            {% endif %}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- 開発アプリの種類と数 -->
+                    {% if app_type_counts %}
+                    <div class="mt-4">
+                        <h4 class="cyber-subtitle mb-3" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.7); font-weight: bold;">
+                            <i class="bi bi-app"></i> 開発アプリの種類
+                        </h4>
+                        <div class="card bg-dark" style="border: 1px solid rgba(0, 123, 255, 0.3); box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);">
+                            <div class="card-body">
+                                <div>
+                                    {% for app_type, count in app_type_counts.items %}
+                                        <span class="badge cyber-app-type-badge me-1 mb-1">
+                                            {{ APP_TYPES|get_item:app_type|default:app_type }} ({{ count }})
+                                        </span>
+                                    {% endfor %}
+                                </div>
+                                {% if user.apps.count > 0 %}
+                                    <p class="text-cyber-blue mt-2">
+                                        <i class="bi bi-app-indicator"></i> 
+                                        総開発アプリ数: <span class="cyber-count">{{ user.apps.count }}件</span>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer border-top">
+                    {% if is_own_profile %}
+                        <a href="{% url 'profiles:profile_edit' %}" class="btn btn-cyber-primary">
+                            <i class="bi bi-pencil-square"></i> プロフィールを編集
+                        </a>
+                    {% else %}
+                        <a href="{% url 'profiles:contact' user.id %}" class="btn btn-cyber-primary">
+                            <i class="bi bi-chat-text"></i> コンタクトする
+                        </a>
+                    {% endif %}
+                    <a href="javascript:history.back()" class="btn btn-cyber-secondary ms-2">
+                        <i class="bi bi-arrow-left"></i> 戻る
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.cyber-avatar-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 123, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 20, 0.5);
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    margin: 0 auto;
+}
+
+.cyber-avatar-placeholder i {
+    font-size: 4rem;
+    color: rgba(0, 123, 255, 0.7);
+}
+
+.cyber-name {
+    color: #ffd700;  /* ゴールドの色 */
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);  /* シャドウ */
+    font-weight: bold;
+}
+
+.cyber-subtitle {
+    color: #00ffff;
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.text-info {
+    color: #00ffff !important;
+}
+
+/* バッジスタイル */
+.cyber-backend-badge {
+    background: rgba(0, 128, 255, 0.2);
+    color: #00a8ff;
+    border: 1px solid rgba(0, 128, 255, 0.6);
+    text-shadow: 0 0 5px rgba(0, 128, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-frontend-badge {
+    background: rgba(255, 105, 180, 0.2);
+    color: #ff69b4;
+    border: 1px solid rgba(255, 105, 180, 0.6);
+    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-db-badge {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.6);
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-framework-badge {
+    background: rgba(255, 153, 0, 0.2);
+    color: #ff9900;
+    border: 1px solid rgba(255, 153, 0, 0.6);
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-devops-badge {
+    background: rgba(0, 191, 255, 0.2);
+    color: #00bfff;
+    border: 1px solid rgba(0, 191, 255, 0.6);
+    text-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-cloud-badge {
+    background: rgba(138, 43, 226, 0.2);
+    color: #8a2be2;
+    border: 1px solid rgba(138, 43, 226, 0.6);
+    text-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-job-badge {
+    background: rgba(162, 0, 255, 0.2);
+    color: #c17bff;
+    border: 1px solid rgba(162, 0, 255, 0.6);
+    text-shadow: 0 0 5px rgba(162, 0, 255, 0.5);
+    font-size: 0.8rem;
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+}
+
+/* 新しく追加したバッジスタイル */
+.cyber-tool-badge {
+    background: rgba(0, 191, 255, 0.2);
+    color: #00bfff;
+    border: 1px solid rgba(0, 191, 255, 0.6);
+    text-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-arch-badge {
+    background: rgba(50, 205, 50, 0.2);
+    color: #32cd32;
+    border: 1px solid rgba(50, 205, 50, 0.6);
+    text-shadow: 0 0 5px rgba(50, 205, 50, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-package-badge {
+    background: rgba(0, 128, 255, 0.2);
+    color: #0080ff;
+    border: 1px solid rgba(0, 128, 255, 0.6);
+    text-shadow: 0 0 5px rgba(0, 128, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-css-badge {
+    background: rgba(255, 105, 180, 0.2);
+    color: #ff69b4;
+    border: 1px solid rgba(255, 105, 180, 0.6);
+    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-ui-badge {
+    background: rgba(255, 120, 0, 0.2);
+    color: #ff7800;
+    border: 1px solid rgba(255, 120, 0, 0.6);
+    text-shadow: 0 0 5px rgba(255, 120, 0, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-hosting-badge {
+    background: rgba(0, 191, 255, 0.2);
+    color: #00bfff;
+    border: 1px solid rgba(0, 191, 255, 0.6);
+    text-shadow: 0 0 5px rgba(0, 191, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-deploy-badge {
+    background: rgba(64, 224, 208, 0.2);
+    color: #40e0d0;
+    border: 1px solid rgba(64, 224, 208, 0.6);
+    text-shadow: 0 0 5px rgba(64, 224, 208, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-security-badge {
+    background: rgba(255, 62, 62, 0.2);
+    color: #ff3e3e;
+    border: 1px solid rgba(255, 62, 62, 0.6);
+    text-shadow: 0 0 5px rgba(255, 62, 62, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-duration-badge {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.6);
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    font-size: 0.8rem;
+}
+
+.cyber-app-type-badge {
+    background: rgba(255, 165, 0, 0.2);
+    color: #ffa500;
+    border: 1px solid rgba(255, 165, 0, 0.6);
+    text-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
+    font-size: 0.8rem;
+    padding: 0.5em 0.7em;
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+}
+
+/* ボタンスタイル */
+.btn-cyber-primary {
+    background: rgba(0, 123, 255, 0.2);
+    color: #00ffff;
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.btn-cyber-primary:hover {
+    background: rgba(0, 123, 255, 0.3);
+    color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.btn-cyber-secondary {
+    background: rgba(100, 100, 100, 0.5);
+    color: #ffffff;
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.btn-cyber-secondary:hover {
+    background: rgba(120, 120, 120, 0.6);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);
+    transform: translateY(-2px);
+}
+
+/* ステータスバッジ */
+.job-status-badge {
+    font-size: 0.85rem;
+    padding: 0.4em 0.6em;
+    border-radius: 4px;
+}
+
+.badge.bg-info {
+    background: rgba(0, 123, 255, 0.8) !important;
+    color: white !important;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
+}
+
+.badge.bg-warning {
+    background: rgba(255, 193, 7, 0.8) !important;
+    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+}
+
+.badge.bg-danger {
+    background: rgba(220, 53, 69, 0.8) !important;
+    color: white !important;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
+}
+
+/* サイバーパンク風の背景 */
+.cyber-background {
+    background: linear-gradient(45deg, #001e54, #0066cc);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+/* カードの背景色を調整 */
+.cyber-card {
+    background-color: rgba(13, 25, 45, 0.9) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+/* テーブルの背景を透明に */
+.table.bg-transparent {
+    background-color: transparent !important;
+}
+
+/* アニメーション */
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+/* 総開発アプリ数用のスタイル */
+.text-cyber-blue {
+    color: #00ffff !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.cyber-count {
+    color: #ffd700;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* 文字色の強化 */
+.text-light {
+    color: #e0e0ff !important;
+    text-shadow: 0 0 2px rgba(224, 224, 255, 0.3);
+}
+
+.card-text {
+    color: #e0e0ff !important;
+}
+
+.table-borderless td {
+    color: #e0e0ff !important;
+}
+
+/* アプリ別開発期間の表のスタイル */
+.cyber-table {
+    background-color: rgba(13, 25, 45, 0.8) !important;
+    border-color: rgba(0, 123, 255, 0.3) !important;
+}
+
+.cyber-th {
+    background-color: rgba(0, 50, 100, 0.8) !important;
+    color: #00ffff !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5) !important;
+    border-color: rgba(0, 123, 255, 0.5) !important;
+}
+
+.cyber-td {
+    color: #e0e0ff !important;
+    border-color: rgba(0, 123, 255, 0.3) !important;
+}
+
+.btn-cyber-info {
+    background-color: rgba(0, 123, 255, 0.3) !important;
+    color: #00ffff !important;
+    border: 1px solid rgba(0, 123, 255, 0.5) !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-cyber-info:hover {
+    background-color: rgba(0, 123, 255, 0.5) !important;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.7) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* 開発ストーリーのテキストスタイル */
+.cyber-story-text {
+    color: #e0e0ff !important;
+    text-shadow: 0 0 2px rgba(224, 224, 255, 0.3) !important;
+    line-height: 1.6 !important;
+    background-color: rgba(13, 25, 45, 0.5) !important;
+    padding: 10px !important;
+    border-radius: 5px !important;
+    border-left: 3px solid rgba(0, 255, 255, 0.5) !important;
+}
+
+/* ガントチャートのスタイル */
+.cyber-gantt-container {
+    border: 1px solid rgba(0, 150, 255, 0.5);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 15px;
+    background: rgba(0, 10, 20, 0.7);
+    box-shadow: 0 0 15px rgba(0, 100, 255, 0.1);
+}
+
+.cyber-gantt-header {
+    display: flex;
+    border-bottom: 1px solid rgba(0, 150, 255, 0.5);
+    padding: 10px;
+    background: rgba(0, 20, 40, 0.7);
+}
+
+.cyber-gantt-label {
+    width: 120px;
+    font-weight: bold;
+    color: #00ffff;
+    padding-right: 10px;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+}
+
+.cyber-gantt-timeline {
+    flex-grow: 1;
+    position: relative;
+    height: 30px;
+}
+
+.timeline-start, .timeline-end {
+    position: absolute;
+    font-size: 0.8rem;
+    color: #00a8ff;
+    text-shadow: 0 0 5px rgba(0, 168, 255, 0.7);
+}
+
+.timeline-start {
+    left: 0;
+}
+
+.timeline-end {
+    right: 0;
+}
+
+.timeline-now {
+    position: absolute;
+    top: -5px;
+    transform: translateX(-50%);
+    color: #ff9900;
+    font-size: 0.7rem;
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.7);
+}
+
+.timeline-now::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 5px;
+    background-color: #ff9900;
+    box-shadow: 0 0 5px rgba(255, 153, 0, 0.7);
+}
+
+.cyber-gantt-rows {
+    padding: 15px 10px;
+}
+
+.cyber-gantt-row {
+    display: flex;
+    margin-bottom: 12px;
+    height: 30px;
+    position: relative;
+}
+
+.cyber-gantt-row:last-child {
+    margin-bottom: 0;
+}
+
+.app-name {
+    width: 120px;
+    padding-right: 10px;
+    font-size: 0.9rem;
+    color: #ffffff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gantt-timeline {
+    flex-grow: 1;
+    position: relative;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.app-bar {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.8rem;
+}
+
+.app-bar.past {
+    background: linear-gradient(to right, rgba(0, 123, 255, 0.4), rgba(0, 123, 255, 0.7));
+    border: 1px solid rgba(0, 123, 255, 0.8);
+    color: #ffffff;
+}
+
+.app-bar.current {
+    background: linear-gradient(to right, rgba(255, 193, 7, 0.4), rgba(255, 193, 7, 0.7));
+    border: 1px solid rgba(255, 193, 7, 0.8);
+    color: #000000;
+}
+
+.app-bar.future {
+    background: linear-gradient(to right, rgba(40, 167, 69, 0.4), rgba(40, 167, 69, 0.7));
+    border: 1px solid rgba(40, 167, 69, 0.8);
+    color: #ffffff;
+}
+
+.app-bar-error {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(220, 53, 69, 0.4), rgba(220, 53, 69, 0.7));
+    border: 1px solid rgba(220, 53, 69, 0.8);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+}
+
+.error-text {
+    font-size: 0.8rem;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.app-duration {
+    font-size: 0.75rem;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.7);
+}
+
+.now-line {
+    position: absolute;
+    height: 100%;
+    width: 2px;
+    background-color: #ff9900;
+    box-shadow: 0 0 5px rgba(255, 153, 0, 0.7);
+    z-index: 10;
+}
+
+.duration-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    color: #000;
+    background-color: #00ffff;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+/* デバッグ情報スタイル */
+.debug-info {
+    background-color: rgba(20, 20, 20, 0.8);
+    border-radius: 5px;
+    font-family: monospace;
+}
+
+.debug-info ul {
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+.debug-info li {
+    margin-bottom: 3px;
+}
+
+/* 月別アクティビティスタイル */
+.cyber-month-activity {
+    margin-top: 20px;
+}
+
+.cyber-months-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px;
+    background-color: rgba(0, 20, 40, 0.7);
+    border-radius: 5px;
+    border: 1px solid rgba(0, 123, 255, 0.3);
+}
+
+.cyber-month {
+    flex: 0 0 calc(20% - 10px);
+    text-align: center;
+}
+
+.month-label {
+    color: #00ffff;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+
+.month-bar {
+    height: 15px;
+    background-color: #00bfff;
+    border-radius: 3px;
+    box-shadow: 0 0 8px rgba(0, 191, 255, 0.7);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+.app-bar-error {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background-color: rgba(255, 0, 0, 0.3);
+    border-radius: 3px;
+    border: 1px dashed rgba(255, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-text {
+    font-size: 0.75rem;
+    color: #ff3e3e;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 62, 62, 0.5);
+}
+</style>
+
+<!-- アプリ開発期間ガントチャート用JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded');
+    const ganttChart = document.getElementById('app-gantt-chart');
+    if (!ganttChart) {
+        console.warn('Gantt chart element not found');
+        return;
+    }
+    
+    const rows = ganttChart.querySelectorAll('.cyber-gantt-row');
+    if (!rows.length) {
+        console.warn('No rows found in gantt chart');
+        return;
+    }
+    
+    // デバッグ情報
+    console.log('Debug - Profile start date:', '{{ profile.first_app_date|date:"Y-m-d" }}');
+    console.log('Debug - Profile end date:', '{{ profile.last_app_date|date:"Y-m-d" }}');
+    console.log('Debug - App development periods count:', '{{ profile.app_development_periods|length }}');
+    
+    // 最初と最後の日付を取得する
+    let firstDate = new Date('{{ profile.first_app_date|date:"Y-m-d" }}');
+    let lastDate = new Date('{{ profile.last_app_date|date:"Y-m-d" }}');
+    
+    console.log('Debug - Parsed first date:', firstDate);
+    console.log('Debug - Parsed last date:', lastDate);
+    
+    if (isNaN(firstDate.getTime()) || isNaN(lastDate.getTime())) {
+        console.error('Invalid date format in first_app_date or last_app_date');
+        // デフォルト値として現在の日付を基準に1年間のスパンを設定
+        const now = new Date();
+        firstDate = new Date(now);
+        firstDate.setFullYear(now.getFullYear() - 1);
+        lastDate = now;
+        console.log('Using default date range:', firstDate, 'to', lastDate);
+    }
+    
+    const totalDays = Math.ceil((lastDate - firstDate) / (1000 * 60 * 60 * 24)) + 1;
+    console.log('Debug - Total days:', totalDays);
+    
+    // 現在の日付を取得
+    const currentDate = new Date();
+    console.log('Debug - Current date:', currentDate);
+    
+    // 現在の日付が開発期間内かどうかチェック
+    let nowPosition = 50; // デフォルトは中央
+    if (currentDate >= firstDate && currentDate <= lastDate) {
+        // 現在の日付が開発期間内の場合、正確な位置を計算
+        const currentOffset = Math.max(0, (currentDate - firstDate) / (1000 * 60 * 60 * 24));
+        nowPosition = (currentOffset / totalDays) * 100;
+    } else if (currentDate < firstDate) {
+        // 現在の日付が開発開始日より前の場合
+        nowPosition = 0;
+    } else if (currentDate > lastDate) {
+        // 現在の日付が開発終了日より後の場合
+        nowPosition = 100;
+    }
+    
+    console.log('Debug - Now position (%):', nowPosition);
+    
+    // 現在位置のマーカーを配置
+    const nowMarker = document.getElementById('timeline-now-marker');
+    if (nowMarker) {
+        nowMarker.style.left = nowPosition + '%';
+    }
+    
+    // 各アプリの行を作成する
+    rows.forEach((row, index) => {
+        const appId = row.dataset.appId;
+        const startDateStr = row.dataset.start;
+        const endDateStr = row.dataset.end;
+        const title = row.dataset.title;
+        
+        console.log(`Debug - App ${index}:`, { appId, title, startDateStr, endDateStr });
+        
+        // 日付が空の場合はスキップ
+        if (!startDateStr || !endDateStr) {
+            console.warn(`Debug - App ${index} - Missing date data`);
+            row.innerHTML = `
+                <div class="app-name" title="${title}">${title}</div>
+                <div class="gantt-timeline">
+                    <div class="app-bar-error" title="日付データがありません">
+                        <span class="error-text">日付なし</span>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        
+        try {
+            const startDate = new Date(startDateStr);
+            const endDate = new Date(endDateStr);
+            
+            console.log(`Debug - App ${index} - Parsed dates:`, 
+                startDate.toISOString().slice(0, 10), 
+                endDate.toISOString().slice(0, 10));
+            
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                throw new Error('Invalid date format');
+            }
+            
+            // 開始位置と長さを計算（%単位）
+            const startOffset = Math.max(0, (startDate - firstDate) / (1000 * 60 * 60 * 24));
+            const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            
+            const startPercent = (startOffset / totalDays) * 100;
+            const widthPercent = (duration / totalDays) * 100;
+            
+            console.log(`Debug - App ${index} - Calculated values:`, {
+                startOffset,
+                duration,
+                startPercent,
+                widthPercent
+            });
+            
+            // アプリの状態を判定（過去/現在/未来）
+            let appStatus = 'past';
+            if (currentDate >= startDate && currentDate <= endDate) {
+                appStatus = 'current';
+            } else if (currentDate < startDate) {
+                appStatus = 'future';
+            }
+            
+            console.log(`Debug - App ${index} - Status:`, appStatus);
+            
+            // 行の内容を作成
+            row.innerHTML = `
+                <div class="app-name" title="${title}">${title}</div>
+                <div class="gantt-timeline">
+                    <div class="app-bar ${appStatus}" style="left: ${startPercent}%; width: ${widthPercent}%;" title="${title}: ${duration}日間">
+                        <span class="app-duration">${duration}日</span>
+                    </div>
+                </div>
+            `;
+        } catch (error) {
+            console.error(`Error processing app ${index}:`, error);
+            row.innerHTML = `
+                <div class="app-name" title="${title}">${title}</div>
+                <div class="gantt-timeline">
+                    <div class="app-bar-error" title="日付処理エラー">
+                        <span class="error-text">エラー</span>
+                    </div>
+                </div>
+            `;
+        }
+    });
+});
+</script>
+{% endblock %} 

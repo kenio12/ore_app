@@ -22,6 +22,36 @@ class Profile(models.Model):
         help_text='プログラミング言語、フレームワークなどの技術スキル'
     )
     
+    # 開発アクティビティ期間の情報
+    first_app_date = models.DateField(
+        '最初のアプリ開発日', 
+        null=True, 
+        blank=True,
+        help_text='ユーザーが開発した最初のアプリの開始日'
+    )
+    
+    last_app_date = models.DateField(
+        '最新のアプリ開発日', 
+        null=True, 
+        blank=True,
+        help_text='ユーザーが開発した最新のアプリの終了日'
+    )
+    
+    active_months = models.JSONField(
+        '活発な開発期間', 
+        default=list, 
+        blank=True,
+        help_text='ユーザーが活発に開発していた年月のリスト'
+    )
+    
+    # 各アプリの開発期間情報
+    app_development_periods = models.JSONField(
+        'アプリ別開発期間', 
+        default=list, 
+        blank=True,
+        help_text='各アプリの開発期間情報のリスト'
+    )
+    
     # 専門分野（Webアプリやモバイルアプリなどのカテゴリー）
     specializations = models.JSONField(
         '専門分野', 
@@ -453,6 +483,12 @@ class Profile(models.Model):
         # データベースORM集計
         orm_count = {}
         
+        # 開発日付情報を取得する変数
+        first_app_date = None
+        last_app_date = None
+        development_months = set()  # 活発な開発月を記録するセット
+        app_dev_periods = []  # 各アプリの開発期間情報を格納するリスト
+        
         for app in user_apps:
             # ホスティング情報を収集（あれば）
             if hasattr(app, 'hosting') and app.hosting:
@@ -757,6 +793,43 @@ class Profile(models.Model):
                         start_date = datetime.datetime.strptime(app.development_story['start_date'], '%Y-%m-%d').date()
                         end_date = datetime.datetime.strptime(app.development_story['end_date'], '%Y-%m-%d').date()
                         
+                        # アプリごとの開発期間情報を記録
+                        app_period = {
+                            'app_id': app.id,
+                            'title': app.title,
+                            'start_date': app.development_story['start_date'],
+                            'end_date': app.development_story['end_date'],
+                            'duration': app.development_story.get('duration', ''),
+                            'development_motivation': app.development_story.get('development_motivation', ''),
+                            'development_innovations': app.development_story.get('development_innovations', ''),
+                            'development_abandoned': app.development_story.get('development_abandoned', ''),
+                            'development_future_plans': app.development_story.get('development_future_plans', ''),
+                            'development_reflections': app.development_story.get('development_reflections', '')
+                        }
+                        app_dev_periods.append(app_period)
+                        
+                        # 最初のアプリ開発日を更新
+                        if first_app_date is None or start_date < first_app_date:
+                            first_app_date = start_date
+                        
+                        # 最新のアプリ開発日を更新
+                        if last_app_date is None or end_date > last_app_date:
+                            last_app_date = end_date
+                        
+                        # 開発期間中の各月を記録
+                        current_date = start_date
+                        while current_date <= end_date:
+                            # YYYY年MM月 形式で記録
+                            month_str = current_date.strftime('%Y年%m月')
+                            development_months.add(month_str)
+                            # 次の月に進む
+                            next_month = current_date.month + 1
+                            next_year = current_date.year
+                            if next_month > 12:
+                                next_month = 1
+                                next_year += 1
+                            current_date = current_date.replace(year=next_year, month=next_month, day=1)
+                        
                         # 日数差を計算
                         duration_days = (end_date - start_date).days + 1  # 両端を含める
                         
@@ -953,6 +1026,26 @@ class Profile(models.Model):
         
         # 開発期間分布
         self.development_duration_distribution = duration_distribution
+        
+        # 開発日付情報を更新
+        if first_app_date:
+            self.first_app_date = first_app_date
+            
+        if last_app_date:
+            self.last_app_date = last_app_date
+            
+        if development_months:
+            # 月を時系列順（古い順）にソート
+            self.active_months = sorted(list(development_months))
+        
+        # 各アプリ開発期間情報を更新
+        if app_dev_periods:
+            # 開発開始日の新しい順にソート
+            self.app_development_periods = sorted(
+                app_dev_periods,
+                key=lambda x: datetime.datetime.strptime(x['start_date'], '%Y-%m-%d').date(),
+                reverse=True
+            )
         
         self.save()
 

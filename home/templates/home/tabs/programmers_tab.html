@@ -182,7 +182,7 @@
                     <div class="mt-3">
                         <div class="d-flex flex-wrap">
                             ${Object.entries(profile.skills.data.backend_languages).map(([lang, level]) => 
-                                `<span class="badge backend-badge me-1 mb-1">${backendLangMap[lang] || lang} Lv.${level}</span>`
+                                `<span class="badge backend-badge me-1 mb-1">${backendLangMap[lang] || lang}</span>`
                             ).join('')}
                         </div>
                     </div>
@@ -233,7 +233,7 @@
                     <div class="mt-3">
                         <div class="d-flex flex-wrap">
                             ${Object.entries(profile.skills.data.backend_frameworks).map(([fw, level]) => 
-                                `<span class="badge framework-badge me-1 mb-1">${backendFwMap[fw] || fw} Lv.${level}</span>`
+                                `<span class="badge framework-badge me-1 mb-1">${backendFwMap[fw] || fw}</span>`
                             ).join('')}
                         </div>
                     </div>
