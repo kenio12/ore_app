@@ -177,36 +177,6 @@
                     </div>
                 </div>
 
-                <!-- インフラストラクチャ -->
-                <div class="mb-4">
-                    <label class="form-label text-cyber-orange">インフラストラクチャ</label>
-                    <p class="text-muted small mb-3 text-cyber-orange">
-                        ※インフラストラクチャはアプリケーションを動かすための基盤となる環境のことです。
-                        サーバー、データベース、ホスティングサービスなどが含まれます。
-                        個人開発では、以下のようなホスティングサービスを選ぶことが多いです：
-                        - PythonAnywhere：Pythonアプリに特化した、初学者に優しいホスティング
-                        - Render：無料枠があり、デプロイが簡単
-                        - Heroku：安定性が高く、多機能（一部有料）
-                        - Vercel：フロントエンド特化で使いやすい
-                    </p>
-                    <div class="row g-3">
-                        {% for key, value in infrastructure.items %}
-                        <div class="col-md-4">
-                            <div class="form-check">
-                                <input type="checkbox" 
-                                       id="infra-{{ key }}"
-                                       class="form-check-input cyber-orange-focus"
-                                       name="development_environment_infrastructure"
-                                       value="{{ key }}"
-                                       {% if app.development_environment and key in app.development_environment.infrastructure %}checked{% endif %}
-                                       {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label text-cyber-orange" for="infra-{{ key }}">{{ value }}</label>
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
                 <!-- APIツール -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-orange">APIツール</label>

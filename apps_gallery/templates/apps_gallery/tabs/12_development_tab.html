@@ -1,6 +1,6 @@
 {% include 'apps_gallery/shared/disabled_styles.html' %}
 
-<div id="development" class="container" style="margin: 0 !important; padding: 0 !important;">
+<div id="development-section" class="container" style="margin: 0 !important; padding: 0 !important;">
     <div class="card border-0 shadow-lg">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
@@ -56,13 +56,7 @@
                     <textarea name="development_motivation"
                               class="form-control cyber-yellow-focus"
                               rows="6"
-                              placeholder="例：
-・自分が日々の業務で感じていた課題
-・解決したかった具体的な問題
-・新しい技術への興味や学習意欲
-・市場のニーズや機会の発見
-・チームや組織からの要望
-など、できるだけ具体的に記述してください"
+                              placeholder="開発のきっかけを記入してください"
                               {% if readonly %}readonly{% endif %}>{% if app.development_story.development_motivation %}{{ app.development_story.development_motivation }}{% endif %}</textarea>
                 </div>
 
@@ -75,12 +69,7 @@
                     <textarea name="development_innovations"
                               class="form-control cyber-yellow-focus"
                               rows="6"
-                              placeholder="例：
-・技術選定の理由と独自の工夫
-・パフォーマンス向上のために実施した最適化
-・ユーザー体験を向上させるために導入した機能
-・開発プロセスで取り入れた効率化手法
-など、あなたのアプリケーションのユニークな工夫点を教えてください"
+                              placeholder="工夫した点を記入してください"
                               {% if readonly %}readonly{% endif %}>{% if app.development_story.development_innovations %}{{ app.development_story.development_innovations }}{% endif %}</textarea>
                 </div>
 
@@ -93,12 +82,7 @@
                     <textarea name="development_abandoned"
                               class="form-control cyber-yellow-focus"
                               rows="6"
-                              placeholder="例：
-・実装を試みたが技術的に困難だった機能
-・時間的制約により優先度を下げた要素
-・パフォーマンス上の理由で見送った機能
-・コストや複雑性の観点から見送った選択肢
-など、開発過程で直面した現実的な判断と妥協点について"
+                              placeholder="断念した機能や特徴を記入してください"
                               {% if readonly %}readonly{% endif %}>{% if app.development_story.development_abandoned %}{{ app.development_story.development_abandoned }}{% endif %}</textarea>
                 </div>
 
@@ -111,12 +95,7 @@
                     <textarea name="development_future_plans"
                               class="form-control cyber-yellow-focus"
                               rows="6"
-                              placeholder="例：
-・次のバージョンで計画している新機能
-・ユーザーフィードバックに基づく改善点
-・拡張性やスケーラビリティに関する計画
-・新しい技術やフレームワークの導入予定
-など、アプリケーションの進化の方向性について"
+                              placeholder="今後の追加予定機能や改善点を記入してください"
                               {% if readonly %}readonly{% endif %}>{% if app.development_story.development_future_plans %}{{ app.development_story.development_future_plans }}{% endif %}</textarea>
                 </div>
 
@@ -129,13 +108,7 @@
                     <textarea name="development_reflections"
                               class="form-control cyber-yellow-focus"
                               rows="6"
-                              placeholder="例：
-・開発過程で得た新しい気づきや学び
-・予想外の困難とその対処から得た教訓
-・チーム開発の場合は協働の経験や学び
-・自分自身のスキルや考え方の変化
-・プロジェクト全体を振り返っての感想
-など、開発者として成長した点や感じたことを自由に"
+                              placeholder="開発を通して感じたことを記入してください"
                               {% if readonly %}readonly{% endif %}>{% if app.development_story.development_reflections %}{{ app.development_story.development_reflections }}{% endif %}</textarea>
                 </div>
             </div>
@@ -151,27 +124,27 @@
 }
 
 /* カード全体のスタイル */
-#development .card {
+#development-section .card {
     background: rgba(13, 25, 45, 0.95) !important;
     border: 2px solid var(--cyber-yellow) !important;
     box-shadow: 0 0 15px var(--cyber-yellow-glow) !important;
 }
 
 /* セレクトボックスのスタイル */
-#development .form-select {
+#development-section .form-select {
     background-color: rgba(13, 25, 45, 0.95) !important;
     color: var(--cyber-yellow) !important;
     border: 2px solid var(--cyber-yellow) !important;
     box-shadow: 0 0 10px var(--cyber-yellow-glow) !important;
 }
 
-#development .form-select:focus {
+#development-section .form-select:focus {
     border-color: var(--cyber-yellow) !important;
     box-shadow: 0 0 15px var(--cyber-yellow-glow) !important;
 }
 
 /* テキストエリアのスタイル */
-#development textarea.form-control {
+#development-section textarea.form-control {
     background-color: rgba(13, 25, 45, 0.95) !important;
     color: var(--cyber-yellow) !important;
     border: 2px solid var(--cyber-yellow) !important;
@@ -179,14 +152,14 @@
 }
 
 /* プレースホルダーのスタイル */
-#development ::placeholder {
+#development-section ::placeholder {
     color: rgba(255, 215, 0, 0.5) !important;
 }
 
 /* テキストのスタイル */
-#development .text-cyber-yellow,
-#development .form-check-label,
-#development .cyber-title {
+#development-section .text-cyber-yellow,
+#development-section .form-check-label,
+#development-section .cyber-title {
     color: var(--cyber-yellow) !important;
     text-shadow: 0 0 5px var(--cyber-yellow) !important;
     opacity: 1 !important;
@@ -194,14 +167,14 @@
 }
 
 /* 説明文のスタイル */
-#development .text-muted {
+#development-section .text-muted {
     color: var(--cyber-yellow) !important;
     opacity: 0.9 !important;
 }
 
 /* disabled状態のスタイル */
-#development .form-control:disabled,
-#development .form-select:disabled {
+#development-section .form-control:disabled,
+#development-section .form-select:disabled {
     background-color: rgba(13, 25, 45, 0.95) !important;
     color: var(--cyber-yellow) !important;
     border-color: var(--cyber-yellow) !important;
@@ -243,23 +216,23 @@
 }
 
 /* カレンダーアイコンを黄色に変更 */
-#development input[type="date"]::-webkit-calendar-picker-indicator {
+#development-section input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(80%) sepia(80%) saturate(1000%) hue-rotate(5deg) brightness(105%) contrast(105%);
     cursor: pointer;
     opacity: 0.8;
 }
 
-#development input[type="date"]::-webkit-calendar-picker-indicator:hover {
+#development-section input[type="date"]::-webkit-calendar-picker-indicator:hover {
     opacity: 1;
     transform: scale(1.1);
 }
 
 /* Firefoxなど他のブラウザ対応 */
-#development input[type="date"] {
+#development-section input[type="date"] {
     position: relative;
 }
 
-#development input[type="date"]::-moz-calendar-picker-indicator {
+#development-section input[type="date"]::-moz-calendar-picker-indicator {
     background-color: var(--cyber-yellow);
     opacity: 0.8;
 }

@@ -75,6 +75,23 @@ function collectTabsFormData(formData) {
         console.log('アーキテクチャデータを追加しました', architectureData);
     }
     
+    // ハードウェアタブのフォームデータ収集
+    const hardwareData = collectHardwareFormData();
+    if (hardwareData) {
+        console.log('ハードウェアデータを追加しました', hardwareData);
+        // maker と model は個別のフォームフィールドとして送信
+        if (hardwareData.maker) formData.append('maker', hardwareData.maker);
+        if (hardwareData.model) formData.append('model', hardwareData.model);
+        // 他のフィールドはJSON形式で送信
+        if (hardwareData.pc_type) formData.append('pc_type', hardwareData.pc_type);
+        if (hardwareData.device_type) formData.append('device_type', hardwareData.device_type);
+        if (hardwareData.cpu_type) formData.append('cpu_type', hardwareData.cpu_type);
+        if (hardwareData.memory_size) formData.append('memory_size', hardwareData.memory_size);
+        if (hardwareData.storage_type) formData.append('storage_type', hardwareData.storage_type);
+        if (hardwareData.monitor_count) formData.append('monitor_count', hardwareData.monitor_count);
+        if (hardwareData.internet_type) formData.append('internet_type', hardwareData.internet_type);
+    }
+    
     // 開発ストーリータブのフォームデータ収集
     const developmentStoryData = collectDevelopmentStoryFormData();
     if (developmentStoryData) {
@@ -116,7 +133,7 @@ function collectDevEnvFormData() {
     console.log('開発環境タブのデータ収集を開始');
     
     // 開発環境タブが存在するか確認
-    const devEnvTab = document.getElementById('dev-env-section');
+    const devEnvTab = document.getElementById('dev_env');
     if (!devEnvTab) {
         console.warn('開発環境タブが見つかりません');
         return null;
@@ -139,87 +156,51 @@ function collectDevEnvFormData() {
     
     // エディタのチェックボックス
     data.editors = [];
-    devEnvTab.querySelectorAll('input[name="editors"]:checked').forEach(input => {
+    devEnvTab.querySelectorAll('input[name="development_environment_editors"]:checked').forEach(input => {
         data.editors.push(input.value);
     });
     
-    // デバッグ: editors要素の確認
-    console.log('=== editors要素の確認 ===');
-    const allEditorsInputs = devEnvTab.querySelectorAll('input[name="editors"]');
-    console.log('editors入力要素の総数:', allEditorsInputs.length);
-    console.log('チェック済みeditors要素数:', devEnvTab.querySelectorAll('input[name="editors"]:checked').length);
-    if (allEditorsInputs.length > 0) {
-        console.log('最初のeditors要素のID:', allEditorsInputs[0].id);
-        console.log('最初のeditors要素の値:', allEditorsInputs[0].value);
-    } else {
-        console.warn('editors要素が見つかりません');
-        // 名前に"editor"を含む要素も探す（名前付けの問題の可能性）
-        const editorLikeInputs = devEnvTab.querySelectorAll('input[id*="editor"]');
-        console.log('editorという名前を含む要素数:', editorLikeInputs.length);
-        if (editorLikeInputs.length > 0) {
-            console.log('editorという名前を含む最初の要素のID:', editorLikeInputs[0].id);
-            console.log('editorという名前を含む最初の要素のname属性:', editorLikeInputs[0].name);
-        }
-    }
-    
     // バージョン管理システム
     data.version_control = [];
-    devEnvTab.querySelectorAll('input[name="version_control"]:checked').forEach(input => {
+    devEnvTab.querySelectorAll('input[name="development_environment_version_control"]:checked').forEach(input => {
         data.version_control.push(input.value);
     });
     
     // 仮想化ツール
     data.virtualization = [];
-    devEnvTab.querySelectorAll('input[name="virtualization"]:checked').forEach(input => {
+    devEnvTab.querySelectorAll('input[name="development_environment_virtualization"]:checked').forEach(input => {
         data.virtualization.push(input.value);
     });
     
     // チームサイズ
-    const teamSizeInput = devEnvTab.querySelector('input[name="team_size"]:checked');
+    const teamSizeInput = devEnvTab.querySelector('input[name="development_environment_team_size"]:checked');
     if (teamSizeInput) {
         data.team_size = teamSizeInput.value;
     }
     
     // コミュニケーションツール
     data.communication_tools = [];
-    devEnvTab.querySelectorAll('input[name="communication_tools"]:checked').forEach(input => {
+    devEnvTab.querySelectorAll('input[name="development_environment_communication_tools"]:checked').forEach(input => {
         data.communication_tools.push(input.value);
     });
     
     // CI/CD
     data.ci_cd = [];
-    devEnvTab.querySelectorAll('input[name="ci_cd"]:checked').forEach(input => {
+    devEnvTab.querySelectorAll('input[name="development_environment_ci_cd"]:checked').forEach(input => {
         data.ci_cd.push(input.value);
-    });
-    
-    // インフラストラクチャ
-    data.infrastructure = [];
-    devEnvTab.querySelectorAll('input[name="infrastructure"]:checked').forEach(input => {
-        data.infrastructure.push(input.value);
     });
     
     // APIツール
     data.api_tools = [];
-    devEnvTab.querySelectorAll('input[name="api_tools"]:checked').forEach(input => {
+    devEnvTab.querySelectorAll('input[name="development_environment_api_tools"]:checked').forEach(input => {
         data.api_tools.push(input.value);
     });
     
     // モニタリングツール
     data.monitoring_tools = [];
-    devEnvTab.querySelectorAll('input[name="monitoring_tools"]:checked').forEach(input => {
+    devEnvTab.querySelectorAll('input[name="development_environment_monitoring_tools"]:checked').forEach(input => {
         data.monitoring_tools.push(input.value);
     });
-    
-    // 収集したデータの要約
-    console.log('=== 収集した開発環境データの要約 ===');
-    for (const [key, value] of Object.entries(data)) {
-        if (Array.isArray(value)) {
-            console.log(`${key}: ${value.length}項目`);
-        } else {
-            console.log(`${key}: ${value || '未設定'}`);
-        }
-    }
-    console.log('===============================');
     
     console.log('収集した開発環境データ:', data);
     return data;
@@ -230,31 +211,46 @@ function collectBackendFormData() {
     console.log('バックエンドタブのデータ収集を開始');
     
     // バックエンドタブが存在するか確認
-    const backendTab = document.getElementById('backend-section');
+    const backendTab = document.getElementById('backend');
     if (!backendTab) {
         console.warn('バックエンドタブが見つかりません');
         return null;
     }
     
-    const data = {};
+    // 両方の形式で取得
+    const data = {
+        languages: [],
+        frameworks: [],
+        libraries: []
+    };
     
-    // バックエンド言語
-    data.languages = [];
-    backendTab.querySelectorAll('input[name="backend_languages"]:checked').forEach(input => {
-        data.languages.push(input.value);
-    });
+    // メイン使用言語（ラジオボタン）
+    const mainLanguageInput = backendTab.querySelector('input[name="backend_main_language"]:checked');
+    if (mainLanguageInput) {
+        data.main_language = mainLanguageInput.value;
+        if (mainLanguageInput.value) {
+            data.languages.push(mainLanguageInput.value);
+        }
+        console.log('メイン言語:', data.main_language);
+    }
     
-    // バックエンドフレームワーク
-    data.frameworks = [];
-    backendTab.querySelectorAll('input[name="backend_frameworks"]:checked').forEach(input => {
-        data.frameworks.push(input.value);
-    });
+    // フレームワーク（ラジオボタン）
+    const frameworkInput = backendTab.querySelector('input[name="backend_framework"]:checked');
+    if (frameworkInput) {
+        data.framework = frameworkInput.value;
+        if (frameworkInput.value) {
+            data.frameworks.push(frameworkInput.value);
+        }
+        console.log('フレームワーク:', data.framework);
+    }
     
-    // バックエンドライブラリ
-    data.libraries = [];
-    backendTab.querySelectorAll('input[name="backend_libraries"]:checked').forEach(input => {
+    // パッケージ（チェックボックス、複数選択可）
+    data.packages = [];
+    backendTab.querySelectorAll('input[name="backend_packages"]:checked').forEach(input => {
+        data.packages.push(input.value);
         data.libraries.push(input.value);
     });
+    console.log('パッケージ:', data.packages);
     
     console.log('収集したバックエンドデータ:', data);
     return data;
@@ -265,13 +261,19 @@ function collectFrontendFormData() {
     console.log('フロントエンドタブのデータ収集を開始');
     
     // フロントエンドタブが存在するか確認
-    const frontendTab = document.getElementById('frontend-section');
+    const frontendTab = document.getElementById('frontend');
     if (!frontendTab) {
         console.warn('フロントエンドタブが見つかりません');
         return null;
     }
     
     const data = {};
+    
+    // マークアップ言語
+    data.markup_languages = [];
+    frontendTab.querySelectorAll('input[name="markup_languages"]:checked').forEach(input => {
+        data.markup_languages.push(input.value);
+    });
     
     // フロントエンド言語
     data.languages = [];
@@ -285,11 +287,28 @@ function collectFrontendFormData() {
         data.frameworks.push(input.value);
     });
     
+    // CSSフレームワーク
+    data.css_frameworks = [];
+    frontendTab.querySelectorAll('input[name="css_frameworks"]:checked').forEach(input => {
+        data.css_frameworks.push(input.value);
+    });
+    
     // UIライブラリ
     data.ui_libraries = [];
     frontendTab.querySelectorAll('input[name="ui_libraries"]:checked').forEach(input => {
         data.ui_libraries.push(input.value);
     });
+    
+    // フロントエンドホスティング - ホスティングタブからデータを取得して統合
+    const hostingTab = document.getElementById('hosting');
+    if (hostingTab) {
+        data.hosting = [];
+        const inputs = hostingTab.querySelectorAll('input[name="frontend_hosting"]:checked');
+        inputs.forEach(input => {
+            data.hosting.push(input.value);
+        });
+        console.log('フロントエンドホスティングデータ (collectFrontendFormData内):', data.hosting);
+    }
     
     console.log('収集したフロントエンドデータ:', data);
     return data;
@@ -302,6 +321,19 @@ function collectDatabaseFormData() {
     // データベースタブが存在するか確認
     const databaseTab = document.getElementById('database-section');
     if (!databaseTab) {
+        // 代替としてホスティングタブからのデータをチェック
+        const hostingTab = document.getElementById('hosting');
+        if (hostingTab) {
+            const hostingData = {};
+            hostingData.hosting = [];
+            hostingTab.querySelectorAll('input[name="database_hosting"]:checked').forEach(input => {
+                hostingData.hosting.push(input.value);
+            });
+            if (hostingData.hosting.length > 0) {
+                console.log('ホスティングタブからデータベースホスティングデータを取得:', hostingData);
+                return hostingData;
+            }
+        }
         console.warn('データベースタブが見つかりません');
         return null;
     }
@@ -313,6 +345,7 @@ function collectDatabaseFormData() {
     databaseTab.querySelectorAll('input[name="database_types"]:checked').forEach(input => {
         data.types.push(input.value);
     });
+    console.log('データベースタイプ:', data.types);
     
     // データベース製品
     data.products = [];
@@ -320,11 +353,30 @@ function collectDatabaseFormData() {
         data.products.push(input.value);
     });
     
+    // データベースホスティング - ホスティングタブからも取得
+    data.hosting = [];
+    // データベースタブにホスティング設定がある場合
+    databaseTab.querySelectorAll('input[name="database_hosting"]:checked').forEach(input => {
+        data.hosting.push(input.value);
+    });
+    
+    // ホスティングタブからもデータを取得して統合
+    const hostingTab = document.getElementById('hosting');
+    if (hostingTab) {
+        hostingTab.querySelectorAll('input[name="database_hosting"]:checked').forEach(input => {
+            if (!data.hosting.includes(input.value)) {
+                data.hosting.push(input.value);
+            }
+        });
+    }
+    console.log('データベースホスティング:', data.hosting);
+    
     // ORMツール
     data.orm_tools = [];
     databaseTab.querySelectorAll('input[name="orm_tools"]:checked').forEach(input => {
         data.orm_tools.push(input.value);
     });
+    console.log('ORMツール:', data.orm_tools);
     
     console.log('収集したデータベースデータ:', data);
     return data;
@@ -348,12 +400,18 @@ function collectSecurityFormData() {
     securityTab.querySelectorAll('input[name="authentication_methods"]:checked').forEach(input => {
         data.auth_methods.push(input.value);
     });
+    console.log('認証方式:', data.auth_methods);
     
     // セキュリティ対策
     data.measures = [];
     securityTab.querySelectorAll('input[name="security_measures"]:checked').forEach(input => {
         data.measures.push(input.value);
     });
+    console.log('セキュリティ対策:', data.measures);
+    
+    // 空の配列を初期化して確実にデータが存在するようにする
+    if (!data.auth_methods) data.auth_methods = [];
+    if (!data.measures) data.measures = [];
     
     console.log('収集したセキュリティデータ:', data);
     return data;
@@ -376,48 +434,63 @@ function collectDevelopmentStoryFormData() {
     const startDate = developmentTab.querySelector('input[name="development_start_date"]');
     if (startDate && startDate.value) {
         data.start_date = startDate.value;
+        console.log('開発開始日:', data.start_date);
     }
     
     // 開発終了日
     const endDate = developmentTab.querySelector('input[name="development_end_date"]');
     if (endDate && endDate.value) {
         data.end_date = endDate.value;
+        console.log('開発終了日:', data.end_date);
     }
     
     // 開発期間
     const duration = developmentTab.querySelector('input[name="development_duration"]');
     if (duration && duration.value) {
         data.duration = duration.value;
+        console.log('開発期間:', data.duration);
+    } else {
+        // 隠しフィールドが見つからない場合、ID指定でも探す
+        const durationHidden = document.getElementById('development_duration_hidden');
+        if (durationHidden && durationHidden.value) {
+            data.duration = durationHidden.value;
+            console.log('開発期間(hidden):', data.duration);
+        }
     }
     
     // 開発の動機
     const motivation = developmentTab.querySelector('textarea[name="development_motivation"]');
     if (motivation && motivation.value) {
-        data.motivation = motivation.value;
+        data.development_motivation = motivation.value;
+        console.log('開発の動機を収集しました');
     }
     
     // 工夫したポイント
     const innovations = developmentTab.querySelector('textarea[name="development_innovations"]');
     if (innovations && innovations.value) {
-        data.innovations = innovations.value;
+        data.development_innovations = innovations.value;
+        console.log('工夫した点を収集しました');
     }
     
     // 諦めた機能
     const abandoned = developmentTab.querySelector('textarea[name="development_abandoned"]');
     if (abandoned && abandoned.value) {
-        data.abandoned = abandoned.value;
+        data.development_abandoned = abandoned.value;
+        console.log('断念した点を収集しました');
     }
     
     // 今後の予定
     const futurePlans = developmentTab.querySelector('textarea[name="development_future_plans"]');
     if (futurePlans && futurePlans.value) {
-        data.future_plans = futurePlans.value;
+        data.development_future_plans = futurePlans.value;
+        console.log('今後の予定を収集しました');
     }
     
     // 振り返り
     const reflections = developmentTab.querySelector('textarea[name="development_reflections"]');
     if (reflections && reflections.value) {
-        data.reflections = reflections.value;
+        data.development_reflections = reflections.value;
+        console.log('振り返りを収集しました');
     }
     
     console.log('収集した開発ストーリーデータ:', data);
@@ -429,7 +502,7 @@ function collectArchitectureFormData() {
     console.log('アーキテクチャタブのデータ収集を開始');
     
     // アーキテクチャタブが存在するか確認
-    const architectureTab = document.getElementById('architecture-section');
+    const architectureTab = document.getElementById('architecture');
     if (!architectureTab) {
         console.warn('アーキテクチャタブが見つかりません');
         return null;
@@ -443,11 +516,17 @@ function collectArchitectureFormData() {
         data.patterns.push(input.value);
     });
     
-    // デプロイ方法
-    data.deployment = [];
-    architectureTab.querySelectorAll('input[name="deployment_methods"]:checked').forEach(input => {
-        data.deployment.push(input.value);
+    // デザインパターン
+    data.design_patterns = [];
+    architectureTab.querySelectorAll('input[name="architecture_design_patterns"]:checked').forEach(input => {
+        data.design_patterns.push(input.value);
     });
+    
+    // アーキテクチャの説明
+    const descriptionTextarea = architectureTab.querySelector('textarea[name="architecture_description"]');
+    if (descriptionTextarea && descriptionTextarea.value.trim()) {
+        data.description = descriptionTextarea.value.trim();
+    }
     
     console.log('収集したアーキテクチャデータ:', data);
     return data;
@@ -458,7 +537,7 @@ function collectHostingFormData() {
     console.log('ホスティングタブのデータ収集を開始');
     
     // ホスティングタブが存在するか確認
-    const hostingTab = document.getElementById('hosting-section');
+    const hostingTab = document.getElementById('hosting');
     if (!hostingTab) {
         console.warn('ホスティングタブが見つかりません');
         return null;
@@ -471,12 +550,77 @@ function collectHostingFormData() {
     hostingTab.querySelectorAll('input[name="hosting_services"]:checked').forEach(input => {
         data.services.push(input.value);
     });
+    console.log('ホスティングサービス:', data.services);
     
     // デプロイ方法
     data.deployment_methods = [];
     hostingTab.querySelectorAll('input[name="deployment_methods"]:checked').forEach(input => {
         data.deployment_methods.push(input.value);
     });
+    console.log('デプロイ方法:', data.deployment_methods);
+    
+    // フロントエンドホスティング
+    data.frontend_hosting = [];
+    hostingTab.querySelectorAll('input[name="frontend_hosting"]:checked').forEach(input => {
+        data.frontend_hosting.push(input.value);
+    });
+    console.log('フロントエンドホスティングデータ (ホスティングタブから):', data.frontend_hosting);
+    
+    // データベースホスティング（これはデータベースオブジェクトに入れるべきだが、移行期間は両方に入れる）
+    data.database_hosting = [];
+    hostingTab.querySelectorAll('input[name="database_hosting"]:checked').forEach(input => {
+        data.database_hosting.push(input.value);
+    });
+    console.log('データベースホスティング:', data.database_hosting);
+    
+    // データベースオブジェクトのホスティングデータを同期
+    const databaseData = collectDatabaseFormData();
+    if (databaseData && data.database_hosting.length > 0) {
+        databaseData.hosting = [...data.database_hosting];
+        // JSONフィールドを更新
+        const databaseJsonField = document.querySelector('input[name="database"]');
+        if (databaseJsonField) {
+            databaseJsonField.value = JSON.stringify(databaseData);
+        }
+    }
+    
+    // フロントエンドデータとの同期処理
+    if (data.frontend_hosting && data.frontend_hosting.length > 0) {
+        // frontend JSONフィールドを直接更新
+        try {
+            // フロントエンドJSONフィールドを取得
+            const frontendJsonField = document.querySelector('input[name="frontend"]');
+            if (frontendJsonField && frontendJsonField.value) {
+                const frontendData = JSON.parse(frontendJsonField.value);
+                // hostingプロパティを追加または更新
+                frontendData.hosting = data.frontend_hosting;
+                // 更新したJSONを書き戻す
+                frontendJsonField.value = JSON.stringify(frontendData);
+                console.log('フロントエンドJSONデータにホスティングを追加:', frontendData);
+            } else {
+                // frontend JSONフィールドがない場合、新しく作成
+                const formElement = document.getElementById('appForm');
+                if (formElement) {
+                    const frontendInput = document.createElement('input');
+                    frontendInput.type = 'hidden';
+                    frontendInput.name = 'frontend';
+                    const frontendData = {
+                        hosting: data.frontend_hosting,
+                        markup_languages: [],
+                        languages: [],
+                        frameworks: [],
+                        css_frameworks: [],
+                        ui_libraries: []
+                    };
+                    frontendInput.value = JSON.stringify(frontendData);
+                    formElement.appendChild(frontendInput);
+                    console.log('新しいフロントエンドJSONフィールドを作成:', frontendData);
+                }
+            }
+        } catch (e) {
+            console.error('フロントエンドJSONデータの更新エラー:', e);
+        }
+    }
     
     // 備考
     const notes = hostingTab.querySelector('textarea[name="hosting_notes"]');
@@ -486,6 +630,41 @@ function collectHostingFormData() {
     
     console.log('収集したホスティングデータ:', data);
     return data;
+}
+
+// ハードウェアタブのデータを収集する関数
+function collectHardwareFormData() {
+    console.log('ハードウェアデータの収集を開始します');
+    
+    // ハードウェアタブがなければ空を返す
+    const hardwareTab = document.getElementById('hardware');
+    if (!hardwareTab) {
+        console.log('ハードウェアタブが見つかりません');
+        return null;
+    }
+    
+    // 収集するデータ
+    const hardwareData = {};
+    
+    // メーカーと機種名
+    const makerInput = document.querySelector('input[name="maker"]');
+    const modelInput = document.querySelector('input[name="model"]');
+    
+    if (makerInput) hardwareData.maker = makerInput.value;
+    if (modelInput) hardwareData.model = modelInput.value;
+    
+    // ラジオボタンで選択する項目
+    const radioFields = ['pc_type', 'device_type', 'cpu_type', 'memory_size', 'storage_type', 'monitor_count', 'internet_type'];
+    
+    radioFields.forEach(fieldName => {
+        const selectedRadio = document.querySelector(`input[name="${fieldName}"]:checked`);
+        if (selectedRadio) {
+            hardwareData[fieldName] = selectedRadio.value;
+        }
+    });
+    
+    console.log('収集したハードウェアデータ:', hardwareData);
+    return hardwareData;
 }
 
 // フォームデータをシリアライズする関数
@@ -1033,9 +1212,6 @@ document.addEventListener('shown.bs.tab', function(event) {
 // セットアップ自動保存
 function setupFormAutosave() {
     setupChangeListeners();
-    
-    // 定期的に保存状態を確認
-    setInterval(checkSaveStatus, 3000);
     
     // ページを離れる前の警告
     window.addEventListener('beforeunload', function(e) {

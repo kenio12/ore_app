@@ -1,7 +1,7 @@
 {% include 'apps_gallery/shared/disabled_styles.html' %}
 
 <div id="frontend" class="container" style="margin: 0 !important; padding: 0 !important;">
-    <div class="card border-0 shadow-lg" style="background-color: rgba(13, 25, 45, 0.8) !important;">
+    <div class="card border-0 shadow-lg">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
                 <i class="bi bi-window text-cyber-pink"></i>
@@ -23,10 +23,10 @@
                                            id="markup-lang-{{ key }}"
                                            name="markup_languages"
                                            value="{{ key }}"
-                                           class="form-check-input"
+                                           class="form-check-input cyber-pink-focus"
                                            {% if key in app.frontend.markup_languages %}checked{% endif %}
                                            {% if readonly %}disabled{% endif %}>
-                                    <label class="form-check-label" for="markup-lang-{{ key }}">
+                                    <label class="form-check-label text-cyber-pink" for="markup-lang-{{ key }}">
                                         {{ value }}
                                     </label>
                                 </div>
@@ -49,10 +49,10 @@
                                            id="frontend-lang-{{ key }}"
                                            name="frontend_languages"
                                            value="{{ key }}"
-                                           class="form-check-input"
+                                           class="form-check-input cyber-pink-focus"
                                            {% if key in app.frontend.languages %}checked{% endif %}
                                            {% if readonly %}disabled{% endif %}>
-                                    <label class="form-check-label" for="frontend-lang-{{ key }}">
+                                    <label class="form-check-label text-cyber-pink" for="frontend-lang-{{ key }}">
                                         {{ value }}
                                     </label>
                                 </div>
@@ -72,10 +72,10 @@
                                            id="frontend-framework-{{ key }}"
                                            name="frontend_frameworks"
                                            value="{{ key }}"
-                                           class="form-check-input"
+                                           class="form-check-input cyber-pink-focus"
                                            {% if key in app.frontend.frameworks %}checked{% endif %}
                                            {% if readonly %}disabled{% endif %}>
-                                    <label class="form-check-label" for="frontend-framework-{{ key }}">
+                                    <label class="form-check-label text-cyber-pink" for="frontend-framework-{{ key }}">
                                         {{ value }}
                                     </label>
                                 </div>
@@ -86,24 +86,149 @@
 
                 <!-- CSSフレームワーク -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-pink">CSSフレームワーク</label>
+                    <label class="form-label text-cyber-pink">CSSフレームワーク / スタイリングツール</label>
+                    <p class="text-muted small mb-3 text-cyber-pink">
+                        ※スタイル定義に特化したフレームワークやツール（コンポーネントベースのUIライブラリは下のセクションで選択）
+                        <br>例：Bootstrapは「グリッドレイアウト」や「基本的なスタイリング」に使用
+                    </p>
                     <div class="row g-3">
-                        {% for key, value in CSS_FRAMEWORKS.items %}
-                            <div class="col-md-3">
-                                <div class="form-check">
-                                    <input type="checkbox"
-                                           id="frontend-css-{{ key }}"
-                                           name="css_frameworks"
-                                           value="{{ key }}"
-                                           class="form-check-input"
-                                           {% if key in app.frontend.css_frameworks %}checked{% endif %}
-                                           {% if readonly %}disabled{% endif %}>
-                                    <label class="form-check-label" for="frontend-css-{{ key }}">
-                                        {{ value }}
-                                    </label>
-                                </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-css-bootstrap"
+                                       name="css_frameworks"
+                                       value="bootstrap"
+                                       class="form-check-input cyber-pink-focus"
+                                       {% if 'bootstrap' in app.frontend.css_frameworks %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-pink" for="frontend-css-bootstrap">
+                                    Bootstrap
+                                </label>
                             </div>
-                        {% endfor %}
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-css-tailwind"
+                                       name="css_frameworks"
+                                       value="tailwind"
+                                       class="form-check-input cyber-pink-focus"
+                                       {% if 'tailwind' in app.frontend.css_frameworks %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-pink" for="frontend-css-tailwind">
+                                    Tailwind CSS
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-css-bulma"
+                                       name="css_frameworks"
+                                       value="bulma"
+                                       class="form-check-input cyber-pink-focus"
+                                       {% if 'bulma' in app.frontend.css_frameworks %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-pink" for="frontend-css-bulma">
+                                    Bulma
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-css-sass"
+                                       name="css_frameworks"
+                                       value="sass"
+                                       class="form-check-input cyber-pink-focus"
+                                       {% if 'sass' in app.frontend.css_frameworks %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-pink" for="frontend-css-sass">
+                                    Sass/SCSS
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="frontend-css-other"
+                                       name="css_frameworks"
+                                       value="other"
+                                       class="form-check-input cyber-pink-focus"
+                                       {% if 'other' in app.frontend.css_frameworks %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-pink" for="frontend-css-other">
+                                    その他
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UIライブラリ -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-pink">UIライブラリ / コンポーネントフレームワーク</label>
+                    <p class="text-muted small mb-3 text-cyber-pink">
+                        ※UIコンポーネントや追加機能を提供するライブラリ/フレームワーク
+                        <br>例：Chakra UIは「複雑なコンポーネント」（モーダル、メニュー、フォーム要素など）に使用
+                    </p>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="ui-library-material"
+                                       name="ui_libraries"
+                                       value="material"
+                                       class="form-check-input cyber-pink-focus"
+                                       {% if 'material' in app.frontend.ui_libraries %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-pink" for="ui-library-material">
+                                    Material UI
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="ui-library-ant"
+                                       name="ui_libraries"
+                                       value="ant"
+                                       class="form-check-input cyber-pink-focus"
+                                       {% if 'ant' in app.frontend.ui_libraries %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-pink" for="ui-library-ant">
+                                    Ant Design
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="ui-library-chakra"
+                                       name="ui_libraries"
+                                       value="chakra"
+                                       class="form-check-input cyber-pink-focus"
+                                       {% if 'chakra' in app.frontend.ui_libraries %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-pink" for="ui-library-chakra">
+                                    Chakra UI
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check">
+                                <input type="checkbox"
+                                       id="ui-library-other"
+                                       name="ui_libraries"
+                                       value="other"
+                                       class="form-check-input cyber-pink-focus"
+                                       {% if 'other' in app.frontend.ui_libraries %}checked{% endif %}
+                                       {% if readonly %}disabled{% endif %}>
+                                <label class="form-check-label text-cyber-pink" for="ui-library-other">
+                                    その他
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -112,57 +237,67 @@
 </div>
 
 <style>
-/* フロントエンドタブのスタイル */
-#frontend-section .card-title,
-#frontend-section .text-cyber-pink {
-    color: var(--cyber-pink) !important;
-    text-shadow: 0 0 10px var(--cyber-pink),
-                0 0 20px var(--cyber-pink) !important;
+/* サイバーパンクなスタイル - フロントエンド（ピンク系） */
+:root {
+    --cyber-pink: #ff1493;
+    --cyber-pink-glow: rgba(255, 20, 147, 0.5);
 }
 
-#frontend-section .form-control,
-#frontend-section .form-select,
-#frontend-section .form-check-input {
+/* cyber-pink-focusクラス */
+.cyber-pink-focus:focus {
+    box-shadow: 0 0 0 0.25rem var(--cyber-pink-glow) !important;
+    border-color: var(--cyber-pink) !important;
+    outline: 0 !important;
+}
+
+#frontend .card {
+    background: rgba(13, 25, 45, 0.95) !important;
     border: 2px solid var(--cyber-pink) !important;
-    color: var(--cyber-pink) !important;
+    box-shadow: 0 0 15px var(--cyber-pink-glow) !important;
 }
 
-#frontend-section .form-check-input:checked {
+/* チェックボックスとラジオボタンをよりクリアに */
+#frontend .form-check-input {
+    border: 2px solid var(--cyber-pink) !important;
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    width: 1.2em !important;
+    height: 1.2em !important;
+    position: relative !important;
+    margin-top: 0.3em !important;
+}
+
+#frontend .form-check-input:checked {
     background-color: var(--cyber-pink) !important;
-    box-shadow: 0 0 10px var(--cyber-pink) !important;
+    border-color: var(--cyber-pink) !important;
 }
 
-#frontend-section .form-label,
-#frontend-section .form-check-label {
+/* チェックマークのカスタマイズ - Bootstrap標準のアイコンを使用 */
+#frontend .form-check-input:checked::after {
+    content: '' !important;
+}
+
+/* チェックボックスのラベル */
+#frontend .form-check label {
+    color: var(--cyber-pink) !important;
+    font-weight: 500 !important;
+    padding-left: 0.5em !important;
+}
+
+#frontend .text-cyber-pink {
     color: var(--cyber-pink) !important;
     text-shadow: 0 0 5px var(--cyber-pink) !important;
 }
 
-/* サイバーパンク風のスタイル */
-#frontend .text-cyber-pink {
-    color: #ff1493 !important;
-    text-shadow: 0 0 5px #ff1493 !important;
-}
-
-#frontend .form-check-input:checked {
-    background-color: #ff1493 !important;
-    border-color: #ff1493 !important;
-    box-shadow: 0 0 5px #ff1493 !important;
-}
-
+/* チェックボックスとラジオボタンのホバー状態 */
 #frontend .form-check-input:hover {
-    border-color: #ff1493 !important;
-}
-
-#frontend .form-check-label {
-    color: #ff1493 !important;
-    text-shadow: 0 0 2px #ff1493 !important;
+    border-color: var(--cyber-pink) !important;
+    cursor: pointer !important;
 }
 
 /* disabled状態のスタイル */
 #frontend .form-check-input:disabled:checked {
-    background-color: #ff1493 !important;
-    border-color: #ff1493 !important;
+    background-color: var(--cyber-pink) !important;
+    border-color: var(--cyber-pink) !important;
     opacity: 0.7 !important;
 }
 </style> 

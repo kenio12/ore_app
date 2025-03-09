@@ -1,6 +1,6 @@
 {% include 'apps_gallery/shared/disabled_styles.html' %}
 
-<div id="security" class="container" style="margin: 0 !important; padding: 0 !important;">
+<div id="security-section" class="container" style="margin: 0 !important; padding: 0 !important;">
     <div class="card border-0 shadow-lg" style="background-color: rgba(13, 25, 45, 0.8) !important;">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
@@ -11,7 +11,7 @@
             <!-- デバッグ情報の表示 -->
             {% if debug %}
             <div class="debug-info" style="display: none;">
-                <p>Authentication Methods: {{ app.security.authentication_methods|default:"[]" }}</p>
+                <p>Authentication Methods: {{ app.security.auth_methods|default:"[]" }}</p>
                 <p>Security Measures: {{ app.security.measures|default:"[]" }}</p>
             </div>
             {% endif %}
@@ -19,6 +19,9 @@
             <!-- 認証方式 -->
             <div class="mb-4">
                 <label class="form-label text-cyber-red">認証方式</label>
+                <p class="text-muted small mb-3 text-cyber-red">
+                    ※アプリケーションで使用している認証方法を選択してください。複数選択可能です。
+                </p>
                 <div class="row g-3">
                     {% for key, value in AUTHENTICATION_METHODS.items %}
                         <div class="col-md-3">
@@ -27,10 +30,10 @@
                                        id="auth-method-{{ key }}"
                                        name="authentication_methods"
                                        value="{{ key }}"
-                                       class="form-check-input"
-                                       {% if app.security and key in app.security.authentication_methods %}checked{% endif %}
+                                       class="form-check-input cyber-red-focus"
+                                       {% if app.security and key in app.security.auth_methods %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label" for="auth-method-{{ key }}">
+                                <label class="form-check-label text-cyber-red" for="auth-method-{{ key }}">
                                     {{ value }}
                                 </label>
                             </div>
@@ -42,6 +45,9 @@
             <!-- セキュリティ対策 -->
             <div class="mb-4">
                 <label class="form-label text-cyber-red">セキュリティ対策</label>
+                <p class="text-muted small mb-3 text-cyber-red">
+                    ※アプリケーションで実施しているセキュリティ対策を選択してください。複数選択可能です。
+                </p>
                 <div class="row g-3">
                     {% for key, value in SECURITY_MEASURES.items %}
                         <div class="col-md-3">
@@ -50,10 +56,10 @@
                                        id="security-measure-{{ key }}"
                                        name="security_measures"
                                        value="{{ key }}"
-                                       class="form-check-input"
+                                       class="form-check-input cyber-red-focus"
                                        {% if app.security and key in app.security.measures %}checked{% endif %}
                                        {% if readonly %}disabled{% endif %}>
-                                <label class="form-check-label" for="security-measure-{{ key }}">
+                                <label class="form-check-label text-cyber-red" for="security-measure-{{ key }}">
                                     {{ value }}
                                 </label>
                             </div>
@@ -66,6 +72,19 @@
 </div>
 
 <style>
+/* サイバーパンクなスタイル */
+:root {
+    --cyber-red: #ff3e3e;
+    --cyber-red-glow: rgba(255, 62, 62, 0.5);
+}
+
+/* cyber-red-focusクラス */
+.cyber-red-focus:focus {
+    box-shadow: 0 0 0 0.25rem var(--cyber-red-glow) !important;
+    border-color: var(--cyber-red) !important;
+    outline: 0 !important;
+}
+
 /* セキュリティタブのスタイル */
 #security-section .card-title,
 #security-section .text-cyber-red {
@@ -78,24 +97,46 @@
 #security-section .form-select,
 #security-section .form-check-input {
     border: 2px solid var(--cyber-red) !important;
-    color: var(--cyber-red) !important;
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    width: 1.2em !important;
+    height: 1.2em !important;
+    position: relative !important;
+    margin-top: 0.3em !important;
 }
 
 #security-section .form-check-input:checked {
     background-color: var(--cyber-red) !important;
+    border-color: var(--cyber-red) !important;
     box-shadow: 0 0 10px var(--cyber-red) !important;
 }
 
-#security-section .form-label,
-#security-section .form-check-label {
+#security-section .form-check-input:checked::after {
+    content: '✓' !important;
+    position: absolute !important;
+    color: rgba(13, 25, 45, 0.95) !important;
+    font-size: 1em !important;
+    line-height: 0.8 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-weight: bold !important;
+}
+
+#security-section .form-check-label,
+#security-section .text-cyber-red {
     color: var(--cyber-red) !important;
     text-shadow: 0 0 5px var(--cyber-red) !important;
 }
 
+#security-section .form-check-input:hover {
+    border-color: var(--cyber-red) !important;
+    cursor: pointer !important;
+}
+
 /* disabled状態のスタイル */
-#security .form-check-input:disabled:checked {
-    background-color: #ff3e3e !important;
-    border-color: #ff3e3e !important;
+#security-section .form-check-input:disabled:checked {
+    background-color: var(--cyber-red) !important;
+    border-color: var(--cyber-red) !important;
     opacity: 0.7 !important;
 }
 </style> 

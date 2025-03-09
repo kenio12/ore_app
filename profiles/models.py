@@ -97,8 +97,14 @@ class Profile(models.Model):
             # バックエンド情報
             if hasattr(app, 'backend') and app.backend:
                 # 言語
+                # 注: 'language' または 'main_language' から取得
+                lang = None
                 if 'language' in app.backend and app.backend['language']:
                     lang = app.backend['language']
+                elif 'main_language' in app.backend and app.backend['main_language']:
+                    lang = app.backend['main_language']
+                
+                if lang:
                     skills_data['backend_languages'][lang] = skills_data['backend_languages'].get(lang, 0) + 1
                 
                 # フレームワーク

@@ -1,6 +1,6 @@
 {% include 'apps_gallery/shared/disabled_styles.html' %}
 
-<div id="database" class="container" style="margin: 0 !important; padding: 0 !important;">
+<div id="database-section" class="container" style="margin: 0 !important; padding: 0 !important;">
     <div class="card border-0 shadow-lg" style="background-color: rgba(13, 25, 45, 0.8) !important;">
         <div class="card-body">
             <h2 class="card-title h3 mb-4">
@@ -12,6 +12,9 @@
                 <!-- データベース種類 -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-emerald">データベース種類</label>
+                    <p class="text-muted small mb-3 text-cyber-emerald">
+                        ※使用しているデータベースの種類を選択してください
+                    </p>
                     <div class="row g-3">
                         {% for key, value in DATABASE_TYPES.items %}
                             <div class="col-md-3">
@@ -20,10 +23,10 @@
                                            id="db-type-{{ key }}"
                                            name="database_types"
                                            value="{{ key }}"
-                                           class="form-check-input"
+                                           class="form-check-input cyber-emerald-focus"
                                            {% if key in app.database.types %}checked{% endif %}
                                            {% if readonly %}disabled{% endif %}>
-                                    <label class="form-check-label" for="db-type-{{ key }}">
+                                    <label class="form-check-label text-cyber-emerald" for="db-type-{{ key }}">
                                         {{ value }}
                                     </label>
                                 </div>
@@ -35,18 +38,21 @@
                 <!-- ORM -->
                 <div class="mb-4">
                     <label class="form-label text-cyber-emerald">ORM</label>
+                    <p class="text-muted small mb-3 text-cyber-emerald">
+                        ※ORM（Object-Relational Mapping）はデータベース操作をオブジェクト指向的に行うためのツールです。使用しているORMがあれば選択してください。
+                    </p>
                     <div class="row g-3">
                         {% for key, value in ORMS.items %}
                             <div class="col-md-3">
                                 <div class="form-check">
                                     <input type="checkbox"
                                            id="db-orm-{{ key }}"
-                                           name="database_orms"
+                                           name="orm_tools"
                                            value="{{ key }}"
-                                           class="form-check-input"
-                                           {% if key in app.database.orms %}checked{% endif %}
+                                           class="form-check-input cyber-emerald-focus"
+                                           {% if key in app.database.orm_tools %}checked{% endif %}
                                            {% if readonly %}disabled{% endif %}>
-                                    <label class="form-check-label" for="db-orm-{{ key }}">
+                                    <label class="form-check-label text-cyber-emerald" for="db-orm-{{ key }}">
                                         {{ value }}
                                     </label>
                                 </div>
@@ -60,6 +66,19 @@
 </div>
 
 <style>
+/* サイバーパンクなスタイル */
+:root {
+    --cyber-emerald: #50c878;
+    --cyber-emerald-glow: rgba(80, 200, 120, 0.5);
+}
+
+/* cyber-emerald-focusクラス */
+.cyber-emerald-focus:focus {
+    box-shadow: 0 0 0 0.25rem var(--cyber-emerald-glow) !important;
+    border-color: var(--cyber-emerald) !important;
+    outline: 0 !important;
+}
+
 /* データベースタブのスタイル */
 #database-section .card-title,
 #database-section .text-cyber-emerald {
@@ -72,45 +91,46 @@
 #database-section .form-select,
 #database-section .form-check-input {
     border: 2px solid var(--cyber-emerald) !important;
-    color: var(--cyber-emerald) !important;
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    width: 1.2em !important;
+    height: 1.2em !important;
+    position: relative !important;
+    margin-top: 0.3em !important;
 }
 
 #database-section .form-check-input:checked {
     background-color: var(--cyber-emerald) !important;
+    border-color: var(--cyber-emerald) !important;
     box-shadow: 0 0 10px var(--cyber-emerald) !important;
 }
 
-#database-section .form-label,
-#database-section .form-check-label {
+#database-section .form-check-input:checked::after {
+    content: '✓' !important;
+    position: absolute !important;
+    color: rgba(13, 25, 45, 0.95) !important;
+    font-size: 1em !important;
+    line-height: 0.8 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-weight: bold !important;
+}
+
+#database-section .form-check-label,
+#database-section .text-cyber-emerald {
     color: var(--cyber-emerald) !important;
     text-shadow: 0 0 5px var(--cyber-emerald) !important;
 }
 
-/* サイバーパンク風のスタイル */
-#database .text-cyber-emerald {
-    color: #50c878 !important;
-    text-shadow: 0 0 5px #50c878 !important;
-}
-
-#database .form-check-input:checked {
-    background-color: #50c878 !important;
-    border-color: #50c878 !important;
-    box-shadow: 0 0 5px #50c878 !important;
-}
-
-#database .form-check-input:hover {
-    border-color: #50c878 !important;
-}
-
-#database .form-check-label {
-    color: #50c878 !important;
-    text-shadow: 0 0 2px #50c878 !important;
+#database-section .form-check-input:hover {
+    border-color: var(--cyber-emerald) !important;
+    cursor: pointer !important;
 }
 
 /* disabled状態のスタイル */
-#database .form-check-input:disabled:checked {
-    background-color: #50c878 !important;
-    border-color: #50c878 !important;
+#database-section .form-check-input:disabled:checked {
+    background-color: var(--cyber-emerald) !important;
+    border-color: var(--cyber-emerald) !important;
     opacity: 0.7 !important;
 }
 </style> 

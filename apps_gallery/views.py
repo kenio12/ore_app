@@ -687,12 +687,6 @@ def handle_development_environment_fields(request_data, app):
         development_environment['ci_cd'] = ci_cd
         logger.info(f"CI/CD: {ci_cd}")
     
-    # インフラストラクチャ
-    infrastructure = request_data.getlist('development_environment_infrastructure')
-    if infrastructure:
-        development_environment['infrastructure'] = infrastructure
-        logger.info(f"インフラストラクチャ: {infrastructure}")
-    
     # APIツール
     api_tools = request_data.getlist('development_environment_api_tools')
     if api_tools:
@@ -705,12 +699,10 @@ def handle_development_environment_fields(request_data, app):
         development_environment['monitoring_tools'] = monitoring_tools
         logger.info(f"モニタリングツール: {monitoring_tools}")
     
-    # 収集したデータが空でなければ更新
+    # 収集したデータがあれば保存
     if development_environment:
-        logger.info(f"収集した開発環境データ: {development_environment}")
         app.development_environment = development_environment
-    else:
-        logger.warning("開発環境データは空です")
+        logger.info(f"収集した開発環境データ: {development_environment}")
     
     return app
 
@@ -1396,6 +1388,48 @@ def handle_hardware_fields(request_data, app):
         hardware_data['model'] = model
         logger.info(f"Hardware model: {model}")
     
+    # PCタイプ
+    pc_type = request_data.get('pc_type')
+    if pc_type:
+        hardware_data['pc_type'] = pc_type
+        logger.info(f"PC type: {pc_type}")
+    
+    # デバイスタイプ
+    device_type = request_data.get('device_type')
+    if device_type:
+        hardware_data['device_type'] = device_type
+        logger.info(f"Device type: {device_type}")
+    
+    # CPUタイプ
+    cpu_type = request_data.get('cpu_type')
+    if cpu_type:
+        hardware_data['cpu_type'] = cpu_type
+        logger.info(f"CPU type: {cpu_type}")
+    
+    # メモリサイズ
+    memory_size = request_data.get('memory_size')
+    if memory_size:
+        hardware_data['memory_size'] = memory_size
+        logger.info(f"Memory size: {memory_size}")
+    
+    # ストレージタイプ
+    storage_type = request_data.get('storage_type')
+    if storage_type:
+        hardware_data['storage_type'] = storage_type
+        logger.info(f"Storage type: {storage_type}")
+    
+    # モニター数
+    monitor_count = request_data.get('monitor_count')
+    if monitor_count:
+        hardware_data['monitor_count'] = monitor_count
+        logger.info(f"Monitor count: {monitor_count}")
+    
+    # インターネットタイプ
+    internet_type = request_data.get('internet_type')
+    if internet_type:
+        hardware_data['internet_type'] = internet_type
+        logger.info(f"Internet type: {internet_type}")
+    
     # 収集したデータがある場合はアプリに設定
     if hardware_data:
         app.hardware_specs = hardware_data
@@ -1433,31 +1467,31 @@ def handle_development_story_fields(request_data, app):
     # 開発の動機
     motivation = request_data.get('development_motivation')
     if motivation:
-        story_data['motivation'] = motivation
+        story_data['development_motivation'] = motivation
         logger.info(f"開発の動機: {motivation}")
     
     # 工夫したポイント
     innovations = request_data.get('development_innovations')
     if innovations:
-        story_data['innovations'] = innovations
+        story_data['development_innovations'] = innovations
         logger.info(f"工夫したポイント: {innovations}")
     
     # 諦めた機能
     abandoned = request_data.get('development_abandoned')
     if abandoned:
-        story_data['abandoned'] = abandoned
+        story_data['development_abandoned'] = abandoned
         logger.info(f"諦めた機能: {abandoned}")
     
     # 今後の予定
     future_plans = request_data.get('development_future_plans')
     if future_plans:
-        story_data['future_plans'] = future_plans
+        story_data['development_future_plans'] = future_plans
         logger.info(f"今後の予定: {future_plans}")
     
     # 振り返り
     reflections = request_data.get('development_reflections')
     if reflections:
-        story_data['reflections'] = reflections
+        story_data['development_reflections'] = reflections
         logger.info(f"振り返り: {reflections}")
     
     # 収集したデータがある場合はアプリに設定

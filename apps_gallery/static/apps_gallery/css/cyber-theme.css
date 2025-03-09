@@ -48,7 +48,7 @@ h2, h3, h4, h5, label {
 #backend-section { --section-color: var(--cyber-aqua) !important; }
 #frontend-section { --section-color: var(--cyber-pink) !important; }
 #database-section { --section-color: var(--cyber-emerald) !important; }
-#hosting-section { --section-color: var(--cyber-teal) !important; }
+#hosting-section { --section-color: #ffffff !important; }
 #security-section { --section-color: var(--cyber-red) !important; }
 #development-section { --section-color: var(--cyber-yellow) !important; }
 
@@ -142,9 +142,9 @@ button#database-tab.nav-link.text-neon {
 }
 .nav-tabs .nav-item .nav-link.text-neon#hosting-tab,
 button#hosting-tab.nav-link.text-neon { 
-    color: var(--cyber-teal) !important; 
-    text-shadow: 0 0 10px var(--cyber-teal) !important;
-    border-color: var(--cyber-teal) !important;
+    color: #ffffff !important; 
+    text-shadow: 0 0 10px #ffffff !important;
+    border-color: #ffffff !important;
 }
 .nav-tabs .nav-item .nav-link.text-neon#security-tab,
 button#security-tab.nav-link.text-neon { 
@@ -440,4 +440,4 @@ button#development-tab.nav-link.text-neon {
 .text-cyber-emerald { color: var(--cyber-emerald) !important; text-shadow: 0 0 5px var(--cyber-emerald) !important; }
 .text-cyber-red { color: var(--cyber-red) !important; text-shadow: 0 0 5px var(--cyber-red) !important; }
 .text-cyber-yellow { color: var(--cyber-yellow) !important; text-shadow: 0 0 5px var(--cyber-yellow) !important; }
-.text-cyber-teal { color: var(--cyber-teal) !important; text-shadow: 0 0 5px var(--cyber-teal) !important; } 
+.text-cyber-teal { color: #ffffff !important; text-shadow: 0 0 5px #ffffff !important; } 

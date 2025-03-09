@@ -31,12 +31,12 @@
                         <div class="form-check">
                             <input type="checkbox" 
                                    id="arch-{{ key }}"
-                                   class="form-check-input cyber-form-check-input"
+                                   class="form-check-input cyber-lime-focus"
                                    name="architecture_patterns"
                                    value="{{ key }}"
                                    {% if app.architecture.patterns and key in app.architecture.patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label cyber-form-check-label text-cyber-lime" 
+                            <label class="form-check-label text-cyber-lime" 
                                    for="arch-{{ key }}"
                                    title="{{ value }}">{{ value }}</label>
                         </div>
@@ -58,12 +58,12 @@
                         <div class="form-check">
                             <input type="checkbox" 
                                    id="design-{{ key }}"
-                                   class="form-check-input cyber-form-check-input"
+                                   class="form-check-input cyber-lime-focus"
                                    name="architecture_design_patterns"
                                    value="{{ key }}"
                                    {% if app.architecture.design_patterns and key in app.architecture.design_patterns %}checked{% endif %}
                                    {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label cyber-form-check-label text-cyber-lime" 
+                            <label class="form-check-label text-cyber-lime" 
                                    for="design-{{ key }}"
                                    title="{{ value }}">{{ value }}</label>
                         </div>
@@ -107,21 +107,53 @@
     --cyber-lime-glow: rgba(50, 205, 50, 0.5);
 }
 
+/* cyber-lime-focusクラス */
+.cyber-lime-focus:focus {
+    box-shadow: 0 0 0 0.25rem var(--cyber-lime-glow) !important;
+    border-color: var(--cyber-lime) !important;
+    outline: 0 !important;
+}
+
 #architecture .card {
     background: rgba(13, 25, 45, 0.95) !important;
     border: 2px solid var(--cyber-lime) !important;
     box-shadow: 0 0 15px var(--cyber-lime-glow) !important;
 }
 
+/* チェックボックスとラジオボタンをよりクリアに */
 #architecture .form-check-input {
-    background-color: transparent !important;
-    border: 2px solid var(--cyber-lime) !important;
-    box-shadow: 0 0 10px var(--cyber-lime-glow) !important;
+    border: 3px solid var(--cyber-lime) !important;
+    background-color: rgba(13, 25, 45, 0.95) !important;
+    width: 1.2em !important;
+    height: 1.2em !important;
+    position: relative !important;
+    margin-top: 0.3em !important;
 }
 
 #architecture .form-check-input:checked {
-    background-color: transparent !important;
+    background-color: var(--cyber-lime) !important;
     border-color: var(--cyber-lime) !important;
+    background-image: none !important;
+}
+
+/* チェックマークをカスタマイズ */
+#architecture .form-check-input:checked::after {
+    content: '✓' !important;
+    position: absolute !important;
+    color: rgba(13, 25, 45, 0.95) !important;
+    font-size: 1em !important;
+    line-height: 0.8 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-weight: bold !important;
+}
+
+/* チェックボックスのラベル */
+#architecture .form-check label {
+    color: var(--cyber-lime) !important;
+    font-weight: 500 !important;
+    padding-left: 0.5em !important;
 }
 
 #architecture .text-cyber-lime {
@@ -138,6 +170,12 @@
 
 #architecture ::placeholder {
     color: rgba(50, 205, 50, 0.5) !important;
+}
+
+/* チェックボックスとラジオボタンのホバー状態 */
+#architecture .form-check-input:hover {
+    border-color: var(--cyber-lime) !important;
+    cursor: pointer !important;
 }
 
 /* アーキテクチャタブのスタイル */

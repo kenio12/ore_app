@@ -26,14 +26,18 @@ FRONTEND_FRAMEWORKS = {
     'next': 'Next.js',
     'nuxt': 'Nuxt.js',
     'flutter': 'Flutter',
+    'react_native': 'React Native',
+    'electron': 'Electron',
+    'ionic': 'Ionic',
+    'ember': 'Ember.js',
+    'alpine': 'Alpine.js',
     'other': 'その他'
 }
 
 # CSSフレームワーク
 CSS_FRAMEWORKS = {
     'bootstrap': 'Bootstrap',
-    'material': 'Material UI',
-    'chakra': 'Chakra UI',
+    'tailwind': 'Tailwind CSS',
     'bulma': 'Bulma',
     'sass': 'Sass/SCSS',
     'other': 'その他'

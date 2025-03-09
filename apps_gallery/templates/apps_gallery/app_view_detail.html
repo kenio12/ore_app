@@ -34,6 +34,14 @@
         </h2>
     </div>
 
+    <!-- 閲覧モードインジケーター -->
+    <div class="viewing-mode-indicator">
+        <div class="viewing-content">
+            <i class="bi bi-eye-fill"></i>
+            <span id="viewing-status-text">閲覧画面</span>
+        </div>
+    </div>
+
     <!-- タブナビゲーション -->
     <ul class="nav nav-tabs mb-3 app-tabs" id="appTabs" role="tablist">
         <!-- ホームへ戻るボタン -->
@@ -43,40 +51,40 @@
             </a>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link active text-neon" id="screenshots-tab" data-bs-toggle="tab" data-bs-target="#screenshots-section" type="button" role="tab" aria-controls="screenshots-section" aria-selected="true" style="color: var(--cyber-purple) !important; text-shadow: 0 0 10px var(--cyber-purple) !important; border-color: var(--cyber-purple) !important;">スクリーンショット</button>
+            <button class="nav-link active text-neon" id="screenshots-tab" data-bs-toggle="tab" data-bs-target="#screenshots-section" type="button" role="tab" aria-controls="screenshots-section" aria-selected="true" data-mobile-text="画像" style="color: var(--cyber-purple) !important; text-shadow: 0 0 10px var(--cyber-purple) !important; border-color: var(--cyber-purple) !important;">スクリーンショット</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic-section" type="button" role="tab" aria-controls="basic-section" aria-selected="false" style="color: var(--cyber-gold) !important; text-shadow: 0 0 10px var(--cyber-gold) !important; border-color: var(--cyber-gold) !important;">基本情報</button>
+            <button class="nav-link text-neon" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic-section" type="button" role="tab" aria-controls="basic-section" aria-selected="false" data-mobile-text="基本" style="color: var(--cyber-gold) !important; text-shadow: 0 0 10px var(--cyber-gold) !important; border-color: var(--cyber-gold) !important;">基本情報</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="appeal-tab" data-bs-toggle="tab" data-bs-target="#appeal-section" type="button" role="tab" aria-controls="appeal-section" aria-selected="false" style="color: var(--cyber-green) !important; text-shadow: 0 0 10px var(--cyber-green) !important; border-color: var(--cyber-green) !important;">アピール</button>
+            <button class="nav-link text-neon" id="appeal-tab" data-bs-toggle="tab" data-bs-target="#appeal-section" type="button" role="tab" aria-controls="appeal-section" aria-selected="false" data-mobile-text="宣伝" style="color: var(--cyber-green) !important; text-shadow: 0 0 10px var(--cyber-green) !important; border-color: var(--cyber-green) !important;">アピール</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-section" type="button" role="tab" aria-controls="hardware-section" aria-selected="false" style="color: var(--cyber-blue) !important; text-shadow: 0 0 10px var(--cyber-blue) !important; border-color: var(--cyber-blue) !important;">ハード環境</button>
+            <button class="nav-link text-neon" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-section" type="button" role="tab" aria-controls="hardware-section" aria-selected="false" data-mobile-text="ハード" style="color: var(--cyber-blue) !important; text-shadow: 0 0 10px var(--cyber-blue) !important; border-color: var(--cyber-blue) !important;">ハード環境</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="dev-env-tab" data-bs-toggle="tab" data-bs-target="#dev-env-section" type="button" role="tab" aria-controls="dev-env-section" aria-selected="false" style="color: var(--cyber-orange) !important; text-shadow: 0 0 10px var(--cyber-orange) !important; border-color: var(--cyber-orange) !important;">ソフト環境</button>
+            <button class="nav-link text-neon" id="dev-env-tab" data-bs-toggle="tab" data-bs-target="#dev-env-section" type="button" role="tab" aria-controls="dev-env-section" aria-selected="false" data-mobile-text="ソフト" style="color: var(--cyber-orange) !important; text-shadow: 0 0 10px var(--cyber-orange) !important; border-color: var(--cyber-orange) !important;">ソフト環境</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="architecture-tab" data-bs-toggle="tab" data-bs-target="#architecture-section" type="button" role="tab" aria-controls="architecture-section" aria-selected="false" style="color: var(--cyber-lime) !important; text-shadow: 0 0 10px var(--cyber-lime) !important; border-color: var(--cyber-lime) !important;">アーキテクチャ</button>
+            <button class="nav-link text-neon" id="architecture-tab" data-bs-toggle="tab" data-bs-target="#architecture-section" type="button" role="tab" aria-controls="architecture-section" aria-selected="false" data-mobile-text="アーキ" style="color: var(--cyber-lime) !important; text-shadow: 0 0 10px var(--cyber-lime) !important; border-color: var(--cyber-lime) !important;">アーキテクチャ</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="backend-tab" data-bs-toggle="tab" data-bs-target="#backend-section" type="button" role="tab" aria-controls="backend-section" aria-selected="false" style="color: var(--cyber-aqua) !important; text-shadow: 0 0 10px var(--cyber-aqua) !important; border-color: var(--cyber-aqua) !important;">バックエンド</button>
+            <button class="nav-link text-neon" id="backend-tab" data-bs-toggle="tab" data-bs-target="#backend-section" type="button" role="tab" aria-controls="backend-section" aria-selected="false" data-mobile-text="バック" style="color: var(--cyber-aqua) !important; text-shadow: 0 0 10px var(--cyber-aqua) !important; border-color: var(--cyber-aqua) !important;">バックエンド</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="frontend-tab" data-bs-toggle="tab" data-bs-target="#frontend-section" type="button" role="tab" aria-controls="frontend-section" aria-selected="false" style="color: var(--cyber-pink) !important; text-shadow: 0 0 10px var(--cyber-pink) !important; border-color: var(--cyber-pink) !important;">フロントエンド</button>
+            <button class="nav-link text-neon" id="frontend-tab" data-bs-toggle="tab" data-bs-target="#frontend-section" type="button" role="tab" aria-controls="frontend-section" aria-selected="false" data-mobile-text="フロント" style="color: var(--cyber-pink) !important; text-shadow: 0 0 10px var(--cyber-pink) !important; border-color: var(--cyber-pink) !important;">フロントエンド</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="database-tab" data-bs-toggle="tab" data-bs-target="#database-section" type="button" role="tab" aria-controls="database-section" aria-selected="false" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 10px var(--cyber-emerald) !important; border-color: var(--cyber-emerald) !important;">データベース</button>
+            <button class="nav-link text-neon" id="hosting-tab" data-bs-toggle="tab" data-bs-target="#hosting-section" type="button" role="tab" aria-controls="hosting-section" aria-selected="false" data-mobile-text="ホステ" style="color: #ffffff !important; text-shadow: 0 0 10px #ffffff !important; border-color: #ffffff !important;">ホスティング</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="hosting-tab" data-bs-toggle="tab" data-bs-target="#hosting-section" type="button" role="tab" aria-controls="hosting-section" aria-selected="false" style="color: var(--cyber-teal) !important; text-shadow: 0 0 10px var(--cyber-teal) !important; border-color: var(--cyber-teal) !important;">ホスティング</button>
+            <button class="nav-link text-neon" id="database-tab" data-bs-toggle="tab" data-bs-target="#database-section" type="button" role="tab" aria-controls="database-section" aria-selected="false" data-mobile-text="データ" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 10px var(--cyber-emerald) !important; border-color: var(--cyber-emerald) !important;">データベース</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="security-tab" data-bs-toggle="tab" data-bs-target="#security-section" type="button" role="tab" aria-controls="security-section" aria-selected="false" style="color: var(--cyber-red) !important; text-shadow: 0 0 10px var(--cyber-red) !important; border-color: var(--cyber-red) !important;">セキュリティ</button>
+            <button class="nav-link text-neon" id="security-tab" data-bs-toggle="tab" data-bs-target="#security-section" type="button" role="tab" aria-controls="security-section" aria-selected="false" data-mobile-text="セキュ" style="color: var(--cyber-red) !important; text-shadow: 0 0 10px var(--cyber-red) !important; border-color: var(--cyber-red) !important;">セキュリティ</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link text-neon" id="development-tab" data-bs-toggle="tab" data-bs-target="#development-section" type="button" role="tab" aria-controls="development-section" aria-selected="false" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 10px var(--cyber-yellow) !important; border-color: var(--cyber-yellow) !important;">開発ストーリー</button>
+            <button class="nav-link text-neon" id="development-tab" data-bs-toggle="tab" data-bs-target="#development-section" type="button" role="tab" aria-controls="development-section" aria-selected="false" data-mobile-text="開発話" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 10px var(--cyber-yellow) !important; border-color: var(--cyber-yellow) !important;">開発ストーリー</button>
         </li>
     </ul>
 
@@ -122,14 +130,14 @@
             {% include 'apps_gallery/tabs/08_frontend_tab.html' %}
         </div>
 
-        <!-- データベースタブ -->
-        <div class="tab-pane fade" id="database-section" role="tabpanel" aria-labelledby="database-tab">
-            {% include 'apps_gallery/tabs/09_database_tab.html' %}
-        </div>
-
         <!-- ホスティングタブ -->
         <div class="tab-pane fade" id="hosting-section" role="tabpanel" aria-labelledby="hosting-tab">
             {% include 'apps_gallery/tabs/10_hosting_tab.html' %}
+        </div>
+        
+        <!-- データベースタブ -->
+        <div class="tab-pane fade" id="database-section" role="tabpanel" aria-labelledby="database-tab">
+            {% include 'apps_gallery/tabs/09_database_tab.html' %}
         </div>
 
         <!-- セキュリティタブ -->
@@ -242,7 +250,30 @@
 @media (max-width: 576px) {
     .nav-link {
         padding: 0.4rem 0.2rem !important;
-        font-size: 0.8rem !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* スマホ向けタブレイアウトの改善 */
+    .nav-item:not(:first-child) .nav-link.text-neon:before {
+        display: none; /* 区切り線を削除 */
+    }
+    
+    .app-tabs {
+        padding: 10px 5px 5px 5px !important;
+    }
+    
+    .nav-link.text-neon {
+        margin: 0 2px !important;
+        padding: 0.4rem 0.3rem !important;
+    }
+    
+    /* ホームボタンをコンパクトに */
+    .cyber-home {
+        padding: 0.3rem 0.5rem !important;
+    }
+    
+    .cyber-emoji {
+        font-size: 1.2rem !important;
     }
 }
 
@@ -297,6 +328,63 @@
 .tab-content {
     margin-top: 2rem !important;
 }
+
+/* 閲覧モードインジケーターのスタイル */
+.viewing-mode-indicator {
+    position: fixed;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%);
+    z-index: 1100;
+    animation: pulse 2s infinite alternate;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.viewing-mode-indicator.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.viewing-content {
+    background: linear-gradient(45deg, rgba(128, 0, 255, 0.7), rgba(0, 128, 255, 0.7));
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(128, 0, 255, 0.5), 
+               0 0 30px rgba(0, 128, 255, 0.3);
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.viewing-content i {
+    margin-right: 8px;
+    font-size: 1.3rem;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+    .viewing-mode-indicator {
+        right: 15px;
+    }
+    
+    .viewing-content {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+@keyframes pulse {
+    0% { transform: translateY(-50%) scale(1); opacity: 0.8; }
+    100% { transform: translateY(-50%) scale(1.05); opacity: 1; }
+}
 </style>
 
 <!-- タブ制御用スクリプト -->
@@ -337,6 +425,88 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 3000); // 3秒後に自動的に閉じる
         });
     }
+    
+    // スマホ表示の場合、タブテキストを短くする
+    function updateTabTexts() {
+        const isSmallScreen = window.innerWidth <= 576;
+        const navLinks = document.querySelectorAll('.nav-link.text-neon');
+        
+        navLinks.forEach(link => {
+            if (isSmallScreen) {
+                // オリジナルのテキストをデータ属性に保存（初回のみ）
+                if (!link.getAttribute('data-original-text')) {
+                    link.setAttribute('data-original-text', link.textContent);
+                }
+                // スマホ用の短いテキストに置き換え
+                link.textContent = link.getAttribute('data-mobile-text');
+            } else {
+                // 保存されたオリジナルのテキストに戻す
+                const originalText = link.getAttribute('data-original-text');
+                if (originalText) {
+                    link.textContent = originalText;
+                }
+            }
+        });
+    }
+    
+    // 初期表示時にタブテキストを更新
+    updateTabTexts();
+    
+    // ウィンドウサイズ変更時にタブテキストを更新
+    window.addEventListener('resize', updateTabTexts);
+    
+    // 閲覧モードインジケーターの表示制御
+    const viewingIndicator = document.querySelector('.viewing-mode-indicator');
+    let indicatorTimer;
+    
+    // ページ読み込み時に表示
+    setTimeout(() => {
+        showViewingIndicator();
+    }, 500);
+    
+    // インジケーター表示関数
+    function showViewingIndicator() {
+        // 既存のタイマーをクリア
+        clearTimeout(indicatorTimer);
+        
+        // インジケーターを表示
+        viewingIndicator.classList.add('show');
+        
+        // 5秒後に非表示
+        indicatorTimer = setTimeout(() => {
+            hideViewingIndicator();
+        }, 5000);
+    }
+    
+    // インジケーター非表示関数
+    function hideViewingIndicator() {
+        viewingIndicator.classList.remove('show');
+    }
+    
+    // ページ遷移前に非表示にする
+    window.addEventListener('beforeunload', function() {
+        hideViewingIndicator();
+    });
+    
+    // ウィンドウがフォーカスを失ったときに非表示にする
+    window.addEventListener('blur', function() {
+        hideViewingIndicator();
+    });
+    
+    // 別のページへのリンククリック時に非表示にする
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+            hideViewingIndicator();
+        });
+    });
+    
+    // タブ切り替え時にも表示する
+    const tabButtons = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+    tabButtons.forEach(button => {
+        button.addEventListener('shown.bs.tab', function() {
+            showViewingIndicator();
+        });
+    });
 });
 </script>
 {% endblock %}
