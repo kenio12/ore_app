@@ -187,13 +187,33 @@
                 
                 // インジケーターを表示
                 showTabIndicator(newTabId);
+                
+                // URLハッシュを更新して選択中のタブを記憶
+                window.location.hash = newTabId;
             });
         });
         
-        // 初期タブのインジケーターを表示
-        setTimeout(() => {
-            showTabIndicator('apps-tab');
-        }, 500);
+        // URLハッシュがある場合は、対応するタブをアクティブにする
+        function activateTabFromHash() {
+            const hash = window.location.hash.replace('#', '');
+            if (hash && document.getElementById(hash)) {
+                const tabToActivate = document.getElementById(hash);
+                const bsTab = new bootstrap.Tab(tabToActivate);
+                bsTab.show();
+                updateGridColor(hash);
+            } else {
+                // 初期タブのインジケーターを表示（ハッシュがない場合）
+                setTimeout(() => {
+                    showTabIndicator('apps-tab');
+                }, 500);
+            }
+        }
+        
+        // ページ読み込み時にURLハッシュをチェック
+        activateTabFromHash();
+        
+        // ハッシュが変更されたときにもタブを切り替える
+        window.addEventListener('hashchange', activateTabFromHash);
         
         // インジケーター表示関数
         function showTabIndicator(tabId) {
