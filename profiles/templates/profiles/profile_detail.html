@@ -376,7 +376,7 @@
                                                 <!-- メーカーと機種情報 -->
                                                 {% if profile.hardware_specs.maker %}
                                                 <div class="col-md-6 col-sm-12" style="color: #00ffff;">
-                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 60, 120, 0.6); border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: #000000; border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
                                                         <span class="hw-label" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">メーカー:</span>
                                                         <span class="hw-value" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; margin-left: 8px;">
                                                             <span style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">{{ profile.hardware_specs.maker }}</span>
@@ -387,7 +387,7 @@
                                                 
                                                 {% if profile.hardware_specs.model %}
                                                 <div class="col-md-6 col-sm-12" style="color: #00ffff;">
-                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 60, 120, 0.6); border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: #000000; border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
                                                         <span class="hw-label" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">機種名:</span>
                                                         <span class="hw-value" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; margin-left: 8px;">
                                                             <span style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">{{ profile.hardware_specs.model }}</span>
@@ -399,7 +399,7 @@
                                                 <!-- PCタイプとデバイスタイプ -->
                                                 {% if profile.hardware_specs.pc_type %}
                                                 <div class="col-md-6 col-sm-12" style="color: #00ffff;">
-                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 60, 120, 0.6); border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: #000000; border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
                                                         <span class="hw-label" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">PCタイプ:</span>
                                                         <span class="hw-value" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; margin-left: 8px;">
                                                             <span style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">{{ pc_types|get_item:profile.hardware_specs.pc_type }}</span>
@@ -410,7 +410,7 @@
                                                 
                                                 {% if profile.hardware_specs.device_type %}
                                                 <div class="col-md-6 col-sm-12" style="color: #00ffff;">
-                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 60, 120, 0.6); border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: #000000; border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
                                                         <span class="hw-label" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">PC種類:</span>
                                                         <span class="hw-value" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; margin-left: 8px;">
                                                             <span style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">{{ device_types|get_item:profile.hardware_specs.device_type }}</span>
@@ -422,7 +422,7 @@
                                                 <!-- CPU・メモリ・ストレージ -->
                                                 {% if profile.hardware_specs.cpu_type %}
                                                 <div class="col-md-6 col-sm-12" style="color: #00ffff;">
-                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 60, 120, 0.6); border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: #000000; border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
                                                         <span class="hw-label" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">CPU:</span>
                                                         <span class="hw-value" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; margin-left: 8px;">
                                                             <span style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">{{ cpu_types|get_item:profile.hardware_specs.cpu_type }}</span>
@@ -433,7 +433,7 @@
                                                 
                                                 {% if profile.hardware_specs.memory_size %}
                                                 <div class="col-md-6 col-sm-12" style="color: #00ffff;">
-                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 60, 120, 0.6); border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: #000000; border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
                                                         <span class="hw-label" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">メモリ:</span>
                                                         <span class="hw-value" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; margin-left: 8px;">
                                                             <span style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">{{ memory_sizes|get_item:profile.hardware_specs.memory_size }}</span>
@@ -444,7 +444,7 @@
                                                 
                                                 {% if profile.hardware_specs.storage_type %}
                                                 <div class="col-md-6 col-sm-12" style="color: #00ffff;">
-                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 60, 120, 0.6); border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: #000000; border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
                                                         <span class="hw-label" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">ストレージ:</span>
                                                         <span class="hw-value" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; margin-left: 8px;">
                                                             <span style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">{{ storage_types|get_item:profile.hardware_specs.storage_type }}</span>
@@ -456,7 +456,7 @@
                                                 <!-- モニター数・インターネット回線 -->
                                                 {% if profile.hardware_specs.monitor_count %}
                                                 <div class="col-md-6 col-sm-12" style="color: #00ffff;">
-                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 60, 120, 0.6); border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: #000000; border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
                                                         <span class="hw-label" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">今あるパソコン＋モニター:</span>
                                                         <span class="hw-value" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; margin-left: 8px;">
                                                             <span style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">{{ monitor_counts|get_item:profile.hardware_specs.monitor_count }}</span>
@@ -467,7 +467,7 @@
                                                 
                                                 {% if profile.hardware_specs.internet_type %}
                                                 <div class="col-md-6 col-sm-12" style="color: #00ffff;">
-                                                    <div class="hardware-item mb-2 p-2" style="background-color: rgba(0, 60, 120, 0.6); border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
+                                                    <div class="hardware-item mb-2 p-2" style="background-color: #000000; border-radius: 5px; border-left: 3px solid #00ffff; color: #00ffff;">
                                                         <span class="hw-label" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">インターネット回線:</span>
                                                         <span class="hw-value" style="display: inline-block; color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; margin-left: 8px;">
                                                             <span style="color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;">{{ internet_types|get_item:profile.hardware_specs.internet_type }}</span>
