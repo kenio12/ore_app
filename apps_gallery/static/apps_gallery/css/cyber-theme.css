@@ -426,4 +426,18 @@ button#development-tab.nav-link.text-neon {
 #basic-section h5 {
     color: var(--cyber-gold) !important;
     text-shadow: 0 0 10px var(--cyber-gold) !important;
-} 
+}
+
+/* 各セクション用の共通テキストカラークラス */
+.text-cyber-purple { color: var(--cyber-purple) !important; text-shadow: 0 0 5px var(--cyber-purple) !important; }
+.text-cyber-gold { color: var(--cyber-gold) !important; text-shadow: 0 0 5px var(--cyber-gold) !important; }
+.text-cyber-green { color: var(--cyber-green) !important; text-shadow: 0 0 5px var(--cyber-green) !important; }
+.text-cyber-blue { color: var(--cyber-blue) !important; text-shadow: 0 0 5px var(--cyber-blue) !important; }
+.text-cyber-orange { color: var(--cyber-orange) !important; text-shadow: 0 0 5px var(--cyber-orange) !important; }
+.text-cyber-lime { color: var(--cyber-lime) !important; text-shadow: 0 0 5px var(--cyber-lime) !important; }
+.text-cyber-pink { color: var(--cyber-pink) !important; text-shadow: 0 0 5px var(--cyber-pink) !important; }
+.text-cyber-aqua { color: var(--cyber-aqua) !important; text-shadow: 0 0 5px var(--cyber-aqua) !important; }
+.text-cyber-emerald { color: var(--cyber-emerald) !important; text-shadow: 0 0 5px var(--cyber-emerald) !important; }
+.text-cyber-red { color: var(--cyber-red) !important; text-shadow: 0 0 5px var(--cyber-red) !important; }
+.text-cyber-yellow { color: var(--cyber-yellow) !important; text-shadow: 0 0 5px var(--cyber-yellow) !important; }
+.text-cyber-teal { color: var(--cyber-teal) !important; text-shadow: 0 0 5px var(--cyber-teal) !important; } 

@@ -9,9 +9,38 @@
             </h2>
 
             <div class="frontend-inputs">
+                <!-- マークアップ・スタイリング言語 -->
+                <div class="mb-4">
+                    <label class="form-label text-cyber-pink">マークアップ・スタイリング言語</label>
+                    <p class="text-muted small mb-3 text-cyber-pink">
+                        ※ページ構造やスタイルを定義する言語
+                    </p>
+                    <div class="row g-3">
+                        {% for key, value in MARKUP_LANGUAGES.items %}
+                            <div class="col-md-3">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                           id="markup-lang-{{ key }}"
+                                           name="markup_languages"
+                                           value="{{ key }}"
+                                           class="form-check-input"
+                                           {% if key in app.frontend.markup_languages %}checked{% endif %}
+                                           {% if readonly %}disabled{% endif %}>
+                                    <label class="form-check-label" for="markup-lang-{{ key }}">
+                                        {{ value }}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
                 <!-- フロントエンド言語 -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-rose">フロントエンド言語</label>
+                    <label class="form-label text-cyber-pink">フロントエンド言語</label>
+                    <p class="text-muted small mb-3 text-cyber-pink">
+                        ※インタラクティブな機能を実装するプログラミング言語
+                    </p>
                     <div class="row g-3">
                         {% for key, value in FRONTEND_LANGUAGES.items %}
                             <div class="col-md-3">
@@ -34,7 +63,7 @@
 
                 <!-- フレームワーク -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-rose">フレームワーク</label>
+                    <label class="form-label text-cyber-pink">フレームワーク</label>
                     <div class="row g-3">
                         {% for key, value in FRONTEND_FRAMEWORKS.items %}
                             <div class="col-md-3">
@@ -57,7 +86,7 @@
 
                 <!-- CSSフレームワーク -->
                 <div class="mb-4">
-                    <label class="form-label text-cyber-rose">CSSフレームワーク</label>
+                    <label class="form-label text-cyber-pink">CSSフレームワーク</label>
                     <div class="row g-3">
                         {% for key, value in CSS_FRAMEWORKS.items %}
                             <div class="col-md-3">

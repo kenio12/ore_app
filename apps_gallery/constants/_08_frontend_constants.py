@@ -2,12 +2,18 @@
 07 フロントエンド関連の定数
 """
 
+# マークアップ・スタイリング言語
+MARKUP_LANGUAGES = {
+    'html': 'HTML',
+    'css': 'CSS',
+    'other': 'その他'
+}
+
 # フロントエンド言語
 FRONTEND_LANGUAGES = {
     'javascript': 'JavaScript',
     'typescript': 'TypeScript',
-    'html': 'HTML',
-    'css': 'CSS',
+    'dart': 'Dart',
     'other': 'その他'
 }
 
@@ -19,6 +25,7 @@ FRONTEND_FRAMEWORKS = {
     'svelte': 'Svelte',
     'next': 'Next.js',
     'nuxt': 'Nuxt.js',
+    'flutter': 'Flutter',
     'other': 'その他'
 }
 

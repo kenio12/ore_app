@@ -46,6 +46,13 @@ FRONTEND_LANGUAGES = frontend_constants.FRONTEND_LANGUAGES
 FRONTEND_FRAMEWORKS = frontend_constants.FRONTEND_FRAMEWORKS
 CSS_FRAMEWORKS = frontend_constants.CSS_FRAMEWORKS
 
+# バックエンド関連
+from .tech_stack import BACKEND_LANGUAGES, BACKEND_FRAMEWORKS
+BACKEND_STACK = {
+    "languages": BACKEND_LANGUAGES,
+    "frameworks": BACKEND_FRAMEWORKS
+}
+
 # データベース関連
 from . import _09_database_constants as database_constants
 DATABASE_TYPES = database_constants.DATABASE_TYPES
@@ -79,6 +86,9 @@ __all__ = [
     
     # フロントエンド関連
     'FRONTEND_LANGUAGES', 'FRONTEND_FRAMEWORKS', 'CSS_FRAMEWORKS',
+    
+    # バックエンド関連
+    'BACKEND_LANGUAGES', 'BACKEND_FRAMEWORKS', 'BACKEND_STACK',
     
     # データベース関連
     'DATABASE_TYPES', 'DATABASE_HOSTING', 'ORMS',

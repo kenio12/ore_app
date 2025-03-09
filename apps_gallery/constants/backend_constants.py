@@ -31,6 +31,15 @@ BACKEND_STACK = {
             'other': 'その他'
         }
     },
+    'dart': {
+        'name': 'Dart',
+        'frameworks': {
+            'aqueduct': 'Aqueduct',
+            'angel': 'Angel',
+            'shelf': 'Shelf',
+            'other': 'その他'
+        }
+    },
     'ruby': {
         'name': 'Ruby',
         'frameworks': {

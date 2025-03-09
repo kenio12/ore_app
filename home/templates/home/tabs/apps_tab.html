@@ -1,3 +1,21 @@
+{% load app_filters %}
+
+<!-- アプリリスト表示用のスクリプト -->
+<script>
+    // 画像の向きを確認する関数をグローバルに定義
+    function checkImageOrientation(img, appId) {
+        const isPortrait = img.naturalHeight > img.naturalWidth;
+        const card = document.getElementById('card-content-' + appId);
+        
+        if (isPortrait && card) {
+            card.classList.add('is-portrait');
+        }
+    }
+    
+    // グローバルスコープに公開
+    window.checkImageOrientation = checkImageOrientation;
+</script>
+
 <!-- アプリ一覧 -->
 <div class="container mb-5 mt-3">
     <div class="row">
@@ -9,11 +27,11 @@
                         <div class="row g-0" id="card-content-{{ app.id }}">
                             {% if app.thumbnail %}
                                 <div class="col-md-4">
-                                    <div class="h-100">
+                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px;">
                                         <img src="{{ app.thumbnail.url }}" 
-                                             class="img-fluid cyber-image rounded-start h-100"
-                                             style="object-fit: cover;"
-                                             onload="checkImageOrientation(this, '{{ app.id }}')"
+                                             class="img-fluid cyber-image rounded-start"
+                                             style="object-fit: contain; max-height: 300px; width: auto; max-width: 100%;"
+                                             onload="window.checkImageOrientation(this, '{{ app.id }}')"
                                              data-title="{{ app.title }}"
                                              data-overview="{{ app.overview }}"
                                              data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
@@ -22,11 +40,11 @@
                                 </div>
                             {% elif app.screenshots %}
                                 <div class="col-md-4">
-                                    <div class="h-100">
+                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px;">
                                         <img src="{{ app.screenshots.0.url }}" 
-                                             class="img-fluid cyber-image rounded-start h-100"
-                                             style="object-fit: cover;"
-                                             onload="checkImageOrientation(this, '{{ app.id }}')"
+                                             class="img-fluid cyber-image rounded-start"
+                                             style="object-fit: contain; max-height: 300px; width: auto; max-width: 100%;"
+                                             onload="window.checkImageOrientation(this, '{{ app.id }}')"
                                              data-title="{{ app.title }}"
                                              data-overview="{{ app.overview }}"
                                              data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
@@ -51,6 +69,13 @@
                                                 <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
                                             {% endfor %}
                                         </div>
+                                        
+                                        <!-- バックエンド言語 -->
+                                        {% if app.backend.main_language %}
+                                        <div class="mt-2">
+                                            <span class="badge bg-primary cyber-backend-lang me-2">{{ BACKEND_STACK|get_dict_value:app.backend.main_language|get_dict_value:"name" }}</span>
+                                        </div>
+                                        {% endif %}
                                     </div>
                                     
                                     <!-- アクションボタン -->

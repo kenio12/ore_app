@@ -44,1659 +44,340 @@
     <div class="tab-content" id="mainTabsContent">
         <!-- 公開アプリタブ -->
         <div class="tab-pane fade show active" id="apps-content" role="tabpanel" aria-labelledby="apps-tab">
-            <!-- アプリ一覧 -->
-            <div class="container mb-5 mt-3">
-                <div class="row">
-                    {% for app in apps %}
-                        <div class="col-12 mb-4">
-                            <div class="card cyber-card">
-                                <div class="position-relative">
-                                    <!-- カテゴリーバッジを削除 -->
-                                    <div class="row g-0" id="card-content-{{ app.id }}">
-                                        {% if app.thumbnail %}
-                                            <div class="col-md-4">
-                                                <div class="h-100">
-                                                    <img src="{{ app.thumbnail.url }}" 
-                                                         class="img-fluid cyber-image rounded-start h-100"
-                                                         style="object-fit: cover;"
-                                                         onload="checkImageOrientation(this, '{{ app.id }}')"
-                                                         data-title="{{ app.title }}"
-                                                         data-overview="{{ app.overview }}"
-                                                         data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                                         data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                                                </div>
-                                            </div>
-                                        {% elif app.screenshots %}
-                                            <div class="col-md-4">
-                                                <div class="h-100">
-                                                    <img src="{{ app.screenshots.0.url }}" 
-                                                         class="img-fluid cyber-image rounded-start h-100"
-                                                         style="object-fit: cover;"
-                                                         onload="checkImageOrientation(this, '{{ app.id }}')"
-                                                         data-title="{{ app.title }}"
-                                                         data-overview="{{ app.overview }}"
-                                                         data-types="{% for type in app.app_types %}{{ APP_TYPES|get_dict_value:type }}{% if not forloop.last %},{% endif %}{% endfor %}"
-                                                         data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                        <div class="{% if app.thumbnail or app.screenshots %}col-md-8{% else %}col-12{% endif %}">
-                                            <div class="card-body">
-                                                <h3 class="card-title cyber-title">{{ app.title }}</h3>
-                                                <p class="card-text cyber-description">{{ app.overview }}</p>
-                                                
-                                                <!-- アプリの種類とジャンル -->
-                                                <div class="mb-3">
-                                                    <div class="mb-2">
-                                                        {% for type in app.app_types %}
-                                                            <span class="badge cyber-type me-2">{{ APP_TYPES|get_dict_value:type }}</span>
-                                                        {% endfor %}
-                                                    </div>
-                                                    <div>
-                                                        {% for genre in app.genres %}
-                                                            <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- アクションボタン -->
-                                                <div class="d-flex justify-content-end gap-2">
-                                                    <a href="{% url 'apps_gallery:detail' app.id %}" class="btn btn-cyber-secondary">
-                                                        <i class="bi bi-search"></i> 詳細を見る
-                                                    </a>
-                                                    {% if request.user == app.author %}
-                                                        <a href="{% url 'apps_gallery:edit' app.id %}" class="btn btn-cyber-edit">
-                                                            <i class="bi bi-pencil-square"></i> 編集する
-                                                        </a>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% empty %}
-                        <div class="col-12 text-center py-5">
-                            <p class="fs-4 cyber-empty-text">まだアプリがありません。</p>
-                            <p class="cyber-empty-subtext">開発中のアプリが追加されるのをお待ちください！</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+            {% include 'home/tabs/apps_tab.html' %}
         </div>
 
         <!-- プログラマー達タブ -->
         <div class="tab-pane fade" id="programmers-content" role="tabpanel" aria-labelledby="programmers-tab">
-            <div class="container mb-5 mt-3">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <h1 class="cyber-title">
-                            <i class="bi bi-people"></i> プログラマー達
-                        </h1>
-                        <p class="text-light">各プログラマーのスキルや専門分野を確認してコンタクトしよう！</p>
-                    </div>
-                </div>
-
-                <!-- フィルターやソート機能（後で実装） -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card cyber-card">
-                            <div class="card-body">
-                                <p class="text-center mb-0">
-                                    <span class="cyber-blue">フィルター機能は近日実装予定...</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- プログラマーカード一覧（Ajax読み込み予定） -->
-                <div class="row" id="programmers-list">
-                    <div class="col-12 text-center py-5">
-                        <div class="cyber-loading">
-                            <div class="cyber-spinner"></div>
-                            <p class="mt-3 cyber-loading-text">プログラマーデータを読み込み中...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- プログラマーロード用のスクリプト -->
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // プログラマータブがアクティブになったときにデータを読み込む
-                    document.getElementById('programmers-tab').addEventListener('shown.bs.tab', function() {
-                        loadProgrammers();
-                    });
-                });
-
-                function loadProgrammers() {
-                    // プログラマーリストのコンテナ
-                    const programmersContainer = document.getElementById('programmers-list');
-                    
-                    // Ajaxリクエストでプログラマーデータを取得
-                    fetch('/profiles/api/programmers/')
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('プログラマーデータの取得に失敗しました');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            // デバッグ用：APIレスポンスの構造を確認
-                            console.log('API Response:', data);
-                            
-                            // コンテナをクリア
-                            programmersContainer.innerHTML = '';
-                            
-                            if (data.profiles && data.profiles.length > 0) {
-                                // プログラマーデータをループしてカードを表示
-                                data.profiles.forEach(profile => {
-                                    // デバッグ用：各プロファイルデータの構造を確認
-                                    console.log('Profile Data:', profile);
-                                    
-                                    const card = createProgrammerCard(profile);
-                                    programmersContainer.appendChild(card);
-                                });
-                            } else {
-                                // プログラマーがいない場合
-                                programmersContainer.innerHTML = `
-                                    <div class="col-12 text-center py-5">
-                                        <p class="fs-4 cyber-empty-text">まだプログラマーが登録されていません。</p>
-                                        <p class="cyber-empty-subtext">登録して最初のプログラマーになろう！</p>
-                                    </div>
-                                `;
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            programmersContainer.innerHTML = `
-                                <div class="col-12 text-center py-5">
-                                    <p class="fs-4 cyber-empty-text">データの読み込みに失敗しました。</p>
-                                    <p class="cyber-empty-subtext">しばらくしてから再度お試しください。</p>
-                                </div>
-                            `;
-                        });
-                }
-
-                function createProgrammerCard(profile) {
-                    // デバッグ用：個別のプロファイルデータを確認
-                    console.log('Creating card for profile:', profile);
-                    
-                    // カードのDIV要素を作成
-                    const cardDiv = document.createElement('div');
-                    cardDiv.className = 'col-md-6 col-lg-4 mb-4';
-                    
-                    // 仕事依頼ステータスのスタイルを取得
-                    const getJobStatusStyle = (status) => {
-                        switch (status) {
-                            case 'available':
-                                return 'bg-info text-white';
-                            case 'limited':
-                                return 'bg-warning text-dark';
-                            default:
-                                return 'bg-danger text-white';
-                        }
-                    };
-                    
-                    // 仕事タイプの表示名を取得
-                    const getJobTypeLabel = (jobType) => {
-                        const jobTypeMap = {
-                            'frontend': 'フロントエンド開発',
-                            'backend': 'バックエンド開発',
-                            'fullstack': 'フルスタック開発',
-                            'mobile': 'モバイルアプリ開発',
-                            'database': 'データベース設計',
-                            'infrastructure': 'インフラ構築',
-                            'design': 'UI/UXデザイン',
-                            'consulting': '技術コンサルティング',
-                            'other': 'その他'
-                        };
-                        return jobTypeMap[jobType] || jobType;
-                    };
-                    
-                    // アプリタイプの表示名を取得
-                    const getAppTypeLabel = (appType) => {
-                        const appTypeMap = {
-                            'web_app': 'Webアプリケーション',
-                            'ios_app': 'iOSアプリ',
-                            'android_app': 'Androidアプリ',
-                            'windows_app': 'Windowsアプリ',
-                            'mac_app': 'macOSアプリ',
-                            'linux_app': 'Linuxアプリ',
-                            'game': 'ゲーム',
-                            'other': 'その他'
-                        };
-                        return appTypeMap[appType] || appType;
-                    };
-                    
-                    // 開発実績情報を整形
-                    let developmentStatsHtml = '';
-                    if (profile.app_count > 0) {
-                        developmentStatsHtml = `
-                            <div class="d-flex align-items-center">
-                                <span class="text-white">投稿アプリ: ${profile.app_count}件</span>
-                            </div>
-                        `;
-                    }
-                    
-                    // アプリ種類の情報を整形
-                    let appTypesHtml = '';
-                    
-                    // APIデータのみを使用（ダミーデータは完全に削除）
-                    const appTypeCounts = profile.app_type_counts || {};
-                    
-                    // アプリタイプが存在する場合のみバッジを生成
-                    if (Object.keys(appTypeCounts).length > 0) {
-                        appTypesHtml = `
-                            <div class="mt-3">
-                                <div class="d-flex flex-wrap">
-                                    ${Object.keys(appTypeCounts).map(type => 
-                                        `<span class="badge app-type-badge me-1 mb-1">${getAppTypeLabel(type)} (${appTypeCounts[type]})</span>`
-                                    ).join('')}
-                                </div>
-                            </div>
-                        `;
-                    }
-                    
-                    // カードのHTMLを設定
-                    cardDiv.innerHTML = `
-                        <div class="card cyber-card h-100">
-                            <div class="card-header cyber-card-header d-flex align-items-center">
-                                <div class="programmer-avatar me-3">
-                                    ${profile.avatar_url ? 
-                                        `<img src="${profile.avatar_url}" alt="${profile.username}" class="rounded-circle">` : 
-                                        `<div class="default-avatar"><i class="bi bi-person-fill"></i></div>`
-                                    }
-                                    <div class="programmer-status ${profile.is_active ? 'status-active' : 'status-inactive'}"></div>
-                                </div>
-                                <div>
-                                    <h5 class="mb-0 cyber-name">${profile.username}</h5>
-                                    <small class="text-muted">最終ログイン: ${profile.last_login || profile.updated_at}</small>
-                                </div>
-                                
-                                ${profile.job_status ? 
-                                    `<div class="ms-auto">
-                                        <span class="badge ${getJobStatusStyle(profile.job_status)} job-status-badge" 
-                                              title="${profile.job_status === 'available' ? '依頼受付中' : profile.job_status === 'limited' ? '一部依頼のみ' : '依頼停止中'}">
-                                            ${profile.job_status === 'available' ? '<i class="bi bi-check-circle"></i> ' : profile.job_status === 'limited' ? '<i class="bi bi-dash-circle"></i> ' : ''}
-                                            ${profile.job_status === 'available' ? '受注可' : profile.job_status === 'limited' ? '一部可' : '非受注'}
-                                        </span>
-                                    </div>` : ''
-                                }
-                            </div>
-                            <div class="card-body">
-                                ${profile.work_rate ? 
-                                    `<div class="mt-2">
-                                        <span class="badge bg-dark text-light ms-2 rate-badge">
-                                            <i class="bi bi-currency-yen"></i> ${profile.work_rate}
-                                        </span>
-                                    </div>` : ''
-                                }
-                                
-                                ${developmentStatsHtml ? 
-                                    `<div class="mt-3">
-                                        ${developmentStatsHtml}
-                                    </div>` : ''
-                                }
-                                
-                                ${appTypesHtml}
-                                
-                                ${profile.job_types && profile.job_types.length > 0 ? 
-                                    `<div class="mt-3">
-                                        <div class="d-flex flex-wrap">
-                                            ${profile.job_types.map(jobType => 
-                                                `<span class="badge bg-info text-white me-1 mb-1">${getJobTypeLabel(jobType)}</span>`
-                                            ).join('')}
-                                        </div>
-                                    </div>` : ''
-                                }
-                            </div>
-                            <div class="card-footer cyber-card-footer">
-                                <div class="d-flex justify-content-between">
-                                    <a href="/profiles/detail/${profile.user_id}/" class="btn btn-sm btn-cyber-secondary">
-                                        <i class="bi bi-info-circle"></i> 詳細
-                                    </a>
-                                    <a href="/profiles/contact/${profile.user_id}/" class="btn btn-sm btn-cyber-primary">
-                                        <i class="bi bi-chat-text"></i> コンタクト
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    return cardDiv;
-                }
-            </script>
-
-            <!-- プログラマーカードのスタイル -->
-            <style>
-                .programmer-avatar {
-                    position: relative;
-                    width: 50px;
-                    height: 50px;
-                }
-                
-                .programmer-avatar img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    border: 2px solid rgba(0, 255, 255, 0.5);
-                    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-                }
-                
-                .default-avatar {
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background: rgba(0, 0, 0, 0.6);
-                    border: 2px solid rgba(255, 255, 255, 0.2);
-                    border-radius: 50%;
-                    color: rgba(255, 255, 255, 0.6);
-                    font-size: 1.5rem;
-                }
-                
-                .programmer-status {
-                    position: absolute;
-                    bottom: 0;
-                    right: 0;
-                    width: 12px;
-                    height: 12px;
-                    border-radius: 50%;
-                    border: 2px solid #000;
-                }
-                
-                .status-active {
-                    background: #00ff9f;
-                    box-shadow: 0 0 8px rgba(0, 255, 159, 0.8);
-                }
-                
-                .status-inactive {
-                    background: #ff6b6b;
-                }
-                
-                .cyber-card-header {
-                    background: rgba(0, 0, 0, 0.7);  /* 少し暗く */
-                    border-bottom: 1px solid rgba(0, 255, 255, 0.3);  /* 境界線を明るく */
-                }
-                
-                .cyber-card-footer {
-                    background: rgba(0, 0, 0, 0.7);  /* 少し暗く */
-                    border-top: 1px solid rgba(0, 255, 255, 0.3);  /* 境界線を明るく */
-                }
-                
-                .cyber-name {
-                    color: #ffd700;  /* ゴールドの色はそのまま */
-                    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);  /* シャドウを強く */
-                    font-weight: bold;  /* 太字に */
-                }
-                
-                .cyber-subtitle {
-                    color: #00ff9f;  /* シアンの色はそのまま */
-                    font-size: 0.9rem;
-                    margin-bottom: 0.5rem;
-                    text-shadow: 0 0 5px rgba(0, 255, 159, 0.5);  /* シャドウを強く */
-                    font-weight: bold;  /* 太字に */
-                }
-                
-                /* カードの背景を少し明るく */
-                .cyber-card {
-                    background: rgba(20, 30, 50, 0.9) !important;  /* 濃いめの青背景でコントラスト確保 */
-                }
-                
-                /* テキストを明るく */
-                .card-text {
-                    color: #ffffff !important;  /* 白色で明るく */
-                    font-weight: normal;
-                    text-shadow: none;  /* シャドウなしでクリアに */
-                }
-
-                /* 日付テキストを明るく */
-                .text-muted {
-                    color: #b0e0ff !important;  /* 薄い青色に変更 */
-                }
-                
-                .btn-cyber-primary {
-                    background: rgba(0, 255, 255, 0.2);
-                    color: #00ffff;
-                    border: 1px solid rgba(0, 255, 255, 0.5);
-                    transition: all 0.3s ease;
-                    font-weight: bold;  /* 太字に */
-                }
-                
-                .btn-cyber-primary:hover {
-                    background: rgba(0, 255, 255, 0.3);
-                    color: #00ffff;
-                    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);  /* 光る効果を強く */
-                    transform: translateY(-2px);
-                }
-
-                .btn-cyber-secondary {
-                    background: rgba(100, 100, 100, 0.5);  /* 少し明るく */
-                    color: #ffffff;  /* テキストを白に */
-                    border: 1px solid rgba(200, 200, 200, 0.5);
-                    transition: all 0.3s ease;
-                    font-weight: bold;  /* 太字に */
-                }
-                
-                .btn-cyber-secondary:hover {
-                    background: rgba(120, 120, 120, 0.6);
-                    color: #ffffff;
-                    box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);  /* 光る効果を強く */
-                    transform: translateY(-2px);
-                }
-
-                /* 読み込み中のスピナースタイル */
-                .cyber-loading {
-                    text-align: center;
-                    padding: 2rem 0;
-                }
-                
-                .cyber-spinner {
-                    display: inline-block;
-                    width: 50px;
-                    height: 50px;
-                    border: 3px solid rgba(0, 255, 255, 0.3);
-                    border-radius: 50%;
-                    border-top-color: #00ffff;
-                    animation: cyber-spin 1s linear infinite;
-                }
-                
-                @keyframes cyber-spin {
-                    to { transform: rotate(360deg); }
-                }
-                
-                .cyber-loading-text {
-                    color: #00ffff;
-                    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-                    font-size: 1.2rem;  /* 少し大きく */
-                    font-weight: bold;  /* 太字に */
-                }
-            </style>
-
-            <!-- プログラマーカードのための追加スタイル -->
-            <style>
-                /* スペックリストの見た目向上 */
-                .cyber-specs-list li {
-                    margin-bottom: 0.5rem;
-                    padding: 0.3rem 0.5rem;
-                    border-radius: 4px;
-                    background: rgba(0, 20, 40, 0.5);
-                    border-left: 3px solid rgba(0, 255, 255, 0.5);
-                }
-
-                /* テキストカラーの追加クラス */
-                #programmers-list .text-light {
-                    color: #b8b8ff !important;
-                }
-                
-                #programmers-list .text-white {
-                    color: #ffffff !important;
-                    font-weight: bold;
-                }
-                
-                #programmers-list .text-info {
-                    color: #00ffff !important;
-                }
-                
-                /* カードをさらに明るく */
-                #programmers-list .cyber-card {
-                    border: 1px solid rgba(0, 255, 255, 0.3);
-                    box-shadow: 0 0 15px rgba(0, 100, 200, 0.3);
-                }
-                
-                #programmers-list .cyber-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 5px 20px rgba(0, 200, 255, 0.4);
-                    border: 1px solid rgba(0, 255, 255, 0.5);
-                }
-                
-                /* 技術スキルバッジスタイル */
-                .cyber-backend-badge {
-                    background: rgba(0, 128, 255, 0.2);
-                    color: #00a8ff;
-                    border: 1px solid rgba(0, 128, 255, 0.6);
-                    text-shadow: 0 0 5px rgba(0, 128, 255, 0.5);
-                    font-size: 0.8rem;
-                }
-                
-                .cyber-frontend-badge {
-                    background: rgba(255, 105, 180, 0.2);
-                    color: #ff69b4;
-                    border: 1px solid rgba(255, 105, 180, 0.6);
-                    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
-                    font-size: 0.8rem;
-                }
-                
-                .cyber-db-badge {
-                    background: rgba(255, 215, 0, 0.2);
-                    color: #ffd700;
-                    border: 1px solid rgba(255, 215, 0, 0.6);
-                    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-                    font-size: 0.8rem;
-                }
-                
-                /* 新しい言語とフレームワークのバッジスタイル */
-                .cyber-language-badge {
-                    background: rgba(102, 204, 255, 0.2);
-                    color: #66ccff;
-                    border: 1px solid rgba(102, 204, 255, 0.6);
-                    text-shadow: 0 0 5px rgba(102, 204, 255, 0.5);
-                    font-size: 0.8rem;
-                }
-                
-                .cyber-framework-badge {
-                    background: rgba(255, 153, 0, 0.2);
-                    color: #ff9900;
-                    border: 1px solid rgba(255, 153, 0, 0.6);
-                    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
-                    font-size: 0.8rem;
-                }
-                
-                /* ジョブステータスバッジスタイル */
-                .badge.bg-info {
-                    background: rgba(0, 123, 255, 0.8) !important;
-                    color: white !important;
-                    box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
-                }
-                
-                .badge.bg-warning {
-                    background: rgba(255, 193, 7, 0.8) !important;
-                    box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
-                }
-                
-                .badge.bg-danger {
-                    background: rgba(220, 53, 69, 0.8) !important;
-                    color: white !important;
-                    box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
-                }
-                
-                .rate-badge {
-                    font-size: 0.85rem;
-                    padding: 0.4em 0.6em;
-                    border-radius: 4px;
-                    background: rgba(52, 58, 64, 0.8) !important;
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                }
-                
-                /* 技術バッジスタイル */
-                .tech-badge {
-                    font-size: 1rem;
-                    padding: 0.1em 0.4em;
-                    border-radius: 50%;
-                }
-                
-                /* バックエンド言語バッジ - シルバー */
-                .backend-badge {
-                    background: rgba(192, 192, 192, 0.2);
-                    color: #c0c0c0;
-                    border: 1px solid rgba(192, 192, 192, 0.6);
-                    text-shadow: 0 0 5px rgba(192, 192, 192, 0.5);
-                }
-                
-                /* フロントエンド言語バッジ - ピンク */
-                .frontend-badge {
-                    background: rgba(255, 105, 180, 0.2);
-                    color: #ff69b4;
-                    border: 1px solid rgba(255, 105, 180, 0.6);
-                    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
-                }
-                
-                /* データベースバッジ - ゴールド */
-                .db-badge {
-                    background: rgba(255, 215, 0, 0.2);
-                    color: #ffd700;
-                    border: 1px solid rgba(255, 215, 0, 0.6);
-                    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-                }
-                
-                /* フレームワークバッジ - オレンジ */
-                .framework-badge {
-                    background: rgba(255, 153, 0, 0.2);
-                    color: #ff9900;
-                    border: 1px solid rgba(255, 153, 0, 0.6);
-                    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
-                }
-                
-                /* アプリ種類バッジ - 黄色 */
-                .app-type-badge {
-                    background: rgba(255, 255, 0, 0.2);
-                    color: #ffff00;
-                    border: 1px solid rgba(255, 255, 0, 0.6);
-                    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
-                }
-                
-                /* 対応業務バッジ - 紫 */
-                .job-badge {
-                    background: rgba(162, 0, 255, 0.2);
-                    color: #c17bff;
-                    border: 1px solid rgba(162, 0, 255, 0.6);
-                    text-shadow: 0 0 5px rgba(162, 0, 255, 0.5);
-                }
-                
-                .cyber-job-badge {
-                    background: rgba(162, 0, 255, 0.2);
-                    color: #c17bff;
-                    border: 1px solid rgba(162, 0, 255, 0.6);
-                    text-shadow: 0 0 5px rgba(162, 0, 255, 0.5);
-                    font-size: 0.8rem;
-                    margin-right: 0.3rem;
-                    margin-bottom: 0.3rem;
-                }
-                
-                /* アプリタイプのバッジスタイル */
-                .cyber-app-type-badge {
-                    background: rgba(255, 165, 0, 0.2);
-                    color: #ffa500;
-                    border: 1px solid rgba(255, 165, 0, 0.6);
-                    text-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
-                    font-size: 0.8rem;
-                    margin-right: 0.3rem;
-                    margin-bottom: 0.3rem;
-                }
-                
-                /* 開発環境折りたたみ用スタイル */
-                .cyber-specs-list-small li {
-                    margin-bottom: 0.3rem;
-                    padding: 0.2rem 0.4rem;
-                    border-radius: 4px;
-                    background: rgba(0, 20, 40, 0.3);
-                    border-left: 2px solid rgba(0, 255, 255, 0.3);
-                    font-size: 0.8rem;
-                }
-            </style>
+            {% include 'home/tabs/programmers_tab.html' %}
         </div>
 
         <!-- 開発ブログタブ -->
         <div class="tab-pane fade" id="blogs-content" role="tabpanel" aria-labelledby="blogs-tab">
-            <div class="container mb-5 mt-3">
-                <div class="row">
-                    <div class="col-12 text-center py-5">
-                        <div class="cyber-placeholder-content">
-                            <h3 class="cyber-title mb-4">開発ブログ</h3>
-                            <p class="cyber-description">ここには開発者たちが投稿した開発ブログ記事が表示されます。</p>
-                            <div class="cyber-coming-soon">
-                                <span class="cyber-glitch-text">COMING SOON</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% include 'home/tabs/blogs_tab.html' %}
         </div>
 
         <!-- アプリ開発大会タブ -->
         <div class="tab-pane fade" id="contest-content" role="tabpanel" aria-labelledby="contest-tab">
-            <div class="container mb-5 mt-3">
-                <div class="row">
-                    <div class="col-12 text-center py-5">
-                        <div class="cyber-placeholder-content">
-                            <h3 class="cyber-title mb-4">アプリ開発大会</h3>
-                            <p class="cyber-description">ここには現在開催中のアプリ開発大会情報が表示されます。</p>
-                            <div class="cyber-coming-soon">
-                                <span class="cyber-glitch-text">COMING SOON</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% include 'home/tabs/contest_tab.html' %}
         </div>
 
         <!-- お仕事依頼タブ -->
         <div class="tab-pane fade" id="jobs-content" role="tabpanel" aria-labelledby="jobs-tab">
-            <div class="container mb-5 mt-3">
-                <div class="row">
-                    <div class="col-12 text-center py-5">
-                        <div class="cyber-placeholder-content">
-                            <h3 class="cyber-title mb-4">お仕事依頼掲示板</h3>
-                            <p class="cyber-description">ここにはお仕事の依頼や募集情報が表示されます。</p>
-                            <div class="cyber-coming-soon">
-                                <span class="cyber-glitch-text">COMING SOON</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% include 'home/tabs/jobs_tab.html' %}
         </div>
     </div>
 </div>
 
+<!-- JavaScriptの変数を定義して、アプリデータを保持 -->
 <script>
-// JavaScriptの変数を定義して、アプリデータを保持
-const apps_data = [
-    {% for app in apps %}
-    {
-        id: {{ app.id }},
-        is_author: {% if request.user == app.author %}true{% else %}false{% endif %},
-        detail_url: "{% url 'apps_gallery:detail' app.id %}",
-        edit_url: "{% url 'apps_gallery:edit' app.id %}"
-    }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-];
+    document.addEventListener('DOMContentLoaded', function() {
+        // アプリカード関連の処理
+        const apps_data = [
+            {% for app in apps %}
+            {
+                id: {{ app.id }},
+                is_author: {% if request.user == app.author %}true{% else %}false{% endif %},
+                detail_url: "{% url 'apps_gallery:detail' app.id %}",
+                edit_url: "{% url 'apps_gallery:edit' app.id %}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
 
-function checkImageOrientation(img, appId) {
-    const isPortrait = img.naturalHeight > img.naturalWidth;
-    const cardContent = document.getElementById(`card-content-${appId}`);
-    
-    const title = img.dataset.title;
-    const overview = img.dataset.overview;
-    const types = img.dataset.types.split(',');
-    const genres = img.dataset.genres.split(',');
-    
-    if (isPortrait) {
-        // 縦長画像の場合：左側に配置
-        cardContent.innerHTML = `
-            <div class="col-md-4">
-                <div class="h-100">
-                    <img src="${img.src}" 
-                         class="img-fluid cyber-image rounded-start h-100"
-                         style="object-fit: cover;">
-                </div>
-            </div>
-            <div class="col-md-8">
-                ${getCardBody(appId, title, overview, types, genres)}
-            </div>
-        `;
-    } else {
-        // 横長画像の場合：カードの上に配置、余白を調整
-        cardContent.innerHTML = `
-            <div class="col-12">
-                <div class="screenshot-wrapper" style="padding-bottom: 0;">
-                    <div class="screenshot-card" style="margin-bottom: 0;">
-                        <div class="screenshot-image" style="padding-bottom: 0;">
-                            <img src="${img.src}" 
-                                 class="img-fluid screenshot-preview">
-                        </div>
-                    </div>
-                </div>
-                ${getCardBody(appId, title, overview, types, genres)}
-            </div>
-        `;
-    }
-}
-
-function getCardBody(appId, title, overview, types, genres) {
-    const app = apps_data.find(a => a.id === parseInt(appId));
-    if (!app) return '';
-
-    const typesBadges = types.map(type => 
-        `<span class="badge cyber-type me-2">${type}</span>`
-    ).join('');
-    
-    const genresBadges = genres.map(genre => 
-        `<span class="badge cyber-genre me-2">${genre}</span>`
-    ).join('');
-
-    const editButton = app.is_author ? 
-        `<a href="${app.edit_url}" class="btn btn-cyber-edit">
-            <i class="bi bi-pencil-square"></i> 編集する
-        </a>` : '';
-
-    return `
-        <div class="card-body">
-            <h3 class="card-title cyber-title">${title}</h3>
-            <p class="card-text cyber-description">${overview}</p>
+        // 画像の向きを確認する関数
+        function checkImageOrientation(img, appId) {
+            const isPortrait = img.naturalHeight > img.naturalWidth;
+            const card = document.getElementById('card-content-' + appId);
             
-            <div class="mb-3">
-                <div class="mb-2">
-                    ${typesBadges}
-                </div>
-                <div>
-                    ${genresBadges}
-                </div>
-            </div>
-            
-            <div class="d-flex justify-content-end gap-2">
-                <a href="${app.detail_url}" class="btn btn-cyber-secondary">
-                    <i class="bi bi-search"></i> 詳細を見る
-                </a>
-                ${editButton}
-            </div>
-        </div>
-    `;
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    var toastElList = [].slice.call(document.querySelectorAll('.toast'));
-    var toastList = toastElList.map(function(toastEl) {
-        return new bootstrap.Toast(toastEl);
+            if (isPortrait && card) {
+                card.classList.add('is-portrait');
+            }
+        }
+        
+        // グローバルスコープに公開
+        window.checkImageOrientation = checkImageOrientation;
     });
-    toastList.forEach(toast => toast.show());
-});
+</script>
 
-function toggleHeroSection() {
-    const heroSection = document.getElementById('heroSection');
-    if (heroSection.style.height === '0px') {
-        // ヒーローセクションを表示
-        heroSection.style.height = '';
-        heroSection.style.opacity = '1';
-        heroSection.style.marginTop = '';
-        heroSection.style.marginBottom = '';
-        heroSection.style.padding = '';
-    } else {
-        // ヒーローセクションを非表示
-        heroSection.style.height = '0px';
-        heroSection.style.opacity = '0';
-        heroSection.style.marginTop = '0';
-        heroSection.style.marginBottom = '0';
-        heroSection.style.padding = '0';
+<!-- サイバーパンクスタイル -->
+<style>
+    /* 背景スタイル */
+    .cyber-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #0c1423;  /* 暗めの青黒色 */
+        z-index: -2;
     }
-}
 
-// 初期状態で表示
-document.addEventListener('DOMContentLoaded', function() {
-    const heroSection = document.getElementById('heroSection');
-    heroSection.style.height = '';
-    heroSection.style.opacity = '1';
-});
+    .cyber-grid {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(33, 150, 243, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(33, 150, 243, 0.1) 1px, transparent 1px);
+        background-size: 50px 50px;
+        z-index: -1;
+        perspective: 1000px;
+        transform-style: preserve-3d;
+        animation: grid-fade 5s infinite linear;
+    }
 
-// タブの状態を保持するためのスクリプト
-document.addEventListener('DOMContentLoaded', function() {
-    // ローカルストレージからアクティブなタブを取得
-    const activeTabId = localStorage.getItem('activeTabId');
+    @keyframes grid-fade {
+        0% { opacity: 0.5; }
+        50% { opacity: 0.7; }
+        100% { opacity: 0.5; }
+    }
+
+    /* タブスタイル */
+    .cyber-tabs {
+        border-bottom: none !important;
+    }
+
+    .cyber-tab {
+        background-color: rgba(0, 0, 0, 0.6) !important;
+        color: #00bfff !important;
+        border: 1px solid rgba(0, 191, 255, 0.3) !important;
+        border-bottom: none !important;
+        margin-right: 5px;
+        border-top-left-radius: 10px !important;
+        border-top-right-radius: 10px !important;
+        transition: all 0.3s ease;
+    }
+
+    .cyber-tab:hover {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+        color: #00ffff !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    }
+
+    .cyber-tab.active {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+        color: #00ffff !important;
+        border-color: rgba(0, 255, 255, 0.5) !important;
+        font-weight: bold;
+        box-shadow: 0 -5px 15px rgba(0, 255, 255, 0.3);
+        border-bottom: none;
+    }
+
+    /* カードスタイル */
+    .cyber-card {
+        background-color: rgba(13, 25, 45, 0.95) !important;
+        border: 1px solid rgba(0, 191, 255, 0.3) !important;
+        border-radius: 10px !important;
+        box-shadow: 0 0 20px rgba(0, 100, 200, 0.3) !important;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .cyber-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 30px rgba(0, 200, 255, 0.4) !important;
+        border: 1px solid rgba(0, 255, 255, 0.5) !important;
+    }
+
+    .cyber-image {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    /* ポートレート画像の場合のスタイル */
+    .is-portrait .cyber-image {
+        max-height: 300px;
+        width: auto;
+        margin: 0 auto;
+    }
+
+    /* テキストスタイル */
+    .cyber-title {
+        color: #00bfff !important;
+        text-shadow: 0 0 10px rgba(0, 191, 255, 0.5) !important;
+        font-weight: bold !important;
+        letter-spacing: 1px;
+    }
+
+    .cyber-description {
+        color: #b8c8db !important;
+        text-shadow: 0 0 5px rgba(184, 200, 219, 0.3) !important;
+    }
+
+    /* バッジスタイル */
+    .cyber-type {
+        background-color: rgba(255, 0, 128, 0.2) !important;
+        color: #ff80c0 !important;
+        border: 1px solid rgba(255, 0, 128, 0.5) !important;
+        box-shadow: 0 0 10px rgba(255, 0, 128, 0.3) !important;
+        font-weight: normal !important;
+        text-shadow: none !important;
+    }
+
+    .cyber-genre {
+        background-color: rgba(0, 128, 255, 0.2) !important;
+        color: #80c0ff !important;
+        border: 1px solid rgba(0, 128, 255, 0.5) !important;
+        box-shadow: 0 0 10px rgba(0, 128, 255, 0.3) !important;
+        font-weight: normal !important;
+        text-shadow: none !important;
+    }
     
-    // タブの要素を全て取得
-    const tabButtons = document.querySelectorAll('.cyber-tab');
-    const tabContents = document.querySelectorAll('.tab-pane');
+    .cyber-backend-lang {
+        background-color: rgba(128, 0, 255, 0.2) !important;
+        color: #c080ff !important;
+        border: 1px solid rgba(128, 0, 255, 0.5) !important;
+        box-shadow: 0 0 10px rgba(128, 0, 255, 0.3) !important;
+        font-weight: normal !important;
+        text-shadow: none !important;
+    }
+
+    /* 空の状態のテキスト */
+    .cyber-empty-text {
+        color: #00ffff !important;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5) !important;
+        font-weight: bold !important;
+    }
+
+    .cyber-empty-subtext {
+        color: #80c0c0 !important;
+        text-shadow: 0 0 5px rgba(128, 192, 192, 0.3) !important;
+    }
+
+    /* ボタンスタイル */
+    .btn-cyber-secondary {
+        background: rgba(0, 0, 0, 0.6) !important;
+        color: #00bfff !important;
+        border: 1px solid rgba(0, 191, 255, 0.5) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .btn-cyber-secondary:hover {
+        background: rgba(0, 0, 0, 0.8) !important;
+        color: #00ffff !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .btn-cyber-edit {
+        background: rgba(0, 0, 0, 0.6) !important;
+        color: #ff80c0 !important;
+        border: 1px solid rgba(255, 0, 128, 0.5) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .btn-cyber-edit:hover {
+        background: rgba(0, 0, 0, 0.8) !important;
+        color: #ff00ff !important;
+        box-shadow: 0 0 15px rgba(255, 0, 255, 0.5) !important;
+        transform: translateY(-2px) !important;
+    }
     
-    // 保存されたタブIDがあれば、そのタブをアクティブにする
-    if (activeTabId) {
-        // 全てのタブとコンテンツからアクティブクラスを削除
-        tabButtons.forEach(button => {
-            button.classList.remove('active');
-            button.setAttribute('aria-selected', 'false');
-        });
-        
-        tabContents.forEach(content => {
-            content.classList.remove('show', 'active');
-        });
-        
-        // 保存されていたタブをアクティブにする
-        const savedTabButton = document.getElementById(activeTabId);
-        if (savedTabButton) {
-            savedTabButton.classList.add('active');
-            savedTabButton.setAttribute('aria-selected', 'true');
-            
-            const targetId = savedTabButton.getAttribute('data-bs-target');
-            const targetContent = document.querySelector(targetId);
-            if (targetContent) {
-                targetContent.classList.add('show', 'active');
-            }
-            
-            // プログラマータブが選択されていた場合はデータを読み込む
-            if (activeTabId === 'programmers-tab') {
-                loadProgrammers();
-            }
+    /* フォーム要素の共通サイバースタイル */
+    .form-control.cyber-input {
+        background-color: rgba(0, 10, 20, 0.8) !important;
+        border: 1px solid rgba(0, 191, 255, 0.3) !important;
+        color: #00bfff !important;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control.cyber-input:focus {
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5) !important;
+        border-color: rgba(0, 255, 255, 0.5) !important;
+        background-color: rgba(0, 20, 40, 0.8) !important;
+    }
+    
+    .form-select.cyber-select {
+        background-color: rgba(0, 10, 20, 0.8) !important;
+        border: 1px solid rgba(0, 191, 255, 0.3) !important;
+        color: #00bfff !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300bfff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    }
+    
+    .form-select.cyber-select:focus {
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5) !important;
+        border-color: rgba(0, 255, 255, 0.5) !important;
+        background-color: rgba(0, 20, 40, 0.8) !important;
+    }
+    
+    /* プレースホルダーのサイバースタイル */
+    .cyber-placeholder-content {
+        padding: 3rem;
+        text-align: center;
+        border: 2px dashed rgba(0, 191, 255, 0.3);
+        border-radius: 15px;
+        background-color: rgba(0, 10, 20, 0.5);
+    }
+    
+    .cyber-coming-soon {
+        margin-top: 2rem;
+    }
+    
+    .cyber-glitch-text {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #00ffff;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+        animation: glitch 2s infinite;
+        position: relative;
+        display: inline-block;
+    }
+    
+    @keyframes glitch {
+        0% {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            transform: translateX(0);
+        }
+        2% {
+            text-shadow: 2px 0 10px rgba(255, 0, 128, 0.7), -2px 0 10px rgba(0, 255, 255, 0.7);
+            transform: translateX(2px);
+        }
+        4% {
+            text-shadow: -2px 0 10px rgba(255, 0, 128, 0.7), 2px 0 10px rgba(0, 255, 255, 0.7);
+            transform: translateX(-2px);
+        }
+        6% {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            transform: translateX(0);
+        }
+        100% {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+            transform: translateX(0);
         }
     }
     
-    // タブが変更されたときの処理を追加
-    tabButtons.forEach(button => {
-        button.addEventListener('shown.bs.tab', function(event) {
-            // 選択されたタブのIDをローカルストレージに保存
-            localStorage.setItem('activeTabId', event.target.id);
-        });
-    });
-});
-</script>
-
-<style>
-/* サイバーパンク風の背景 */
-.cyber-background {
-    background: linear-gradient(45deg, #001e54, #0066cc);
-}
-
-.cyber-grid {
-    background-image: 
-        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
-    background-size: 20px 20px;
-    width: 100%;
-    height: 100%;
-    animation: gridGlow 4s ease-in-out infinite;
-}
-
-/* ヒーローセクション */
-.cyber-hero {
-    position: relative;
-    border-bottom: 2px solid rgba(0, 255, 255, 0.1);
-    box-shadow: 0 0 30px rgba(0, 123, 255, 0.3);
-    overflow: hidden;
-}
-
-/* オーバーレイ効果 */
-.cyber-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 30, 60, 0.3); /* 薄い青のオーバーレイ */
-    z-index: 1;
-}
-
-/* コンテンツを前面に */
-.cyber-hero > div:not(.cyber-overlay):not(.cyber-lines) {
-    position: relative;
-    z-index: 2;
-}
-
-/* 既存のスタイルを調整 */
-.cyber-lines {
-    z-index: 1;
-    opacity: 0.3; /* 線を少し薄く */
-}
-
-.cyber-text-hero {
-    font-size: 1.5rem;
-    color: #e0e0e0; /* シルバー */
-    background: linear-gradient(45deg, #ffffff, #a0a0a0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
-                 0 0 20px rgba(200, 200, 200, 0.3);
-    font-weight: bold;
-    letter-spacing: 2px;
-}
-
-.cyber-glow {
-    filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.5));
-}
-
-/* カードデザイン */
-.cyber-card {
-    background: rgba(13, 25, 45, 0.8);
-    border: 1px solid rgba(0, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-}
-
-.cyber-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
-}
-
-.cyber-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-right: 1px solid rgba(0, 255, 255, 0.1);
-}
-
-.cyber-placeholder {
-    width: 100%;
-    height: 100%;
-    min-height: 200px;
-    background: rgba(0, 0, 0, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-right: 1px solid rgba(0, 255, 255, 0.1);
-}
-
-.cyber-title {
-    color: #ffd700;
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-}
-
-.cyber-description {
-    color: #fff;
-    opacity: 0.8;
-}
-
-.cyber-badge {
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    color: #0ff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-}
-
-.cyber-tag {
-    background: rgba(0, 255, 255, 0.1);
-    color: #0ff;
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-}
-
-.cyber-empty-text {
-    color: #ffd700;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-.cyber-empty-subtext {
-    color: rgba(255, 255, 255, 0.6);
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-}
-
-/* アニメーション */
-@keyframes gridGlow {
-    0% { opacity: 0.5; }
-    50% { opacity: 0.8; }
-    100% { opacity: 0.5; }
-}
-
-/* ステータスバッジ */
-.cyber-status {
-    background: rgba(0, 255, 255, 0.2);
-    color: #0ff;
-    border: 1px solid rgba(0, 255, 255, 0.5);
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-    font-size: 0.9rem;
-    padding: 0.5em 1em;
-}
-
-/* アプリタイプバッジ */
-.cyber-type {
-    background: rgba(255, 215, 0, 0.2);
-    color: #ffd700;
-    border: 1px solid rgba(255, 215, 0, 0.5);
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-}
-
-/* ジャンルバッジ */
-.cyber-genre {
-    background: rgba(255, 0, 255, 0.2);
-    color: #ff00ff;
-    border: 1px solid rgba(255, 0, 255, 0.5);
-    text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
-}
-
-/* ボタンのスタイル追加 */
-.btn-cyber-secondary {
-    background: rgba(100, 100, 100, 0.5);  /* 少し明るく */
-    color: #ffffff;  /* テキストを白に */
-    border: 1px solid rgba(200, 200, 200, 0.5);
-    transition: all 0.3s ease;
-    font-weight: bold;  /* 太字に */
-}
-
-.btn-cyber-secondary:hover {
-    background: rgba(120, 120, 120, 0.6);
-    color: #ffffff;
-    box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);  /* 光る効果を強く */
-    transform: translateY(-2px);
-}
-
-/* スクリーンショット関連のスタイル */
-.screenshot-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 0.5rem;
-    padding-bottom: 0;  /* 下部の余白を削除 */
-}
-
-.screenshot-card {
-    position: relative;
-    background: rgba(13, 25, 45, 0.8);
-    border: 1px solid var(--cyber-purple);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    width: 100%;
-    margin: 0.25rem 0 0 0;  /* 下部のマージンを削除 */
-}
-
-.screenshot-image {
-    position: relative;
-    overflow: hidden;
-    text-align: center;
-    padding: 0.5rem;
-    padding-bottom: 0;  /* 下部のパディングを削除 */
-}
-
-.screenshot-image img {
-    position: relative;
-    max-width: 100%;
-    height: auto;
-    object-fit: contain;
-    max-height: 300px;
-    display: block;
-    margin: 0 auto;
-    border-radius: 4px;
-}
-
-/* PC画面用の追加設定 */
-@media (min-width: 992px) {
-    .screenshot-image img {
-        max-height: 220px;
+    /* オーバーレイ効果のためのスタイル */
+    .cyber-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(0, 255, 255, 0.1), rgba(0, 0, 0, 0));
+        z-index: 1;
+        pointer-events: none;
     }
     
-    .screenshot-wrapper {
-        padding: 0.5rem 0.5rem 0 0.5rem;  /* 下部のパディングを削除 */
-    }
-
-    /* カードボディの上部余白を調整 */
-    .card-body {
-        padding-top: 0.5rem;  /* 上部のパディングを小さく */
+    /* 特殊なブランドカラー */
+    .cyber-blue {
+        color: #00bfff !important;
+        text-shadow: 0 0 5px rgba(0, 191, 255, 0.5) !important;
     }
     
-    /* 縦長画像をPC画面で小さくする */
-    .col-md-4 .cyber-image {
-        max-height: 320px !important;
-        width: auto !important;
-        margin: 0 auto;
-        object-fit: contain !important;
+    .cyber-pink {
+        color: #ff80c0 !important;
+        text-shadow: 0 0 5px rgba(255, 128, 192, 0.5) !important;
     }
-}
-
-/* サイバーピンクテキスト */
-.cyber-pink {
-    background: linear-gradient(45deg, #ff00ff, #ff69b4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5),
-                 0 0 20px rgba(255, 105, 180, 0.3);
-    animation: neonPinkPulse 2s infinite;
-}
-
-@keyframes neonPinkPulse {
-    0% { filter: brightness(1); }
-    50% { filter: brightness(1.2); }
-    100% { filter: brightness(1); }
-}
-
-/* サイバーテキストの光るエフェクト */
-.cyber-glow-text {
-    font-weight: bold;
-    color: #00ffff;
-    text-shadow: 
-        0 0 5px #00ffff,
-        0 0 10px #00ffff,
-        0 0 20px #0099ff,
-        0 0 40px #0099ff,
-        0 0 80px #0099ff,
-        0 0 100px #0099ff;  /* 光る効果を強化 */
-    animation: textPulse 2s ease-in-out infinite;
-}
-
-@keyframes textPulse {
-    0% {
-        text-shadow: 
-            0 0 5px #00ffff,
-            0 0 10px #00ffff,
-            0 0 20px #0099ff,
-            0 0 40px #0099ff,
-            0 0 80px #0099ff,
-            0 0 100px #0099ff;
+    
+    .cyber-green {
+        color: #80ff80 !important;
+        text-shadow: 0 0 5px rgba(128, 255, 128, 0.5) !important;
     }
-    50% {
-        text-shadow: 
-            0 0 10px #00ffff,
-            0 0 20px #00ffff,
-            0 0 40px #0099ff,
-            0 0 80px #0099ff,
-            0 0 120px #0099ff,
-            0 0 140px #0099ff;  /* ピーク時の光る効果を強化 */
-    }
-    100% {
-        text-shadow: 
-            0 0 5px #00ffff,
-            0 0 10px #00ffff,
-            0 0 20px #0099ff,
-            0 0 40px #0099ff,
-            0 0 80px #0099ff,
-            0 0 100px #0099ff;
-    }
-}
-
-/* サイバーブルーテキスト */
-.cyber-blue {
-    background: linear-gradient(45deg, #00ffff, #0099ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5),
-                 0 0 20px rgba(0, 153, 255, 0.3);
-    animation: neonBluePulse 2s infinite;
-}
-
-@keyframes neonBluePulse {
-    0% { filter: brightness(1); }
-    50% { filter: brightness(1.2); }
-    100% { filter: brightness(1); }
-}
-
-/* スマートフォン用のスタイル調整を追加 */
-@media (max-width: 576px) {
-    /* 既存のスマホ用スタイル */
-    .cyber-hero {
-        aspect-ratio: 16 / 16 !important;
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-        margin-bottom: 2rem !important;
-        padding-bottom: 0 !important;
-    }
-
-    .mx-auto.text-center.position-absolute {
-        top: 0% !important;
-        transform: translate(-50%, 0) !important;
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
-    }
-
-    /* カード内の縦長画像のサイズと位置調整 */
-    .cyber-image {
-        max-height: 280px !important;     /* 最大高さを350pxに調整 */
-        width: auto !important;
-        object-fit: contain !important;
-        margin: 0 auto !important;
-        display: block !important;
-    }
-
-    /* 画像を含むコンテナの調整 */
-    .col-md-4 {
-        text-align: center !important;
-    }
-}
-
-/* PC画面用の横長画像設定を維持 */
-@media (min-width: 992px) {
-    .screenshot-image img {
-        max-height: 180px;  /* PC用の高さ制限を維持 */
-    }
-}
-
-/* ==================== タブレット用の設定 - 絶対に変更禁止 ==================== */
-/* 
-    警告：この設定は完全に固定です！
-    - margin-top: 0 !important
-    - padding-top: 0 !important
-    - aspect-ratio: 16 / 20 !important
-    これらの値は死守すること！
-    どのような変更要件が来ても、この設定は変更禁止！
-*/
-@media (min-width: 577px) and (max-width: 991px) {
-    .cyber-hero {
-        aspect-ratio: 16 / 20 !important;  /* タブレット用アスペクト比 - 変更禁止 */
-        margin-top: 0 !important;          /* 上マージンなし - 変更禁止 */
-        padding-top: 0 !important;         /* 上パディングなし - 変更禁止 */
-    }
-
-    .mx-auto.text-center.position-absolute {
-        top: 45% !important;  /* appmanの位置 - 変更禁止 */
-    }
-
-    img[src*='sy.png'] {
-        height: 100% !important;
-        object-fit: cover !important;
-        object-position: center !important; /* 画像を中央に配置 - 変更禁止 */
-    }
-}
-/* =============================================================== */
-
-/* ==================== PC用の設定 - 絶対に変更禁止 ==================== */
-/* 
-    警告：この設定は完全に固定です！
-    - margin-top: 0 !important
-    - padding-top: 0.2rem !important
-    - aspect-ratio: 16 / 16 !important
-    これらの値は死守すること！
-    どのような変更要件が来ても、この設定は変更禁止！
-*/
-@media (min-width: 992px) {
-    .cyber-hero {
-        aspect-ratio: 16 / 16 !important;  /* PC用のアスペクト比 - 変更禁止 */
-        margin-top: 0 !important;          /* 上マージンを0に - 変更禁止 */
-        padding-top: 0.2rem !important;    /* 上パディングをほぼ0に - 変更禁止 */
-    }
-
-    .mx-auto.text-center.position-absolute {
-        top: 35% !important;  /* appmanの位置 - 変更禁止 */
-    }
-
-    img[src*='sy.png'] {
-        width: 100% !important;
-        height: 100% !important;
-    }
-}
-/* =============================================================== */
-
-/* メッセージのスタイル */
-.alert-cyber {
-    background: rgba(0, 0, 0, 0.8) !important;
-    border: 1px solid #00ff9f !important;
-    color: #00ff9f !important;
-    box-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
-    backdrop-filter: blur(5px);
-    font-family: 'Roboto', sans-serif;
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
-}
-
-.alert-cyber:hover {
-    box-shadow: 0 0 15px rgba(0, 255, 159, 0.7);
-    transform: translateY(-2px);
-}
-
-.alert-cyber .btn-close {
-    filter: invert(100%) sepia(100%) saturate(100%) hue-rotate(100deg);
-    opacity: 0.8;
-}
-
-.alert-cyber .btn-close:hover {
-    opacity: 1;
-}
-
-/* 編集ボタンのスタイル */
-.btn-cyber-edit {
-    background: rgba(0, 255, 159, 0.1);
-    color: #00ff9f;
-    border: 1px solid #00ff9f;
-    text-shadow: 0 0 5px rgba(0, 255, 159, 0.5);
-    transition: all 0.3s ease;
-}
-
-.btn-cyber-edit:hover {
-    background: rgba(0, 255, 159, 0.2);
-    color: #00ff9f;
-    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
-    transform: translateY(-2px);
-}
-
-.cyber-subtitle {
-    color: #00ff9f;
-    font-size: 1.2rem;
-    text-shadow: 0 0 5px rgba(0, 255, 159, 0.5);
-}
-
-.cyber-list {
-    list-style: none;
-    padding-left: 1.2rem;
-}
-
-.cyber-list li {
-    position: relative;
-    margin-bottom: 0.5rem;
-    color: #e9d5ff;
-}
-
-.cyber-list li::before {
-    content: "▶";
-    position: absolute;
-    left: -1.2rem;
-    color: #00ff9f;
-    font-size: 0.8rem;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.cyber-button-grid {
-    display: grid;
-    grid-template-columns: 1fr;  /* モバイルでは1列 */
-    gap: 0.5rem;
-}
-
-@media (min-width: 768px) {  /* タブレット以上で2列 */
-    .cyber-button-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-.cyber-button {
-    position: relative;
-    width: 100%;
-    padding: 0.5rem 1rem;
-    background: rgba(0, 255, 159, 0.1);
-    border: 1px solid #00ff9f;
-    border-radius: 4px;
-    color: #e9d5ff;
-    cursor: pointer;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    text-align: left;
-    height: 100%;  /* 高さを揃える */
-}
-
-.cyber-button:hover {
-    background: rgba(0, 255, 159, 0.2);
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
-}
-
-.button-text {
-    position: relative;
-    z-index: 1;
-}
-
-.button-glitch {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, 
-        transparent 65%,
-        rgba(0, 255, 159, 0.1) 70%,
-        rgba(0, 255, 159, 0.2) 80%,
-        transparent 90%
-    );
-    background-size: 200% 200%;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.cyber-button:hover .button-glitch {
-    opacity: 1;
-    animation: glitch 1s infinite linear;
-}
-
-@keyframes glitch {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
-}
-
-.cyber-category-badge {
-    position: absolute;
-    top: 0;
-    right: 1rem;
-    background: rgba(0, 255, 159, 0.1);
-    border: 1px solid #00ff9f;
-    border-radius: 0 0 8px 8px;
-    padding: 0.3rem 1rem;
-    transform: translateY(-1px);
-    box-shadow: 0 0 10px rgba(0, 255, 159, 0.2);
-    z-index: 10;
-}
-
-.badge-text {
-    color: #00ff9f;
-    font-size: 0.9rem;
-    font-weight: bold;
-    text-shadow: 0 0 5px rgba(0, 255, 159, 0.5);
-}
-
-/* ホバーエフェクト */
-.cyber-category-badge:hover {
-    background: rgba(0, 255, 159, 0.2);
-    box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
-}
-
-/* タブナビゲーションのスタイル */
-.cyber-tabs {
-    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 8px 8px 0 0;
-    overflow: hidden;
-}
-
-.cyber-tab {
-    color: rgba(255, 255, 255, 0.7) !important;
-    border: none !important;
-    border-radius: 0 !important;
-    padding: 0.75rem 1.5rem;
-    margin-right: 2px;
-    background: transparent;
-    position: relative;
-    transition: all 0.3s ease;
-    z-index: 1;
-}
-
-.cyber-tab:hover {
-    color: #00ffff !important;
-    background: rgba(0, 255, 255, 0.1);
-}
-
-.cyber-tab.active {
-    color: #00ffff !important;
-    background: rgba(0, 0, 0, 0.7) !important;
-    border: none;
-    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
-}
-
-.cyber-tab.active:after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #00ffff, #00ff9f);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-}
-
-.cyber-tab i {
-    margin-right: 8px;
-}
-
-/* プレースホルダーコンテンツのスタイル */
-.cyber-placeholder-content {
-    background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    border-radius: 8px;
-    padding: 3rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
-}
-
-.cyber-placeholder-content:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        linear-gradient(45deg, transparent 49%, rgba(0, 255, 255, 0.1) 50%, transparent 51%),
-        linear-gradient(-45deg, transparent 49%, rgba(0, 255, 255, 0.1) 50%, transparent 51%);
-    background-size: 30px 30px;
-    opacity: 0.3;
-    pointer-events: none;
-}
-
-.cyber-coming-soon {
-    margin-top: 2rem;
-    padding: 1rem;
-    border: 1px solid rgba(255, 0, 255, 0.3);
-    background: rgba(255, 0, 255, 0.1);
-    border-radius: 4px;
-    display: inline-block;
-}
-
-.cyber-glitch-text {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ff00ff;
-    text-shadow: 
-        0 0 5px #ff00ff,
-        0 0 10px #ff00ff,
-        0 0 15px #ff00ff;
-    position: relative;
-    display: inline-block;
-    animation: textGlitch 2s infinite;
-}
-
-@keyframes textGlitch {
-    0% {
-        transform: translateX(0);
-        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
-    }
-    2% {
-        transform: translateX(3px);
-        text-shadow: 0 0 10px #00ffff, 0 0 15px #00ffff;
-    }
-    4% {
-        transform: translateX(-3px);
-        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
-    }
-    6% {
-        transform: translateX(0);
-        text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
-    }
-    8% {
-        transform: translateX(2px);
-        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
-    }
-    10% {
-        transform: translateX(0);
-        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
-    }
-    100% {
-        transform: translateX(0);
-        text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
-    }
-}
-
-/* カテゴリーラベルのスタイル */
-.category-label {
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* バックエンドカテゴリーラベル - シルバー */
-.backend-label {
-    color: #c0c0c0;
-    text-shadow: 0 0 5px rgba(192, 192, 192, 0.5);
-}
-
-/* フロントエンドカテゴリーラベル - ピンク */
-.frontend-label {
-    color: #ff69b4;
-    text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
-}
-
-/* データベースカテゴリーラベル - ゴールド */
-.db-label {
-    color: #ffd700;
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-}
-
-/* フレームワークカテゴリーラベル - オレンジ */
-.framework-label {
-    color: #ff9900;
-    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
-}
-
-/* アプリ種類カテゴリーラベル - 黄色 */
-.app-type-label {
-    color: #ffff00;
-    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
-}
-
-/* 対応業務カテゴリーラベル - 紫 */
-.job-label {
-    color: #c17bff;
-    text-shadow: 0 0 5px rgba(162, 0, 255, 0.5);
-}
-
-/* アプリタイプのバッジスタイル */
-.app-type-badge {
-    background: rgba(255, 255, 0, 0.2);
-    color: #ffff00;
-    border: 1px solid rgba(255, 255, 0, 0.6);
-    text-shadow: 0 0 5px rgba(255, 255, 0, 0.5);
-    font-size: 0.85rem;
-    padding: 0.4em 0.6em;
-    border-radius: 4px;
-}
 </style>
 {% endblock %} 

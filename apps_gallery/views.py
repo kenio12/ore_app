@@ -29,6 +29,9 @@ from .constants import (
     FRONTEND_LANGUAGES,
     FRONTEND_FRAMEWORKS,
     CSS_FRAMEWORKS,
+    BACKEND_LANGUAGES,
+    BACKEND_FRAMEWORKS,
+    BACKEND_STACK,
     DATABASE_TYPES,
     DATABASE_HOSTING,
     ORMS,
@@ -65,7 +68,7 @@ from .constants.architecture import (
     TESTING_TOOLS,
     CODE_QUALITY_TOOLS
 )
-from .constants.backend_constants import BACKEND_STACK, BACKEND_PACKAGE_HINTS
+from .constants.backend_constants import BACKEND_PACKAGE_HINTS
 from django.db import models
 
 print("\n============= START DEBUG =============")  # ここに配置！
@@ -122,6 +125,8 @@ def get_common_context(app=None, readonly=False, is_edit=False):
         'code_quality_tools': CODE_QUALITY_TOOLS,
         'BACKEND_STACK': BACKEND_STACK,
         'BACKEND_PACKAGE_HINTS': BACKEND_PACKAGE_HINTS,
+        'BACKEND_LANGUAGES': dict(BACKEND_LANGUAGES),
+        'BACKEND_FRAMEWORKS': dict(BACKEND_FRAMEWORKS),
         'APP_TYPES': dict(APP_TYPES),
         'GENRES': dict(GENRES),
         'APP_STATUS': dict(APP_STATUS),
@@ -1245,7 +1250,13 @@ def handle_frontend_fields(request_data, app):
     # フロントエンドJSONデータの初期化
     frontend = {}
     
-    # 言語
+    # マークアップ言語
+    markup_languages = request_data.getlist('markup_languages')
+    if markup_languages:
+        frontend['markup_languages'] = markup_languages
+        logger.info(f"マークアップ言語: {markup_languages}")
+    
+    # プログラミング言語
     languages = request_data.getlist('frontend_languages')
     if languages:
         frontend['languages'] = languages

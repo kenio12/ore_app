@@ -1,40 +1,38 @@
-{% include 'apps_gallery/shared/disabled_styles.html' %}
+{% comment %}
+バックエンドタブのスタイルと内容
+{% endcomment %}
 
-<!-- デバッグ情報 -->
-<div style="display: none;">
-    <pre>
-    BACKEND_STACK Type: {{ BACKEND_STACK|pprint }}
-    BACKEND_STACK Content: {{ BACKEND_STACK|safe|pprint }}
-    BACKEND_PACKAGE_HINTS: {{ BACKEND_PACKAGE_HINTS|pprint }}
-    app.backend: {{ app.backend|default:"{}" |pprint }}
-    </pre>
-</div>
-
-<div id="backend" class="container" style="margin: 0 !important; padding: 0 !important;">
-    <div class="card border-0 shadow-lg">
-        <div class="card-body">
-            <h2 class="card-title h3 mb-4">
-                <i class="bi bi-server text-cyber-aqua"></i>
-                <span class="text-cyber-aqua">バックエンド</span>
+<div id="backend" class="container" style="margin: 0 !important; padding: 0 !important; display: block !important; visibility: visible !important;">
+    <div class="card border-0 shadow-lg cyber-card" style="background-color: rgba(13, 25, 45, 0.95) !important; border: 2px solid #00bfff !important; box-shadow: 0 0 15px rgba(0, 191, 255, 0.5) !important; display: block !important; visibility: visible !important;">
+        <div class="card-body" style="color: #00bfff !important; display: block !important; visibility: visible !important; background-color: rgba(13, 25, 45, 0.95) !important;">
+            <h2 class="card-title h3 mb-4 text-cyber-aqua" style="color: #00bfff !important; text-shadow: 0 0 10px #00bfff, 0 0 20px #00bfff !important; display: block !important; visibility: visible !important;">
+                <i class="bi bi-server" style="color: #00bfff !important; text-shadow: 0 0 10px #00bfff !important;"></i>
+                <span style="color: #00bfff !important; text-shadow: 0 0 10px #00bfff !important; display: inline !important;">バックエンド</span>
             </h2>
 
             <!-- メイン使用言語 -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-aqua">メイン使用言語</label>
-                <p class="text-muted small mb-3 text-cyber-aqua">
+            <div class="mb-4" style="display: block !important; visibility: visible !important;">
+                <label class="form-label" style="color: #00bfff !important; text-shadow: 0 0 5px #00bfff !important; display: block !important; visibility: visible !important;">メイン使用言語</label>
+                <p class="text-muted small mb-3" style="color: #00bfff !important; text-shadow: 0 0 5px #00bfff !important; display: block !important; visibility: visible !important;">
                     ※主に使用している言語を1つ選択してください
                 </p>
-                <div class="row g-3">
-                    {% for key, lang in BACKEND_STACK.items %}
-                    <div class="col-md-4">
-                        <div class="form-check">
+                <div class="row g-3" style="display: flex !important; visibility: visible !important;">
+                    {% for key, lang_name in BACKEND_LANGUAGES.items %}
+                    <div class="col-md-4" style="display: block !important; visibility: visible !important;">
+                        <div class="form-check" style="display: block !important; visibility: visible !important;">
                             <input type="radio" 
-                                   class="form-check-input cyber-form-check-input"
+                                   class="form-check-input backend-radio"
                                    name="backend_main_language"
                                    value="{{ key }}"
                                    {% if key == app.backend.main_language %}checked{% endif %}
-                                   {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label cyber-form-check-label text-cyber-aqua">{{ lang.name }}</label>
+                                   {% if readonly %}disabled{% endif %}
+                                   style="opacity: 1 !important; background-color: transparent !important; border: 3px solid #00bfff !important; box-shadow: 0 0 10px rgba(0, 191, 255, 0.5) !important; width: 1.2em !important; height: 1.2em !important; position: relative !important; margin-top: 0.3em !important; visibility: visible !important; display: inline-block !important;">
+                            
+                            <!-- 言語名を直接表示 -->
+                            <label class="form-check-label backend-label" 
+                                   style="color: #00bfff !important; text-shadow: 0 0 5px #00bfff !important; font-weight: 400 !important; opacity: 1 !important; visibility: visible !important; display: inline-block !important; font-size: 1.1em !important;">
+                                {{ lang_name }}
+                            </label>
                         </div>
                     </div>
                     {% endfor %}
@@ -42,33 +40,34 @@
             </div>
 
             <!-- フレームワーク -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-aqua">使用フレームワーク</label>
-                <p class="text-muted small mb-3 text-cyber-aqua">
+            <div class="mb-4" style="display: block !important; visibility: visible !important;">
+                <label class="form-label" style="color: #00bfff !important; text-shadow: 0 0 5px #00bfff !important; display: block !important; visibility: visible !important;">使用フレームワーク</label>
+                <p class="text-muted small mb-3" style="color: #00bfff !important; text-shadow: 0 0 5px #00bfff !important; display: block !important; visibility: visible !important;">
                     ※使用しているフレームワークを選択してください
                 </p>
-                <div class="row g-3" id="frameworksContainer">
+                <div class="row g-3" id="frameworksContainer" style="display: flex !important; visibility: visible !important;">
                     <!-- JavaScriptで動的に生成 -->
                 </div>
             </div>
 
             <!-- パッケージ・ライブラリ -->
-            <div class="mb-4">
-                <label class="form-label text-cyber-aqua">使用パッケージ・ライブラリ</label>
-                <p class="text-muted small mb-3 text-cyber-aqua">
+            <div class="mb-4" style="display: block !important; visibility: visible !important;">
+                <label class="form-label" style="color: #00bfff !important; text-shadow: 0 0 5px #00bfff !important; display: block !important; visibility: visible !important;">使用パッケージ・ライブラリ</label>
+                <p class="text-muted small mb-3" style="color: #00bfff !important; text-shadow: 0 0 5px #00bfff !important; display: block !important; visibility: visible !important;">
                     ※主要な機能カテゴリを選択してください（複数選択可）
                 </p>
-                <div class="row g-3">
+                <div class="row g-3" style="display: flex !important; visibility: visible !important;">
                     {% for hint in BACKEND_PACKAGE_HINTS %}
-                    <div class="col-md-4">
-                        <div class="form-check">
+                    <div class="col-md-4" style="display: block !important; visibility: visible !important;">
+                        <div class="form-check" style="display: block !important; visibility: visible !important;">
                             <input type="checkbox" 
-                                   class="form-check-input cyber-form-check-input"
+                                   class="form-check-input"
                                    name="backend_packages"
                                    value="{{ hint }}"
                                    {% if hint in app.backend.packages %}checked{% endif %}
-                                   {% if readonly %}disabled{% endif %}>
-                            <label class="form-check-label text-cyber-aqua">{{ hint }}</label>
+                                   {% if readonly %}disabled{% endif %}
+                                   style="opacity: 1 !important; background-color: transparent !important; border: 3px solid #00bfff !important; box-shadow: 0 0 10px rgba(0, 191, 255, 0.5) !important; width: 1.2em !important; height: 1.2em !important; position: relative !important; margin-top: 0.3em !important; visibility: visible !important; display: inline-block !important;">
+                            <label class="form-check-label" style="color: #00bfff !important; text-shadow: 0 0 5px #00bfff !important; font-weight: 400 !important; opacity: 1 !important; visibility: visible !important; display: inline-block !important;">{{ hint }}</label>
                         </div>
                     </div>
                     {% endfor %}
@@ -83,12 +82,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     // テンプレートからデータを取得
     try {
-        // デバッグ用データ出力を避ける
         // バックエンドスタックは直接コンスタントから定義
         const backendStack = {
             'python': {
-                'name': 'Python',
-                'frameworks': {
+                name: 'Python',
+                frameworks: {
                     'django': 'Django',
                     'flask': 'Flask',
                     'fastapi': 'FastAPI',
@@ -96,8 +94,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             'php': {
-                'name': 'PHP',
-                'frameworks': {
+                name: 'PHP',
+                frameworks: {
                     'laravel': 'Laravel',
                     'symfony': 'Symfony',
                     'cakephp': 'CakePHP',
@@ -105,8 +103,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             'nodejs': {
-                'name': 'Node.js',
-                'frameworks': {
+                name: 'Node.js',
+                frameworks: {
                     'express': 'Express',
                     'nestjs': 'NestJS',
                     'fastify': 'Fastify',
@@ -114,48 +112,69 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             'ruby': {
-                'name': 'Ruby',
-                'frameworks': {
+                name: 'Ruby',
+                frameworks: {
                     'rails': 'Ruby on Rails',
                     'sinatra': 'Sinatra', 
                     'other': 'その他'
                 }
             },
             'java': {
-                'name': 'Java',
-                'frameworks': {
+                name: 'Java',
+                frameworks: {
                     'spring': 'Spring',
                     'springboot': 'Spring Boot',
                     'other': 'その他'
                 }
             },
             'csharp': {
-                'name': 'C#',
-                'frameworks': {
+                name: 'C#',
+                frameworks: {
                     'dotnet': '.NET',
                     'aspnet': 'ASP.NET',
                     'other': 'その他'
                 }
             },
             'golang': {
-                'name': 'Go',
-                'frameworks': {
+                name: 'Go',
+                frameworks: {
                     'gin': 'Gin',
                     'echo': 'Echo',
                     'other': 'その他'
                 }
             },
             'other': {
-                'name': 'その他',
-                'frameworks': {
+                name: 'その他',
+                frameworks: {
                     'other': 'その他'
                 }
             }
         };
         
-        // 空のオブジェクトで初期化して安全に
-        const currentBackend = {};
+        // デバッグ用にBACKEND_STACKの構造をコンソールに出力
+        console.log('backendStack:', backendStack);
         
+        // currentBackendの初期化 - app.backendから直接取得
+        let currentBackend = {
+            framework: ''
+        };
+        
+        // 既存のデータがあればそれを使用
+        const mainLangRadio = document.querySelector('input[name="backend_main_language"]:checked');
+        if (mainLangRadio) {
+            const selectedLang = mainLangRadio.value;
+            console.log('Selected language:', selectedLang);
+            
+            // フレームワークラジオボタンを探す
+            const frameworkRadios = document.querySelectorAll('input[name="backend_framework"]');
+            for (let radio of frameworkRadios) {
+                if (radio.checked) {
+                    currentBackend.framework = radio.value;
+                    break;
+                }
+            }
+        }
+
         // フレームワーク選択の更新関数
         function updateFrameworks(language) {
             const container = document.getElementById('frameworksContainer');
@@ -173,14 +192,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 const div = document.createElement('div');
                 div.className = 'col-md-4';
                 div.innerHTML = `
-                    <div class="form-check">
+                    <div class="form-check" style="display: block !important; visibility: visible !important;">
                         <input type="radio" 
-                               class="form-check-input cyber-form-check-input"
+                               class="form-check-input backend-radio"
                                name="backend_framework"
                                value="${key}"
                                ${currentBackend.framework === key ? 'checked' : ''}
-                               {% if readonly %}disabled{% endif %}>
-                        <label class="form-check-label cyber-form-check-label text-cyber-aqua">${name}</label>
+                               {% if readonly %}disabled{% endif %}
+                               style="opacity: 1 !important; background-color: transparent !important; border: 3px solid #00bfff !important; box-shadow: 0 0 10px rgba(0, 191, 255, 0.5) !important; width: 1.2em !important; height: 1.2em !important; position: relative !important; margin-top: 0.3em !important; visibility: visible !important; display: inline-block !important;">
+                        <label class="form-check-label backend-label"
+                               style="color: #00bfff !important; text-shadow: 0 0 5px #00bfff !important; font-weight: 400 !important; opacity: 1 !important; visibility: visible !important; display: inline-block !important; font-size: 1.1em !important;">
+                            ${name}
+                        </label>
                     </div>
                 `;
                 container.appendChild(div);
@@ -193,119 +216,37 @@ document.addEventListener('DOMContentLoaded', function() {
             updateFrameworks(selectedLanguage.value);
         }
 
-        // 言語選択時の処理
+        // フレームワーク選択時の処理
         document.querySelectorAll('input[name="backend_main_language"]').forEach(function(input) {
             input.addEventListener('change', function(e) {
                 updateFrameworks(e.target.value);
             });
+        });
+
+        // チェックボックスとラジオボタンのカスタマイズ
+        document.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked').forEach(function(input) {
+            // チェックマークを追加
+            const label = input.nextElementSibling;
+            if (label) {
+                input.style.backgroundColor = "#00bfff";
+                input.style.borderColor = "#00bfff";
+                
+                // 疑似要素の代わりにチェックマークを表示
+                const checkmark = document.createElement('span');
+                checkmark.textContent = '✓';
+                checkmark.style.position = 'absolute';
+                checkmark.style.left = '3px';
+                checkmark.style.top = '0px';
+                checkmark.style.color = 'rgba(13, 25, 45, 0.95)';
+                checkmark.style.fontWeight = 'bold';
+                
+                input.parentNode.style.position = 'relative';
+                input.parentNode.insertBefore(checkmark, input.nextSibling);
+            }
         });
     } catch (e) {
         console.error('Error parsing backend:', e);
     }
 });
 </script>
-{% endblock %}
-
-<style>
-/* 基本変数の定義 */
-:root {
-    --cyber-aqua: #00bfff;
-    --cyber-aqua-glow: rgba(0, 191, 255, 0.5);
-}
-
-/* カード全体のスタイル強制 */
-#backend .card,
-html body #backend .card {
-    background: rgba(13, 25, 45, 0.95) !important;
-    border: 2px solid var(--cyber-aqua) !important;
-    box-shadow: 0 0 15px var(--cyber-aqua-glow) !important;
-}
-
-/* フォーム要素の強制スタイル */
-#backend .form-check-input,
-html body #backend .form-check-input {
-    opacity: 1 !important;
-    background-color: transparent !important;
-    border: 2px solid var(--cyber-aqua) !important;
-    box-shadow: 0 0 10px var(--cyber-aqua-glow) !important;
-}
-
-/* チェック時の強制スタイル */
-#backend .form-check-input:checked,
-html body #backend .form-check-input:checked {
-    background-color: transparent !important;
-    border-color: var(--cyber-aqua) !important;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%2300bfff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e") !important;
-}
-
-/* ラベルの強制スタイル */
-#backend .form-check-label,
-#backend .text-cyber-aqua,
-html body #backend .form-check-label,
-html body #backend .text-cyber-aqua {
-    color: var(--cyber-aqua) !important;
-    text-shadow: 0 0 5px var(--cyber-aqua) !important;
-    opacity: 1 !important;
-    font-weight: 500 !important;
-}
-
-/* 説明文の強制スタイル */
-#backend p.text-muted.small.mb-3,
-html body #backend p.text-muted.small.mb-3 {
-    color: var(--cyber-aqua) !important;
-    text-shadow: 0 0 5px var(--cyber-aqua-glow) !important;
-    opacity: 0.9 !important;
-}
-
-/* タイトルの強制スタイル */
-#backend .cyber-title,
-html body #backend .cyber-title {
-    color: var(--cyber-aqua) !important;
-    text-shadow: 
-        0 0 10px var(--cyber-aqua),
-        0 0 20px var(--cyber-aqua) !important;
-    font-weight: bold !important;
-    letter-spacing: 1px !important;
-}
-
-/* disabled状態の強制スタイル */
-#backend .form-control:disabled,
-#backend .form-select:disabled,
-#backend .form-check-input:disabled,
-html body #backend .form-control:disabled,
-html body #backend .form-select:disabled,
-html body #backend .form-check-input:disabled {
-    background-color: rgba(13, 25, 45, 0.95) !important;
-    color: var(--cyber-aqua) !important;
-    border-color: var(--cyber-aqua) !important;
-    text-shadow: 0 0 5px var(--cyber-aqua) !important;
-    opacity: 1 !important;
-}
-
-/* バックエンドタブのスタイル */
-#backend-section .card-title,
-#backend-section .text-cyber-aqua {
-    color: var(--cyber-aqua) !important;
-    text-shadow: 0 0 10px var(--cyber-aqua),
-                0 0 20px var(--cyber-aqua) !important;
-}
-
-#backend-section .form-control,
-#backend-section .form-select,
-#backend-section .form-check-input {
-    border: 2px solid var(--cyber-aqua) !important;
-    color: var(--cyber-aqua) !important;
-}
-
-#backend-section .form-check-input:checked {
-    background-color: var(--cyber-aqua) !important;
-    box-shadow: 0 0 10px var(--cyber-aqua) !important;
-}
-
-#backend-section .form-label,
-#backend-section .form-check-label,
-#backend-section .text-muted {
-    color: var(--cyber-aqua) !important;
-    text-shadow: 0 0 5px var(--cyber-aqua) !important;
-}
-</style> 
+{% endblock %} 
