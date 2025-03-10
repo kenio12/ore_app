@@ -1,12 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.http import JsonResponse
+from django.http import JsonResponse, StreamingHttpResponse, HttpResponseForbidden
 from .models import Conversation, Message
 import json
 from django.utils import timezone
+import threading
+import time
 
 # Create your views here.
+
+# メッセージストリーム用のグローバル変数
+message_queues = {}
+message_lock = threading.Lock()
 
 @login_required
 def chat_list(request):
@@ -85,65 +91,44 @@ def chat_detail(request, conversation_id=None, user_id=None):
     return render(request, 'chats/chat_detail.html', context)
 
 @login_required
-def send_message(request):
+def send_message(request, conversation_id):
     """APIエンドポイント: メッセージを送信する"""
     if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            recipient_id = data.get('recipient_id')
-            content = data.get('content', '').strip()
+        conversation = get_object_or_404(Conversation, id=conversation_id)
+        if request.user not in conversation.participants.all():
+            return JsonResponse({'status': 'error', 'message': 'このチャットに参加する権限がありません。'})
+        
+        content = request.POST.get('content', '').strip()
+        if content:
+            # 受信者を特定
+            recipient = conversation.participants.exclude(id=request.user.id).first()
             
-            # 内容が空の場合は処理しない
-            if not content or not recipient_id:
-                return JsonResponse({'status': 'error', 'message': '受信者IDとメッセージ内容が必要です'}, status=400)
-            
-            # メッセージ長さの制限（例: 1000文字まで）
-            if len(content) > 1000:
-                return JsonResponse({'status': 'error', 'message': 'メッセージは1000文字以内にしてください'}, status=400)
-            
-            # 受信者を取得
-            User = get_user_model()
-            try:
-                recipient = User.objects.get(id=recipient_id)
-            except User.DoesNotExist:
-                return JsonResponse({'status': 'error', 'message': 'ユーザーが見つかりません'}, status=404)
-            
-            # 会話を取得または作成
-            conversation = Conversation.get_or_create_conversation(request.user, recipient)
-            
-            # 前回と同じ内容のメッセージを防止（オプション）
-            last_message = Message.objects.filter(sender=request.user, recipient=recipient).order_by('-timestamp').first()
-            if last_message and last_message.content == content and (timezone.now() - last_message.timestamp).seconds < 10:
-                return JsonResponse({'status': 'error', 'message': '同じメッセージが連続して送信されました'}, status=400)
-            
-            # メッセージを作成
             message = Message.objects.create(
+                conversation=conversation,
                 sender=request.user,
-                recipient=recipient,
+                recipient=recipient,  # 受信者を設定
                 content=content,
-                conversation=conversation
+                is_read=False
             )
             
-            # 会話の更新日時を更新
-            conversation.save()  # updated_at が自動的に更新される
+            # 会話の最終更新時間を更新
+            conversation.save()  # auto_now=Trueフィールドを更新
+            
+            # 新しいメッセージを通知
+            notify_new_message(request.user, recipient, message)
             
             return JsonResponse({
                 'status': 'success',
-                'conversation_id': conversation.id,
                 'message': {
                     'id': message.id,
                     'content': message.content,
-                    'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-                    'is_read': message.is_read
+                    'timestamp': message.timestamp.isoformat(),
+                    'sender_name': message.sender.username,
+                    'is_mine': True
                 }
             })
-            
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': '無効なJSONデータ'}, status=400)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-    
-    return JsonResponse({'status': 'error', 'message': 'POSTメソッドのみ許可されています'}, status=405)
+        return JsonResponse({'status': 'error', 'message': 'メッセージを入力してください。'})
+    return JsonResponse({'status': 'error', 'message': '不正なリクエストです。'})
 
 @login_required
 def get_messages(request, conversation_id):
@@ -312,3 +297,87 @@ def get_unread_messages(request):
             'message': f'未読メッセージの取得中にエラーが発生しました: {str(e)}',
             'unread_messages': []
         }, status=200)
+
+def message_stream(request):
+    """Server-Sent Eventsエンドポイント"""
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden("認証が必要です")
+    
+    def event_stream():
+        user_id = request.user.id
+        queue = []  # シンプルなリストを使用
+        
+        # ユーザーのキューを登録
+        with message_lock:
+            message_queues[user_id] = queue
+        
+        try:
+            while True:
+                # キューにメッセージがあれば送信
+                with message_lock:
+                    if queue:
+                        message = queue.pop(0)
+                        yield f"data: {json.dumps(message)}\n\n"
+                    else:
+                        yield ": keepalive\n\n"  # キープアライブ
+                
+                # 少し待機
+                time.sleep(0.5)
+        
+        finally:
+            # クリーンアップ
+            with message_lock:
+                if user_id in message_queues:
+                    del message_queues[user_id]
+    
+    response = StreamingHttpResponse(
+        event_stream(),
+        content_type='text/event-stream'
+    )
+    response['Cache-Control'] = 'no-cache'
+    response['X-Accel-Buffering'] = 'no'
+    return response
+
+def notify_new_message(sender, recipient, message):
+    """新しいメッセージを受信したユーザーに通知"""
+    print(f"=== 新メッセージ通知 ===")
+    print(f"送信者: {sender.username} (ID: {sender.id})")
+    print(f"受信者: {recipient.username} (ID: {recipient.id})")
+    print(f"メッセージID: {message.id}")
+    print(f"会話ID: {message.conversation.id if message.conversation else 'なし'}")
+    
+    # 安全に会話IDを取得
+    conversation_id = None
+    if message.conversation:
+        conversation_id = message.conversation.id
+    else:
+        # 会話がない場合は取得または作成
+        print(f"会話オブジェクトがないため作成します")
+        conversation = Conversation.get_or_create_conversation(sender, recipient)
+        conversation_id = conversation.id
+        # メッセージに会話を関連付け
+        message.conversation = conversation
+        message.save()
+        print(f"会話を作成しました（ID: {conversation_id}）")
+    
+    notification_data = {
+        'type': 'new_message',
+        'data': {
+            'sender_id': sender.id,
+            'sender_name': sender.username,
+            'sender_avatar': sender.profile.avatar_url if hasattr(sender, 'profile') and hasattr(sender.profile, 'avatar_url') else None,
+            'conversation_id': conversation_id,
+            'content': message.content,
+            'timestamp': timezone.now().isoformat()
+        }
+    }
+    
+    # 受信者のキューにメッセージを追加
+    with message_lock:
+        if recipient.id in message_queues:
+            print(f"メッセージキューが存在します。通知を追加します。")
+            message_queues[recipient.id].append(notification_data)
+        else:
+            print(f"メッセージキューが存在しません。通知は保存されません。")
+    
+    print(f"通知処理完了")

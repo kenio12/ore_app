@@ -302,185 +302,107 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // メッセージコンテナ
-    const messagesContainer = document.getElementById('messagesContainer');
-    
-    // フォーム送信処理
     const messageForm = document.getElementById('messageForm');
     const messageContent = document.getElementById('messageContent');
-    
-    // イベントリスナーが重複登録されないように属性でチェック
-    if (messageForm.hasAttribute('data-has-listener')) {
-        return;
-    }
-    messageForm.setAttribute('data-has-listener', 'true');
-    
-    // 会話ID（URLから取得）
-    const pathParts = window.location.pathname.split('/');
-    let conversationId = pathParts[pathParts.indexOf('chats') + 1];
-    
-    // 新規会話の場合は会話IDをnullにする
-    if (conversationId === 'new') {
-        conversationId = null;
-    }
-    
-    // 相手のユーザーID
-    const otherUserId = {{ other_user.id }};
-    
-    // 最初にスクロールを一番下に
-    scrollToBottom();
-    
-    // 初期表示用のメッセージのうち、最後のメッセージのIDを保持
-    let lastMessageId = null;
-    const initialMessages = document.querySelectorAll('.message-wrapper');
-    if (initialMessages.length > 0) {
-        lastMessageId = parseInt(initialMessages[initialMessages.length - 1].dataset.messageId);
-    }
+    const messagesContainer = document.getElementById('messagesContainer');
+    const conversationId = {{ conversation.id }};  // 会話IDを取得
+    let lastMessageId = getLastMessageId();
     
     // Enterキーで送信（Shift+Enterで改行）
     messageContent.addEventListener('keydown', function(e) {
-        // キー入力時には常にスクロールはせず、Enterキーの場合のみ対応
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            
-            // 内容があるときだけ送信処理を実行（空文字チェック）
             const content = messageContent.value.trim();
             if (content) {
-                // 入力内容を一時変数に保存
-                const messageToSend = content;
-                
-                // 先に入力欄を強制的にクリア
-                clearMessageInput(true);
-                
-                // クリアした後にメッセージを送信
-                setTimeout(() => {
-                    sendMessage(messageToSend);
-                }, 0);
+                messageForm.dispatchEvent(new Event('submit'));
             }
-            
             return false;
         }
     });
     
-    // メッセージ送信処理 - 不要な重複送信を防止
+    // メッセージ送信処理
     messageForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
         const content = messageContent.value.trim();
         if (!content) return;
         
-        // 入力内容を一時変数に保存
-        const messageToSend = content;
+        const formData = new FormData();
+        formData.append('content', content);
         
-        // 先に入力欄を強制的にクリア
-        clearMessageInput(true);
-        
-        // クリアした後にメッセージを送信
-        setTimeout(() => {
-            sendMessage(messageToSend);
-        }, 0);
-    });
-    
-    // メッセージ送信関数
-    function sendMessage(content) {
-        // 送信中の重複防止フラグ
-        if (sendMessage.isSending) return;
-        sendMessage.isSending = true;
-        
-        // 送信前に内容を再確認（空なら送信しない）
-        content = content.trim();
-        if (!content) {
-            sendMessage.isSending = false;
-            return;
-        }
-        
-        fetch('{% url "chats:send_message" %}', {
+        fetch(`/chats/api/send-message/${conversationId}/`, {  // URLを修正
             method: 'POST',
+            body: formData,
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCsrfToken()
-            },
-            body: JSON.stringify({
-                recipient_id: otherUserId,
-                content: content
-            })
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
         })
         .then(response => response.json())
         .then(data => {
-            // 送信完了したのでフラグを戻す
-            sendMessage.isSending = false;
-            
             if (data.status === 'success') {
-                // 新規会話の場合、会話IDを更新
-                if (!conversationId && data.conversation_id) {
-                    conversationId = data.conversation_id;
-                    // URLを更新（オプション）
-                    const newUrl = `/chats/${conversationId}/`;
-                    window.history.replaceState({}, '', newUrl);
-                }
-                
-                // 自分のメッセージを即時表示
-                addMessage({
-                    id: data.message.id,
-                    sender_id: {{ request.user.id }},
-                    sender_name: '{{ request.user.username }}',
-                    content: data.message.content,
-                    timestamp: data.message.timestamp,
-                    is_mine: true
-                });
-                
-                // スクロールを一番下に - 少し遅延させることでDOM更新後に実行
-                setTimeout(() => {
-                    scrollToBottom();
-                }, 10);
-                
-                // 最後のメッセージIDを更新
-                lastMessageId = data.message.id;
-            } else {
-                console.error('メッセージ送信エラー:', data.message);
+                messageContent.value = '';
+                // テキストエリアの高さをリセット
+                messageContent.style.height = 'auto';
+                // 必要に応じて新しいメッセージを表示
+                appendMessage(data.message, true);
+                scrollToBottom();
             }
         })
         .catch(error => {
-            // エラー時もフラグを戻す
-            sendMessage.isSending = false;
             console.error('メッセージ送信エラー:', error);
         });
+    });
+    
+    // 自動スクロール
+    function scrollToBottom() {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
     
-    // 新しいメッセージをポーリングで取得
-    function pollNewMessages() {
-        // 会話IDがない場合はポーリングしない
-        if (!conversationId) {
-            return;
+    // 最後のメッセージIDを取得
+    function getLastMessageId() {
+        const messages = document.querySelectorAll('.message-wrapper');
+        if (messages.length > 0) {
+            return messages[messages.length - 1].dataset.messageId;
         }
+        return null;
+    }
+    
+    // 新しいメッセージを追加
+    function appendMessage(message, isMine = false) {
+        const wrapper = document.createElement('div');
+        wrapper.className = `message-wrapper ${isMine ? 'message-out' : 'message-in'}`;
+        wrapper.dataset.messageId = message.id;
         
-        let url = `/chats/api/get-messages/${conversationId}/`;
-        if (lastMessageId) {
-            url += `?last_id=${lastMessageId}`;
-        }
+        const time = new Date(message.timestamp).toLocaleString('ja-JP', {
+            month: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
         
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    console.error('メッセージ取得エラー:', response.status);
-                    return { status: 'error', messages: [] };
-                }
-                return response.json();
-            })
+        wrapper.innerHTML = `
+            <div class="message-bubble">
+                ${message.content}
+            </div>
+            <div class="message-info">
+                <small class="message-time">${time}</small>
+                ${isMine ? '<span class="message-status"><i class="bi bi-check"></i></span>' : ''}
+            </div>
+        `;
+        
+        messagesContainer.appendChild(wrapper);
+    }
+    
+    // 定期的に新しいメッセージをチェック
+    function checkNewMessages() {
+        fetch(`/chats/api/get-messages/${conversationId}/?last_id=${lastMessageId || ''}`)
+            .then(response => response.json())
             .then(data => {
-                if (data.status === 'success' && data.messages && data.messages.length > 0) {
-                    const wasAtBottom = isScrolledToBottom();
-                    
-                    // 新しいメッセージを追加
+                if (data.status === 'success' && data.messages.length > 0) {
                     data.messages.forEach(message => {
-                        addMessage(message);
-                        lastMessageId = Math.max(lastMessageId || 0, message.id);
+                        appendMessage(message, message.is_mine);
                     });
-                    
-                    // 前回スクロールが一番下にあった場合のみ、自動スクロール
-                    if (wasAtBottom) {
-                        scrollToBottom();
-                    }
+                    lastMessageId = data.messages[data.messages.length - 1].id;
+                    scrollToBottom();
                 }
             })
             .catch(error => {
@@ -488,133 +410,132 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
-    // メッセージ要素を追加
-    function addMessage(message) {
-        const messageWrapper = document.createElement('div');
-        messageWrapper.className = `message-wrapper ${message.is_mine ? 'message-out' : 'message-in'}`;
-        messageWrapper.dataset.messageId = message.id;
-        
-        const time = new Date(message.timestamp);
-        const formattedTime = `${time.getMonth() + 1}/${time.getDate()} ${time.getHours()}:${String(time.getMinutes()).padStart(2, '0')}`;
-        
-        messageWrapper.innerHTML = `
-            <div class="message-bubble">
-                ${message.content}
-            </div>
-            <div class="message-info">
-                <small class="message-time">${formattedTime}</small>
-                ${message.is_mine ? `
-                    <span class="message-status">
-                        <i class="bi bi-check"></i>
-                    </span>
-                ` : ''}
-            </div>
-        `;
-        
-        // メッセージを追加
-        messagesContainer.appendChild(messageWrapper);
-        
-        // スクロールが必要かどうかを確認してから実行
-        if (isScrolledNearBottom()) {
-            scrollToBottom();
-        }
-    }
+    // 初期スクロール
+    scrollToBottom();
     
-    // スクロールが一番下または近いところにあるかチェック
-    function isScrolledNearBottom() {
-        return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 150;
-    }
+    // 定期的なメッセージチェックを設定
+    const checkInterval = setInterval(checkNewMessages, 3000);
     
-    // スクロールが一番下にあるかチェック
-    function isScrolledToBottom() {
-        return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 50;
-    }
+    // ページを離れる時にインターバルをクリア
+    window.addEventListener('beforeunload', () => {
+        clearInterval(checkInterval);
+    });
     
-    // スクロールを一番下に移動
-    function scrollToBottom() {
-        // Safari対応のためのスクロール処理
-        try {
-            // 手法1: 直接値を設定
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            // 手法2: 最後の要素に移動（Safari用）
-            const messages = messagesContainer.querySelectorAll('.message-wrapper');
-            if (messages.length > 0) {
-                const lastMessage = messages[messages.length - 1];
-                lastMessage.scrollIntoView({ behavior: 'auto', block: 'end' });
-            }
-        } catch (e) {
-            console.error('スクロールエラー:', e);
-        }
-    }
-    
-    // CSRFトークン取得
-    function getCsrfToken() {
-        return document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-    }
-    
-    // 定期的にメッセージをポーリング（5秒ごと）
-    setInterval(pollNewMessages, 5000);
-    
-    // 入力欄のサイズ自動調整
-    messageContent.addEventListener('input', function(e) {
-        // 高さのみ自動調整（表示処理は行わない）
+    // テキストエリアの高さを自動調整
+    messageContent.addEventListener('input', function() {
         this.style.height = 'auto';
-        this.style.height = (this.scrollHeight < 120 ? this.scrollHeight : 120) + 'px';
-        
-        // スクロールが必要な場合のみスクロール実行
-        if (isScrolledNearBottom()) {
-            scrollToBottom();
-        }
-        
-        // 入力中のテキストが誤って表示されるのを防止
-        e.stopPropagation();
+        this.style.height = (this.scrollHeight) + 'px';
     });
+});
 
-    // テキストエリアにフォーカスが当たったときの処理
-    messageContent.addEventListener('focus', function() {
-        // フォーカス時の特別な処理（必要に応じて）
-        this.setAttribute('data-is-focused', 'true');
-        
-        // フォーカス時にもスクロールが必要な場合のみ実行
-        if (isScrolledNearBottom()) {
-            scrollToBottom();
-        }
-        
-        // フォーカス時に内容が残っていた場合のクリア処理（オプション）
-        if (this.value.trim() && this.getAttribute('data-should-clear') === 'true') {
-            this.value = '';
-            this.removeAttribute('data-should-clear');
-        }
-    });
+// ユーザーのアクティビティを管理するクラス
+class UserActivityManager {
+    constructor(inactivityTimeout = 900000) { // デフォルトは15分
+        this.inactivityTimeout = inactivityTimeout;
+        this.lastActivityTime = Date.now();
+        this.isActive = true;
+        this.eventSource = null;
+        this.activityTimer = null;
+        this.setupEventListeners();
+    }
 
-    // テキストエリアからフォーカスが外れたときの処理
-    messageContent.addEventListener('blur', function() {
-        // フォーカスが外れた時の特別な処理
-        this.removeAttribute('data-is-focused');
-    });
-    
-    // フォームのリセット処理を追加
-    function clearMessageInput(force = false) {
-        messageContent.value = '';
-        messageContent.style.height = 'auto';
-        
-        if (force) {
-            // 次回フォーカス時にクリアする必要があることをマーク
-            messageContent.setAttribute('data-should-clear', 'true');
-        }
-        
-        // 一度要素から離して再度追加する（極端な対策だが確実）
-        if (force) {
-            const parent = messageContent.parentNode;
-            const nextSibling = messageContent.nextSibling;
-            parent.removeChild(messageContent);
-            setTimeout(() => {
-                parent.insertBefore(messageContent, nextSibling);
-                messageContent.focus();
-            }, 0);
+    setupEventListeners() {
+        // ユーザーのアクティビティを検知
+        const activityEvents = ['mousedown', 'keydown', 'touchstart', 'scroll'];
+        activityEvents.forEach(eventType => {
+            document.addEventListener(eventType, () => this.updateActivity());
+        });
+
+        // タブの表示状態変更を検知
+        document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
+
+        // 定期的にアクティビティをチェック
+        this.activityTimer = setInterval(() => this.checkActivity(), 60000); // 1分ごとにチェック
+    }
+
+    updateActivity() {
+        this.lastActivityTime = Date.now();
+        if (!this.isActive) {
+            this.isActive = true;
+            this.reconnectEventSource();
         }
     }
+
+    checkActivity() {
+        const currentTime = Date.now();
+        if (currentTime - this.lastActivityTime > this.inactivityTimeout) {
+            this.isActive = false;
+            this.disconnectEventSource();
+        }
+    }
+
+    handleVisibilityChange() {
+        if (document.hidden) {
+            this.disconnectEventSource();
+        } else {
+            this.reconnectEventSource();
+        }
+    }
+
+    disconnectEventSource() {
+        if (this.eventSource) {
+            this.eventSource.close();
+            this.eventSource = null;
+            console.log('チャット接続を切断しました');
+        }
+    }
+
+    reconnectEventSource() {
+        if (!this.eventSource && this.isActive) {
+            this.setupEventSource();
+            console.log('チャット接続を再開しました');
+        }
+    }
+
+    setupEventSource() {
+        try {
+            this.eventSource = new EventSource('/chats/api/message-stream/');
+            
+            this.eventSource.onmessage = (event) => {
+                try {
+                    const message = JSON.parse(event.data);
+                    if (message && message.type === 'new_message') {
+                        // メッセージ受信時の処理
+                        this.handleNewMessage(message.data);
+                    }
+                } catch (parseError) {
+                    console.error('メッセージの解析に失敗:', parseError);
+                }
+            };
+            
+            this.eventSource.onerror = (error) => {
+                console.error('SSE接続エラー:', error);
+                this.disconnectEventSource();
+            };
+        } catch (error) {
+            console.error('EventSource初期化エラー:', error);
+        }
+    }
+
+    handleNewMessage(messageData) {
+        // ここにメッセージ受信時の処理を実装
+        // 例: メッセージの表示更新など
+    }
+
+    cleanup() {
+        this.disconnectEventSource();
+        clearInterval(this.activityTimer);
+    }
+}
+
+// ページ読み込み時にアクティビティマネージャーを初期化
+document.addEventListener('DOMContentLoaded', () => {
+    const activityManager = new UserActivityManager();
+    
+    // ページを離れる時のクリーンアップ
+    window.addEventListener('beforeunload', () => {
+        activityManager.cleanup();
+    });
 });
 </script>
 {% endblock %} 
