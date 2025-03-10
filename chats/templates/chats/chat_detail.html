@@ -16,6 +16,31 @@
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-lg-8">
+            <!-- 非アクティブ通知モーダル -->
+            <div class="modal fade" id="inactiveModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content cyber-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title cyber-title">チャット接続が切断されました</h5>
+                        </div>
+                        <div class="modal-body">
+                            <p>15分間操作がなかったため、チャット接続を切断しました。</p>
+                            <p>下のボタンをクリックしてチャットを再開できます。</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-cyber-primary" id="restartChatBtn">チャットを再開</button>
+                            <button type="button" class="btn btn-cyber-secondary" data-bs-dismiss="modal">閉じる</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- チャットステータス表示 -->
+            <div id="chatStatus" class="chat-status-banner" style="display: none;">
+                <i class="bi bi-exclamation-circle"></i> 
+                <span id="chatStatusText">チャット接続が切断されました</span>
+            </div>
+            
             <div class="card cyber-card chat-container">
                 <div class="card-header chat-header">
                     <div class="d-flex align-items-center justify-content-between">
@@ -298,6 +323,46 @@
     50% { opacity: 0.8; }
     100% { opacity: 0.5; }
 }
+
+/* サイバーパンク風のモーダル */
+.cyber-modal {
+    background: rgba(20, 20, 40, 0.95);
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+}
+
+.cyber-modal .modal-header {
+    border-bottom: 1px solid rgba(0, 123, 255, 0.5);
+    background: rgba(10, 15, 35, 0.9);
+}
+
+.cyber-modal .modal-footer {
+    border-top: 1px solid rgba(0, 123, 255, 0.5);
+    background: rgba(10, 15, 35, 0.9);
+}
+
+/* チャットステータスバナー */
+.chat-status-banner {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.5);
+    color: #ff3333;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
 </style>
 
 <script>
@@ -305,8 +370,113 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageForm = document.getElementById('messageForm');
     const messageContent = document.getElementById('messageContent');
     const messagesContainer = document.getElementById('messagesContainer');
-    const conversationId = {{ conversation.id }};  // 会話IDを取得
+    const conversationId = {{ conversation.id }};
+    const chatStatus = document.getElementById('chatStatus');
+    const chatStatusText = document.getElementById('chatStatusText');
     let lastMessageId = getLastMessageId();
+    let checkInterval = null;
+    let isActive = true;
+    // 表示済みメッセージを管理するSet
+    const displayedMessages = new Set();
+    
+    // Bootstrap モーダルの初期化
+    const inactiveModal = new bootstrap.Modal(document.getElementById('inactiveModal'));
+    
+    // アクティビティ管理クラス
+    class ChatActivityManager {
+        constructor(timeout = 900000) { // 15分
+            this.timeout = timeout;
+            this.lastActivity = Date.now();
+            this.checkTimer = null;
+            this.setupEventListeners();
+            this.startMessageChecking();
+        }
+        
+        setupEventListeners() {
+            const events = ['mousedown', 'keydown', 'touchstart', 'scroll'];
+            events.forEach(event => {
+                document.addEventListener(event, () => this.handleActivity());
+            });
+            
+            // タブの表示状態変更を検知
+            document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
+            
+            // 1分ごとにアクティビティをチェック
+            this.checkTimer = setInterval(() => this.checkActivity(), 60000);
+        }
+
+        handleVisibilityChange() {
+            if (document.hidden) {
+                // バックグラウンドになっても即切断はしない
+                // 最後のアクティビティ時間は更新しない（15分カウントは継続）
+                chatStatus.style.display = 'flex';
+                chatStatusText.textContent = 'タブがバックグラウンドです。15分以上操作がない場合は接続が切断されます';
+            } else {
+                // タブがアクティブに戻った時
+                this.handleActivity();
+                chatStatus.style.display = 'none';
+            }
+        }
+        
+        handleActivity() {
+            // 操作があっても自動再開しない
+            this.lastActivity = Date.now();
+        }
+        
+        checkActivity() {
+            const inactive = Date.now() - this.lastActivity > this.timeout;
+            if (inactive && isActive) {
+                this.disconnect();
+            }
+        }
+        
+        disconnect() {
+            isActive = false;
+            if (checkInterval) {
+                clearInterval(checkInterval);
+                checkInterval = null;
+            }
+            
+            // 非アクティブ通知を表示
+            chatStatus.style.display = 'flex';
+            chatStatusText.textContent = '15分間操作がなかったため、チャット接続を切断されました。再開するにはボタンをクリックしてください。';
+            inactiveModal.show();
+        }
+        
+        reconnect() {
+            isActive = true;
+            this.lastActivity = Date.now();
+            this.startMessageChecking();
+            
+            // 接続再開通知（3秒後に消える）
+            chatStatus.style.display = 'flex';
+            chatStatus.style.background = 'rgba(0, 255, 0, 0.2)';
+            chatStatus.style.borderColor = 'rgba(0, 255, 0, 0.5)';
+            chatStatusText.style.color = '#00ff00';
+            chatStatusText.textContent = 'チャット接続を再開しました';
+            setTimeout(() => {
+                chatStatus.style.display = 'none';
+            }, 3000);
+        }
+        
+        startMessageChecking() {
+            if (!checkInterval) {
+                checkInterval = setInterval(checkNewMessages, 3000);
+            }
+        }
+        
+        cleanup() {
+            if (this.checkTimer) {
+                clearInterval(this.checkTimer);
+            }
+            if (checkInterval) {
+                clearInterval(checkInterval);
+            }
+        }
+    }
+    
+    // アクティビティマネージャーの初期化
+    const activityManager = new ChatActivityManager();
     
     // Enterキーで送信（Shift+Enterで改行）
     messageContent.addEventListener('keydown', function(e) {
@@ -329,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData();
         formData.append('content', content);
         
-        fetch(`/chats/api/send-message/${conversationId}/`, {  // URLを修正
+        fetch(`/chats/api/send-message/${conversationId}/`, {
             method: 'POST',
             body: formData,
             headers: {
@@ -340,10 +510,10 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.status === 'success') {
                 messageContent.value = '';
-                // テキストエリアの高さをリセット
                 messageContent.style.height = 'auto';
-                // 必要に応じて新しいメッセージを表示
+                // 送信したメッセージを表示して、IDを記録
                 appendMessage(data.message, true);
+                lastMessageId = data.message.id;  // 最後のメッセージIDを更新
                 scrollToBottom();
             }
         })
@@ -368,6 +538,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 新しいメッセージを追加
     function appendMessage(message, isMine = false) {
+        // 既に表示済みのメッセージは表示しない
+        if (displayedMessages.has(message.id)) {
+            return;
+        }
+        
         const wrapper = document.createElement('div');
         wrapper.className = `message-wrapper ${isMine ? 'message-out' : 'message-in'}`;
         wrapper.dataset.messageId = message.id;
@@ -390,6 +565,8 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         messagesContainer.appendChild(wrapper);
+        // 表示済みとしてマーク
+        displayedMessages.add(message.id);
     }
     
     // 定期的に新しいメッセージをチェック
@@ -413,128 +590,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初期スクロール
     scrollToBottom();
     
-    // 定期的なメッセージチェックを設定
-    const checkInterval = setInterval(checkNewMessages, 3000);
-    
-    // ページを離れる時にインターバルをクリア
-    window.addEventListener('beforeunload', () => {
-        clearInterval(checkInterval);
-    });
-    
-    // テキストエリアの高さを自動調整
-    messageContent.addEventListener('input', function() {
-        this.style.height = 'auto';
-        this.style.height = (this.scrollHeight) + 'px';
-    });
-});
-
-// ユーザーのアクティビティを管理するクラス
-class UserActivityManager {
-    constructor(inactivityTimeout = 900000) { // デフォルトは15分
-        this.inactivityTimeout = inactivityTimeout;
-        this.lastActivityTime = Date.now();
-        this.isActive = true;
-        this.eventSource = null;
-        this.activityTimer = null;
-        this.setupEventListeners();
-    }
-
-    setupEventListeners() {
-        // ユーザーのアクティビティを検知
-        const activityEvents = ['mousedown', 'keydown', 'touchstart', 'scroll'];
-        activityEvents.forEach(eventType => {
-            document.addEventListener(eventType, () => this.updateActivity());
-        });
-
-        // タブの表示状態変更を検知
-        document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
-
-        // 定期的にアクティビティをチェック
-        this.activityTimer = setInterval(() => this.checkActivity(), 60000); // 1分ごとにチェック
-    }
-
-    updateActivity() {
-        this.lastActivityTime = Date.now();
-        if (!this.isActive) {
-            this.isActive = true;
-            this.reconnectEventSource();
-        }
-    }
-
-    checkActivity() {
-        const currentTime = Date.now();
-        if (currentTime - this.lastActivityTime > this.inactivityTimeout) {
-            this.isActive = false;
-            this.disconnectEventSource();
-        }
-    }
-
-    handleVisibilityChange() {
-        if (document.hidden) {
-            this.disconnectEventSource();
-        } else {
-            this.reconnectEventSource();
-        }
-    }
-
-    disconnectEventSource() {
-        if (this.eventSource) {
-            this.eventSource.close();
-            this.eventSource = null;
-            console.log('チャット接続を切断しました');
-        }
-    }
-
-    reconnectEventSource() {
-        if (!this.eventSource && this.isActive) {
-            this.setupEventSource();
-            console.log('チャット接続を再開しました');
-        }
-    }
-
-    setupEventSource() {
-        try {
-            this.eventSource = new EventSource('/chats/api/message-stream/');
-            
-            this.eventSource.onmessage = (event) => {
-                try {
-                    const message = JSON.parse(event.data);
-                    if (message && message.type === 'new_message') {
-                        // メッセージ受信時の処理
-                        this.handleNewMessage(message.data);
-                    }
-                } catch (parseError) {
-                    console.error('メッセージの解析に失敗:', parseError);
-                }
-            };
-            
-            this.eventSource.onerror = (error) => {
-                console.error('SSE接続エラー:', error);
-                this.disconnectEventSource();
-            };
-        } catch (error) {
-            console.error('EventSource初期化エラー:', error);
-        }
-    }
-
-    handleNewMessage(messageData) {
-        // ここにメッセージ受信時の処理を実装
-        // 例: メッセージの表示更新など
-    }
-
-    cleanup() {
-        this.disconnectEventSource();
-        clearInterval(this.activityTimer);
-    }
-}
-
-// ページ読み込み時にアクティビティマネージャーを初期化
-document.addEventListener('DOMContentLoaded', () => {
-    const activityManager = new UserActivityManager();
-    
     // ページを離れる時のクリーンアップ
     window.addEventListener('beforeunload', () => {
         activityManager.cleanup();
+    });
+    
+    // 再開ボタンのイベントリスナー
+    document.getElementById('restartChatBtn').addEventListener('click', () => {
+        activityManager.reconnect();
+        inactiveModal.hide();
     });
 });
 </script>
