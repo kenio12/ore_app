@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}ユーザーが見つかりません{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card cyber-card">
+                <div class="card-header">
+                    <h4 class="card-title text-danger"><i class="bi bi-exclamation-triangle"></i> ユーザーが見つかりません</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <p>ID {{ user_id }} のユーザーは存在しないか、削除された可能性があります。</p>
+                    </div>
+                    
+                    <p>以下をご確認ください：</p>
+                    <ul>
+                        <li>URLが正しく入力されているか</li>
+                        <li>アクセスしようとしたユーザーが実際に存在するか</li>
+                        <li>アカウントが削除されていないか</li>
+                    </ul>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'profiles:programmer_list' %}" class="btn btn-primary">
+                            <i class="bi bi-people"></i> プログラマー一覧に戻る
+                        </a>
+                        <a href="{% url 'home:home' %}" class="btn btn-secondary ms-2">
+                            <i class="bi bi-house"></i> ホームに戻る
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* サイバーパンク風の装飾 */
+.cyber-card {
+    background: rgba(10, 15, 30, 0.9);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
+}
+
+.card-title {
+    color: #ff3333 !important;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+.alert-danger {
+    background: rgba(30, 0, 0, 0.7);
+    border: 1px solid rgba(255, 0, 0, 0.4);
+}
+</style>
+{% endblock %} 

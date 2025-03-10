@@ -300,7 +300,7 @@
                                 {% elif profile.job_status == 'limited' %}
                                     <i class="bi bi-dash-circle"></i> 一部可
                                 {% else %}
-                                    非受注
+                                    <i class="bi bi-x-circle"></i> 非受注
                                 {% endif %}
                             </span>
                         </div>
@@ -319,6 +319,10 @@
                         </div>
                         <div class="col-md-8">
                             <h4 class="cyber-name">{{ user.username }}</h4>
+                            
+                            {% if not is_own_profile %}
+                                <small class="user-status online">オンライン</small>
+                            {% endif %}
                             
                             {% if is_own_profile %}
                             <p class="text-light">
@@ -355,6 +359,15 @@
                                             <i class="bi bi-twitter-x"></i> X
                                         </a>
                                     {% endif %}
+                                {% endif %}
+                                
+                                {% if not is_own_profile %}
+                                    <a href="{% url 'profiles:contact' user.id %}" class="btn btn-sm btn-outline-warning me-2" style="color: #ffff00; border-color: #ffff00; text-shadow: 0 0 5px #ffff00;">
+                                        <i class="bi bi-envelope"></i> メッセージ
+                                    </a>
+                                    <a href="{% url 'chats:new_chat' user.id %}" class="btn btn-sm btn-outline-warning" style="color: #ffff00; border-color: #ffff00; text-shadow: 0 0 5px #ffff00;">
+                                        <i class="bi bi-chat-text"></i> チャット
+                                    </a>
                                 {% endif %}
                             </div>
                         </div>
@@ -973,8 +986,11 @@
                             <i class="bi bi-pencil-square"></i> プロフィールを編集
                         </a>
                     {% else %}
-                        <a href="{% url 'profiles:contact' user.id %}" class="btn btn-cyber-primary">
-                            <i class="bi bi-chat-text"></i> コンタクトする
+                        <a href="{% url 'profiles:contact' user.id %}" class="btn btn-cyber-primary me-2">
+                            <i class="bi bi-envelope"></i> メッセージを送る
+                        </a>
+                        <a href="{% url 'chats:new_chat' user.id %}" class="btn btn-cyber-primary">
+                            <i class="bi bi-chat-text"></i> チャットを始める
                         </a>
                     {% endif %}
                     <a href="javascript:history.back()" class="btn btn-cyber-secondary ms-2">
@@ -1623,10 +1639,11 @@
 
 .cyber-badge-unavailable {
     background: rgba(40, 0, 0, 0.7) !important;
-    color: var(--cyber-red) !important;
-    border: 1px solid var(--cyber-red) !important;
-    text-shadow: 0 0 5px var(--cyber-red) !important;
-    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3) !important;
+    color: #ff5555 !important; /* より明るい赤色に変更 */
+    border: 1px solid #ff5555 !important;
+    text-shadow: 0 0 5px #ff5555 !important;
+    box-shadow: 0 0 10px rgba(255, 85, 85, 0.5) !important; /* シャドウも強く */
+    font-weight: bold; /* テキストを太字に */
 }
 
 /* 本人のみ表示バッジ */
@@ -1805,6 +1822,31 @@
 .month-bar {
     background-color: #ffff00 !important;
     box-shadow: 0 0 8px rgba(255, 255, 0, 0.7) !important;
+}
+
+/* オンライン状態表示 */
+.user-status {
+    font-size: 0.8rem;
+    color: #00ff00;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.user-status:before {
+    content: "•";
+    margin-right: 3px;
+}
+
+.user-status.online {
+    color: #00ff00;
+}
+
+.user-status.offline {
+    color: #ff5555;
+}
+
+.user-status.away {
+    color: #ffaa00;
 }
 </style>
 

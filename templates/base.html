@@ -63,6 +63,55 @@
         box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);
         transform: translateY(-2px);
     }
+    
+    /* チャット通知スタイル */
+    .cyber-toast {
+        background: rgba(0, 123, 255, 0.8);
+        border: 1px solid rgba(0, 255, 255, 0.6);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    }
+    
+    .cyber-toast .chat-avatar {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .cyber-toast .avatar-placeholder {
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(45deg, #2a5298, #1e3c72);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+    
+    .cyber-toast .sender-name {
+        color: #00ffff;
+        text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    }
+    
+    /* チャット通知のボタンスタイル */
+    .cyber-toast .btn {
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+    }
+    
+    .cyber-toast .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    
+    .cyber-toast .chat-reply-btn:hover {
+        background: rgba(0, 255, 255, 0.3) !important;
+    }
+
+    .cyber-toast .block-user-btn:hover {
+        background: rgba(255, 80, 80, 0.3) !important;
+        box-shadow: 0 0 10px rgba(255, 80, 80, 0.3);
+    }
     </style>
 </head>
 <body style="background-color: #121212; color: #ffffff;">
@@ -70,6 +119,38 @@
         {% include 'includes/navbar.html' %}
     {% endblock %}
     
+    <!-- チャット通知コンポーネント -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        <div id="chatNotification" class="toast align-items-center text-white cyber-toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex flex-column">
+                <div class="toast-body pb-0">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="chat-avatar me-2">
+                            <div class="avatar-placeholder rounded-circle">
+                                <i class="bi bi-person"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <strong class="sender-name"></strong>が、チャットで話しかけています
+                        </div>
+                    </div>
+                    <div class="mt-2 pt-2 border-top d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-sm block-user-btn" style="background: rgba(255, 80, 80, 0.2); color: #ff5050; border: 1px solid #ff5050;">
+                            <i class="bi bi-x-circle"></i> 拒絶する
+                        </button>
+                        <button type="button" class="btn btn-sm me-2" data-bs-dismiss="toast" style="background: rgba(255, 255, 255, 0.1); color: white;">
+                            あとで
+                        </button>
+                        <button type="button" class="btn btn-sm chat-reply-btn" style="background: rgba(0, 255, 255, 0.2); color: #00ffff; border: 1px solid #00ffff;">
+                            返信する
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% block messages %}
     {% if messages %}
     <div class="container mt-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -88,6 +169,7 @@
         {% endfor %}
     </div>
     {% endif %}
+    {% endblock %}
     
     {% block content %}
     {% endblock %}
@@ -117,5 +199,168 @@
         }
     });
     </script>
+
+    {% if user.is_authenticated %}
+    <!-- チャット通知スクリプト -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // デバッグモード（エラー時の詳細表示）
+        const DEBUG = true;
+        
+        // 最終チェック時間
+        let lastCheckedTimestamp = new Date().toISOString();
+        
+        // 一時的なブロックリストを保持する変数（ページを閉じると消えます）
+        let temporaryBlockedUsers = new Set();
+        
+        // ユーザーを一時的にブロックする関数
+        function blockUserTemporarily(userId) {
+            temporaryBlockedUsers.add(userId);
+            if (DEBUG) console.log('ユーザーを一時的にブロックしました:', userId);
+        }
+
+        // ユーザーが一時的にブロックされているかチェックする関数
+        function isUserTemporarilyBlocked(userId) {
+            return temporaryBlockedUsers.has(userId);
+        }
+        
+        // 通知トースト要素
+        const chatNotification = document.getElementById('chatNotification');
+        if (!chatNotification) {
+            console.error('通知要素が見つかりません');
+            return;
+        }
+        
+        // Bootstrap Toastオブジェクト初期化
+        let chatToast = new bootstrap.Toast(chatNotification, {
+            animation: true,
+            delay: 30000,  // 30秒に延長
+            autohide: true
+        });
+        
+        // 通知を表示する関数
+        function showChatNotification(message) {
+            if (DEBUG) console.log('通知を表示します:', message);
+            
+            // メッセージの検証
+            if (!message || !message.sender_name) {
+                console.error('無効なメッセージデータ:', message);
+                return;
+            }
+
+            // ブロックされたユーザーからのメッセージはスキップ
+            if (isUserTemporarilyBlocked(message.sender_id)) {
+                if (DEBUG) console.log('一時的にブロックされたユーザーからのメッセージをスキップします:', message.sender_name);
+                return;
+            }
+            
+            // 現在のページがチャットページなら通知しない
+            if (window.location.pathname.includes('/chats/') && 
+                !window.location.pathname.includes('/chats/list/')) {
+                if (DEBUG) console.log('チャットページなので通知をスキップします');
+                return;
+            }
+            
+            try {
+                // 通知の内容を設定
+                const senderNameElement = chatNotification.querySelector('.sender-name');
+                if (senderNameElement) {
+                    senderNameElement.textContent = message.sender_name;
+                }
+                
+                // アバターを設定（あれば）
+                const avatarElement = chatNotification.querySelector('.chat-avatar');
+                if (avatarElement && message.sender_avatar) {
+                    avatarElement.innerHTML = `
+                        <img src="${message.sender_avatar}" 
+                             alt="${message.sender_name}" 
+                             class="rounded-circle" 
+                             style="width: 30px; height: 30px; object-fit: cover;">
+                    `;
+                }
+                
+                // 返信ボタンのクリックイベントを設定
+                const replyButton = chatNotification.querySelector('.chat-reply-btn');
+                if (replyButton) {
+                    replyButton.onclick = function() {
+                        window.location.href = `/chats/${message.conversation_id}/`;
+                    };
+                }
+
+                // 拒絶ボタンのクリックイベントを設定
+                const blockButton = chatNotification.querySelector('.block-user-btn');
+                if (blockButton) {
+                    blockButton.onclick = function() {
+                        if (DEBUG) console.log('ユーザーを一時的にブロックします:', message.sender_name);
+                        blockUserTemporarily(message.sender_id);
+                        chatToast.hide();
+                    };
+                }
+                
+                // 通知を表示
+                chatToast.show();
+                
+                if (DEBUG) console.log('通知を表示しました');
+                
+                // 音を鳴らす（オプション）
+                try {
+                    const audio = new Audio('/static/sounds/notification.mp3');
+                    audio.volume = 0.5;  // 音量を50%に設定
+                    audio.play().catch(e => {
+                        if (DEBUG) console.log('通知音の再生をスキップしました');
+                    });
+                } catch (e) {
+                    if (DEBUG) console.log('通知音の再生に失敗しました:', e);
+                }
+            } catch (error) {
+                console.error('通知表示エラー:', error);
+            }
+        }
+        
+        // 未読メッセージをチェックする関数
+        function checkUnreadMessages() {
+            if (DEBUG) console.log('未読メッセージのチェックを開始...');
+            
+            fetch('/chats/api/unread-messages/?since=' + encodeURIComponent(lastCheckedTimestamp))
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (DEBUG) console.log('APIレスポンス:', data);
+                    
+                    if (data.status === 'success' && data.unread_messages && data.unread_messages.length > 0) {
+                        if (DEBUG) console.log(`${data.unread_messages.length}件の未読メッセージがあります`);
+                        
+                        // 最新の未読メッセージを取得
+                        const latestMessage = data.unread_messages[data.unread_messages.length - 1];
+                        
+                        // 通知を表示
+                        showChatNotification(latestMessage);
+                        
+                        // 最終チェック時間を更新
+                        lastCheckedTimestamp = new Date().toISOString();
+                    }
+                })
+                .catch(error => {
+                    console.error('未読メッセージ取得エラー:', error);
+                });
+        }
+        
+        // 定期的に未読メッセージをチェック（10秒ごと）
+        const checkInterval = setInterval(checkUnreadMessages, 10000);
+        
+        // 初回チェック（2秒後）
+        setTimeout(checkUnreadMessages, 2000);
+        
+        // ページを離れるときにインターバルをクリア
+        window.addEventListener('beforeunload', () => {
+            clearInterval(checkInterval);
+        });
+    });
+    </script>
+    {% endif %}
 </body>
 </html>

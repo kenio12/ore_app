@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}プロフィールが見つかりません{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card cyber-card">
+                <div class="card-header">
+                    <h4 class="card-title text-warning"><i class="bi bi-exclamation-triangle"></i> プロフィールが見つかりません</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <p>{{ user.username }} さんのプロフィール情報はまだ登録されていないようです。</p>
+                    </div>
+                    
+                    <p>こんな理由が考えられます：</p>
+                    <ul>
+                        <li>ユーザーがまだプロフィール情報を設定していない</li>
+                        <li>プロフィール情報が削除された</li>
+                        <li>システムエラーによりプロフィール情報が表示できない</li>
+                    </ul>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'profiles:programmer_list' %}" class="btn btn-primary">
+                            <i class="bi bi-people"></i> プログラマー一覧に戻る
+                        </a>
+                        <a href="{% url 'home:home' %}" class="btn btn-secondary ms-2">
+                            <i class="bi bi-house"></i> ホームに戻る
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* サイバーパンク風の装飾 */
+.cyber-card {
+    background: rgba(10, 15, 30, 0.9);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.2);
+}
+
+.card-title {
+    color: #ffbb33 !important;
+    text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+}
+
+.alert-warning {
+    background: rgba(30, 25, 0, 0.7);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    color: #ffcc00;
+}
+</style>
+{% endblock %} 

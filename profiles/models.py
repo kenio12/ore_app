@@ -6,7 +6,11 @@ from django.utils import timezone
 import datetime
 
 class Profile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        primary_key=True  # ユーザーを主キーに設定
+    )
     avatar = models.JSONField(null=True, blank=True)
     bio = models.TextField('自己紹介', max_length=500, blank=True)
     social_github = models.CharField('GitHub', max_length=100, blank=True)

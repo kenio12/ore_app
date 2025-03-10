@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps_gallery.apps.AppsGalleryConfig',
     'dashboard.apps.DashboardConfig',
     'profiles.apps.ProfilesConfig',
+    'chats.apps.ChatsConfig',
 ]
 
 MIDDLEWARE = [
@@ -145,6 +146,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ログイン/ログアウト後のリダイレクト先を追加
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
 
 # メール設定（開発環境用）
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

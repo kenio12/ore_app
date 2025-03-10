@@ -27,8 +27,22 @@ def profile_detail(request):
 def user_profile_detail(request, user_id):
     """特定ユーザーのプロフィール詳細を表示"""
     User = get_user_model()
-    profile_user = get_object_or_404(User, id=user_id)
-    profile = get_object_or_404(Profile, user=profile_user)
+    
+    # ユーザーの取得方法を修正
+    try:
+        profile_user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        # エラーメッセージを追加
+        messages.error(request, f'ID {user_id} のユーザーは存在しません。')
+        return render(request, 'profiles/user_not_found.html', {'user_id': user_id}, status=404)
+    
+    # プロフィールの取得
+    try:
+        profile = Profile.objects.get(user=profile_user)
+    except Profile.DoesNotExist:
+        # プロフィールが存在しない場合
+        messages.warning(request, f'{profile_user.username} さんのプロフィール情報はまだ登録されていません。')
+        return render(request, 'profiles/profile_not_found.html', {'user': profile_user}, status=404)
     
     # テンプレートで使用するコンテキスト変数を設定
     is_own_profile = request.user.is_authenticated and request.user.id == user_id
@@ -404,7 +418,7 @@ def programmers_data(request):
         top_frameworks = list(dict.fromkeys(top_frameworks))
         
         profile_data = {
-            'id': profile.id,
+            'id': profile.user.id,
             'user_id': profile.user.id,
             'username': profile.user.username,
             'bio': profile.bio,
@@ -475,11 +489,29 @@ def contact_user(request, user_id):
 
 # セッションのメッセージを消去するビュー
 def clear_messages(request):
+    # すべてのメッセージを確実に削除
     storage = messages.get_messages(request)
+    
+    # ストレージからすべてのメッセージをクリア
     for message in storage:
-        pass  # メッセージをイテレートして消去
-    storage.used = True  # ストレージを使用済みとしてマーク
+        # 各メッセージを読み取って消去
+        pass
+    
+    # ストレージを明示的にクリア
+    storage.used = True
+    
+    # セッションから直接メッセージを削除（バックアップ対策）
+    if hasattr(request, '_messages'):
+        request._messages.used = True
+    
+    # セッションのメッセージ部分をクリア
+    if 'messages' in request.session:
+        del request.session['messages']
+    request.session.modified = True
     
     # リダイレクト先のURLを取得（デフォルトはホームページ）
     next_url = request.GET.get('next', '/')
     return redirect(next_url)
+
+# チャット関連のビューは chats アプリへ移行しました
+# 詳細は chats/views.py を参照してください

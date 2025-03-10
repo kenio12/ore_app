@@ -1,0 +1,620 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ other_user.username }}とのチャット{% endblock %}
+
+{% block messages %}
+<!-- チャット画面では通知を表示しない -->
+<!-- 通知を非表示にするためにemptyブロックでオーバーライド -->
+{% endblock %}
+
+{% block content %}
+<!-- サイバーパンク風の背景 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card cyber-card chat-container">
+                <div class="card-header chat-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <a href="{% url 'chats:chat_list' %}" class="btn btn-sm btn-dark me-3">
+                                <i class="bi bi-arrow-left"></i>
+                            </a>
+                            <div class="chat-avatar me-2">
+                                {% if other_user.profile.avatar_url %}
+                                    <img src="{{ other_user.profile.avatar_url }}" alt="{{ other_user.username }}" class="rounded-circle">
+                                {% else %}
+                                    <div class="avatar-placeholder rounded-circle">
+                                        {{ other_user.username|first }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h5 class="mb-0 cyber-title">{{ other_user.username }}</h5>
+                                <small class="user-status online">オンライン</small>
+                            </div>
+                        </div>
+                        <div>
+                            <a href="{% url 'profiles:user_profile_detail' other_user.id %}" class="btn btn-cyber-secondary btn-sm">
+                                <i class="bi bi-person"></i> プロフィール
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body chat-body">
+                    <div class="messages-container" id="messagesContainer">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="message-wrapper {% if message.sender == request.user %}message-out{% else %}message-in{% endif %}" data-message-id="{{ message.id }}">
+                                    <div class="message-bubble">
+                                        {{ message.content }}
+                                    </div>
+                                    <div class="message-info">
+                                        <small class="message-time">{{ message.timestamp|date:"m/d H:i" }}</small>
+                                        {% if message.sender == request.user %}
+                                            <span class="message-status">
+                                                {% if message.is_read %}
+                                                    <i class="bi bi-check-all"></i>
+                                                {% else %}
+                                                    <i class="bi bi-check"></i>
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center empty-chat">
+                                <i class="bi bi-chat-dots display-4"></i>
+                                <p class="mt-2">会話を始めましょう</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card-footer chat-footer">
+                    <form id="messageForm" class="d-flex">
+                        {% csrf_token %}
+                        <textarea class="form-control message-input" id="messageContent" placeholder="メッセージを入力..." rows="1"></textarea>
+                        <button type="submit" class="btn btn-cyber-primary ms-2 send-button">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.cyber-title {
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+
+.cyber-card {
+    background: rgba(20, 20, 40, 0.8);
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+    height: calc(100vh - 100px);
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    background: rgba(10, 15, 35, 0.9);
+    border-bottom: 1px solid rgba(0, 123, 255, 0.5);
+    padding: 10px 15px;
+}
+
+.user-status {
+    font-size: 0.8rem;
+    color: #00ff00;
+}
+
+.user-status:before {
+    content: "•";
+    margin-right: 3px;
+}
+
+.chat-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background: rgba(15, 20, 35, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.chat-footer {
+    background: rgba(10, 15, 35, 0.9);
+    border-top: 1px solid rgba(0, 123, 255, 0.5);
+    padding: 10px 15px;
+}
+
+.chat-avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.chat-avatar img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, #1e3c72, #2a5298);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.messages-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    overflow-y: auto;
+    scroll-behavior: auto;
+}
+
+.message-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+    margin-bottom: 15px;
+}
+
+.message-in {
+    align-self: flex-start;
+}
+
+.message-out {
+    align-self: flex-end;
+}
+
+.message-bubble {
+    padding: 10px 15px;
+    border-radius: 15px;
+    color: white;
+    word-wrap: break-word;
+}
+
+.message-in .message-bubble {
+    background: linear-gradient(45deg, rgba(0, 83, 175, 0.7), rgba(0, 123, 255, 0.7));
+    border-bottom-left-radius: 5px;
+}
+
+.message-out .message-bubble {
+    background: linear-gradient(45deg, rgba(0, 153, 170, 0.7), rgba(0, 204, 255, 0.7));
+    border-bottom-right-radius: 5px;
+}
+
+.message-info {
+    display: flex;
+    align-items: center;
+    margin-top: 3px;
+}
+
+.message-time {
+    font-size: 0.7rem;
+    color: #aaaaaa;
+}
+
+.message-status {
+    margin-left: 5px;
+    font-size: 0.8rem;
+    color: #aaaaaa;
+}
+
+.message-input {
+    background: rgba(30, 40, 60, 0.6);
+    color: white;
+    border: 1px solid rgba(0, 123, 255, 0.3);
+    resize: none;
+}
+
+.message-input:focus {
+    background: rgba(40, 50, 70, 0.7);
+    color: white;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.send-button {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.empty-chat {
+    color: #888888;
+    margin-top: 50px;
+}
+
+.empty-chat i {
+    color: #4477aa;
+}
+
+/* サイバーパンク風のボタン */
+.btn-cyber-primary {
+    background: rgba(0, 123, 255, 0.2);
+    color: #00ffff;
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.btn-cyber-primary:hover {
+    background: rgba(0, 123, 255, 0.3);
+    color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+}
+
+.btn-cyber-secondary {
+    background: rgba(100, 100, 100, 0.5);
+    color: #ffffff;
+    border: 1px solid rgba(200, 200, 200, 0.5);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.btn-cyber-secondary:hover {
+    background: rgba(120, 120, 120, 0.6);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);
+}
+
+/* サイバーパンク風の背景 */
+.cyber-background {
+    background: linear-gradient(45deg, #001e54, #0066cc);
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+/* アニメーション */
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // メッセージコンテナ
+    const messagesContainer = document.getElementById('messagesContainer');
+    
+    // フォーム送信処理
+    const messageForm = document.getElementById('messageForm');
+    const messageContent = document.getElementById('messageContent');
+    
+    // イベントリスナーが重複登録されないように属性でチェック
+    if (messageForm.hasAttribute('data-has-listener')) {
+        return;
+    }
+    messageForm.setAttribute('data-has-listener', 'true');
+    
+    // 会話ID（URLから取得）
+    const pathParts = window.location.pathname.split('/');
+    let conversationId = pathParts[pathParts.indexOf('chats') + 1];
+    
+    // 新規会話の場合は会話IDをnullにする
+    if (conversationId === 'new') {
+        conversationId = null;
+    }
+    
+    // 相手のユーザーID
+    const otherUserId = {{ other_user.id }};
+    
+    // 最初にスクロールを一番下に
+    scrollToBottom();
+    
+    // 初期表示用のメッセージのうち、最後のメッセージのIDを保持
+    let lastMessageId = null;
+    const initialMessages = document.querySelectorAll('.message-wrapper');
+    if (initialMessages.length > 0) {
+        lastMessageId = parseInt(initialMessages[initialMessages.length - 1].dataset.messageId);
+    }
+    
+    // Enterキーで送信（Shift+Enterで改行）
+    messageContent.addEventListener('keydown', function(e) {
+        // キー入力時には常にスクロールはせず、Enterキーの場合のみ対応
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            
+            // 内容があるときだけ送信処理を実行（空文字チェック）
+            const content = messageContent.value.trim();
+            if (content) {
+                // 入力内容を一時変数に保存
+                const messageToSend = content;
+                
+                // 先に入力欄を強制的にクリア
+                clearMessageInput(true);
+                
+                // クリアした後にメッセージを送信
+                setTimeout(() => {
+                    sendMessage(messageToSend);
+                }, 0);
+            }
+            
+            return false;
+        }
+    });
+    
+    // メッセージ送信処理 - 不要な重複送信を防止
+    messageForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const content = messageContent.value.trim();
+        if (!content) return;
+        
+        // 入力内容を一時変数に保存
+        const messageToSend = content;
+        
+        // 先に入力欄を強制的にクリア
+        clearMessageInput(true);
+        
+        // クリアした後にメッセージを送信
+        setTimeout(() => {
+            sendMessage(messageToSend);
+        }, 0);
+    });
+    
+    // メッセージ送信関数
+    function sendMessage(content) {
+        // 送信中の重複防止フラグ
+        if (sendMessage.isSending) return;
+        sendMessage.isSending = true;
+        
+        // 送信前に内容を再確認（空なら送信しない）
+        content = content.trim();
+        if (!content) {
+            sendMessage.isSending = false;
+            return;
+        }
+        
+        fetch('{% url "chats:send_message" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                recipient_id: otherUserId,
+                content: content
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // 送信完了したのでフラグを戻す
+            sendMessage.isSending = false;
+            
+            if (data.status === 'success') {
+                // 新規会話の場合、会話IDを更新
+                if (!conversationId && data.conversation_id) {
+                    conversationId = data.conversation_id;
+                    // URLを更新（オプション）
+                    const newUrl = `/chats/${conversationId}/`;
+                    window.history.replaceState({}, '', newUrl);
+                }
+                
+                // 自分のメッセージを即時表示
+                addMessage({
+                    id: data.message.id,
+                    sender_id: {{ request.user.id }},
+                    sender_name: '{{ request.user.username }}',
+                    content: data.message.content,
+                    timestamp: data.message.timestamp,
+                    is_mine: true
+                });
+                
+                // スクロールを一番下に - 少し遅延させることでDOM更新後に実行
+                setTimeout(() => {
+                    scrollToBottom();
+                }, 10);
+                
+                // 最後のメッセージIDを更新
+                lastMessageId = data.message.id;
+            } else {
+                console.error('メッセージ送信エラー:', data.message);
+            }
+        })
+        .catch(error => {
+            // エラー時もフラグを戻す
+            sendMessage.isSending = false;
+            console.error('メッセージ送信エラー:', error);
+        });
+    }
+    
+    // 新しいメッセージをポーリングで取得
+    function pollNewMessages() {
+        // 会話IDがない場合はポーリングしない
+        if (!conversationId) {
+            return;
+        }
+        
+        let url = `/chats/api/get-messages/${conversationId}/`;
+        if (lastMessageId) {
+            url += `?last_id=${lastMessageId}`;
+        }
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    console.error('メッセージ取得エラー:', response.status);
+                    return { status: 'error', messages: [] };
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success' && data.messages && data.messages.length > 0) {
+                    const wasAtBottom = isScrolledToBottom();
+                    
+                    // 新しいメッセージを追加
+                    data.messages.forEach(message => {
+                        addMessage(message);
+                        lastMessageId = Math.max(lastMessageId || 0, message.id);
+                    });
+                    
+                    // 前回スクロールが一番下にあった場合のみ、自動スクロール
+                    if (wasAtBottom) {
+                        scrollToBottom();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('メッセージ取得エラー:', error);
+            });
+    }
+    
+    // メッセージ要素を追加
+    function addMessage(message) {
+        const messageWrapper = document.createElement('div');
+        messageWrapper.className = `message-wrapper ${message.is_mine ? 'message-out' : 'message-in'}`;
+        messageWrapper.dataset.messageId = message.id;
+        
+        const time = new Date(message.timestamp);
+        const formattedTime = `${time.getMonth() + 1}/${time.getDate()} ${time.getHours()}:${String(time.getMinutes()).padStart(2, '0')}`;
+        
+        messageWrapper.innerHTML = `
+            <div class="message-bubble">
+                ${message.content}
+            </div>
+            <div class="message-info">
+                <small class="message-time">${formattedTime}</small>
+                ${message.is_mine ? `
+                    <span class="message-status">
+                        <i class="bi bi-check"></i>
+                    </span>
+                ` : ''}
+            </div>
+        `;
+        
+        // メッセージを追加
+        messagesContainer.appendChild(messageWrapper);
+        
+        // スクロールが必要かどうかを確認してから実行
+        if (isScrolledNearBottom()) {
+            scrollToBottom();
+        }
+    }
+    
+    // スクロールが一番下または近いところにあるかチェック
+    function isScrolledNearBottom() {
+        return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 150;
+    }
+    
+    // スクロールが一番下にあるかチェック
+    function isScrolledToBottom() {
+        return messagesContainer.scrollHeight - messagesContainer.clientHeight <= messagesContainer.scrollTop + 50;
+    }
+    
+    // スクロールを一番下に移動
+    function scrollToBottom() {
+        // Safari対応のためのスクロール処理
+        try {
+            // 手法1: 直接値を設定
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // 手法2: 最後の要素に移動（Safari用）
+            const messages = messagesContainer.querySelectorAll('.message-wrapper');
+            if (messages.length > 0) {
+                const lastMessage = messages[messages.length - 1];
+                lastMessage.scrollIntoView({ behavior: 'auto', block: 'end' });
+            }
+        } catch (e) {
+            console.error('スクロールエラー:', e);
+        }
+    }
+    
+    // CSRFトークン取得
+    function getCsrfToken() {
+        return document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    }
+    
+    // 定期的にメッセージをポーリング（5秒ごと）
+    setInterval(pollNewMessages, 5000);
+    
+    // 入力欄のサイズ自動調整
+    messageContent.addEventListener('input', function(e) {
+        // 高さのみ自動調整（表示処理は行わない）
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight < 120 ? this.scrollHeight : 120) + 'px';
+        
+        // スクロールが必要な場合のみスクロール実行
+        if (isScrolledNearBottom()) {
+            scrollToBottom();
+        }
+        
+        // 入力中のテキストが誤って表示されるのを防止
+        e.stopPropagation();
+    });
+
+    // テキストエリアにフォーカスが当たったときの処理
+    messageContent.addEventListener('focus', function() {
+        // フォーカス時の特別な処理（必要に応じて）
+        this.setAttribute('data-is-focused', 'true');
+        
+        // フォーカス時にもスクロールが必要な場合のみ実行
+        if (isScrolledNearBottom()) {
+            scrollToBottom();
+        }
+        
+        // フォーカス時に内容が残っていた場合のクリア処理（オプション）
+        if (this.value.trim() && this.getAttribute('data-should-clear') === 'true') {
+            this.value = '';
+            this.removeAttribute('data-should-clear');
+        }
+    });
+
+    // テキストエリアからフォーカスが外れたときの処理
+    messageContent.addEventListener('blur', function() {
+        // フォーカスが外れた時の特別な処理
+        this.removeAttribute('data-is-focused');
+    });
+    
+    // フォームのリセット処理を追加
+    function clearMessageInput(force = false) {
+        messageContent.value = '';
+        messageContent.style.height = 'auto';
+        
+        if (force) {
+            // 次回フォーカス時にクリアする必要があることをマーク
+            messageContent.setAttribute('data-should-clear', 'true');
+        }
+        
+        // 一度要素から離して再度追加する（極端な対策だが確実）
+        if (force) {
+            const parent = messageContent.parentNode;
+            const nextSibling = messageContent.nextSibling;
+            parent.removeChild(messageContent);
+            setTimeout(() => {
+                parent.insertBefore(messageContent, nextSibling);
+                messageContent.focus();
+            }, 0);
+        }
+    }
+});
+</script>
+{% endblock %} 
