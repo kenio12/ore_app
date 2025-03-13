@@ -339,11 +339,11 @@
                             <div class="mt-3">
                                 {% if profile.social_github %}
                                     {% if 'github.com' in profile.social_github %}
-                                        <a href="{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-info me-2" style="color: var(--cyber-blue); border-color: var(--cyber-blue); text-shadow: 0 0 5px var(--cyber-blue);">
+                                        <a href="{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-light me-2" style="color: #ffffff; border-color: #ffffff; text-shadow: 0 0 5px #ffffff;">
                                             <i class="bi bi-github"></i> GitHub
                                         </a>
                                     {% else %}
-                                        <a href="https://github.com/{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-info me-2" style="color: var(--cyber-blue); border-color: var(--cyber-blue); text-shadow: 0 0 5px var(--cyber-blue);">
+                                        <a href="https://github.com/{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-light me-2" style="color: #ffffff; border-color: #ffffff; text-shadow: 0 0 5px #ffffff;">
                                             <i class="bi bi-github"></i> GitHub
                                         </a>
                                     {% endif %}
@@ -351,20 +351,17 @@
                                 
                                 {% if profile.social_twitter %}
                                     {% if 'x.com' in profile.social_twitter or 'twitter.com' in profile.social_twitter %}
-                                        <a href="{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-info me-2" style="color: var(--cyber-blue); border-color: var(--cyber-blue); text-shadow: 0 0 5px var(--cyber-blue);">
+                                        <a href="{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-primary me-2" style="color: #1DA1F2; border-color: #1DA1F2; text-shadow: none;">
                                             <i class="bi bi-twitter-x"></i> X
                                         </a>
                                     {% else %}
-                                        <a href="https://x.com/{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-info me-2" style="color: var(--cyber-blue); border-color: var(--cyber-blue); text-shadow: 0 0 5px var(--cyber-blue);">
+                                        <a href="https://x.com/{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-primary me-2" style="color: #1DA1F2; border-color: #1DA1F2; text-shadow: none;">
                                             <i class="bi bi-twitter-x"></i> X
                                         </a>
                                     {% endif %}
                                 {% endif %}
                                 
                                 {% if not is_own_profile %}
-                                    <a href="{% url 'profiles:contact' user.id %}" class="btn btn-sm btn-outline-warning me-2" style="color: #ffff00; border-color: #ffff00; text-shadow: 0 0 5px #ffff00;">
-                                        <i class="bi bi-envelope"></i> メッセージ
-                                    </a>
                                     <a href="{% url 'chats:new_chat' user.id %}" class="btn btn-sm btn-outline-warning" style="color: #ffff00; border-color: #ffff00; text-shadow: 0 0 5px #ffff00;">
                                         <i class="bi bi-chat-text"></i> チャット
                                     </a>
@@ -1852,3 +1849,4 @@
 
 <!-- アプリ開発期間ガンチャート用JavaScript -->
 {% endblock %} 
+</rewritten_file>

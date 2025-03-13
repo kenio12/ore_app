@@ -45,9 +45,6 @@
                 <div class="card-header chat-header">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
-                            <a href="{% url 'chats:chat_list' %}" class="btn btn-sm btn-dark me-3">
-                                <i class="bi bi-arrow-left"></i>
-                            </a>
                             <div class="chat-avatar me-2">
                                 {% if other_user.profile.avatar_url %}
                                     <img src="{{ other_user.profile.avatar_url }}" alt="{{ other_user.username }}" class="rounded-circle">
@@ -63,7 +60,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{% url 'profiles:user_profile_detail' other_user.id %}" class="btn btn-cyber-secondary btn-sm">
+                            <a href="{% url 'profiles:user_profile_detail' other_user.id %}" target="_blank" class="btn btn-cyber-secondary btn-sm">
                                 <i class="bi bi-person"></i> プロフィール
                             </a>
                         </div>
@@ -74,23 +71,25 @@
                     <div class="messages-container" id="messagesContainer">
                         {% if messages %}
                             {% for message in messages %}
-                                <div class="message-wrapper {% if message.sender == request.user %}message-out{% else %}message-in{% endif %}" data-message-id="{{ message.id }}">
-                                    <div class="message-bubble">
-                                        {{ message.content }}
+                                {% if not message.is_system_message %}
+                                    <div class="message-wrapper {% if message.sender == request.user %}message-out{% else %}message-in{% endif %}" data-message-id="{{ message.id }}">
+                                        <div class="message-bubble">
+                                            {{ message.content }}
+                                        </div>
+                                        <div class="message-info">
+                                            <small class="message-time">{{ message.timestamp|date:"m/d H:i" }}</small>
+                                            {% if message.sender == request.user %}
+                                                <span class="message-status">
+                                                    {% if message.is_read %}
+                                                        <i class="bi bi-check-all"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-check"></i>
+                                                    {% endif %}
+                                                </span>
+                                            {% endif %}
+                                        </div>
                                     </div>
-                                    <div class="message-info">
-                                        <small class="message-time">{{ message.timestamp|date:"m/d H:i" }}</small>
-                                        {% if message.sender == request.user %}
-                                            <span class="message-status">
-                                                {% if message.is_read %}
-                                                    <i class="bi bi-check-all"></i>
-                                                {% else %}
-                                                    <i class="bi bi-check"></i>
-                                                {% endif %}
-                                            </span>
-                                        {% endif %}
-                                    </div>
-                                </div>
+                                {% endif %}
                             {% endfor %}
                         {% else %}
                             <div class="text-center empty-chat">
@@ -211,17 +210,19 @@
 .message-bubble {
     padding: 10px 15px;
     border-radius: 15px;
-    color: white;
+    color: #ffffff;
     word-wrap: break-word;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
 }
 
 .message-in .message-bubble {
-    background: linear-gradient(45deg, rgba(0, 83, 175, 0.7), rgba(0, 123, 255, 0.7));
+    background: linear-gradient(45deg, rgba(0, 83, 175, 0.9), rgba(0, 123, 255, 0.9));
     border-bottom-left-radius: 5px;
 }
 
 .message-out .message-bubble {
-    background: linear-gradient(45deg, rgba(0, 153, 170, 0.7), rgba(0, 204, 255, 0.7));
+    background: linear-gradient(45deg, rgba(0, 153, 170, 0.9), rgba(0, 204, 255, 0.9));
     border-bottom-right-radius: 5px;
 }
 
@@ -341,15 +342,31 @@
     background: rgba(10, 15, 35, 0.9);
 }
 
+.cyber-modal .modal-body {
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    font-weight: bold;
+    background: rgba(10, 15, 35, 0.9);
+}
+
+.cyber-modal .modal-body p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.cyber-modal .modal-body p:last-child {
+    margin-bottom: 0;
+}
+
 /* チャットステータスバナー */
 .chat-status-banner {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 0, 0, 0.2);
-    border: 1px solid rgba(255, 0, 0, 0.5);
-    color: #ff3333;
+    background: rgba(255, 0, 0, 0.8);
+    border: 2px solid #ff0000;
+    color: #ffffff;
     padding: 10px 20px;
     border-radius: 5px;
     z-index: 1000;
@@ -357,11 +374,31 @@
     align-items: center;
     gap: 10px;
     animation: fadeIn 0.3s ease-in-out;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
+
+.chat-status-banner i {
+    color: #ffffff;
+    font-size: 1.2rem;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translate(-50%, -20px); }
     to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.system-notification {
+    color: #ffffff;
+    text-align: center;
+    padding: 10px;
+    margin: 10px 0;
+    font-weight: bold;
+    background: none;
+    border: none;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 </style>
 
