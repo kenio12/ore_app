@@ -163,48 +163,55 @@ ACCOUNT_EMAIL_REQUIRED = True  # メールアドレスを必須に
 # カスタムユーザーモデルの設定
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-# ロギング設定を追加
+# ロギング設定
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'exclude_normal_requests': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': lambda record: not (
+                'Request started' in record.getMessage() or 
+                'Request finished' in record.getMessage() or
+                'GET /chats/api/unread-messages/' in record.getMessage() or
+                'GET /health/' in record.getMessage() or
+                record.getMessage().startswith('"GET')
+            )
+        }
+    },
     'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
         'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
+            'format': '%(message)s'
+        }
     },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-            'level': 'DEBUG',
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'debug.log',
-            'formatter': 'verbose',
-            'level': 'DEBUG',
+            'filters': ['exclude_normal_requests'],
+            'formatter': 'simple'
         },
     },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
     'loggers': {
-        '': {  # ルートロガー
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-        },
         'django': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        # チャットアプリケーション用のカスタムログ
+        'chats': {
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': False,
-        },
-        'apps_gallery': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
+        }
     },
 }
 
@@ -223,3 +230,4 @@ CORS_ORIGIN_ALLOW_ALL = True  # 開発環境のみ。本番環境では具体的
 # セキュリティ設定
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+

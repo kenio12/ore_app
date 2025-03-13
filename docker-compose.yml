@@ -4,6 +4,11 @@ services:
   web:
     container_name: ore-app-web
     build: .
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONWARNINGS=ignore
+      - DJANGO_LOG_LEVEL=CRITICAL
+      - DJANGO_SETTINGS_MODULE=config.settings
     command: >
       sh -c '
         # サービス起動前のヘルスチェック
@@ -23,7 +28,7 @@ services:
         
         # 開発サーバー起動
         echo "Starting development server..." &&
-        PYTHONUNBUFFERED=1 python manage.py runserver 0.0.0.0:8000
+        python manage.py runserver 0.0.0.0:8000 --verbosity 0
       '
     volumes:
       - .:/code

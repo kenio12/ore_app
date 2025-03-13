@@ -150,6 +150,126 @@
         </div>
     </div>
     
+    <!-- 入室→退室モーダル -->
+    <div class="modal fade" id="enterExitModal" tabindex="-1" aria-labelledby="enterExitModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: rgba(20, 30, 50, 0.9); border: 1px solid rgba(0, 255, 255, 0.3); color: #ffffff;">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(0, 255, 255, 0.3);">
+                    <h5 class="modal-title" id="enterExitModalLabel">チャット短時間訪問の通知</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div id="ee-avatar" class="me-3" style="width: 48px; height: 48px;">
+                            <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center" style="width: 100%; height: 100%; background: linear-gradient(45deg, #2a5298, #1e3c72);">
+                                <i class="bi bi-person fs-4"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <span id="ee-message" class="fs-5">
+                                <strong id="ee-sender-name" style="color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);"></strong>さんが、あなたとのチャットルームを開きましたが、すでに退室しています。
+                            </span>
+                            <div class="text-muted mt-1 small" id="ee-time"></div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info" style="background: rgba(0, 123, 255, 0.1); border-color: rgba(0, 255, 255, 0.3);">
+                        <i class="bi bi-info-circle me-2"></i>相手はチャットルームを短時間だけ確認した可能性があります。後でまた連絡があるかもしれません。
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid rgba(0, 255, 255, 0.3);">
+                    <button type="button" class="btn" data-bs-dismiss="modal" style="background: rgba(255, 80, 80, 0.2); color: #ff5050; border: 1px solid #ff5050;">
+                        <i class="bi bi-x-circle"></i> 無視する
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgba(100, 100, 100, 0.5); border: 1px solid rgba(200, 200, 200, 0.5);">
+                        あとで
+                    </button>
+                    <button type="button" class="btn" id="ee-goto-chat" style="background: rgba(0, 255, 255, 0.2); color: #00ffff; border: 1px solid #00ffff;">
+                        ルームに行く
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 入室モーダル -->
+    <div class="modal fade" id="enterModal" tabindex="-1" aria-labelledby="enterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: rgba(20, 30, 50, 0.9); border: 1px solid rgba(0, 255, 255, 0.3); color: #ffffff;">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(0, 255, 255, 0.3);">
+                    <h5 class="modal-title" id="enterModalLabel">チャット訪問の通知</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div id="e-avatar" class="me-3" style="width: 48px; height: 48px;">
+                            <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center" style="width: 100%; height: 100%; background: linear-gradient(45deg, #2a5298, #1e3c72);">
+                                <i class="bi bi-person fs-4"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <span id="e-message" class="fs-5">
+                                <strong id="e-sender-name" style="color: #00ffff; text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);"></strong>さんが、あなたとのチャットルームを開きました。
+                            </span>
+                            <div class="text-muted mt-1 small" id="e-time"></div>
+                        </div>
+                    </div>
+                    <div class="alert alert-success" style="background: rgba(0, 255, 159, 0.1); border-color: rgba(0, 255, 159, 0.3);">
+                        <i class="bi bi-info-circle me-2"></i>このユーザーはまだチャットルームにいる可能性があります。メッセージを確認してみましょう。
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid rgba(0, 255, 255, 0.3);">
+                    <button type="button" class="btn" data-bs-dismiss="modal" style="background: rgba(255, 80, 80, 0.2); color: #ff5050; border: 1px solid #ff5050;">
+                        <i class="bi bi-x-circle"></i> 拒絶する
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgba(100, 100, 100, 0.5); border: 1px solid rgba(200, 200, 200, 0.5);">
+                        あとで
+                    </button>
+                    <button type="button" class="btn" id="e-goto-chat" style="background: rgba(0, 255, 255, 0.2); color: #00ffff; border: 1px solid #00ffff;">
+                        ルームに行く
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 退室モーダル -->
+    <div class="modal fade" id="exitModal" tabindex="-1" aria-labelledby="exitModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: rgba(20, 30, 50, 0.9); border: 1px solid rgba(255, 80, 80, 0.3); color: #ffffff;">
+                <div class="modal-header" style="border-bottom: 1px solid rgba(255, 80, 80, 0.3);">
+                    <h5 class="modal-title" id="exitModalLabel">チャット退室の通知</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div id="exit-avatar" class="me-3" style="width: 48px; height: 48px;">
+                            <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center" style="width: 100%; height: 100%; background: linear-gradient(45deg, #2a5298, #1e3c72);">
+                                <i class="bi bi-person fs-4"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <span id="exit-message" class="fs-5">
+                                <strong id="exit-sender-name" style="color: #ff7070; text-shadow: 0 0 5px rgba(255, 80, 80, 0.5);"></strong>さんが、チャットルームから退室しました。
+                            </span>
+                            <div class="text-muted mt-1 small" id="exit-time"></div>
+                        </div>
+                    </div>
+                    <div class="alert alert-danger" style="background: rgba(255, 80, 80, 0.1); border-color: rgba(255, 80, 80, 0.3);">
+                        <i class="bi bi-info-circle me-2"></i>このユーザーは既にチャットルームから退室しています。メッセージを残すことはできますが、即時の返答は期待できません。
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid rgba(255, 80, 80, 0.3);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgba(100, 100, 100, 0.5); border: 1px solid rgba(200, 200, 200, 0.5);">
+                        閉じる
+                    </button>
+                    <button type="button" class="btn" id="exit-goto-chat" style="background: rgba(0, 255, 255, 0.2); color: #00ffff; border: 1px solid #00ffff;">
+                        チャットを確認する
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     {% block messages %}
     {% if messages %}
     <div class="container mt-3">
@@ -204,137 +324,89 @@
     <!-- チャット通知スクリプト -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // デバッグモード（エラー時の詳細表示）
+        // デバッグモード
         const DEBUG = true;
         
-        // チャット関連ページかどうかをチェック
+        // ページ情報
         const isChatPage = window.location.pathname.includes('/chats/');
         const isCurrentConversationPage = isChatPage && !window.location.pathname.endsWith('/chats/');
         
-        if (DEBUG) console.log('現在のページ:', window.location.pathname);
-        if (DEBUG) console.log('isChatPage:', isChatPage);
-        if (DEBUG) console.log('isCurrentConversationPage:', isCurrentConversationPage);
-        
-        // 最終チェック時間
-        let lastCheckedTimestamp = new Date().toISOString();
-        
-        // 一時的なブロックリストを保持する変数（ページを閉じると消えます）
-        let temporaryBlockedUsers = new Set();
-        
-        // ユーザーを一時的にブロックする関数
-        function blockUserTemporarily(userId) {
-            temporaryBlockedUsers.add(userId);
-            if (DEBUG) console.log('ユーザーを一時的にブロックしました:', userId);
-        }
-
-        // ユーザーが一時的にブロックされているかチェックする関数
-        function isUserTemporarilyBlocked(userId) {
-            return temporaryBlockedUsers.has(userId);
+        if (DEBUG) {
+            console.log('現在のページ:', window.location.pathname);
+            console.log('isChatPage:', isChatPage);
+            console.log('isCurrentConversationPage:', isCurrentConversationPage);
         }
         
-        // 通知トースト要素
-        const chatNotification = document.getElementById('chatNotification');
-        if (!chatNotification) {
-            console.error('通知要素が見つかりません');
-            return;
-        }
+        // ポーリング管理
+        let pollingInterval = null;
         
-        // Bootstrap Toastオブジェクト初期化
-        let chatToast = new bootstrap.Toast(chatNotification, {
-            animation: true,
-            delay: 30000,  // 30秒に延長
-            autohide: true
-        });
+        // シンプルな状態管理
+        const state = {
+            // ユーザー状態管理（senderId-conversationId -> 'enter'または'exit'）
+            userStatus: {},
+            
+            // 表示中のモーダル
+            activeModals: {},
+            
+            // 処理済みメッセージIDを記録（重複表示を防ぐ）
+            processedMessageIds: new Set()
+        };
         
-        // 通知を表示する関数
-        function showChatNotification(message) {
-            if (DEBUG) console.log('通知を表示します:', message);
-            
-            // メッセージの検証
-            if (!message || !message.sender_name) {
-                console.error('無効なメッセージデータ:', message);
-                return;
-            }
-
-            // ブロックされたユーザーからのメッセージはスキップ
-            if (isUserTemporarilyBlocked(message.sender_id)) {
-                if (DEBUG) console.log('一時的にブロックされたユーザーからのメッセージをスキップします:', message.sender_name);
-                return;
-            }
-            
-            // 現在の会話ページでは通知しない（会話IDが一致する場合）
-            if (isCurrentConversationPage) {
-                // URLから会話IDを抽出
-                const urlParts = window.location.pathname.split('/');
-                const currentConvId = urlParts[urlParts.length - 2]; // /chats/ID/ の形式
-                
-                if (currentConvId && message.conversation_id == currentConvId) {
-                    if (DEBUG) console.log('現在表示中のチャットなので通知をスキップします');
-                    return;
-                }
-            }
-            
+        // 状態をローカルストレージに保存
+        function saveState() {
             try {
-                // 通知の内容を設定
-                const senderNameElement = chatNotification.querySelector('.sender-name');
-                if (senderNameElement) {
-                    senderNameElement.textContent = message.sender_name;
-                }
-                
-                // アバターを設定（あれば）
-                const avatarElement = chatNotification.querySelector('.chat-avatar');
-                if (avatarElement && message.sender_avatar) {
-                    avatarElement.innerHTML = `
-                        <img src="${message.sender_avatar}" 
-                             alt="${message.sender_name}" 
-                             class="rounded-circle" 
-                             style="width: 30px; height: 30px; object-fit: cover;">
-                    `;
-                }
-                
-                // 返信ボタンのクリックイベントを設定
-                const replyButton = chatNotification.querySelector('.chat-reply-btn');
-                if (replyButton) {
-                    replyButton.onclick = function() {
-                        window.location.href = `/chats/${message.conversation_id}/`;
-                    };
-                }
-
-                // 拒絶ボタンのクリックイベントを設定
-                const blockButton = chatNotification.querySelector('.block-user-btn');
-                if (blockButton) {
-                    blockButton.onclick = function() {
-                        if (DEBUG) console.log('ユーザーを一時的にブロックします:', message.sender_name);
-                        blockUserTemporarily(message.sender_id);
-                        chatToast.hide();
-                    };
-                }
-                
-                // 通知を表示
-                chatToast.show();
-                
-                if (DEBUG) console.log('通知を表示しました');
-                
-                // 音を鳴らす（オプション）
-                try {
-                    const audio = new Audio('/static/sounds/notification.mp3');
-                    audio.volume = 0.5;  // 音量を50%に設定
-                    audio.play().catch(e => {
-                        if (DEBUG) console.log('通知音の再生をスキップしました');
-                    });
-                } catch (e) {
-                    if (DEBUG) console.log('通知音の再生に失敗しました:', e);
-                }
-            } catch (error) {
-                console.error('通知表示エラー:', error);
+                localStorage.setItem('userStatus', JSON.stringify(state.userStatus));
+                localStorage.setItem('processedMessageIds', JSON.stringify(Array.from(state.processedMessageIds)));
+                if (DEBUG) console.log('状態を保存しました');
+            } catch (e) {
+                console.error('状態の保存に失敗:', e);
             }
+        }
+        
+        // 状態をローカルストレージから復元
+        function loadState() {
+            try {
+                const savedState = localStorage.getItem('userStatus');
+                if (savedState) {
+                    state.userStatus = JSON.parse(savedState);
+                    if (DEBUG) console.log('状態を復元しました:', state.userStatus);
+                }
+                
+                // 処理済みメッセージIDを復元
+                const savedMessageIds = localStorage.getItem('processedMessageIds');
+                if (savedMessageIds) {
+                    const ids = JSON.parse(savedMessageIds);
+                    state.processedMessageIds = new Set(ids);
+                    if (DEBUG) console.log('処理済みメッセージIDを復元しました:', state.processedMessageIds.size);
+                }
+            } catch (e) {
+                console.error('状態の復元に失敗:', e);
+                state.userStatus = {};
+                state.processedMessageIds = new Set();
+            }
+        }
+        
+        // 状態をリセット
+        function resetState() {
+            state.userStatus = {};
+            state.processedMessageIds = new Set();
+            localStorage.removeItem('userStatus');
+            localStorage.removeItem('processedMessageIds');
+            
+            // モーダルを全て閉じる
+            Object.values(state.activeModals).forEach(modal => {
+                if (modal && typeof modal.hide === 'function') {
+                    modal.hide();
+                }
+            });
+            state.activeModals = {};
+            
+            if (DEBUG) console.log('状態をリセットしました');
         }
         
         // 未読メッセージをチェックする関数
         function checkUnreadMessages() {
-            if (DEBUG) console.log('未読メッセージのチェックを開始...');
-            
-            fetch('/chats/api/unread-messages/?since=' + encodeURIComponent(lastCheckedTimestamp))
+            fetch('/chats/api/unread-messages/')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -342,19 +414,135 @@
                     return response.json();
                 })
                 .then(data => {
-                    if (DEBUG) console.log('APIレスポンス:', data);
-                    
                     if (data.unread_messages && data.unread_messages.length > 0) {
-                        if (DEBUG) console.log(`${data.unread_messages.length}件の未読メッセージがあります`);
-                        
-                        // 最新の未読メッセージを取得
-                        const latestMessage = data.unread_messages[data.unread_messages.length - 1];
-                        
-                        // 通知を表示
-                        showChatNotification(latestMessage);
-                        
-                        // 最終チェック時間を更新
-                        lastCheckedTimestamp = new Date().toISOString();
+                        if (DEBUG) console.log(`📬 新着メッセージ ${data.unread_messages.length}件の処理を開始`);
+
+                        data.unread_messages.forEach(message => {
+                            // 【重要な修正】：既に処理済みのメッセージはスキップ
+                            if (state.processedMessageIds.has(message.id)) {
+                                if (DEBUG) console.log(`⏭️ 既に処理済みのメッセージをスキップします: ID=${message.id}, ${message.sender_name}`);
+                                return;
+                            }
+                            
+                            // 【重要な修正】：自分が今見ているチャットルームの通知は表示しない
+                            // 現在のURLからチャットルームIDを取得
+                            const currentConversationId = getCurrentConversationId();
+                            
+                            // 今見ているチャットルームの通知はスキップ
+                            if (currentConversationId && message.conversation_id == currentConversationId) {
+                                if (DEBUG) console.log(`⏭️ 現在表示中の会話(ID:${currentConversationId})の通知をスキップします: ${message.sender_name}`);
+                                // 処理済みとしてマークする（スキップしたメッセージも記録）
+                                state.processedMessageIds.add(message.id);
+                                saveState();
+                                return;
+                            }
+
+                            // メッセージタイプの判定
+                            const isEnterMessage = message.message_type === 'enter' || 
+                                                  (message.content && message.content.includes('チャットルームに入りました'));
+                            const isLeaveMessage = message.message_type === 'leave' || 
+                                                  (message.content && message.content.includes('チャットルームから退室しました'));
+                            
+                            if (DEBUG) {
+                                if (isEnterMessage) {
+                                    console.log(`🚪 入室メッセージ検出: ${message.sender_name}（ID: ${message.sender_id}）が会話${message.conversation_id}に入室`);
+                                } else if (isLeaveMessage) {
+                                    console.log(`🚪 退室メッセージ検出: ${message.sender_name}（ID: ${message.sender_id}）が会話${message.conversation_id}から退室`);
+                                } else {
+                                    console.log(`💬 通常メッセージ検出: ${message.sender_name}（ID: ${message.sender_id}）から会話${message.conversation_id}に`);
+                                }
+                            }
+
+                            // ユーザー状態のキー
+                            const userKey = `${message.sender_id}-${message.conversation_id}`;
+
+                            if (isEnterMessage) {
+                                // 入室処理
+                                
+                                // 前回の状態を確認
+                                const previousStatus = state.userStatus[userKey];
+                                
+                                // 状態を「入室」に更新
+                                state.userStatus[userKey] = 'enter';
+                                
+                                // 「退室モーダル」が表示されていれば閉じる
+                                if (state.activeModals[`exit-${userKey}`]) {
+                                    if (DEBUG) console.log(`🔄 退室モーダルを閉じます: ${message.sender_name}`);
+                                    state.activeModals[`exit-${userKey}`].hide();
+                                    delete state.activeModals[`exit-${userKey}`];
+                                }
+                                
+                                // ユーザーがブラウザを見ていないときはブラウザ通知
+                                if (document.hidden) {
+                                    showBrowserNotification(
+                                        `${message.sender_name}が入室しました`,
+                                        `チャットルーム: ${message.conversation_name || 'チャット'}`,
+                                        message.sender_avatar
+                                    );
+                                } else {
+                                    // 入室モーダルを表示
+                                    showEnterModal(
+                                        message.sender_id,
+                                        message.sender_name,
+                                        message.sender_avatar,
+                                        message.conversation_id
+                                    );
+                                }
+                            } else if (isLeaveMessage) {
+                                // 退室処理
+                                
+                                // 前回の状態を確認
+                                const previousStatus = state.userStatus[userKey];
+                                
+                                // 状態を「退室」に更新
+                                state.userStatus[userKey] = 'exit';
+                                
+                                // 「入室モーダル」が表示されていれば閉じる
+                                if (state.activeModals[`enter-${userKey}`]) {
+                                    if (DEBUG) console.log(`🔄 入室モーダルを閉じます: ${message.sender_name}`);
+                                    state.activeModals[`enter-${userKey}`].hide();
+                                    delete state.activeModals[`enter-${userKey}`];
+                                }
+                                
+                                // ユーザーがブラウザを見ていないときはブラウザ通知
+                                if (document.hidden) {
+                                    showBrowserNotification(
+                                        `${message.sender_name}が退室しました`,
+                                        `チャットルーム: ${message.conversation_name || 'チャット'}`,
+                                        message.sender_avatar
+                                    );
+                                } else {
+                                    // 退室モーダルを表示
+                                    showExitModal(
+                                        message.sender_id,
+                                        message.sender_name, 
+                                        message.sender_avatar,
+                                        message.conversation_id
+                                    );
+                                }
+                            } else {
+                                // 通常メッセージの場合、トースト通知を表示
+                                if (!document.hidden) {
+                                    showChatToast(
+                                        message.sender_name,
+                                        message.sender_avatar,
+                                        message.conversation_id
+                                    );
+                                } else {
+                                    showBrowserNotification(
+                                        `${message.sender_name}からメッセージが届きました`,
+                                        `チャットルーム: ${message.conversation_name || 'チャット'}`,
+                                        message.sender_avatar
+                                    );
+                                }
+                            }
+                            
+                            // 処理済みとしてマーク
+                            state.processedMessageIds.add(message.id);
+                            
+                            // 状態を保存（ここで一括で保存するように変更）
+                            saveState();
+                        });
                     }
                 })
                 .catch(error => {
@@ -362,48 +550,318 @@
                 });
         }
         
-        // 定期的に未読メッセージをチェック（10秒ごと）
-        const checkInterval = setInterval(checkUnreadMessages, 10000);
-        
-        // 初回チェック（2秒後）
-        setTimeout(checkUnreadMessages, 2000);
-        
-        // ページを離れるときにインターバルをクリア
-        window.addEventListener('beforeunload', () => {
-            clearInterval(checkInterval);
-        });
-
-        // WebSocketまたはServer-Sent Eventsでメッセージ受信をリッスン（オプション機能）
-        // この機能はバックエンドの対応が必要なため、エラーが出ても通常の動作には影響しない
-        try {
-            const eventSource = new EventSource('/chats/api/message-stream/');
-            
-            eventSource.onmessage = function(event) {
-                if (DEBUG) console.log('SSEメッセージを受信:', event.data);
-                
-                try {
-                    const message = JSON.parse(event.data);
-                    if (message && message.type === 'new_message') {
-                        showChatNotification(message.data);
-                    }
-                } catch (parseError) {
-                    if (DEBUG) console.log('SSEメッセージの解析に失敗:', parseError);
-                }
-            };
-            
-            eventSource.onerror = function(error) {
-                if (DEBUG) console.log('SSE接続エラー:', error);
-                // エラー時は接続を閉じて再接続はしない（ポーリングがバックアップとして機能）
-                eventSource.close();
-            };
-            
-            // ページを離れる時にEventSourceを閉じる
-            window.addEventListener('beforeunload', () => {
-                eventSource.close();
-            });
-        } catch (error) {
-            console.error('リアルタイム通知の初期化に失敗:', error);
+        // 【新関数】現在表示中のチャットルームIDを取得
+        function getCurrentConversationId() {
+            // チャットルームページのURLパターン: /chats/123/ のような形式
+            const match = window.location.pathname.match(/\/chats\/(\d+)\//);
+            if (match && match[1]) {
+                return match[1];
+            }
+            return null;
         }
+        
+        // 入室モーダルを表示
+        function showEnterModal(senderId, senderName, senderAvatar, conversationId) {
+            const modal = document.getElementById('enterModal');
+            if (!modal) return false;
+            
+            // モーダルの内容を設定
+            const senderNameEl = document.getElementById('e-sender-name');
+            if (senderNameEl) senderNameEl.textContent = senderName;
+            
+            // 時刻表示
+            const timeEl = document.getElementById('e-time');
+            if (timeEl) timeEl.textContent = 'たった今';
+            
+            // アバター設定
+            const avatarEl = document.getElementById('e-avatar');
+            if (avatarEl && senderAvatar) {
+                avatarEl.innerHTML = `
+                    <img src="${senderAvatar}" 
+                         alt="${senderName}" 
+                         class="rounded-circle" 
+                         style="width: 48px; height: 48px; object-fit: cover;">
+                `;
+            } else if (avatarEl) {
+                avatarEl.innerHTML = `
+                    <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center" 
+                         style="width: 100%; height: 100%; background: linear-gradient(45deg, #2a5298, #1e3c72);">
+                        <i class="bi bi-person fs-4"></i>
+                    </div>
+                `;
+            }
+            
+            // チャットボタン設定
+            const chatBtn = document.getElementById('e-goto-chat');
+            if (chatBtn) {
+                chatBtn.onclick = function() {
+                    window.location.href = `/chats/${conversationId}/`;
+                };
+            }
+            
+            // バックドロップを確実に削除
+            cleanupModalBackdrops();
+            
+            // モーダル表示
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+            
+            // モーダルが閉じられた時のイベントを追加
+            modal.addEventListener('hidden.bs.modal', function() {
+                cleanupModalBackdrops();
+            });
+            
+            // アクティブモーダルリストに追加
+            const userKey = `${senderId}-${conversationId}`;
+            state.activeModals[`enter-${userKey}`] = bsModal;
+            
+            if (DEBUG) console.log(`📣 入室モーダルを表示: ${senderName}`);
+            
+            return true;
+        }
+        
+        // 退室モーダルを表示
+        function showExitModal(senderId, senderName, senderAvatar, conversationId) {
+            const modal = document.getElementById('exitModal');
+            if (!modal) return false;
+            
+            // モーダルの内容を設定
+            const senderNameEl = document.getElementById('exit-sender-name');
+            if (senderNameEl) senderNameEl.textContent = senderName;
+            
+            // 時刻表示
+            const timeEl = document.getElementById('exit-time');
+            if (timeEl) timeEl.textContent = 'たった今';
+            
+            // アバター設定
+            const avatarEl = document.getElementById('exit-avatar');
+            if (avatarEl && senderAvatar) {
+                avatarEl.innerHTML = `
+                    <img src="${senderAvatar}" 
+                         alt="${senderName}" 
+                         class="rounded-circle" 
+                         style="width: 48px; height: 48px; object-fit: cover;">
+                `;
+            } else if (avatarEl) {
+                avatarEl.innerHTML = `
+                    <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center" 
+                         style="width: 100%; height: 100%; background: linear-gradient(45deg, #2a5298, #1e3c72);">
+                        <i class="bi bi-person fs-4"></i>
+                    </div>
+                `;
+            }
+            
+            // チャットボタン設定
+            const chatBtn = document.getElementById('exit-goto-chat');
+            if (chatBtn) {
+                chatBtn.onclick = function() {
+                    window.location.href = `/chats/${conversationId}/`;
+                };
+            }
+            
+            // バックドロップを確実に削除
+            cleanupModalBackdrops();
+            
+            // モーダル表示
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+            
+            // モーダルが閉じられた時のイベントを追加
+            modal.addEventListener('hidden.bs.modal', function() {
+                cleanupModalBackdrops();
+            });
+            
+            // アクティブモーダルリストに追加
+            const userKey = `${senderId}-${conversationId}`;
+            state.activeModals[`exit-${userKey}`] = bsModal;
+            
+            if (DEBUG) console.log(`📣 退室モーダルを表示: ${senderName}`);
+            
+            return true;
+        }
+        
+        // モーダルバックドロップをクリーンアップする関数
+        function cleanupModalBackdrops() {
+            // モーダルのバックドロップを全て削除
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => {
+                backdrop.classList.remove('show');
+                setTimeout(() => {
+                    backdrop.remove();
+                }, 150); // フェードアウト時間を考慮
+            });
+            
+            // body要素から'modal-open'クラスを削除（スクロールを戻す）
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            
+            if (DEBUG && backdrops.length > 0) {
+                console.log(`🧹 ${backdrops.length}個のモーダルバックドロップをクリーンアップしました`);
+            }
+        }
+        
+        // ブラウザ通知を表示
+        function showBrowserNotification(title, body, icon) {
+            if (Notification.permission === "granted") {
+                const notification = new Notification(title, {
+                    body: body,
+                    icon: icon || '/static/images/favicon.png'
+                });
+                
+                notification.onclick = function() {
+                    window.focus();
+                    notification.close();
+                };
+                
+                setTimeout(() => {
+                    notification.close();
+                }, 10000);
+                
+                return true;
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        showBrowserNotification(title, body, icon);
+                    }
+                });
+                return false;
+            }
+            return false;
+        }
+        
+        // チャットトースト通知を表示する関数
+        function showChatToast(senderName, senderAvatar, conversationId) {
+            const toast = document.getElementById('chatNotification');
+            if (!toast) return false;
+            
+            // 送信者名を設定
+            const senderNameEl = toast.querySelector('.sender-name');
+            if (senderNameEl) senderNameEl.textContent = senderName;
+            
+            // アバターを設定
+            const avatarEl = toast.querySelector('.chat-avatar');
+            if (avatarEl && senderAvatar) {
+                avatarEl.innerHTML = `
+                    <img src="${senderAvatar}" 
+                         alt="${senderName}" 
+                         class="rounded-circle" 
+                         style="width: 30px; height: 30px; object-fit: cover;">
+                `;
+            } else if (avatarEl) {
+                avatarEl.innerHTML = `
+                    <div class="avatar-placeholder rounded-circle">
+                        <i class="bi bi-person"></i>
+                    </div>
+                `;
+            }
+            
+            // チャットボタンの設定
+            const chatBtn = toast.querySelector('.chat-reply-btn');
+            if (chatBtn) {
+                chatBtn.onclick = function() {
+                    window.location.href = `/chats/${conversationId}/`;
+                };
+            }
+            
+            // 拒絶ボタンの設定
+            const blockBtn = toast.querySelector('.block-user-btn');
+            if (blockBtn) {
+                blockBtn.onclick = function() {
+                    // トーストを閉じる
+                    const bsToast = bootstrap.Toast.getInstance(toast);
+                    if (bsToast) bsToast.hide();
+                };
+            }
+            
+            // トーストを表示
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: true,
+                delay: 5000
+            });
+            bsToast.show();
+            
+            if (DEBUG) console.log(`📣 チャットトーストを表示: ${senderName}`);
+            
+            return true;
+        }
+        
+        // ポーリングを開始
+        function startPolling() {
+            if (!pollingInterval && !document.hidden) {
+                const interval = isChatPage ? 5000 : 10000; // チャットページ：5秒、その他：10秒
+                checkUnreadMessages();  // 即座に1回目のチェックを実行
+                pollingInterval = setInterval(checkUnreadMessages, interval);
+                if (DEBUG) console.log(`ポーリングを開始しました（間隔: ${interval}ms）`);
+            }
+        }
+        
+        // ポーリングを停止
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+                if (DEBUG) console.log('ポーリングを停止しました');
+            }
+        }
+        
+        // ページの可視性変更時の処理
+        function handleVisibilityChange() {
+            if (!document.hidden) {
+                // ページが表示状態になったとき
+                console.log("ページがアクティブになりました");
+                
+                // ポーリングが停止していたら再開
+                if (pollingInterval === null) {
+                    console.log("ポーリングを再開します");
+                    startPolling();
+                }
+            } else {
+                console.log("ページが非アクティブになりました");
+                stopPolling();
+            }
+        }
+        
+        // ページの可視性変更時のハンドラを登録
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        // デバッグ用：Alt+Shift+Cキーで状態をリセット
+        if (DEBUG) {
+            document.addEventListener('keydown', function(e) {
+                if (e.altKey && e.shiftKey && e.key === 'C') {
+                    console.log('🧹 状態のリセットを実行します...');
+                    resetState();
+                    console.log('✅ 状態をリセットしました！');
+                }
+            });
+        }
+        
+        // 初期化
+        function init() {
+            // 状態を復元
+            loadState();
+            
+            // ページがアクティブならポーリング開始
+            if (!document.hidden) {
+                startPolling();
+            }
+            
+            if (DEBUG) {
+                console.log('=========== 初期化完了 ===========');
+                console.log('現在の状態:', state);
+                console.log('デバッグモード: Alt+Shift+Cキーで状態をリセットできます');
+                console.log('===================================');
+            }
+        }
+        
+        // クリーンアップ
+        window.addEventListener('beforeunload', function() {
+            stopPolling();
+            saveState();
+        });
+        
+        // 初期化を実行
+        init();
     });
     </script>
     {% endif %}

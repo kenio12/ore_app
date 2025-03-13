@@ -27,6 +27,21 @@ class Message(models.Model):
     timestamp = models.DateTimeField('送信日時', auto_now_add=True)
     is_read = models.BooleanField('既読', default=False)
     
+    # メッセージタイプの選択肢
+    MESSAGE_TYPE_CHOICES = [
+        ('normal', '通常メッセージ'),
+        ('enter', '入室通知'),
+        ('leave', '退室通知'),
+    ]
+    
+    # メッセージタイプフィールド（デフォルトは通常メッセージ）
+    message_type = models.CharField(
+        'メッセージタイプ', 
+        max_length=10, 
+        choices=MESSAGE_TYPE_CHOICES, 
+        default='normal'
+    )
+    
     class Meta:
         ordering = ['timestamp']
         verbose_name = 'メッセージ'

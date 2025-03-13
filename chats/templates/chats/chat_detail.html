@@ -590,9 +590,71 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初期スクロール
     scrollToBottom();
     
-    // ページを離れる時のクリーンアップ
+    // アンカータグのクリックを捕捉して退出メッセージを送信する処理を追加
+    document.querySelectorAll('a:not([data-no-leave-notification])').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // 特殊なリンク（ダウンロードなど）や外部リンクは処理しない
+            if (this.hasAttribute('download') || this.target === '_blank' || 
+                (this.href && (this.href.indexOf('#') !== -1 || this.href.indexOf('javascript:') !== -1))) {
+                return;
+            }
+            
+            // CSRFトークンを安全に取得
+            let csrfToken = '';
+            const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]');
+            if (csrfElement && csrfElement.value) {
+                csrfToken = csrfElement.value;
+            } else {
+                const match = document.cookie.match(/csrftoken=([^;]+)/);
+                if (match) csrfToken = match[1];
+            }
+            
+            // 元のイベントをキャンセル
+            e.preventDefault();
+            
+            // 退出通知を送信
+            fetch(`/chats/api/leave-chat/${conversationId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            .then(() => {
+                // 通知が送信された後に遷移
+                window.location.href = this.href;
+            })
+            .catch(() => {
+                // エラー時でも遷移は実行
+                window.location.href = this.href;
+            });
+        });
+    });
+    
+    // ページを離れる時のクリーンアップ（バックアップ）
     window.addEventListener('beforeunload', () => {
         activityManager.cleanup();
+        
+        // 退室通知を送信（バックアップ処理 - 確実ではないがタブ閉じる時などに動作する可能性あり）
+        try {
+            // CSRFトークンを安全に取得
+            let csrfToken = '';
+            const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]');
+            if (csrfElement && csrfElement.value) {
+                csrfToken = csrfElement.value;
+            } else {
+                const match = document.cookie.match(/csrftoken=([^;]+)/);
+                if (match) csrfToken = match[1];
+            }
+            
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', csrfToken);
+            
+            navigator.sendBeacon(`/chats/api/leave-chat/${conversationId}/`, formData);
+        } catch (e) {
+            console.error('退出通知の送信に失敗:', e);
+        }
     });
     
     // 再開ボタンのイベントリスナー
