@@ -47,22 +47,28 @@
                         <div class="d-flex align-items-center">
                             <div class="chat-avatar me-2">
                                 {% if other_user.profile.avatar_url %}
-                                    <img src="{{ other_user.profile.avatar_url }}" alt="{{ other_user.username }}" class="rounded-circle">
+                                    <a href="{% url 'profiles:user_profile_detail' other_user.id %}" target="_blank" class="profile-link">
+                                        <img src="{{ other_user.profile.avatar_url }}" alt="{{ other_user.username }}" class="rounded-circle">
+                                    </a>
                                 {% else %}
-                                    <div class="avatar-placeholder rounded-circle">
-                                        {{ other_user.username|first }}
-                                    </div>
+                                    <a href="{% url 'profiles:user_profile_detail' other_user.id %}" target="_blank" class="profile-link">
+                                        <div class="avatar-placeholder rounded-circle">
+                                            {{ other_user.username|first }}
+                                        </div>
+                                    </a>
                                 {% endif %}
                             </div>
                             <div>
-                                <h5 class="mb-0 cyber-title">{{ other_user.username }}</h5>
+                                <h5 class="mb-0 cyber-title">
+                                    <a href="{% url 'profiles:user_profile_detail' other_user.id %}" target="_blank" class="profile-name-link">
+                                        {{ other_user.username }}
+                                    </a>
+                                </h5>
                                 <small class="user-status online">オンライン</small>
                             </div>
                         </div>
                         <div>
-                            <a href="{% url 'profiles:user_profile_detail' other_user.id %}" target="_blank" class="btn btn-cyber-secondary btn-sm">
-                                <i class="bi bi-person"></i> プロフィール
-                            </a>
+                            <!-- 空のdivはレイアウトのために残しておく -->
                         </div>
                     </div>
                 </div>
@@ -117,7 +123,7 @@
 <style>
 .cyber-title {
     color: #00ffff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    text-shadow: none;
 }
 
 .cyber-card {
@@ -190,12 +196,13 @@
     min-height: 100%;
     overflow-y: auto;
     scroll-behavior: auto;
+    padding-right: 10px;
 }
 
 .message-wrapper {
     display: flex;
     flex-direction: column;
-    max-width: 75%;
+    max-width: 70%;
     margin-bottom: 15px;
 }
 
@@ -205,6 +212,7 @@
 
 .message-out {
     align-self: flex-end;
+    margin-right: 5px;
 }
 
 .message-bubble {
@@ -213,7 +221,7 @@
     color: #ffffff;
     word-wrap: break-word;
     font-weight: bold;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    text-shadow: none;
 }
 
 .message-in .message-bubble {
@@ -344,7 +352,7 @@
 
 .cyber-modal .modal-body {
     color: #00ffff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    text-shadow: none;
     font-weight: bold;
     background: rgba(10, 15, 35, 0.9);
 }
@@ -375,14 +383,14 @@
     gap: 10px;
     animation: fadeIn 0.3s ease-in-out;
     font-weight: bold;
-    text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+    text-shadow: none;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
 }
 
 .chat-status-banner i {
     color: #ffffff;
     font-size: 1.2rem;
-    text-shadow: 0 0 5px rgba(255, 0, 0, 0.8);
+    text-shadow: none;
 }
 
 @keyframes fadeIn {
@@ -398,7 +406,49 @@
     font-weight: bold;
     background: none;
     border: none;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    text-shadow: none;
+}
+
+/* スクロールバーのスタイル */
+.messages-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+    background: rgba(10, 15, 35, 0.5);
+    border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 123, 255, 0.5);
+    border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 123, 255, 0.7);
+}
+
+/* プロフィールリンクのスタイル */
+.profile-link {
+    display: block;
+    transition: all 0.2s ease;
+}
+
+.profile-link:hover img, 
+.profile-link:hover .avatar-placeholder {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.profile-name-link {
+    color: #00ffff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.profile-name-link:hover {
+    color: #ffffff;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
 }
 </style>
 
@@ -515,9 +565,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // アクティビティマネージャーの初期化
     const activityManager = new ChatActivityManager();
     
-    // Enterキーで送信（Shift+Enterで改行）
+    // IME入力状態を管理する変数
+    let isIMEComposing = false;
+    
+    // IME入力の開始を検知
+    messageContent.addEventListener('compositionstart', function() {
+        isIMEComposing = true;
+    });
+    
+    // IME入力の終了を検知
+    messageContent.addEventListener('compositionend', function() {
+        isIMEComposing = false;
+    });
+    
+    // Enterキーで送信（Shift+Enterで改行、IME入力中は送信しない）
     messageContent.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === 'Enter' && !e.shiftKey && !isIMEComposing) {
             e.preventDefault();
             const content = messageContent.value.trim();
             if (content) {
@@ -612,6 +675,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success' && data.messages.length > 0) {
+                    // 新しいメッセージだけを追加（コンテナを空にしない）
                     data.messages.forEach(message => {
                         appendMessage(message, message.is_mine);
                     });
