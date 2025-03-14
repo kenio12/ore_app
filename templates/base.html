@@ -333,6 +333,8 @@
         
         // ポーリング管理
         let pollingInterval = null;
+        // 初期化済みフラグ
+        let isInitialized = false;
         
         // シンプルな状態管理
         const state = {
@@ -343,17 +345,39 @@
             activeModals: {},
             
             // 処理済みメッセージIDを記録（重複表示を防ぐ）
-            processedMessageIds: new Set()
+            processedMessageIds: new Set(),
+            
+            // メッセージIDの最大保持数
+            maxStoredMessageIds: 1000
         };
         
         // 状態をローカルストレージに保存
         function saveState() {
             try {
                 localStorage.setItem('userStatus', JSON.stringify(state.userStatus));
+                
+                // 処理済みメッセージIDが多すぎる場合は古いものを削除
+                cleanupProcessedIds();
+                
                 localStorage.setItem('processedMessageIds', JSON.stringify(Array.from(state.processedMessageIds)));
                 if (DEBUG) console.log('状態を保存しました');
             } catch (e) {
                 console.error('状態の保存に失敗:', e);
+            }
+        }
+        
+        // 処理済みメッセージIDのクリーンアップ
+        function cleanupProcessedIds() {
+            if (state.processedMessageIds.size > state.maxStoredMessageIds) {
+                const idsArray = Array.from(state.processedMessageIds);
+                // 新しいものを残して古いものを削除（Set順序は挿入順）
+                const newIds = idsArray.slice(-state.maxStoredMessageIds);
+                
+                if (DEBUG) {
+                    console.log(`🧹 古いメッセージIDをクリーンアップ: ${state.processedMessageIds.size}件 → ${newIds.length}件`);
+                }
+                
+                state.processedMessageIds = new Set(newIds);
             }
         }
         
@@ -371,7 +395,13 @@
                 if (savedMessageIds) {
                     const ids = JSON.parse(savedMessageIds);
                     state.processedMessageIds = new Set(ids);
-                    if (DEBUG) console.log('処理済みメッセージIDを復元しました:', state.processedMessageIds.size);
+                    if (DEBUG) console.log('処理済みメッセージIDを復元しました:', state.processedMessageIds.size, '件');
+                    
+                    // デバッグ用に最初の5件のIDを表示
+                    if (DEBUG && ids.length > 0) {
+                        const sampleIds = ids.slice(0, Math.min(5, ids.length));
+                        console.log('処理済みメッセージIDサンプル:', sampleIds);
+                    }
                 }
             } catch (e) {
                 console.error('状態の復元に失敗:', e);
@@ -410,11 +440,22 @@
                 .then(data => {
                     if (data.unread_messages && data.unread_messages.length > 0) {
                         if (DEBUG) console.log(`📬 新着メッセージ ${data.unread_messages.length}件の処理を開始`);
+                        
+                        // 処理前のIDセットの状態をデバッグ表示
+                        if (DEBUG) console.log(`🔍 処理前の処理済みID数: ${state.processedMessageIds.size}件`);
 
                         data.unread_messages.forEach(message => {
                             // 【重要な修正】：既に処理済みのメッセージはスキップ
                             if (state.processedMessageIds.has(message.id)) {
-                                if (DEBUG) console.log(`⏭️ 既に処理済みのメッセージをスキップします: ID=${message.id}, ${message.sender_name}`);
+                                if (DEBUG) {
+                                    // 退出メッセージの場合、より詳細なデバッグ情報を表示
+                                    const msgContent = message.content || '';
+                                    if (msgContent.includes('退室しました')) {
+                                        console.log(`⚠️ 退出メッセージの重複処理をスキップ: ID=${message.id}, ${message.sender_name}, 内容="${msgContent}"`);
+                                    } else {
+                                        console.log(`⏭️ 既に処理済みのメッセージをスキップします: ID=${message.id}, ${message.sender_name}`);
+                                    }
+                                }
                                 return;
                             }
                             
@@ -423,7 +464,7 @@
                             const currentConversationId = getCurrentConversationId();
                             
                             // 今見ているチャットルームの通知はスキップ
-                            if (currentConversationId && message.conversation_id == currentConversationId) {
+                            if (currentConversationId && String(message.conversation_id) === String(currentConversationId)) {
                                 if (DEBUG) console.log(`⏭️ 現在表示中の会話(ID:${currentConversationId})の通知をスキップします: ${message.sender_name}`);
                                 // 処理済みとしてマークする（スキップしたメッセージも記録）
                                 state.processedMessageIds.add(message.id);
@@ -498,22 +539,15 @@
                                     delete state.activeModals[`enter-${userKey}`];
                                 }
                                 
-                                // ユーザーがブラウザを見ていないときはブラウザ通知
-                                if (document.hidden) {
-                                    showBrowserNotification(
-                                        `${message.sender_name}が退室しました`,
-                                        `チャットルーム: ${message.conversation_name || 'チャット'}`,
-                                        message.sender_avatar
-                                    );
-                                } else {
-                                    // 退室モーダルを表示
-                                    showExitModal(
-                                        message.sender_id,
-                                        message.sender_name, 
-                                        message.sender_avatar,
-                                        message.conversation_id
-                                    );
-                                }
+                                // 退室メッセージは通知せずに静かに状態を更新するだけ
+                                if (DEBUG) console.log(`👻 退室メッセージを受信しましたが、通知は表示しません: ${message.sender_name}`);
+                                
+                                // 明示的にこのメッセージを処理済みとしてマーク
+                                state.processedMessageIds.add(message.id);
+                                if (DEBUG) console.log(`🔒 退室メッセージをIDで明示的に処理済みとしてマーク: ID=${message.id}`);
+                                saveState(); // 状態を確実に保存
+                                
+                                // トースト表示とモーダル表示をしない（退室は静かに処理）
                             } else {
                                 // 通常メッセージの場合、トースト通知を表示
                                 if (!document.hidden) {
@@ -531,12 +565,15 @@
                                 }
                             }
                             
-                            // 処理済みとしてマーク
+                            // 処理済みとしてマーク - すべてのタイプのメッセージで統一的に処理
                             state.processedMessageIds.add(message.id);
                             
-                            // 状態を保存（ここで一括で保存するように変更）
+                            // 処理後、状態を確実に保存
                             saveState();
                         });
+                        
+                        // 処理後のIDセットの状態をデバッグ表示
+                        if (DEBUG) console.log(`🔍 処理後の処理済みID数: ${state.processedMessageIds.size}件`);
                     }
                 })
                 .catch(error => {
@@ -549,8 +586,11 @@
             // チャットルームページのURLパターン: /chats/123/ のような形式
             const match = window.location.pathname.match(/\/chats\/(\d+)\//);
             if (match && match[1]) {
-                return match[1];
+                const conversationId = match[1];
+                if (DEBUG) console.log(`🔍 現在のチャットルームID: ${conversationId}`);
+                return conversationId;
             }
+            if (DEBUG) console.log('🔍 チャットルーム以外のページにいます');
             return null;
         }
         
@@ -589,7 +629,7 @@
             const chatBtn = document.getElementById('e-goto-chat');
             if (chatBtn) {
                 chatBtn.onclick = function() {
-                    window.location.href = `/chats/${conversationId}/`;
+                    window.location.href = `/chats/${conversationId}/?from_invitation=1`;
                 };
             }
             
@@ -649,7 +689,7 @@
             const chatBtn = document.getElementById('exit-goto-chat');
             if (chatBtn) {
                 chatBtn.onclick = function() {
-                    window.location.href = `/chats/${conversationId}/`;
+                    window.location.href = `/chats/${conversationId}/?from_invitation=1`;
                 };
             }
             
@@ -754,7 +794,7 @@
             const chatBtn = toast.querySelector('.chat-reply-btn');
             if (chatBtn) {
                 chatBtn.onclick = function() {
-                    window.location.href = `/chats/${conversationId}/`;
+                    window.location.href = `/chats/${conversationId}/?from_invitation=1`;
                 };
             }
             
@@ -782,11 +822,18 @@
         
         // ポーリングを開始
         function startPolling() {
-            if (!pollingInterval && !document.hidden) {
+            if (pollingInterval !== null) {
+                if (DEBUG) console.log('ポーリングは既に開始されています。処理をスキップします。');
+                return; // 既にポーリングが開始されている場合は何もしない
+            }
+            
+            if (!document.hidden) {
                 const interval = isChatPage ? 5000 : 10000; // チャットページ：5秒、その他：10秒
                 checkUnreadMessages();  // 即座に1回目のチェックを実行
                 pollingInterval = setInterval(checkUnreadMessages, interval);
                 if (DEBUG) console.log(`ポーリングを開始しました（間隔: ${interval}ms）`);
+            } else {
+                if (DEBUG) console.log('ページが非表示のため、ポーリングを開始しません');
             }
         }
         
@@ -805,6 +852,9 @@
                 // ページが表示状態になったとき
                 console.log("ページがアクティブになりました");
                 
+                // 保存されている状態を明示的に再読み込み
+                loadState();
+                
                 // ポーリングが停止していたら再開
                 if (pollingInterval === null) {
                     console.log("ポーリングを再開します");
@@ -812,6 +862,9 @@
                 }
             } else {
                 console.log("ページが非アクティブになりました");
+                
+                // 状態を確実に保存してからポーリングを停止
+                saveState();
                 stopPolling();
             }
         }
@@ -832,6 +885,12 @@
         
         // 初期化
         function init() {
+            // 二重初期化防止
+            if (isInitialized) {
+                if (DEBUG) console.log('既に初期化済みです。処理をスキップします。');
+                return;
+            }
+            
             // 状態を復元
             loadState();
             
@@ -839,6 +898,9 @@
             if (!document.hidden) {
                 startPolling();
             }
+            
+            // 初期化済みフラグを設定
+            isInitialized = true;
             
             if (DEBUG) {
                 console.log('=========== 初期化完了 ===========');
@@ -850,9 +912,16 @@
         
         // クリーンアップ
         window.addEventListener('beforeunload', function() {
-            stopPolling();
+            // ページ移動前に確実に状態を保存
             saveState();
+            stopPolling();
         });
+        
+        // 状態の保存を一定間隔で確実に行う（10秒ごと）
+        setInterval(function() {
+            if (DEBUG) console.log('🔄 定期的な状態保存を実行');
+            saveState();
+        }, 10000);
         
         // 初期化を実行
         init();

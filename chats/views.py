@@ -72,22 +72,29 @@ def chat_detail(request, conversation_id=None, user_id=None):
         # 相手のユーザーを取得
         other_user = conversation.participants.exclude(id=request.user.id).first()
     
-    # チャットルームに入ったことを示す通知メッセージを作成（相手に通知するため）
-    try:
-        message = Message.objects.create(
-            sender=request.user,
-            recipient=other_user,
-            conversation=conversation,
-            content=f"{request.user.username}がチャットルームに入りました",
-            is_read=False,
-            message_type='enter'  # 入室メッセージであることを明示
-        )
-        # リアルタイム通知を送信
-        notify_new_message(request.user, other_user, message)
-        print(f"🔔 {request.user.username}が{other_user.username}とのチャットルームに入室")
-    except Exception as e:
-        # エラーがあっても処理は続行
-        print(f"❌ チャット入室通知の作成エラー: {str(e)}")
+    # クエリパラメータをチェック - 招待からのアクセスの場合は入室通知を送信しない
+    from_invitation = request.GET.get('from_invitation', '0') == '1'
+    
+    # 招待からのアクセスでない場合のみ入室メッセージを送信
+    if not from_invitation:
+        # チャットルームに入ったことを示す通知メッセージを作成（相手に通知するため）
+        try:
+            message = Message.objects.create(
+                sender=request.user,
+                recipient=other_user,
+                conversation=conversation,
+                content=f"{request.user.username}がチャットルームに入りました",
+                is_read=False,
+                message_type='enter'  # 入室メッセージであることを明示
+            )
+            # リアルタイム通知を送信
+            notify_new_message(request.user, other_user, message)
+            print(f"🔔 {request.user.username}が{other_user.username}とのチャットルームに入室")
+        except Exception as e:
+            # エラーがあっても処理は続行
+            print(f"❌ チャット入室通知の作成エラー: {str(e)}")
+    else:
+        print(f"📣 招待からのアクセスのため、入室通知をスキップします: {request.user.username} -> {other_user.username}")
     
     # 自分宛のメッセージを既読にする
     Message.objects.filter(
@@ -412,9 +419,19 @@ def notify_new_message(sender, recipient, message):
 
 @login_required
 def leave_chat(request, conversation_id):
-    """APIエンドポイント: チャットルームから退室する時の通知を作成"""
+    """APIエンドポイント: チャットルームから入退室する時の通知を作成"""
     if request.method == 'POST':
         try:
+            # リクエストボディからJSONデータを取得
+            try:
+                data = json.loads(request.body)
+                action = data.get('action', 'leave')  # デフォルトは'leave'
+            except json.JSONDecodeError:
+                # JSONでない場合や空の場合は'leave'として扱う
+                action = 'leave'
+            
+            print(f"🔑 受信したアクション: {action}")
+            
             # 会話を取得
             conversation = get_object_or_404(Conversation, id=conversation_id)
             
@@ -426,24 +443,36 @@ def leave_chat(request, conversation_id):
             other_user = conversation.participants.exclude(id=request.user.id).first()
             
             if other_user:
-                # 退室メッセージを作成
+                # アクションに応じてメッセージを作成
+                if action == 'enter':
+                    # 入場メッセージ
+                    content = f"{request.user.username}がチャットルームに入りました"
+                    message_type = 'enter'
+                    action_log = f"🔔 {request.user.username}が{other_user.username}とのチャットルームに入室"
+                else:
+                    # 退室メッセージ
+                    content = f"{request.user.username}がチャットルームから退室しました"
+                    message_type = 'leave'
+                    action_log = f"🚪 {request.user.username}が{other_user.username}とのチャットルームから退室"
+                
+                # メッセージを作成
                 message = Message.objects.create(
                     conversation=conversation,
                     sender=request.user,
                     recipient=other_user,
-                    content=f"{request.user.username}がチャットルームから退室しました",
+                    content=content,
                     is_read=False,
-                    message_type='leave'  # 退室メッセージであることを明示
+                    message_type=message_type
                 )
                 
                 # 新しいメッセージを通知（リアルタイム通知を送信）
                 notify_new_message(request.user, other_user, message)
                 
-                print(f"🚪 {request.user.username}が{other_user.username}とのチャットルームから退室")
+                print(action_log)
                 
                 return JsonResponse({
                     'status': 'success',
-                    'message': 'チャットルームから退室しました'
+                    'message': content
                 })
             
             return JsonResponse({'status': 'error', 'message': '相手ユーザーが見つかりません。'})

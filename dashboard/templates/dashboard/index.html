@@ -1,7 +1,21 @@
 {% extends 'dashboard/base.html' %}
 
 {% block dashboard_content %}
-<div class="row">
+<div class="row mb-4">
+    <!-- ターミナルカード -->
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark text-cyber h-100 hover-card">
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title text-cyber">
+                    <i class="bi bi-terminal me-2"></i>ターミナル
+                </h5>
+                <div class="d-flex align-items-center justify-content-center flex-grow-1">
+                    <i class="bi bi-terminal-fill display-1" style="color: #00ff00;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- アプリ管理カード -->
     <div class="col-md-4 mb-4">
         <a href="{% url 'dashboard:apps' %}" class="text-decoration-none">
@@ -33,6 +47,24 @@
             </div>
         </a>
     </div>
+</div>
+
+<div class="row">
+    <!-- チャット一覧カード -->
+    <div class="col-md-4 mb-4">
+        <a href="{% url 'chats:chat_list' %}" class="text-decoration-none">
+            <div class="card bg-dark text-cyber h-100 hover-card">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-cyber">
+                        <i class="bi bi-chat-dots me-2"></i>チャット一覧
+                    </h5>
+                    <div class="d-flex align-items-center justify-content-center flex-grow-1">
+                        <i class="bi bi-chat-square-text display-1" style="color: #00ff00;"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
 
     <!-- プロフィールカード -->
     <div class="col-md-4 mb-4">
@@ -52,6 +84,22 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- アカウント設定カード -->
+    <div class="col-md-4 mb-4">
+        <a href="{% url 'dashboard:account' %}" class="text-decoration-none">
+            <div class="card bg-dark text-cyber h-100 hover-card">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-cyber">
+                        <i class="bi bi-gear me-2"></i>アカウント設定
+                    </h5>
+                    <div class="d-flex align-items-center justify-content-center flex-grow-1">
+                        <i class="bi bi-sliders display-1" style="color: #00ff00;"></i>
+                    </div>
+                </div>
+            </div>
+        </a>
     </div>
 </div>
 

@@ -35,6 +35,25 @@
                 </div>
             </div>
             
+            <!-- 退出中ダイアログ -->
+            <div class="modal fade" id="exitedModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content cyber-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title cyber-title">チャットルームから退出しました</h5>
+                        </div>
+                        <div class="modal-body">
+                            <p>チャットルームから退出しました。</p>
+                            <p>チャットに参加するには「入場する」ボタンをクリックしてください。</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-cyber-secondary" data-bs-dismiss="modal">キャンセル</button>
+                            <button type="button" class="btn btn-cyber-primary" id="enterFromModalBtn">入場する</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- チャットステータス表示 -->
             <div id="chatStatus" class="chat-status-banner" style="display: none;">
                 <i class="bi bi-exclamation-circle"></i> 
@@ -68,16 +87,31 @@
                             </div>
                         </div>
                         <div>
-                            <!-- 空のdivはレイアウトのために残しておく -->
+                            <!-- 退出ボタンを追加 -->
+                            <button type="button" id="exitChatBtn" class="btn btn-cyber-primary">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>入場する
+                            </button>
                         </div>
                     </div>
                 </div>
                 
                 <div class="card-body chat-body">
+                    <!-- 退出中表示オーバーレイ -->
+                    <div class="chat-overlay" id="chatOverlay">
+                        <div class="chat-overlay-message">
+                            <i class="bi bi-info-circle me-2"></i>チャットルームから退出しました
+                        </div>
+                    </div>
                     <div class="messages-container" id="messagesContainer">
                         {% if messages %}
                             {% for message in messages %}
-                                {% if not message.is_system_message %}
+                                {% if message.message_type == 'enter' or message.message_type == 'leave' %}
+                                    <!-- システムメッセージ (入室・退室通知) -->
+                                    <div class="system-notification" data-message-id="{{ message.id }}">
+                                        {{ message.content }}
+                                    </div>
+                                {% else %}
+                                    <!-- 通常のメッセージ -->
                                     <div class="message-wrapper {% if message.sender == request.user %}message-out{% else %}message-in{% endif %}" data-message-id="{{ message.id }}">
                                         <div class="message-bubble">
                                             {{ message.content }}
@@ -450,6 +484,65 @@
     color: #ffffff;
     text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
 }
+
+/* 退出ボタンのスタイル */
+.btn-cyber-exit {
+    background: rgba(255, 50, 50, 0.3);
+    color: #ffffff;
+    border: 1px solid #ff5050;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(255, 50, 50, 0.8);
+    box-shadow: 0 0 10px rgba(255, 50, 50, 0.5);
+    padding: 5px 15px;
+    border-radius: 4px;
+}
+
+.btn-cyber-exit:hover {
+    background: rgba(255, 80, 80, 0.5);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 80, 80, 0.8);
+    transform: translateY(-2px);
+}
+
+.btn-cyber-exit i {
+    color: #ffffff;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.8));
+}
+
+/* チャット退出時のオーバーレイ */
+.chat-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 10;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto; /* クリックをブロックする */
+    cursor: pointer; /* クリック可能な見た目にする */
+}
+
+/* 入場ボタンを目立たせる */
+#exitChatBtn {
+    position: relative;
+    z-index: 20; /* オーバーレイより上に表示 */
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5); /* 常に光るエフェクト */
+}
+
+.chat-overlay-message {
+    background: rgba(20, 20, 40, 0.8);
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+}
 </style>
 
 <script>
@@ -460,6 +553,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const conversationId = {{ conversation.id }};
     const chatStatus = document.getElementById('chatStatus');
     const chatStatusText = document.getElementById('chatStatusText');
+    const chatOverlay = document.getElementById('chatOverlay');
+    const exitChatBtn = document.getElementById('exitChatBtn');
     let lastMessageId = getLastMessageId();
     let checkInterval = null;
     let isActive = true;
@@ -468,6 +563,292 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Bootstrap モーダルの初期化
     const inactiveModal = new bootstrap.Modal(document.getElementById('inactiveModal'));
+    const exitedModal = new bootstrap.Modal(document.getElementById('exitedModal'));
+    
+    // 退出中ダイアログからの入場ボタン
+    const enterFromModalBtn = document.getElementById('enterFromModalBtn');
+    if (enterFromModalBtn) {
+        enterFromModalBtn.addEventListener('click', function() {
+            exitedModal.hide();
+            // 退出ボタンのクリックイベントをトリガー
+            exitChatBtn.click();
+        });
+    }
+    
+    // チャットオーバーレイのクリックイベント
+    if (chatOverlay) {
+        chatOverlay.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // 退出中ダイアログを表示
+            exitedModal.show();
+        });
+    }
+    
+    // 最初のメッセージから入場状態をチェック - DOMContentLoadedイベント内で確実に実行
+    function checkInitialChatStatus() {
+        console.log('入場状態チェック開始');
+        const systemMessages = document.querySelectorAll('.system-notification');
+        console.log('システムメッセージ数:', systemMessages.length);
+        
+        if (systemMessages.length > 0) {
+            // 最後のシステムメッセージを取得
+            const lastSystemMessage = systemMessages[systemMessages.length - 1];
+            const lastMessageText = lastSystemMessage.textContent.trim();
+            console.log('最後のシステムメッセージ:', lastMessageText);
+            
+            // 「入りました」を含む場合は入場済み
+            if (lastMessageText.indexOf('入りました') !== -1 || lastMessageText.indexOf('入場しました') !== -1) {
+                console.log('入場済みと判定');
+                return false; // 入場済み = 退出状態ではない
+            }
+            // 「退室しました」を含む場合は退出済み
+            if (lastMessageText.indexOf('退室しました') !== -1 || lastMessageText.indexOf('退出しました') !== -1) {
+                console.log('退出済みと判定');
+                return true; // 退出済み
+            }
+        }
+        console.log('デフォルト状態: 退出済み');
+        return true; // デフォルトは退出状態
+    }
+    
+    // ローカルストレージから状態を復元
+    function loadChatState() {
+        try {
+            // キーをconversationIdで特定して、複数のチャットルームでも対応できるようにする
+            const stateKey = `chat-state-${conversationId}`;
+            const storedState = localStorage.getItem(stateKey);
+            
+            if (storedState) {
+                const state = JSON.parse(storedState);
+                console.log(`状態を復元しました: ${JSON.stringify(state)}`);
+                // 自分の状態を確認
+                if (state.myStatus === 'in') {
+                    return false; // 入場中
+                } else if (state.myStatus === 'out') {
+                    return true; // 退出中
+                }
+            }
+        } catch (e) {
+            console.error('状態の復元に失敗:', e);
+        }
+        
+        // ローカルストレージから復元できない場合はメッセージ履歴から判断
+        return checkInitialChatStatus();
+    }
+    
+    // 状態をローカルストレージに保存
+    function saveChatState(isExited) {
+        try {
+            const stateKey = `chat-state-${conversationId}`;
+            const state = {
+                myStatus: isExited ? 'out' : 'in',
+                lastUpdated: new Date().toISOString(),
+                conversationId: conversationId
+            };
+            localStorage.setItem(stateKey, JSON.stringify(state));
+            console.log(`状態を保存しました: ${JSON.stringify(state)}`);
+        } catch (e) {
+            console.error('状態の保存に失敗:', e);
+        }
+    }
+    
+    let isExited = loadChatState(); // ローカルストレージから状態を復元
+    console.log('初期isExited状態:', isExited);
+    
+    // 現在のURLがチャットルームを示しているのに退出状態になっている場合は、
+    // システムメッセージを再チェックして状態を更新する
+    if (window.location.pathname.includes('/chats/') && window.location.pathname !== '/chats/') {
+        console.log('チャットルームページのため状態を確認します');
+        // 最新の会話状態をチェック（特にページを再読み込みした場合に重要）
+        const username = "{{ request.user.username }}";
+        const systemMessages = document.querySelectorAll('.system-notification');
+        
+        if (systemMessages.length > 0) {
+            // 自分のユーザー名と最新の状態に関する情報をチェック
+            let latestUserStatus = null;
+            
+            // 最新のシステムメッセージから自分の状態を特定
+            for (let i = systemMessages.length - 1; i >= 0; i--) {
+                const msgText = systemMessages[i].textContent.trim();
+                
+                if (msgText.indexOf(username) !== -1) {
+                    console.log('自分に関するシステムメッセージを検出:', msgText);
+                    
+                    if (msgText.indexOf('入りました') !== -1 || msgText.indexOf('入場しました') !== -1) {
+                        latestUserStatus = 'in';
+                        break;
+                    } else if (msgText.indexOf('退室しました') !== -1 || msgText.indexOf('退出しました') !== -1) {
+                        latestUserStatus = 'out';
+                        break;
+                    }
+                }
+            }
+            
+            // 最新の状態が見つかった場合は適用
+            if (latestUserStatus) {
+                console.log(`システムメッセージから最新の状態を検出: ${latestUserStatus}`);
+                const newState = latestUserStatus === 'out';
+                
+                // 現在の状態と異なる場合のみ更新
+                if (isExited !== newState) {
+                    console.log(`状態を更新: ${isExited} → ${newState}`);
+                    isExited = newState;
+                    saveChatState(newState);
+                }
+            }
+        }
+    }
+    
+    // ボタンの状態を設定
+    function updateButtonState() {
+        if (isExited) {
+            // 退出済み→入場ボタン表示
+            exitChatBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>入場する';
+            exitChatBtn.classList.remove('btn-cyber-exit');
+            exitChatBtn.classList.add('btn-cyber-primary');
+            
+            // 入場ボタンを目立たせる
+            exitChatBtn.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.8)';
+            exitChatBtn.style.textShadow = '0 0 10px rgba(0, 255, 255, 0.8)';
+            exitChatBtn.style.filter = 'brightness(1.2)';
+            
+            // チャット画面を薄暗くして入力を無効化
+            document.getElementById('chatOverlay').style.display = 'flex';
+            document.getElementById('messageContent').disabled = true;
+            document.querySelector('.send-button').disabled = true;
+            
+            // チェック間隔を長くして通信を減らす
+            if (checkInterval) {
+                clearInterval(checkInterval);
+                checkInterval = setInterval(checkNewMessages, 10000); // 退出中は10秒間隔
+            }
+        } else {
+            // 入場済み→退出ボタン表示
+            exitChatBtn.innerHTML = '<i class="bi bi-box-arrow-right me-2"></i>退出する';
+            exitChatBtn.classList.remove('btn-cyber-primary');
+            exitChatBtn.classList.add('btn-cyber-exit');
+            
+            // 通常のボタンスタイルに戻す
+            exitChatBtn.style.boxShadow = '';
+            exitChatBtn.style.textShadow = '';
+            exitChatBtn.style.filter = '';
+            
+            // チャット画面の薄暗さを解除して入力を有効化
+            document.getElementById('chatOverlay').style.display = 'none';
+            document.getElementById('messageContent').disabled = false;
+            document.querySelector('.send-button').disabled = false;
+            
+            // チェック間隔を元に戻す
+            if (checkInterval) {
+                clearInterval(checkInterval);
+                checkInterval = setInterval(checkNewMessages, 3000); // 入場中は3秒間隔
+            }
+        }
+    }
+    
+    // 初期表示でボタンを適切に設定
+    updateButtonState();
+    
+    if (exitChatBtn) {
+        exitChatBtn.addEventListener('click', function() {
+            if (!isExited) {
+                // 退出処理
+                // CSRFトークンを取得
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                // 退出通知を送信
+                fetch(`/chats/api/leave-chat/${conversationId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log('チャットから退出しました');
+                        
+                        // チャット接続を切断
+                        isActive = false;
+                        if (checkInterval) {
+                            clearInterval(checkInterval);
+                            checkInterval = null;
+                        }
+                        
+                        // ステータス通知
+                        chatStatus.style.display = 'flex';
+                        chatStatus.style.background = 'rgba(255, 50, 50, 0.3)';
+                        chatStatus.style.borderColor = '#ff5050';
+                        chatStatusText.style.color = '#ffffff';
+                        chatStatusText.textContent = 'チャットから退出しました';
+                        
+                        // 3秒後に通知を消す（入場時と同様の挙動に）
+                        setTimeout(() => {
+                            chatStatus.style.display = 'none';
+                        }, 3000);
+                        
+                        // 退出状態に設定
+                        isExited = true;
+                        // ローカルストレージに状態を保存
+                        saveChatState(true);
+                        
+                        // ボタンのテキストを「入場する」に変更
+                        updateButtonState();
+                    } else {
+                        console.error('退出に失敗しました:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('退出処理中にエラーが発生しました:', error);
+                });
+            } else {
+                // 再接続処理
+                activityManager.reconnect();
+                
+                // 入場メッセージをサーバーに送信
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                
+                // 入場通知を送信
+                fetch(`/chats/api/leave-chat/${conversationId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'enter'  // 入場を意味するパラメータを追加
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log('チャットに入場しました');
+                    } else {
+                        console.error('入場処理に失敗しました:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('入場処理中にエラーが発生しました:', error);
+                });
+                
+                // 退出状態を解除
+                isExited = false;
+                // ローカルストレージに状態を保存
+                saveChatState(false);
+                
+                // ボタンのテキストを「退出する」に戻す
+                updateButtonState();
+                
+                // 3秒後に通知を消す
+                setTimeout(() => {
+                    chatStatus.style.display = 'none';
+                }, 3000);
+            }
+        });
+    }
     
     // アクティビティ管理クラス
     class ChatActivityManager {
@@ -565,6 +946,54 @@ document.addEventListener('DOMContentLoaded', function() {
     // アクティビティマネージャーの初期化
     const activityManager = new ChatActivityManager();
     
+    // ページロード時に一度だけチェック - 強制的にシステムメッセージと状態を同期
+    setTimeout(() => {
+        // 全てのシステムメッセージを取得して最新の状態を確認
+        const allSystemMessages = document.querySelectorAll('.system-notification');
+        const username = "{{ request.user.username }}";
+        let foundUserStatus = false;
+        
+        console.log('ページロード時の強制同期チェック開始');
+        
+        // 最新のメッセージから逆順に確認
+        for (let i = allSystemMessages.length - 1; i >= 0; i--) {
+            const msgText = allSystemMessages[i].textContent.trim();
+            
+            // 自分に関するメッセージを探す
+            if (msgText.indexOf(username) !== -1) {
+                console.log('最後の自分に関するシステムメッセージ:', msgText);
+                
+                // 入場メッセージか退出メッセージかを判断
+                if (msgText.indexOf('入りました') !== -1 || msgText.indexOf('入場しました') !== -1) {
+                    console.log('最新状態は「入場中」です');
+                    // 状態と表示が一致していない場合は強制更新
+                    if (isExited) {
+                        console.log('状態を「入場中」に強制修正します');
+                        isExited = false;
+                        saveChatState(false);
+                        updateButtonState();
+                    }
+                } else if (msgText.indexOf('退室しました') !== -1 || msgText.indexOf('退出しました') !== -1) {
+                    console.log('最新状態は「退出中」です');
+                    // 状態と表示が一致していない場合は強制更新
+                    if (!isExited) {
+                        console.log('状態を「退出中」に強制修正します');
+                        isExited = true;
+                        saveChatState(true);
+                        updateButtonState();
+                    }
+                }
+                
+                foundUserStatus = true;
+                break;
+            }
+        }
+        
+        if (!foundUserStatus) {
+            console.log('自分に関するシステムメッセージが見つかりませんでした');
+        }
+    }, 1000); // 1秒後に実行（DOMが確実に読み込まれた後）
+    
     // IME入力状態を管理する変数
     let isIMEComposing = false;
     
@@ -643,6 +1072,46 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // システムメッセージ（入室・退室通知）の場合
+        if (message.message_type === 'enter' || message.message_type === 'leave') {
+            const systemNotification = document.createElement('div');
+            systemNotification.className = 'system-notification';
+            systemNotification.dataset.messageId = message.id;
+            systemNotification.textContent = message.content;
+            
+            messagesContainer.appendChild(systemNotification);
+            displayedMessages.add(message.id);
+            
+            // システムメッセージに応じてボタンの状態も更新
+            const messageText = message.content.trim();
+            // 自分のIDをJavaScriptで取得（Djangoテンプレートから）
+            const myUserId = "{{ request.user.id }}";
+            // メッセージに自分のユーザー名が含まれるか確認
+            const isAboutMe = messageText.indexOf("{{ request.user.username }}") !== -1;
+            
+            // 自分に関するメッセージの場合のみ状態を更新
+            if (isAboutMe) {
+                if (messageText.indexOf('入りました') !== -1 || messageText.indexOf('入場しました') !== -1) {
+                    // 入場メッセージの場合、退出可能な状態に更新
+                    console.log('自分の入場メッセージを受信: ボタンを退出に更新');
+                    isExited = false;
+                    saveChatState(false);
+                    updateButtonState();
+                } else if (messageText.indexOf('退室しました') !== -1 || messageText.indexOf('退出しました') !== -1) {
+                    // 退出メッセージの場合、入場可能な状態に更新
+                    console.log('自分の退出メッセージを受信: ボタンを入場に更新');
+                    isExited = true;
+                    saveChatState(true);
+                    updateButtonState();
+                }
+            } else {
+                console.log('他のユーザーのメッセージなので状態を更新しません:', messageText);
+            }
+            
+            return;
+        }
+        
+        // 通常のメッセージの場合
         const wrapper = document.createElement('div');
         wrapper.className = `message-wrapper ${isMine ? 'message-out' : 'message-in'}`;
         wrapper.dataset.messageId = message.id;
@@ -675,10 +1144,65 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success' && data.messages.length > 0) {
+                    let systemMessages = [];
+                    
                     // 新しいメッセージだけを追加（コンテナを空にしない）
                     data.messages.forEach(message => {
                         appendMessage(message, message.is_mine);
+                        
+                        // システムメッセージを集める
+                        if (message.message_type === 'enter' || message.message_type === 'leave') {
+                            systemMessages.push(message);
+                        }
                     });
+                    
+                    // 新着メッセージ処理後に、すべてのシステムメッセージを改めて確認
+                    // これにより、自分の状態と最新のシステムメッセージを確実に同期させる
+                    if (systemMessages.length > 0) {
+                        console.log('新着システムメッセージがあります。全体状態を確認します');
+                        
+                        // すべてのシステムメッセージを取得
+                        const allSystemMessages = document.querySelectorAll('.system-notification');
+                        const username = "{{ request.user.username }}";
+                        let foundStatus = false;
+                        
+                        // 最新のメッセージから逆順に確認
+                        for (let i = allSystemMessages.length - 1; i >= 0; i--) {
+                            const msgText = allSystemMessages[i].textContent.trim();
+                            
+                            // 自分に関するメッセージを探す
+                            if (msgText.indexOf(username) !== -1) {
+                                console.log('最新の自分に関するシステムメッセージ:', msgText);
+                                
+                                // 状態判定と強制更新
+                                if (msgText.indexOf('入りました') !== -1 || msgText.indexOf('入場しました') !== -1) {
+                                    // 入場状態
+                                    if (isExited) {
+                                        console.log('状態を「入場中」に強制更新します');
+                                        isExited = false;
+                                        saveChatState(false);
+                                        updateButtonState();
+                                    }
+                                } else if (msgText.indexOf('退室しました') !== -1 || msgText.indexOf('退出しました') !== -1) {
+                                    // 退出状態
+                                    if (!isExited) {
+                                        console.log('状態を「退出中」に強制更新します');
+                                        isExited = true;
+                                        saveChatState(true);
+                                        updateButtonState();
+                                    }
+                                }
+                                
+                                foundStatus = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!foundStatus) {
+                            console.log('自分に関するシステムメッセージが見つかりませんでした');
+                        }
+                    }
+                    
                     lastMessageId = data.messages[data.messages.length - 1].id;
                     scrollToBottom();
                 }
@@ -762,6 +1286,31 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('restartChatBtn').addEventListener('click', () => {
         activityManager.reconnect();
         inactiveModal.hide();
+    });
+    
+    // 退出状態の場合、メッセージ入力エリアや送信ボタンをクリックしてもダイアログを表示
+    messageContent.addEventListener('click', function(e) {
+        if (isExited) {
+            e.preventDefault();
+            exitedModal.show();
+        }
+    });
+    
+    messageContent.addEventListener('focus', function(e) {
+        if (isExited) {
+            e.preventDefault();
+            messageContent.blur(); // フォーカスを外す
+            exitedModal.show();
+        }
+    });
+    
+    // 送信ボタンのクリックイベント
+    document.querySelector('.send-button').addEventListener('click', function(e) {
+        if (isExited) {
+            e.preventDefault();
+            e.stopPropagation();
+            exitedModal.show();
+        }
     });
 });
 </script>
