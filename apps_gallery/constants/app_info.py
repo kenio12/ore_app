@@ -19,7 +19,8 @@ APP_TYPES = アプリ種類
 # 開発状況
 APP_STATUS = {
     'completed': '完成品',
-    'in_development': '開発中'
+    'in_development': '開発中',
+    'beta': 'ベータ版'
 }
 
 # 公開状態

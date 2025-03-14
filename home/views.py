@@ -5,10 +5,10 @@ from apps_gallery.models import AppGallery
 from apps_gallery.constants import *  # __init__.pyから全ての定数をインポート
 
 def home(request):
-    # 完成品かつ公開状態のアプリのみを取得
+    # 公開状態のアプリのみを取得（完成品条件を削除）
     apps = AppGallery.objects.filter(
-        status='public',
-        dev_status='completed'  # 完成品のみ
+        status='public'
+        # dev_status='completed' の条件を削除
     ).order_by('-created_at')
     
     # アプリの情報を拡張

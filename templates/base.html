@@ -326,9 +326,57 @@
         const isCurrentConversationPage = isChatPage && !window.location.pathname.endsWith('/chats/');
         
         if (DEBUG) {
-            console.log('現在のページ:', window.location.pathname);
+            console.log('のページ:', window.location.pathname);
             console.log('isChatPage:', isChatPage);
             console.log('isCurrentConversationPage:', isCurrentConversationPage);
+        }
+        
+        // 【緊急対策】チャットページ以外では強制的に通知を非表示
+        if (!isChatPage) {
+            // トースト通知を強制的に隠す（チャット通知だけ）
+            const chatNotification = document.getElementById('chatNotification');
+            if (chatNotification) {
+                chatNotification.style.display = 'none';
+                console.log('🚫 チャット通知を強制的に非表示にしました');
+            }
+            
+            // チャット関連のモーダルだけを隠す
+            ['enterModal', 'exitModal', 'enterExitModal'].forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal && modal.classList.contains('show')) {
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                    console.log('🚫 チャットモーダルを非表示にしました:', modalId);
+                }
+            });
+            
+            // チャット関連のバックドロップだけを削除
+            document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+                // モーダルが表示されていなければ、バックドロップを削除
+                if (document.querySelectorAll('.modal.show').length === 0) {
+                    backdrop.remove();
+                    console.log('🚫 モーダルバックドロップを削除しました');
+                }
+            });
+            
+            // body要素のスタイルをチェック - チャットモーダルがなければ修正
+            if (document.querySelectorAll('.modal.show').length === 0) {
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }
+        }
+        
+        // 【緊急対策】ページ読み込み時に一度だけローカルストレージをクリア
+        const isFirstLoad = !localStorage.getItem('emergency_fix_applied');
+        if (!isChatPage && isFirstLoad) {
+            // チャット通知関連のストレージをリセット
+            localStorage.removeItem('userStatus');
+            localStorage.removeItem('processedMessageIds');
+            
+            // 緊急修正フラグを設定（1回だけの実行を保証）
+            localStorage.setItem('emergency_fix_applied', 'true');
+            console.log('⚠️ 緊急対策: ローカルストレージをリセットしました');
         }
         
         // ポーリング管理
@@ -348,7 +396,10 @@
             processedMessageIds: new Set(),
             
             // メッセージIDの最大保持数
-            maxStoredMessageIds: 1000
+            maxStoredMessageIds: 1000,
+            
+            // 【新規追加】通知禁止フラグ
+            suppressNotifications: !isChatPage
         };
         
         // 状態をローカルストレージに保存
@@ -428,8 +479,52 @@
             if (DEBUG) console.log('状態をリセットしました');
         }
         
+        // 【新規追加】通知を停止する処理
+        function suppressAllNotifications() {
+            state.suppressNotifications = true;
+            console.log('⚠️ 通知機能を無効化しました');
+        }
+
+        // 【新規追加】通知を再開する処理
+        function enableNotifications() {
+            state.suppressNotifications = false;
+            console.log('✅ 通知機能を有効化しました');
+        }
+        
         // 未読メッセージをチェックする関数
         function checkUnreadMessages() {
+            // 【緊急対策】チャットページ以外では通知をすべて抑制
+            if (!window.location.pathname.includes('/chats/')) {
+                // チャット通知だけを強制的に非表示
+                const chatNotification = document.getElementById('chatNotification');
+                if (chatNotification) {
+                    chatNotification.style.display = 'none';
+                }
+                
+                if (DEBUG) console.log('🔇 非チャットページでのチャット通知を抑制しました');
+                state.suppressNotifications = true;
+                saveState();
+                // ここではreturnしない - 処理は続行（他の正規通知を許可するため）
+            }
+            
+            // 現在のURL状態を再確認
+            const currentIsChatPage = window.location.pathname.includes('/chats/');
+            const currentIsConversationPage = currentIsChatPage && !window.location.pathname.endsWith('/chats/');
+            const currentConversationId = getCurrentConversationId();
+            
+            if (DEBUG) {
+                console.log('📊 チェック時のページ状態:');
+                console.log('- 現在のURL:', window.location.pathname);
+                console.log('- チャットページ:', currentIsChatPage);
+                console.log('- 特定の会話ページ:', currentIsConversationPage);
+                console.log('- 現在の会話ID:', currentConversationId);
+            }
+            
+            // 現在のページがチャットページでない場合、通知を一時的に抑制
+            if (!currentIsChatPage && !state.suppressNotifications) {
+                suppressAllNotifications();
+            }
+            
             fetch('/chats/api/unread-messages/')
                 .then(response => {
                     if (!response.ok) {
@@ -444,32 +539,37 @@
                         // 処理前のIDセットの状態をデバッグ表示
                         if (DEBUG) console.log(`🔍 処理前の処理済みID数: ${state.processedMessageIds.size}件`);
 
+                        // 通知が禁止されている場合は、すべてのメッセージを既読としてマークするだけ
+                        if (state.suppressNotifications || !currentIsChatPage) {
+                            if (DEBUG) console.log('🔇 通知が無効化されているため、すべてのメッセージを処理済みとしてマークします');
+                            
+                            data.unread_messages.forEach(message => {
+                                state.processedMessageIds.add(String(message.id));
+                            });
+                            
+                            saveState(); // 状態を保存
+                            return; // これ以上処理しない
+                        }
+
                         data.unread_messages.forEach(message => {
-                            // 【重要な修正】：既に処理済みのメッセージはスキップ
-                            if (state.processedMessageIds.has(message.id)) {
+                            // 処理済みチェックをより厳格に行う
+                            const messageId = String(message.id);
+                            if (state.processedMessageIds.has(messageId)) {
                                 if (DEBUG) {
-                                    // 退出メッセージの場合、より詳細なデバッグ情報を表示
-                                    const msgContent = message.content || '';
-                                    if (msgContent.includes('退室しました')) {
-                                        console.log(`⚠️ 退出メッセージの重複処理をスキップ: ID=${message.id}, ${message.sender_name}, 内容="${msgContent}"`);
-                                    } else {
-                                        console.log(`⏭️ 既に処理済みのメッセージをスキップします: ID=${message.id}, ${message.sender_name}`);
-                                    }
+                                    console.log(`⏭️ 既に処理済みのメッセージをスキップします: ID=${messageId}, ${message.sender_name}`);
                                 }
-                                return;
+                                return; // 処理済みなのでスキップ
                             }
                             
-                            // 【重要な修正】：自分が今見ているチャットルームの通知は表示しない
-                            // 現在のURLからチャットルームIDを取得
-                            const currentConversationId = getCurrentConversationId();
-                            
-                            // 今見ているチャットルームの通知はスキップ
-                            if (currentConversationId && String(message.conversation_id) === String(currentConversationId)) {
-                                if (DEBUG) console.log(`⏭️ 現在表示中の会話(ID:${currentConversationId})の通知をスキップします: ${message.sender_name}`);
-                                // 処理済みとしてマークする（スキップしたメッセージも記録）
-                                state.processedMessageIds.add(message.id);
-                                saveState();
-                                return;
+                            // 現在のページが、このメッセージと同じ会話ページかチェック
+                            if (currentIsConversationPage && currentConversationId && 
+                                String(message.conversation_id) === String(currentConversationId)) {
+                                if (DEBUG) {
+                                    console.log(`⏭️ 現在表示中の会話(ID:${currentConversationId})の通知をスキップします: ID=${messageId}, ${message.sender_name}`);
+                                }
+                                // 処理済みとしてマークする
+                                state.processedMessageIds.add(messageId);
+                                return; // 現在表示中の会話なのでスキップ
                             }
 
                             // メッセージタイプの判定
@@ -505,6 +605,24 @@
                                     if (DEBUG) console.log(`🔄 退室モーダルを閉じます: ${message.sender_name}`);
                                     state.activeModals[`exit-${userKey}`].hide();
                                     delete state.activeModals[`exit-${userKey}`];
+                                }
+                                
+                                // 【修正】入室通知の表示条件を厳格化
+                                
+                                // 1. 自分が同じチャットルームにいる場合は通知しない
+                                if (currentIsConversationPage && 
+                                    String(message.conversation_id) === String(currentConversationId)) {
+                                    if (DEBUG) console.log(`🔇 現在同じチャットルームにいるため入室通知をスキップします: ${message.sender_name}`);
+                                    state.processedMessageIds.add(String(message.id));
+                                    return;
+                                }
+                                
+                                // 2. 招待からアクセスした場合の通知をスキップ
+                                if (message.invitation_source === true || 
+                                    (message.content && message.content.includes('招待からのアクセス'))) {
+                                    if (DEBUG) console.log(`🔇 招待からのアクセスのため入室通知をスキップします: ${message.sender_name}`);
+                                    state.processedMessageIds.add(String(message.id));
+                                    return;
                                 }
                                 
                                 // ユーザーがブラウザを見ていないときはブラウザ通知
@@ -543,8 +661,8 @@
                                 if (DEBUG) console.log(`👻 退室メッセージを受信しましたが、通知は表示しません: ${message.sender_name}`);
                                 
                                 // 明示的にこのメッセージを処理済みとしてマーク
-                                state.processedMessageIds.add(message.id);
-                                if (DEBUG) console.log(`🔒 退室メッセージをIDで明示的に処理済みとしてマーク: ID=${message.id}`);
+                                state.processedMessageIds.add(messageId);
+                                if (DEBUG) console.log(`🔒 退室メッセージをIDで明示的に処理済みとしてマーク: ID=${messageId}`);
                                 saveState(); // 状態を確実に保存
                                 
                                 // トースト表示とモーダル表示をしない（退室は静かに処理）
@@ -565,12 +683,12 @@
                                 }
                             }
                             
-                            // 処理済みとしてマーク - すべてのタイプのメッセージで統一的に処理
-                            state.processedMessageIds.add(message.id);
-                            
-                            // 処理後、状態を確実に保存
-                            saveState();
+                            // 処理済みとしてマーク - 明示的に文字列に変換して保存
+                            state.processedMessageIds.add(messageId);
                         });
+                        
+                        // 処理後に必ず状態を保存
+                        saveState();
                         
                         // 処理後のIDセットの状態をデバッグ表示
                         if (DEBUG) console.log(`🔍 処理後の処理済みID数: ${state.processedMessageIds.size}件`);
@@ -581,12 +699,12 @@
                 });
         }
         
-        // 【新関数】現在表示中のチャットルームIDを取得
+        // 【改善】現在表示中のチャットルームIDを取得 - より厳格に
         function getCurrentConversationId() {
             // チャットルームページのURLパターン: /chats/123/ のような形式
-            const match = window.location.pathname.match(/\/chats\/(\d+)\//);
+            const match = window.location.pathname.match(/\/chats\/(\d+)\/?/);
             if (match && match[1]) {
-                const conversationId = match[1];
+                const conversationId = String(match[1]);
                 if (DEBUG) console.log(`🔍 現在のチャットルームID: ${conversationId}`);
                 return conversationId;
             }
@@ -766,6 +884,12 @@
         
         // チャットトースト通知を表示する関数
         function showChatToast(senderName, senderAvatar, conversationId) {
+            // 【緊急対策】チャットページ以外では通知を表示しない
+            if (!window.location.pathname.includes('/chats/')) {
+                if (DEBUG) console.log('🚫 非チャットページでの通知表示をブロックしました');
+                return false;
+            }
+            
             const toast = document.getElementById('chatNotification');
             if (!toast) return false;
             
@@ -893,6 +1017,13 @@
             
             // 状態を復元
             loadState();
+            
+            // チャットページ以外では通知を抑制
+            if (!isChatPage) {
+                suppressAllNotifications();
+            } else {
+                enableNotifications();
+            }
             
             // ページがアクティブならポーリング開始
             if (!document.hidden) {

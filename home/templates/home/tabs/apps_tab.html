@@ -56,8 +56,15 @@
                                              data-genres="{% for genre in app.genres %}{{ GENRES|get_dict_value:genre }}{% if not forloop.last %},{% endif %}{% endfor %}">
                                     </div>
                                 </div>
+                            {% else %}
+                                <!-- 画像がない場合も同じスペースを確保 -->
+                                <div class="col-md-4">
+                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.15); min-height: 300px; max-height: 300px;">
+                                        <i class="bi bi-image text-secondary" style="font-size: 4rem;"></i>
+                                    </div>
+                                </div>
                             {% endif %}
-                            <div class="{% if app.thumbnail or app.screenshots %}col-md-8{% else %}col-12{% endif %}">
+                            <div class="col-md-8">
                                 <div class="card-body">
                                     <h3 class="card-title cyber-title">{{ app.title }}</h3>
                                     <p class="card-text cyber-description">{{ app.overview }}</p>
@@ -73,6 +80,17 @@
                                             {% for genre in app.genres %}
                                                 <span class="badge cyber-genre me-2">{{ GENRES|get_dict_value:genre }}</span>
                                             {% endfor %}
+                                        </div>
+                                        
+                                        <!-- 開発状況バッジを追加 -->
+                                        <div class="mt-2">
+                                            {% if app.dev_status == 'completed' %}
+                                                <span class="badge bg-success cyber-status me-2">完成品</span>
+                                            {% elif app.dev_status == 'beta' %}
+                                                <span class="badge bg-warning text-dark cyber-status me-2">ベータ版</span>
+                                            {% elif app.dev_status == 'in_development' %}
+                                                <span class="badge bg-info text-dark cyber-status me-2">開発中</span>
+                                            {% endif %}
                                         </div>
                                         
                                         <!-- バックエンド言語 -->
