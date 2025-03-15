@@ -1,5 +1,6 @@
 {% extends 'dashboard/base.html' %}
 {% load profile_filters %}
+{% load widget_tweaks %}
 
 {% block title %}プロフィール - {{ user.username }}{% endblock %}
 
@@ -12,185 +13,357 @@
                     <h3 class="mb-0">プロフィール情報</h3>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4 text-center mb-3 mb-md-0">
-                            {% if profile.avatar_url %}
-                                <img src="{{ profile.avatar_url }}" alt="プロフィール画像" class="img-fluid rounded-circle" style="max-width: 150px; border: 2px solid #00ff00; box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
-                            {% else %}
-                                <div class="cyber-avatar-placeholder" style="width: 150px; height: 150px; margin: 0 auto;">
-                                    <i class="bi bi-person-circle" style="font-size: 5rem; color: #00ff00;"></i>
-                                </div>
-                            {% endif %}
+                    <form method="post" action="{% url 'dashboard:profile' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {% if messages %}
+                        <div class="alert alert-success">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
                         </div>
-                        <div class="col-md-8">
-                            <h4 class="text-cyber">{{ user.username }}</h4>
-                            
-                            <p class="text-light">
-                                {{ user.email }}
-                                <span class="badge bg-dark text-cyber border border-success ms-2" style="font-size: 0.7rem;">本人のみ表示</span>
-                            </p>
-                            
-                            {% if profile.bio %}
-                                <h5 class="text-cyber mt-3">自己紹介</h5>
-                                <p class="text-light">{{ profile.bio }}</p>
-                            {% endif %}
-                            
-                            <div class="mt-3">
-                                {% if profile.social_github %}
-                                    {% if 'github.com' in profile.social_github %}
-                                        <a href="{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-success me-2">
-                                            <i class="bi bi-github"></i> GitHub
-                                        </a>
-                                    {% else %}
-                                        <a href="https://github.com/{{ profile.social_github }}" target="_blank" class="btn btn-sm btn-outline-success me-2">
-                                            <i class="bi bi-github"></i> GitHub
-                                        </a>
-                                    {% endif %}
-                                {% endif %}
+                        {% endif %}
+                        
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3 mb-md-0">
+                                <div class="mb-3">
+                                    <div class="cyber-avatar-placeholder" style="width: 150px; height: 150px; margin: 0 auto;">
+                                        {% if user.profile.avatar %}
+                                            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                                        {% else %}
+                                            <i class="bi bi-person-circle" style="font-size: 5rem; color: #00ff00;"></i>
+                                        {% endif %}
+                                    </div>
+                                </div>
                                 
-                                {% if profile.social_twitter %}
-                                    {% if 'x.com' in profile.social_twitter or 'twitter.com' in profile.social_twitter %}
-                                        <a href="{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-success me-2">
-                                            <i class="bi bi-twitter-x"></i> X
-                                        </a>
-                                    {% else %}
-                                        <a href="https://x.com/{{ profile.social_twitter }}" target="_blank" class="btn btn-sm btn-outline-success me-2">
-                                            <i class="bi bi-twitter-x"></i> X
-                                        </a>
+                                <div class="mb-3">
+                                    <label for="avatar-upload" class="btn btn-outline-success btn-sm">
+                                        <i class="bi bi-upload"></i> プロフィール画像をアップロード
+                                    </label>
+                                    <input type="file" id="avatar-upload" name="avatar" accept="image/*" style="display: none;">
+                                    <div id="avatar-error" class="text-danger mt-2" style="display: none;"></div>
+                                    <div class="text-muted small mt-2">クリックまたはドラッグ＆ドロップでアップロード</div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <h4 class="text-cyber">{{ user.username }}</h4>
+                                
+                                <p class="text-light">
+                                    {{ user.email }}
+                                    <span class="badge bg-dark text-cyber border border-success ms-2" style="font-size: 0.7rem;">本人のみ表示</span>
+                                </p>
+                                
+                                <div class="mb-3">
+                                    <label for="{{ form.bio.id_for_label }}" class="form-label text-success">自己紹介</label>
+                                    {% render_field form.bio class="form-control bg-dark text-light" placeholder="あなたについて教えてください" %}
+                                    {% if form.bio.errors %}
+                                        <div class="text-danger">
+                                            {{ form.bio.errors }}
+                                        </div>
                                     {% endif %}
-                                {% endif %}
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label for="{{ form.social_github.id_for_label }}" class="form-label text-success">
+                                            <i class="bi bi-github"></i> GitHub
+                                        </label>
+                                        {% render_field form.social_github class="form-control bg-dark text-light" placeholder="GitHubユーザー名（例: kenio12）" %}
+                                        {% if form.social_github.errors %}
+                                            <div class="text-danger">
+                                                {{ form.social_github.errors }}
+                                            </div>
+                                        {% endif %}
+                                        <small class="text-muted">ユーザー名だけ入力するか、完全なURLを入力してください</small>
+                                    </div>
+                                    
+                                    <div class="col-md-12 mb-3">
+                                        <label for="{{ form.social_twitter.id_for_label }}" class="form-label text-success">
+                                            <i class="bi bi-twitter-x"></i> X（旧Twitter）
+                                        </label>
+                                        {% render_field form.social_twitter class="form-control bg-dark text-light" placeholder="Xのユーザー名（例: kenio_king）" %}
+                                        {% if form.social_twitter.errors %}
+                                            <div class="text-danger">
+                                                {{ form.social_twitter.errors }}
+                                            </div>
+                                        {% endif %}
+                                        <small class="text-muted">ユーザー名だけ入力するか、完全なURLを入力してください</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- ハードウェア情報 -->
-                    {% if profile.hardware_specs %}
-                    <div class="mt-4">
-                        <h4 class="text-cyber mb-3">
-                            <i class="bi bi-cpu"></i> 開発に使用したパソコン環境
-                        </h4>
-                        <div class="card bg-black" style="border: 1px solid #00ff00; box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
-                            <div class="card-body bg-black">
-                                <div class="row">
-                                    <!-- ハードウェア情報をテーブル形式で表示 -->
-                                    <div class="col-md-12">
-                                        <div class="hardware-specs-table">
+                        
+                        <!-- ハードウェア情報 -->
+                        <div class="mt-4">
+                            <h4 class="text-cyber mb-3">
+                                <i class="bi bi-cpu"></i> 開発に使用したパソコン環境
+                            </h4>
+                            <div class="card bg-black" style="border: 1px solid #00ff00; box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
+                                <div class="card-body bg-black">
+                                    <!-- メーカーと機種情報 -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用パソコンのメーカー</label>
+                                        <div class="input-group mb-2">
+                                            <input type="text" 
+                                                id="maker"
+                                                name="maker"
+                                                class="form-control bg-dark text-light"
+                                                placeholder="例: Apple, Lenovo, Dell, HP など"
+                                                value="{{ profile.hardware_specs.maker }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle"></i> 代表的なメーカー: Apple, Dell, HP, Lenovo, ASUS, マウスコンピューターなど
+                                            </small>
+                                        </div>
+
+                                        <label class="form-label text-success">使用パソコンの機種名</label>
+                                        <div class="input-group mb-2">
+                                            <input type="text" 
+                                                id="model"
+                                                name="model"
+                                                class="form-control bg-dark text-light"
+                                                placeholder="例: MacBook Pro (2020), ThinkPad X1 Carbon など"
+                                                value="{{ profile.hardware_specs.model }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle"></i> モデル名や年式を含めると分かりやすいです
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <!-- PCタイプ -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用パソコンのタイプ</label>
+                                        <div class="row g-3">
+                                            {% for key, value in pc_types.items %}
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        class="form-check-input"
+                                                        id="pc-type-{{ key }}"
+                                                        name="pc_type"
+                                                        value="{{ key }}"
+                                                        {% if profile.hardware_specs.pc_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="pc-type-{{ key }}">{{ value }}</label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- デバイスタイプ -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用パソコンの種類</label>
+                                        <small class="text-muted d-block mb-2">※Windows、Mac、Chromebook、Linuxなど、開発に使用している主なパソコンを選択</small>
+                                        <div class="row g-3">
+                                            {% for key, value in device_types.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="device-{{ key }}"
+                                                        name="device_type"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if profile.hardware_specs.device_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="device-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- CPU -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">CPU</label>
+                                        <div class="row g-3">
+                                            {% for key, value in cpu_types.items %}
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="cpu-{{ key }}"
+                                                        name="cpu_type"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if profile.hardware_specs.cpu_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="cpu-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- メモリ -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">メモリ</label>
+                                        <div class="row g-3">
+                                            {% for key, value in memory_sizes.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="memory-{{ key }}"
+                                                        name="memory_size"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if profile.hardware_specs.memory_size == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="memory-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- ストレージ -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">ストレージタイプ</label>
+                                        <div class="row g-3">
+                                            {% for key, value in storage_types.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="storage-{{ key }}"
+                                                        name="storage_type"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if profile.hardware_specs.storage_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="storage-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- モニター数 -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用モニター数</label>
+                                        <div class="row g-3">
+                                            {% for key, value in monitor_counts.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="monitor-{{ key }}"
+                                                        name="monitor_count"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if profile.hardware_specs.monitor_count == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="monitor-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+
+                                    <!-- インターネット回線 -->
+                                    <div class="mb-4">
+                                        <label class="form-label text-success">使用インターネット回線</label>
+                                        <div class="row g-3">
+                                            {% for key, value in internet_types.items %}
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input type="radio" 
+                                                        id="internet-{{ key }}"
+                                                        name="internet_type"
+                                                        class="form-check-input"
+                                                        value="{{ key }}"
+                                                        {% if profile.hardware_specs.internet_type == key %}checked{% endif %}>
+                                                    <label class="form-check-label text-success" for="internet-{{ key }}">
+                                                        {{ value }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 仕事依頼情報セクション -->
+                        <div class="mt-4" id="job_info">
+                            <h4 class="text-cyber mb-3">
+                                <i class="bi bi-briefcase"></i> 仕事依頼情報
+                            </h4>
+                            <div class="card bg-black" style="border: 1px solid #00ff00; box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);">
+                                <div class="card-body bg-black">
+                                    <div class="row">
+                                        <!-- 仕事依頼ステータス -->
+                                        <div class="col-md-12 mb-3">
+                                            <label for="{{ form.job_status.id_for_label }}" class="form-label text-success">現在の仕事依頼受付状況</label>
+                                            <select name="job_status" id="{{ form.job_status.id_for_label }}" class="form-select bg-dark text-light">
+                                                <option value="unavailable" {% if profile.job_status == 'unavailable' %}selected{% endif %}>依頼停止中</option>
+                                                <option value="limited" {% if profile.job_status == 'limited' %}selected{% endif %}>限定的に受付中</option>
+                                                <option value="available" {% if profile.job_status == 'available' %}selected{% endif %}>依頼受付中</option>
+                                            </select>
+                                            <div class="form-text text-muted">
+                                                <i class="bi bi-info-circle"></i> 現在の仕事依頼の受付状況を設定してください
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 受付可能な仕事タイプ -->
+                                        <div class="col-md-12 mb-3">
+                                            <label class="form-label text-success">受付可能な仕事タイプ</label>
+                                            <div class="mb-2 form-text text-muted">
+                                                <i class="bi bi-info-circle"></i> 受け付けられる仕事の種類を選択してください（複数選択可）
+                                            </div>
                                             <div class="row">
-                                                <!-- メーカーと機種情報 -->
-                                                {% if profile.hardware_specs.maker %}
-                                                <div class="col-md-6 col-sm-12">
-                                                    <table class="table table-borderless mb-2 bg-black">
-                                                        <tr class="bg-black">
-                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">メーカー:</td>
-                                                            <td class="text-light" style="background-color: #000000 !important;">{{ profile.hardware_specs.maker }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                {% if profile.hardware_specs.model %}
-                                                <div class="col-md-6 col-sm-12">
-                                                    <table class="table table-borderless mb-2 bg-black">
-                                                        <tr class="bg-black">
-                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">機種名:</td>
-                                                            <td class="text-light" style="background-color: #000000 !important;">{{ profile.hardware_specs.model }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                <!-- PCタイプとデバイスタイプ -->
-                                                {% if profile.hardware_specs.pc_type %}
-                                                <div class="col-md-6 col-sm-12">
-                                                    <table class="table table-borderless mb-2 bg-black">
-                                                        <tr class="bg-black">
-                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">PCタイプ:</td>
-                                                            <td class="text-light" style="background-color: #000000 !important;">{{ pc_types|get_item:profile.hardware_specs.pc_type }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                {% if profile.hardware_specs.device_type %}
-                                                <div class="col-md-6 col-sm-12">
-                                                    <table class="table table-borderless mb-2 bg-black">
-                                                        <tr class="bg-black">
-                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">PC種類:</td>
-                                                            <td class="text-light" style="background-color: #000000 !important;">{{ device_types|get_item:profile.hardware_specs.device_type }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                <!-- CPU・メモリ・ストレージ -->
-                                                {% if profile.hardware_specs.cpu_type %}
-                                                <div class="col-md-6 col-sm-12">
-                                                    <table class="table table-borderless mb-2 bg-black">
-                                                        <tr class="bg-black">
-                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">CPU:</td>
-                                                            <td class="text-light" style="background-color: #000000 !important;">{{ cpu_types|get_item:profile.hardware_specs.cpu_type }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                {% if profile.hardware_specs.memory_size %}
-                                                <div class="col-md-6 col-sm-12">
-                                                    <table class="table table-borderless mb-2 bg-black">
-                                                        <tr class="bg-black">
-                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">メモリ:</td>
-                                                            <td class="text-light" style="background-color: #000000 !important;">{{ memory_sizes|get_item:profile.hardware_specs.memory_size }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                {% if profile.hardware_specs.storage_type %}
-                                                <div class="col-md-6 col-sm-12">
-                                                    <table class="table table-borderless mb-2 bg-black">
-                                                        <tr class="bg-black">
-                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">ストレージ:</td>
-                                                            <td class="text-light" style="background-color: #000000 !important;">{{ storage_types|get_item:profile.hardware_specs.storage_type }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                <!-- モニター数・インターネット回線 -->
-                                                {% if profile.hardware_specs.monitor_count %}
-                                                <div class="col-md-6 col-sm-12">
-                                                    <table class="table table-borderless mb-2 bg-black">
-                                                        <tr class="bg-black">
-                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">使用モニター数:</td>
-                                                            <td class="text-light" style="background-color: #000000 !important;">{{ monitor_counts|get_item:profile.hardware_specs.monitor_count }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                {% endif %}
-                                                
-                                                {% if profile.hardware_specs.internet_type %}
-                                                <div class="col-md-6 col-sm-12">
-                                                    <table class="table table-borderless mb-2 bg-black">
-                                                        <tr class="bg-black">
-                                                            <td class="text-cyber" style="width: 40%; white-space: nowrap; background-color: #000000 !important;">インターネット回線:</td>
-                                                            <td class="text-light" style="background-color: #000000 !important;">{{ internet_types|get_item:profile.hardware_specs.internet_type }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                                {% endif %}
+                                                {% for choice in form.job_types.field.choices %}
+                                                    <div class="col-md-6 mb-2">
+                                                        <div class="form-check">
+                                                            <input type="checkbox" 
+                                                                name="job_types" 
+                                                                value="{{ choice.0 }}" 
+                                                                id="id_job_types_{{ forloop.counter }}"
+                                                                class="form-check-input" 
+                                                                {% if choice.0 in profile.job_types %}checked{% endif %}>
+                                                            <label class="form-check-label text-success" for="id_job_types_{{ forloop.counter }}">
+                                                                {{ choice.1 }}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 希望単価/時給 -->
+                                        <div class="col-md-12 mb-3">
+                                            <label for="{{ form.work_rate.id_for_label }}" class="form-label text-success">希望単価/時給</label>
+                                            <textarea 
+                                                name="work_rate" 
+                                                id="{{ form.work_rate.id_for_label }}" 
+                                                class="form-control bg-dark text-light"
+                                                placeholder="例: 
+・フロントエンド開発: 3,000円~/時間
+・バックエンド開発: 4,000円~/時間
+・アプリ開発: 要相談
+・デザイン作業: 2,500円~/時間"
+                                                rows="5"
+                                                style="resize: vertical;">{{ profile.work_rate }}</textarea>
+                                            <div class="form-text text-muted">
+                                                <i class="bi bi-info-circle"></i> 希望する単価や時給を仕事タイプ別に詳しく記入できます。未記入の場合は「要相談」と表示されます。
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="card-footer border-top">
-                    <a href="{% url 'profiles:profile_edit' %}" class="btn btn-cyber-green" style="color: #000 !important; font-weight: bold; text-shadow: none;">
-                        <i class="bi bi-pencil-square"></i> プロフィールを編集
-                    </a>
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-cyber-green" style="color: #000 !important; font-weight: bold; text-shadow: none;">
+                                <i class="bi bi-save"></i> プロフィールを保存
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -213,6 +386,135 @@
     text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
 }
 
-/* ボタンスタイルは削除し、ダッシュボードの共通スタイルを使用 */
+.form-control, .form-select {
+    background-color: #111 !important;
+    color: #00ff00 !important;
+    border-color: #00aa00 !important;
+}
+
+.form-control:focus, 
+.form-select:focus {
+    border-color: #00ff00;
+    box-shadow: 0 0 0 0.25rem rgba(0, 255, 0, 0.25);
+}
+
+/* フォーム要素のスタイル */
+.form-check-input:checked {
+    background-color: #00ff00;
+    border-color: #00ff00;
+}
+
+.form-check-input:focus {
+    border-color: #00ff00;
+    box-shadow: 0 0 0 0.25rem rgba(0, 255, 0, 0.25);
+}
+
+.form-check-label {
+    color: #00ff00 !important;
+}
+
+.text-success {
+    color: #00ff00 !important;
+}
+
+.text-muted {
+    color: #00aa00 !important;
+}
+
+/* プレースホルダーテキストの色を明るくする */
+::placeholder {
+    color: #00ff00 !important;
+    opacity: 0.7 !important;
+}
+
+/* Firefox用 */
+::-moz-placeholder {
+    color: #00ff00 !important;
+    opacity: 0.7 !important;
+}
+
+/* Edge用 */
+::-ms-input-placeholder {
+    color: #00ff00 !important;
+    opacity: 0.7 !important;
+}
 </style>
+
+{% block extra_js %}
+<script>
+// CSRFトークンを取得する関数
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const avatarUpload = document.getElementById('avatar-upload');
+    const avatarError = document.getElementById('avatar-error');
+    
+    // 通知メッセージを自動的に消す
+    const alertMessages = document.querySelectorAll('.alert');
+    if (alertMessages.length > 0) {
+        setTimeout(function() {
+            alertMessages.forEach(function(alert) {
+                alert.style.transition = 'opacity 0.5s ease-out';
+                alert.style.opacity = '0';
+                setTimeout(function() {
+                    alert.remove();
+                }, 500);
+            });
+        }, 3000); // 3秒後に消える
+    }
+    
+    if (avatarUpload) {
+        avatarUpload.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const formData = new FormData();
+                formData.append('avatar', this.files[0]);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                
+                // エラーメッセージをクリア
+                avatarError.style.display = 'none';
+                avatarError.textContent = '';
+                
+                // アップロードリクエストを送信
+                fetch('{% url "profiles:upload_avatar" %}', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        // エラーメッセージを表示
+                        avatarError.textContent = data.error;
+                        avatarError.style.display = 'block';
+                    } else {
+                        // 成功メッセージを表示
+                        alert('プロフィール画像をアップロードしました');
+                        // ページをリロード
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    avatarError.textContent = 'アップロード中にエラーが発生しました';
+                    avatarError.style.display = 'block';
+                });
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
 {% endblock %} 

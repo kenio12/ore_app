@@ -11,4 +11,5 @@ urlpatterns = [
     path('detail/<int:user_id>/', views.user_profile_detail, name='user_profile_detail'),
     path('contact/<int:user_id>/', views.contact_user, name='contact'),
     path('clear-messages/', views.clear_messages, name='clear_messages'),
+    path('upload-avatar/', views.upload_avatar, name='upload_avatar'),
 ] 

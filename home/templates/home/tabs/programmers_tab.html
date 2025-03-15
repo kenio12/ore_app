@@ -233,7 +233,7 @@
         
         // カードのHTMLを設定
         cardDiv.innerHTML = `
-            <div class="card cyber-card h-100">
+            <div class="card cyber-card h-100 programmer-card" data-profile-url="/profiles/detail/${profile.user_id}/">
                 <div class="card-header cyber-card-header d-flex align-items-center">
                     <div class="programmer-avatar me-3">
                         ${profile.avatar_url ? 
@@ -308,6 +308,17 @@
                 </div>
             </div>
         `;
+        
+        // カード全体をクリック可能にする
+        const card = cardDiv.querySelector('.programmer-card');
+        card.addEventListener('click', function(e) {
+            // ボタンクリックの場合は通常の動作を許可
+            if (e.target.closest('.btn-cyber-primary')) {
+                return;
+            }
+            // それ以外の場合はカードのdata-profile-urlに遷移
+            window.location.href = this.dataset.profileUrl;
+        });
         
         return cardDiv;
     }
@@ -558,5 +569,27 @@
         text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
         font-size: 1.2rem;  /* 少し大きく */
         font-weight: bold;  /* 太字に */
+    }
+
+    /* プログラマーカードをクリック可能に */
+    .programmer-card {
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .programmer-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+        transition: all 0.5s ease;
+    }
+
+    .programmer-card:hover::after {
+        left: 100%;
     }
 </style> 

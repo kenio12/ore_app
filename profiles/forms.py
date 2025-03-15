@@ -17,11 +17,9 @@ class ProfileForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
     """プロフィール編集フォーム"""
     
-    avatar = forms.ImageField(label='プロフィール画像', required=False)
-    
     class Meta:
         model = Profile
-        fields = ['avatar', 'bio', 'social_github', 'social_twitter', 'job_status', 'job_types', 'work_rate']
+        fields = ['bio', 'social_github', 'social_twitter', 'job_status', 'job_types', 'work_rate']
         
     # 仕事タイプのフィールドはModelForm自体から生成されず、ビューで処理する
     job_types = forms.MultipleChoiceField(

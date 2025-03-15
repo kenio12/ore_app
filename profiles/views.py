@@ -13,6 +13,8 @@ from django.utils import timezone
 import json
 import logging
 from apps_gallery.constants.app_info import APP_TYPES
+from django.views.decorators.http import require_http_methods
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -515,3 +517,60 @@ def clear_messages(request):
 
 # チャット関連のビューは chats アプリへ移行しました
 # 詳細は chats/views.py を参照してください
+
+@login_required
+@require_http_methods(["POST"])
+def upload_avatar(request):
+    """プロフィール画像のアップロードのみを処理"""
+    try:
+        print("\n==== プロフィール画像アップロード処理開始 ====")
+        
+        if 'avatar' not in request.FILES:
+            return JsonResponse({'error': '画像ファイルが必要です'}, status=400)
+
+        avatar = request.FILES['avatar']
+        
+        # Cloudinaryの設定
+        cloudinary.config(
+            cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+            api_key=os.getenv('CLOUDINARY_API_KEY'),
+            api_secret=os.getenv('CLOUDINARY_API_SECRET'),
+            secure=True
+        )
+        
+        # Cloudinaryにアップロード
+        upload_result = cloudinary.uploader.upload(
+            avatar,
+            folder=f'profile_avatars'
+        )
+
+        # プロフィールを取得または作成
+        from django.apps import apps
+        Profile = apps.get_model('profiles', 'Profile')
+        
+        try:
+            profile = Profile.objects.get(user=request.user)
+        except Profile.DoesNotExist:
+            profile = Profile(user=request.user)
+        
+        # プロフィール画像を設定
+        profile.avatar = {
+            'url': upload_result['secure_url'],
+            'public_id': upload_result['public_id']
+        }
+        profile.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'avatar': profile.avatar,
+            'message': 'プロフィール画像をアップロードしました'
+        })
+
+    except Exception as e:
+        print(f"アップロードエラー: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({
+            'error': str(e),
+            'details': 'アップロード中にエラーが発生しました'
+        }, status=500)

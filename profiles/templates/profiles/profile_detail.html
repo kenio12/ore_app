@@ -354,13 +354,9 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 text-center mb-3 mb-md-0">
-                            {% if profile.avatar_url %}
-                                <img src="{{ profile.avatar_url }}" alt="プロフィール画像" class="img-fluid rounded-circle" style="max-width: 150px; border: 2px solid rgb(0, 123, 255); box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);">
-                            {% else %}
-                                <div class="cyber-avatar-placeholder">
-                                    <i class="bi bi-person-fill"></i>
-                                </div>
-                            {% endif %}
+                            <div class="cyber-avatar-placeholder">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
                         </div>
                         <div class="col-md-8">
                             <h4 class="cyber-name">{{ user.username }}</h4>

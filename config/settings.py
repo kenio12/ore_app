@@ -49,7 +49,15 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'profiles.apps.ProfilesConfig',
     'chats.apps.ChatsConfig',
+    'cloudinary',  # Cloudinaryを追加
 ]
+
+# Cloudinaryの設定
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

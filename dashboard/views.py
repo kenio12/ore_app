@@ -3,6 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from apps_gallery.models import AppGallery
 import dateutil.parser
+import os
+import cloudinary
+import cloudinary.uploader
+import base64
+from django.apps import apps
+from django.contrib import messages
 
 @login_required
 def index(request):
@@ -25,13 +31,15 @@ def apps(request):
 @login_required
 def profile(request):
     """プロフィール設定ページ - ダッシュボード内に表示"""
-    from django.apps import apps
-    Profile = apps.get_model('profiles', 'Profile')
+    from profiles.models import Profile
+    
+    # プロフィール編集フォームをインポート
+    from profiles.forms import ProfileEditForm
     
     # CPU・メモリ・ストレージなどのタイプ情報を取得
     from profiles.views import (
         get_pc_types, get_device_types, get_cpu_types, get_memory_sizes,
-        get_storage_types, get_monitor_counts, get_internet_types
+        get_storage_types, get_monitor_counts, get_internet_types, get_maker_examples
     )
     
     try:
@@ -39,9 +47,78 @@ def profile(request):
     except Profile.DoesNotExist:
         profile = None
     
+    if request.method == 'POST':
+        print("POSTリクエスト受信:", request.POST)
+        
+        form = ProfileEditForm(request.POST, instance=profile)
+        
+        if form.is_valid():
+            print("フォームバリデーション成功")
+            
+            # プロフィールを保存
+            profile = form.save(commit=False)
+            
+            # ハードウェア関連の情報を取得して保存
+            hardware_specs = {}
+            
+            # メーカーと機種情報
+            if 'maker' in request.POST and request.POST['maker']:
+                hardware_specs['maker'] = request.POST['maker']
+            
+            if 'model' in request.POST and request.POST['model']:
+                hardware_specs['model'] = request.POST['model']
+                
+            # PCタイプ
+            if 'pc_type' in request.POST and request.POST['pc_type']:
+                hardware_specs['pc_type'] = request.POST['pc_type']
+                
+            # デバイスタイプ
+            if 'device_type' in request.POST and request.POST['device_type']:
+                hardware_specs['device_type'] = request.POST['device_type']
+                
+            # CPU
+            if 'cpu_type' in request.POST and request.POST['cpu_type']:
+                hardware_specs['cpu_type'] = request.POST['cpu_type']
+                
+            # メモリ
+            if 'memory_size' in request.POST and request.POST['memory_size']:
+                hardware_specs['memory_size'] = request.POST['memory_size']
+                
+            # ストレージ
+            if 'storage_type' in request.POST and request.POST['storage_type']:
+                hardware_specs['storage_type'] = request.POST['storage_type']
+                
+            # モニター数
+            if 'monitor_count' in request.POST and request.POST['monitor_count']:
+                hardware_specs['monitor_count'] = request.POST['monitor_count']
+                
+            # インターネット回線
+            if 'internet_type' in request.POST and request.POST['internet_type']:
+                hardware_specs['internet_type'] = request.POST['internet_type']
+            
+            # ハードウェア情報をプロフィールに保存
+            profile.hardware_specs = hardware_specs
+            profile.save()
+            
+            # 技術スキル情報を自動更新
+            profile.update_skills_from_apps()
+            
+            messages.success(request, 'プロフィールを更新しました！')
+            return redirect('dashboard:profile')
+        else:
+            print("フォームバリデーションエラー:", form.errors)
+            messages.error(request, 'プロフィールの更新に失敗しました。入力内容を確認してください。')
+    else:
+        form = ProfileEditForm(instance=profile)
+        
+        # 既存のjob_typesの値をフォームにセット
+        if profile and profile.job_types:
+            form.initial['job_types'] = profile.job_types
+    
     context = {
         'user': request.user,
         'profile': profile,
+        'form': form,
         'pc_types': get_pc_types(),
         'device_types': get_device_types(),
         'cpu_types': get_cpu_types(),
@@ -49,6 +126,7 @@ def profile(request):
         'storage_types': get_storage_types(),
         'monitor_counts': get_monitor_counts(),
         'internet_types': get_internet_types(),
+        'maker_examples': get_maker_examples(),
     }
     
     return render(request, 'dashboard/profile.html', context)
@@ -146,7 +224,6 @@ def change_email(request):
             return redirect('dashboard:account')
         
         # 既存のアカウントとメールアドレスの重複チェック
-        from django.apps import apps
         CustomUser = apps.get_model('accounts', 'CustomUser')
         
         if CustomUser.objects.filter(email=new_email).exclude(id=request.user.id).exists():
@@ -311,9 +388,7 @@ def analytics(request):
 @login_required
 def chats(request):
     """チャット一覧ページ - ダッシュボード内に表示"""
-    from django.apps import apps
-    Conversation = apps.get_model('chats', 'Conversation')
-    Message = apps.get_model('chats', 'Message')
+    from chats.models import Conversation, Message
     
     # ユーザーが参加している会話を取得
     conversations = Conversation.objects.filter(participants=request.user)

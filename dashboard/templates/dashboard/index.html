@@ -73,13 +73,9 @@
                 <h5 class="card-title text-cyber">プロフィール</h5>
                 <div class="d-flex align-items-center justify-content-center flex-grow-1">
                     <a href="{% url 'dashboard:profile' %}" class="text-cyber text-decoration-none">
-                        {% if user.profile.avatar %}
-                            <img src="{{ user.profile.avatar.url }}" alt="プロフィール画像" class="rounded-circle cyber-avatar" style="width: 100px; height: 100px; object-fit: cover;">
-                        {% else %}
-                            <div class="cyber-avatar-placeholder">
-                                <i class="bi bi-person-circle display-1"></i>
-                            </div>
-                        {% endif %}
+                        <div class="cyber-avatar-placeholder">
+                            <i class="bi bi-person-circle display-1"></i>
+                        </div>
                     </a>
                 </div>
             </div>

@@ -95,23 +95,23 @@
                                         <!-- 開発状況バッジを追加 -->
                                         <div class="mt-2">
                                             {% if app.dev_status == 'completed' %}
-                                                <span class="badge bg-success cyber-status me-2">完成品</span>
+                                                <span class="badge bg-success cyber-status me-2" style="background-color: rgba(40, 50, 30, 0.8) !important; color: #a8d88a !important; border: 1px solid rgba(100, 150, 70, 0.5) !important; text-shadow: none !important; font-weight: normal !important; padding: 0.3em 0.6em !important;">完成品</span>
                                             {% elif app.dev_status == 'beta' %}
-                                                <span class="badge bg-warning text-dark cyber-status me-2">ベータ版</span>
+                                                <span class="badge bg-warning text-dark cyber-status me-2" style="background-color: rgba(50, 40, 20, 0.8) !important; color: #d8c48a !important; border: 1px solid rgba(150, 120, 50, 0.5) !important; text-shadow: none !important; font-weight: normal !important; padding: 0.3em 0.6em !important;">ベータ版</span>
                                             {% elif app.dev_status == 'in_development' %}
-                                                <span class="badge bg-info text-dark cyber-status me-2">開発中</span>
+                                                <span class="badge bg-info text-dark cyber-status me-2" style="background-color: rgba(20, 40, 50, 0.8) !important; color: #8ab4d8 !important; border: 1px solid rgba(50, 100, 150, 0.5) !important; text-shadow: none !important; font-weight: normal !important; padding: 0.3em 0.6em !important;">開発中</span>
                                             {% endif %}
                                         </div>
                                         
                                         <!-- バックエンド言語 -->
                                         {% if app.backend and app.backend.main_language %}
                                         <div class="mt-2">
-                                            <span class="badge bg-primary cyber-backend-lang me-2">
-                                                {{ BACKEND_STACK.languages|get_dict_value:app.backend.main_language }}
+                                            <span class="badge bg-primary cyber-backend-lang me-2" style="background-color: rgba(30, 50, 70, 0.8) !important; color: #8ab4d8 !important; border: 1px solid rgba(70, 100, 150, 0.5) !important; text-shadow: none !important; font-weight: normal !important; padding: 0.3em 0.6em !important;">
+                                                <i class="bi bi-code-slash me-1"></i>{{ BACKEND_STACK.languages|get_dict_value:app.backend.main_language }}
                                             </span>
                                             {% if app.backend.framework %}
-                                            <span class="badge bg-secondary cyber-backend-lang me-2">
-                                                {{ BACKEND_STACK.frameworks|get_dict_value:app.backend.framework }}
+                                            <span class="badge bg-info cyber-backend-lang me-2" style="background-color: rgba(40, 30, 60, 0.8) !important; color: #b48ad8 !important; border: 1px solid rgba(100, 70, 150, 0.5) !important; text-shadow: none !important; font-weight: normal !important; padding: 0.3em 0.6em !important;">
+                                                <i class="bi bi-box me-1"></i>{{ BACKEND_STACK.frameworks|get_dict_value:app.backend.framework }}
                                             </span>
                                             {% endif %}
                                         </div>
