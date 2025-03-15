@@ -568,8 +568,8 @@
     {% if user.is_authenticated %}
     <div id="profile-button-container">
         <a href="{% url 'dashboard:index' %}" class="profile-button">
-            {% if user.profile.avatar_url %}
-                <img src="{{ user.profile.avatar_url }}" alt="{{ user.username }}" class="profile-image">
+            {% if request.user.profile.avatar %}
+                <img src="{{ request.user.profile.avatar.url }}" alt="{{ request.user.username }}" class="profile-image">
             {% else %}
                 <i class="fas fa-user-tie profile-icon"></i>
             {% endif %}
