@@ -14,6 +14,16 @@
             img.style.height = 'auto';
             img.style.width = 'auto';
             img.style.maxWidth = '100%';
+            img.style.margin = 'auto';
+            img.style.display = 'block';
+            
+            // 親要素のスタイルも調整
+            const parentDiv = img.parentElement;
+            if (parentDiv) {
+                parentDiv.style.display = 'flex';
+                parentDiv.style.alignItems = 'center';
+                parentDiv.style.justifyContent = 'center';
+            }
         }
     }
     
@@ -31,11 +41,11 @@
                         <!-- カテゴリーバッジを削除 -->
                         <div class="row g-0" id="card-content-{{ app.id }}">
                             {% if app.thumbnail %}
-                                <div class="col-md-4">
-                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px; max-height: 300px; overflow: hidden;">
+                                <div class="col-md-4 d-flex align-items-center justify-content-center">
+                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px; max-height: 300px; overflow: hidden; width: 100%;">
                                         <img src="{{ app.thumbnail.url }}" 
                                              class="img-fluid cyber-image rounded-start"
-                                             style="object-fit: contain; max-height: 300px; width: auto; max-width: 100%;"
+                                             style="object-fit: contain; max-height: 300px; width: auto; max-width: 100%; margin: auto; display: block;"
                                              onload="window.checkImageOrientation(this, '{{ app.id }}')"
                                              data-title="{{ app.title }}"
                                              data-overview="{{ app.overview }}"
@@ -44,11 +54,11 @@
                                     </div>
                                 </div>
                             {% elif app.screenshots %}
-                                <div class="col-md-4">
-                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px; max-height: 300px; overflow: hidden;">
+                                <div class="col-md-4 d-flex align-items-center justify-content-center">
+                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.3); min-height: 300px; max-height: 300px; overflow: hidden; width: 100%;">
                                         <img src="{{ app.screenshots.0.url }}" 
                                              class="img-fluid cyber-image rounded-start"
-                                             style="object-fit: contain; max-height: 300px; width: auto; max-width: 100%;"
+                                             style="object-fit: contain; max-height: 300px; width: auto; max-width: 100%; margin: auto; display: block;"
                                              onload="window.checkImageOrientation(this, '{{ app.id }}')"
                                              data-title="{{ app.title }}"
                                              data-overview="{{ app.overview }}"
@@ -58,8 +68,8 @@
                                 </div>
                             {% else %}
                                 <!-- 画像がない場合も同じスペースを確保 -->
-                                <div class="col-md-4">
-                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.15); min-height: 300px; max-height: 300px;">
+                                <div class="col-md-4 d-flex align-items-center justify-content-center">
+                                    <div class="h-100 d-flex align-items-center justify-content-center" style="background-color: rgba(0, 0, 0, 0.15); min-height: 300px; max-height: 300px; width: 100%;">
                                         <i class="bi bi-image text-secondary" style="font-size: 4rem;"></i>
                                     </div>
                                 </div>

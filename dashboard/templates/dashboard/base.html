@@ -21,7 +21,8 @@
                         <a href="{% url 'dashboard:analytics' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
                             <i class="bi bi-graph-up me-2"></i>アナリティクス
                         </a>
-                        <a href="{% url 'chats:chat_list' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'chat_list' %}active{% endif %}">
+                        <!-- チャット一覧へのリンクを追加 -->
+                        <a href="{% url 'dashboard:chats' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'chats' %}active{% endif %}">
                             <i class="bi bi-chat-dots me-2"></i>チャット一覧
                         </a>
                         <a href="{% url 'dashboard:profile' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">

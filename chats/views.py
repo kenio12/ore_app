@@ -220,6 +220,9 @@ def get_unread_messages(request):
         # 現在の時刻を取得
         current_time = timezone.now()
         
+        # デバッグ用：リクエスト情報を出力
+        print(f"🔍 未読メッセージAPI呼び出し: ユーザー={request.user.username}, 時刻={current_time}")
+        
         # 未読メッセージのクエリを作成
         unread_query = Message.objects.select_related('sender', 'conversation').filter(
             recipient=request.user,
@@ -227,16 +230,24 @@ def get_unread_messages(request):
             timestamp__gte=current_time - timezone.timedelta(minutes=30)
         ).order_by('timestamp')
         
+        # デバッグ用：クエリの詳細を出力
+        print(f"🔍 未読メッセージクエリ: {unread_query.query}")
+        
         # 未読メッセージがある場合のみログを出力
         if unread_query.exists() and unread_query.count() > 0:
             print(f"🔔 新着メッセージ: {unread_query.count()}件")
-        
-        # より詳細なデバッグ情報
-        for msg in unread_query:
-            if "チャットルームに入りました" in msg.content:
-                print(f"👋 入室メッセージ: {msg.sender.username}さんが入室（会話ID: {msg.conversation.id if msg.conversation else 'なし'}）")
-            elif "チャットルームから退室しました" in msg.content:
-                print(f"🚶 退室メッセージ: {msg.sender.username}さんが退室（会話ID: {msg.conversation.id if msg.conversation else 'なし'}）")
+            
+            # デバッグ用：各メッセージの詳細を出力
+            for i, msg in enumerate(unread_query):
+                print(f"🔔 メッセージ {i+1}:")
+                print(f"  - ID: {msg.id}")
+                print(f"  - 送信者: {msg.sender.username} (ID: {msg.sender.id})")
+                print(f"  - 内容: {msg.content[:50]}...")
+                print(f"  - タイプ: {msg.message_type}")
+                print(f"  - 会話ID: {msg.conversation.id if msg.conversation else 'なし'}")
+                print(f"  - 送信日時: {msg.timestamp}")
+        else:
+            print("📭 未読メッセージはありません")
         
         # レスポンス用のデータを整形
         messages_data = []
@@ -244,6 +255,22 @@ def get_unread_messages(request):
             try:
                 # 送信者情報
                 sender = message.sender
+                
+                # 送信者が存在しない場合はスキップ
+                if not sender or not sender.username:
+                    print(f"⚠️ 送信者が不明なメッセージをスキップします: ID={message.id}")
+                    # このメッセージを既読にマークして今後表示されないようにする
+                    message.is_read = True
+                    message.save()
+                    continue
+                
+                # 送信者名が「名無し」の場合はスキップ
+                if sender.username == '名無し' or sender.username.strip() == '':
+                    print(f"⚠️ 送信者名が不正なメッセージをスキップします: ID={message.id}, 送信者=\"{sender.username}\"")
+                    message.is_read = True
+                    message.save()
+                    continue
+                
                 sender_avatar = None
                 
                 # プロフィール情報の安全な取得
@@ -255,12 +282,20 @@ def get_unread_messages(request):
                 # 会話情報の取得（存在しない場合は作成）
                 conversation = message.conversation
                 if not conversation:
-                    conversation = Conversation.get_or_create_conversation(
-                        sender,
-                        message.recipient
-                    )
-                    message.conversation = conversation
-                    message.save()
+                    # 会話が存在しない場合は作成を試みるが、エラーが発生したらスキップ
+                    try:
+                        conversation = Conversation.get_or_create_conversation(
+                            sender,
+                            message.recipient
+                        )
+                        message.conversation = conversation
+                        message.save()
+                    except Exception as e:
+                        print(f"⚠️ 会話の作成に失敗したためメッセージをスキップします: ID={message.id}, エラー={str(e)}")
+                        # このメッセージを既読にマークして今後表示されないようにする
+                        message.is_read = True
+                        message.save()
+                        continue
                 
                 # 特殊メッセージタイプの識別
                 message_type = message.message_type
@@ -294,6 +329,13 @@ def get_unread_messages(request):
                 
             except Exception as e:
                 print(f"❌ エラー: メッセージ処理に失敗 - {str(e)}")
+                # エラーが発生したメッセージは既読にマークして今後表示されないようにする
+                try:
+                    message.is_read = True
+                    message.save()
+                    print(f"✅ エラーが発生したメッセージを既読にマークしました: ID={message.id}")
+                except:
+                    pass
                 continue
         
         # 30分以上前の未読メッセージだけを一括で既読にする

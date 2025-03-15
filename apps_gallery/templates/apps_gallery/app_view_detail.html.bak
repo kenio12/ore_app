@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{# 文字エンコーディングを明示的に指定 #}
+<meta charset="UTF-8">
+
+{# タイトルブロックを追加 #}
+{% block title %}
+    {{ app.title }} の詳細 | アプリギャラリー
+{% endblock %}
+
+{# ナビバーを完全に非表示にする #}
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<!-- サイバーテーマのCSS読み込み -->
+<link rel="stylesheet" href="{% static 'apps_gallery/css/cyber-theme.css' %}">
+
+<!-- サイバーパンク風の装飾 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<!-- メインコンテンツ -->
+<div id="app-view-detail" class="container-fluid mt-3">
+    <!-- 閲覧モードインジケーター -->
+    <div class="viewing-mode-indicator">
+        <div class="viewing-content">
+            <i class="bi bi-eye-fill"></i>
+            <span id="viewing-status-text">閲覧画面</span>
+        </div>
+    </div>
+
+    <!-- タブナビゲーション -->
+    <ul class="nav nav-tabs mb-3 app-tabs" id="appTabs" role="tablist">
+        <!-- ホームへ戻るボタン -->
+        <li class="nav-item" role="presentation">
+            <a href="/" class="nav-link cyber-home" title="ホームへ戻る">
+                <span class="fs-4 me-2 cyber-emoji" style="display: inline-block; font-size: 1.5rem;">&#x1F916;</span>
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active text-neon" id="screenshots-tab" data-bs-toggle="tab" data-bs-target="#screenshots-section" type="button" role="tab" aria-controls="screenshots-section" aria-selected="true" data-mobile-text="画像" style="color: var(--cyber-purple) !important; text-shadow: 0 0 10px var(--cyber-purple) !important; border-color: var(--cyber-purple) !important;">スクリーンショット</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="basic-tab" data-bs-toggle="tab" data-bs-target="#basic-section" type="button" role="tab" aria-controls="basic-section" aria-selected="false" data-mobile-text="基本" style="color: var(--cyber-gold) !important; text-shadow: 0 0 10px var(--cyber-gold) !important; border-color: var(--cyber-gold) !important;">基本情報</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="appeal-tab" data-bs-toggle="tab" data-bs-target="#appeal-section" type="button" role="tab" aria-controls="appeal-section" aria-selected="false" data-mobile-text="宣伝" style="color: var(--cyber-green) !important; text-shadow: 0 0 10px var(--cyber-green) !important; border-color: var(--cyber-green) !important;">アピール</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-section" type="button" role="tab" aria-controls="hardware-section" aria-selected="false" data-mobile-text="ハード" style="color: var(--cyber-blue) !important; text-shadow: 0 0 10px var(--cyber-blue) !important; border-color: var(--cyber-blue) !important;">ハード環境</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="dev-env-tab" data-bs-toggle="tab" data-bs-target="#dev-env-section" type="button" role="tab" aria-controls="dev-env-section" aria-selected="false" data-mobile-text="ソフト" style="color: var(--cyber-orange) !important; text-shadow: 0 0 10px var(--cyber-orange) !important; border-color: var(--cyber-orange) !important;">ソフト環境</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="architecture-tab" data-bs-toggle="tab" data-bs-target="#architecture-section" type="button" role="tab" aria-controls="architecture-section" aria-selected="false" data-mobile-text="アーキ" style="color: var(--cyber-lime) !important; text-shadow: 0 0 10px var(--cyber-lime) !important; border-color: var(--cyber-lime) !important;">アーキテクチャ</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="backend-tab" data-bs-toggle="tab" data-bs-target="#backend-section" type="button" role="tab" aria-controls="backend-section" aria-selected="false" data-mobile-text="バック" style="color: var(--cyber-aqua) !important; text-shadow: 0 0 10px var(--cyber-aqua) !important; border-color: var(--cyber-aqua) !important;">バックエンド</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="frontend-tab" data-bs-toggle="tab" data-bs-target="#frontend-section" type="button" role="tab" aria-controls="frontend-section" aria-selected="false" data-mobile-text="フロント" style="color: var(--cyber-pink) !important; text-shadow: 0 0 10px var(--cyber-pink) !important; border-color: var(--cyber-pink) !important;">フロントエンド</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="database-tab" data-bs-toggle="tab" data-bs-target="#database-section" type="button" role="tab" aria-controls="database-section" aria-selected="false" data-mobile-text="データ" style="color: var(--cyber-emerald) !important; text-shadow: 0 0 10px var(--cyber-emerald) !important; border-color: var(--cyber-emerald) !important;">データベース</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="hosting-tab" data-bs-toggle="tab" data-bs-target="#hosting-section" type="button" role="tab" aria-controls="hosting-section" aria-selected="false" data-mobile-text="ホステ" style="color: #ffffff !important; text-shadow: 0 0 10px #ffffff !important; border-color: #ffffff !important;">ホスティング</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="security-tab" data-bs-toggle="tab" data-bs-target="#security-section" type="button" role="tab" aria-controls="security-section" aria-selected="false" data-mobile-text="セキュ" style="color: var(--cyber-red) !important; text-shadow: 0 0 10px var(--cyber-red) !important; border-color: var(--cyber-red) !important;">セキュリティ</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link text-neon" id="development-tab" data-bs-toggle="tab" data-bs-target="#development-section" type="button" role="tab" aria-controls="development-section" aria-selected="false" data-mobile-text="開発話" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 10px var(--cyber-yellow) !important; border-color: var(--cyber-yellow) !important;">開発ストーリー</button>
+        </li>
+    </ul>
+    
+    <!-- ヘッダー -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="cyber-title" style="color: var(--cyber-purple) !important; 
+                                     text-shadow: 0 0 10px var(--cyber-purple),
+                                                0 0 20px var(--cyber-purple);
+                                     font-weight: bold;">
+            {{ app.title }}の詳細
+        </h2>
+    </div>
+
+    <!-- タブコンテンツ -->
+    <div class="tab-content" id="appTabsContent">
+        <!-- スクリーンショットタブ -->
+        <div class="tab-pane fade show active" id="screenshots-section" role="tabpanel" aria-labelledby="screenshots-tab">
+            {% include 'apps_gallery/tabs/01_screenshots_tab.html' %}
+        </div>
+        
+        <!-- 基本情報タブ -->
+        <div class="tab-pane fade" id="basic-section" role="tabpanel" aria-labelledby="basic-tab">
+            {% include 'apps_gallery/tabs/02_basic_tab.html' %}
+        </div>
+
+        <!-- アピールタブ -->
+        <div class="tab-pane fade" id="appeal-section" role="tabpanel" aria-labelledby="appeal-tab">
+            {% include 'apps_gallery/tabs/03_appeal_tab.html' %}
+        </div>
+
+        <!-- ハードウェアタブ -->
+        <div class="tab-pane fade" id="hardware-section" role="tabpanel" aria-labelledby="hardware-tab">
+            {% include 'apps_gallery/tabs/04_hardware_tab.html' %}
+        </div>
+
+        <!-- 開発環境タブ -->
+        <div class="tab-pane fade" id="dev-env-section" role="tabpanel" aria-labelledby="dev-env-tab">
+            {% include 'apps_gallery/tabs/05_dev_env_tab.html' %}
+        </div>
+
+        <!-- アーキテクチャタブ -->
+        <div class="tab-pane fade" id="architecture-section" role="tabpanel" aria-labelledby="architecture-tab">
+            {% include 'apps_gallery/tabs/06_architecture_tab.html' %}
+        </div>
+
+        <!-- バックエンドタブ -->
+        <div class="tab-pane fade" id="backend-section" role="tabpanel" aria-labelledby="backend-tab">
+            {% include 'apps_gallery/tabs/07_backend_tab.html' %}
+        </div>
+
+        <!-- フロントエンドタブ -->
+        <div class="tab-pane fade" id="frontend-section" role="tabpanel" aria-labelledby="frontend-tab">
+            {% include 'apps_gallery/tabs/08_frontend_tab.html' %}
+        </div>
+
+        <!-- データベースタブ -->
+        <div class="tab-pane fade" id="database-section" role="tabpanel" aria-labelledby="database-tab">
+            {% include 'apps_gallery/tabs/09_database_tab.html' %}
+        </div>
+
+        <!-- ホスティングタブ -->
+        <div class="tab-pane fade" id="hosting-section" role="tabpanel" aria-labelledby="hosting-tab">
+            {% include 'apps_gallery/tabs/10_hosting_tab.html' %}
+        </div>
+        
+        <!-- セキュリティタブ -->
+        <div class="tab-pane fade" id="security-section" role="tabpanel" aria-labelledby="security-tab">
+            {% include 'apps_gallery/tabs/11_security_tab.html' %}
+        </div>
+
+        <!-- 開発ストーリータブ -->
+        <div class="tab-pane fade" id="development-section" role="tabpanel" aria-labelledby="development-tab">
+            {% include 'apps_gallery/tabs/12_development_tab.html' %}
+        </div>
+    </div>
+
+    <!-- ホームに戻るボタン -->
+    <div class="row mt-4 mb-4">
+        <div class="col-md-12 d-flex justify-content-center">
+            <a href="/" class="btn btn-secondary cyber-home" id="homeButton">
+                <span class="fs-4 me-2 cyber-emoji">&#x1F916;</span> ホームに戻る
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+/* サイバーパンクな背景 */
+.cyber-background {
+    background: linear-gradient(45deg, #001e54, #0066cc);
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+/* タブナビゲーションの背景 */
+.app-tabs {
+    background: rgba(13, 25, 45, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
+    transition: transform 0.3s ease !important;
+    margin-bottom: 2rem !important;  /* タブと下のセクションの間隔を追加 */
+    padding: 15px 10px 10px 10px !important;
+}
+
+/* タブのスタイル */
+.nav-link {
+    transition: all 0.3s ease !important;
+    font-weight: bold !important;
+    color: inherit !important;
+    text-shadow: 0 0 10px currentColor !important;
+}
+
+.nav-link:hover {
+    transform: translateY(-2px) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 15px currentColor !important;
+}
+
+/* スクロール時のタブ非表示 */
+.app-tabs.hidden {
+    transform: translateY(-100%) !important;
+}
+
+/* ホームボタンのスタイル */
+.cyber-home {
+    background: linear-gradient(45deg, #2b1055, #7597de) !important;
+    border: 1px solid #8ab4f8 !important;
+    box-shadow: 0 0 10px #8ab4f8 !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+}
+
+.cyber-home:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 15px #8ab4f8 !important;
+}
+
+/* オリジナルのCSSも維持 */
+#app-view-detail {
+    margin-top: 1rem !important;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .nav-link {
+        padding: 0.5rem 0.3rem !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .nav-link {
+        padding: 0.4rem 0.2rem !important;
+        font-size: 0.75rem !important;
+    }
+    
+    /* スマホ向けタブレイアウトの改善 */
+    .nav-item:not(:first-child) .nav-link.text-neon:before {
+        display: none; /* 区切り線を削除 */
+    }
+    
+    .app-tabs {
+        padding: 10px 5px 5px 5px !important;
+    }
+    
+    .nav-link.text-neon {
+        margin: 0 2px !important;
+        padding: 0.4rem 0.3rem !important;
+    }
+    
+    /* ホームボタンをコンパクトに */
+    .cyber-home {
+        padding: 0.3rem 0.5rem !important;
+    }
+    
+    .cyber-emoji {
+        font-size: 1.2rem !important;
+    }
+}
+
+/* タブ間隔の調整 */
+.nav-link.text-neon {
+    margin: 0 5px !important;
+    padding: 0.6rem 0.7rem !important;
+    position: relative !important;
+}
+
+/* タブ同士の間に区切り線を追加 */
+.nav-item:not(:first-child) .nav-link.text-neon:before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* タブのアクティブ状態の改良 */
+.nav-tabs .nav-link.text-neon.active:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    background: transparent;
+    z-index: -1;
+    box-shadow: 0 0 15px 3px currentColor !important;
+    opacity: 0.7;
+    animation: tab-pulse 1.5s infinite alternate;
+}
+
+@keyframes tab-pulse {
+    0% { opacity: 0.4; }
+    100% { opacity: 0.7; }
+}
+
+/* タブのアクティブ状態を修正 */
+.nav-tabs .nav-link.active {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    border-color: currentColor currentColor transparent !important;
+    border-width: 2px 2px 0 2px !important;
+    z-index: 2 !important;
+}
+
+/* タブとコンテンツの間のスペースを追加 */
+.tab-content {
+    margin-top: 2rem !important;
+}
+
+/* 閲覧モードインジケーターのスタイル */
+.viewing-mode-indicator {
+    position: fixed;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%);
+    z-index: 1100;
+    animation: pulse 2s infinite alternate;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.viewing-mode-indicator.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.viewing-content {
+    background: linear-gradient(45deg, rgba(128, 0, 255, 0.7), rgba(0, 128, 255, 0.7));
+    color: white;
+    padding: 12px 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(128, 0, 255, 0.5), 
+               0 0 30px rgba(0, 128, 255, 0.3);
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.viewing-content i {
+    margin-right: 8px;
+    font-size: 1.3rem;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+    .viewing-mode-indicator {
+        right: 15px;
+    }
+    
+    .viewing-content {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+@keyframes pulse {
+    0% { transform: translateY(-50%) scale(1); opacity: 0.8; }
+    100% { transform: translateY(-50%) scale(1.05); opacity: 1; }
+}
+</style>
+
+<!-- タブ制御用スクリプト -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const appTabs = document.querySelector('.app-tabs');
+    let lastScrollTop = 0;
+    
+    // タブの状態を保持する処理を追加
+    // 保存されたタブIDを取得して表示する
+    const savedTabId = localStorage.getItem('activeAppTab');
+    if (savedTabId) {
+        // 保存されたタブがあれば、それをアクティブにする
+        const tabToActivate = document.querySelector(savedTabId);
+        if (tabToActivate) {
+            const tab = new bootstrap.Tab(tabToActivate);
+            tab.show();
+        }
+    }
+    
+    // タブが切り替えられたときの処理をまとめる
+    const tabButtons = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+    tabButtons.forEach(button => {
+        button.addEventListener('shown.bs.tab', function(event) {
+            // クリックされたタブのIDを保存
+            localStorage.setItem('activeAppTab', '#' + event.target.id);
+            // インジケーターも表示
+            showViewingIndicator();
+        });
+    });
+    
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // 下にスクロールしたらナビを隠す、上にスクロールしたら表示
+        if (scrollTop > lastScrollTop && scrollTop > 150) {
+            appTabs.classList.add('hidden');
+        } else {
+            appTabs.classList.remove('hidden');
+        }
+        
+        lastScrollTop = scrollTop;
+    });
+
+    // Djangoのメッセージを自動的に閉じる
+    const alerts = document.querySelectorAll('.alert');
+    if (alerts.length > 0) {
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                // Bootstrapの閉じるボタンをクリックしたのと同じ効果
+                const closeBtn = alert.querySelector('.btn-close');
+                if (closeBtn) {
+                    closeBtn.click();
+                } else {
+                    // 閉じるボタンがない場合は要素を非表示にする
+                    alert.style.opacity = '0';
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
+                }
+            }, 3000); // 3秒後に自動的に閉じる
+        });
+    }
+    
+    // スマホ表示の場合、タブテキストを短くする
+    function updateTabTexts() {
+        const isSmallScreen = window.innerWidth <= 576;
+        const navLinks = document.querySelectorAll('.nav-link.text-neon');
+        
+        navLinks.forEach(link => {
+            if (isSmallScreen) {
+                // オリジナルのテキストをデータ属性に保存（初回のみ）
+                if (!link.getAttribute('data-original-text')) {
+                    link.setAttribute('data-original-text', link.textContent);
+                }
+                // スマホ用の短いテキストに置き換え
+                link.textContent = link.getAttribute('data-mobile-text');
+            } else {
+                // 保存されたオリジナルのテキストに戻す
+                const originalText = link.getAttribute('data-original-text');
+                if (originalText) {
+                    link.textContent = originalText;
+                }
+            }
+        });
+    }
+    
+    // 初期表示時にタブテキストを更新
+    updateTabTexts();
+    
+    // ウィンドウサイズ変更時にタブテキストを更新
+    window.addEventListener('resize', updateTabTexts);
+    
+    // 閲覧モードインジケーターの表示制御
+    const viewingIndicator = document.querySelector('.viewing-mode-indicator');
+    let indicatorTimer;
+    
+    // ページ読み込み時に表示
+    setTimeout(() => {
+        showViewingIndicator();
+    }, 500);
+    
+    // インジケーター表示関数
+    function showViewingIndicator() {
+        // 既存のタイマーをクリア
+        clearTimeout(indicatorTimer);
+        
+        // インジケーターを表示
+        viewingIndicator.classList.add('show');
+        
+        // 5秒後に非表示
+        indicatorTimer = setTimeout(() => {
+            hideViewingIndicator();
+        }, 5000);
+    }
+    
+    // インジケーター非表示関数
+    function hideViewingIndicator() {
+        viewingIndicator.classList.remove('show');
+    }
+    
+    // ページ遷移前に非表示にする
+    window.addEventListener('beforeunload', function() {
+        hideViewingIndicator();
+    });
+    
+    // ウィンドウがフォーカスを失ったときに非表示にする
+    window.addEventListener('blur', function() {
+        hideViewingIndicator();
+    });
+    
+    // 別のページへのリンククリック時に非表示にする
+    document.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+            hideViewingIndicator();
+        });
+    });
+});
+</script>
+{% endblock %}

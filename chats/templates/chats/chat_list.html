@@ -3,199 +3,28 @@
 {% block title %}チャット一覧{% endblock %}
 
 {% block content %}
-<!-- サイバーパンク風の背景 -->
-<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
-    <div class="cyber-grid"></div>
-</div>
+<script>
+    // ダッシュボードのチャット一覧ページにリダイレクト
+    window.location.href = "{% url 'dashboard:chats' %}";
+</script>
 
+<!-- リダイレクトされない場合のフォールバック -->
 <div class="container mt-4 mb-5">
     <div class="row">
         <div class="col-lg-8 mx-auto">
             <div class="card cyber-card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h3 class="mb-0 cyber-title">チャット一覧</h3>
-                    <a href="{% url 'profiles:programmer_list' %}" class="btn btn-cyber-secondary btn-sm">
-                        <i class="bi bi-person-plus"></i> 新しいチャット
+                    <a href="{% url 'dashboard:chats' %}" class="btn btn-cyber-primary">
+                        <i class="bi bi-arrow-right"></i> ダッシュボードのチャット一覧へ
                     </a>
                 </div>
-                <div class="card-body p-0">
-                    {% if chat_info %}
-                        <ul class="list-group list-group-flush chat-list">
-                            {% for chat in chat_info %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center chat-item">
-                                    <a href="{% url 'chats:chat_detail' chat.conversation.id %}" class="d-flex align-items-center text-decoration-none w-100">
-                                        <div class="chat-avatar me-3">
-                                            {% if chat.other_user.profile.avatar_url %}
-                                                <img src="{{ chat.other_user.profile.avatar_url }}" alt="{{ chat.other_user.username }}" class="rounded-circle">
-                                            {% else %}
-                                                <div class="avatar-placeholder rounded-circle">
-                                                    {{ chat.other_user.username|first }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                        <div class="chat-info flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <h5 class="mb-1 chat-username">{{ chat.other_user.username }}</h5>
-                                                <small class="text-muted chat-time">
-                                                    {% if chat.latest_message %}
-                                                        {{ chat.latest_message.timestamp|date:"m/d H:i" }}
-                                                    {% endif %}
-                                                </small>
-                                            </div>
-                                            <p class="mb-1 chat-preview">
-                                                {% if chat.latest_message %}
-                                                    {{ chat.latest_message.content|truncatechars:40 }}
-                                                {% else %}
-                                                    会話を始めましょう...
-                                                {% endif %}
-                                            </p>
-                                        </div>
-                                        {% if chat.unread_count > 0 %}
-                                            <span class="badge bg-primary rounded-pill unread-badge">{{ chat.unread_count }}</span>
-                                        {% endif %}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <div class="p-4 text-center">
-                            <p class="mb-3">チャットがまだありません</p>
-                            <a href="{% url 'profiles:programmer_list' %}" class="btn btn-cyber-primary">
-                                <i class="bi bi-chat-dots"></i> 新しいチャットを始める
-                            </a>
-                        </div>
-                    {% endif %}
+                <div class="card-body p-4 text-center">
+                    <p>チャット一覧ページはダッシュボードに移動しました。</p>
+                    <p>自動的にリダイレクトされない場合は、上のボタンをクリックしてください。</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.cyber-title {
-    color: #00ffff;
-    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
-}
-
-.cyber-card {
-    background: rgba(20, 20, 40, 0.8);
-    border: 1px solid rgba(0, 123, 255, 0.5);
-    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
-}
-
-/* チャットリストのスタイル */
-.chat-list {
-    background: rgba(30, 30, 50, 0.7);
-}
-
-.chat-item {
-    background: transparent;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-    border-bottom: 1px solid rgba(0, 123, 255, 0.2);
-    padding: 15px;
-    transition: all 0.3s ease;
-}
-
-.chat-item:hover {
-    background: rgba(0, 123, 255, 0.1);
-}
-
-.chat-avatar {
-    width: 50px;
-    height: 50px;
-}
-
-.chat-avatar img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-}
-
-.avatar-placeholder {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(45deg, #1e3c72, #2a5298);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-
-.chat-username {
-    color: #00ffff;
-    margin-bottom: 5px;
-}
-
-.chat-preview {
-    color: #cccccc;
-    font-size: 0.9rem;
-}
-
-.chat-time {
-    color: #999999;
-    font-size: 0.8rem;
-}
-
-.unread-badge {
-    background-color: #00ffff !important;
-    color: #000000;
-    font-weight: bold;
-}
-
-/* サイバーパンク風のボタン */
-.btn-cyber-primary {
-    background: rgba(0, 123, 255, 0.2);
-    color: #00ffff;
-    border: 1px solid rgba(0, 123, 255, 0.5);
-    transition: all 0.3s ease;
-    font-weight: bold;
-}
-
-.btn-cyber-primary:hover {
-    background: rgba(0, 123, 255, 0.3);
-    color: #00ffff;
-    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
-    transform: translateY(-2px);
-}
-
-.btn-cyber-secondary {
-    background: rgba(100, 100, 100, 0.5);
-    color: #ffffff;
-    border: 1px solid rgba(200, 200, 200, 0.5);
-    transition: all 0.3s ease;
-    font-weight: bold;
-}
-
-.btn-cyber-secondary:hover {
-    background: rgba(120, 120, 120, 0.6);
-    color: #ffffff;
-    box-shadow: 0 0 15px rgba(200, 200, 200, 0.5);
-    transform: translateY(-2px);
-}
-
-/* サイバーパンク風の背景 */
-.cyber-background {
-    background: linear-gradient(45deg, #001e54, #0066cc);
-}
-
-.cyber-grid {
-    background-image: 
-        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
-    background-size: 20px 20px;
-    width: 100%;
-    height: 100%;
-    animation: gridGlow 4s ease-in-out infinite;
-}
-
-/* アニメーション */
-@keyframes gridGlow {
-    0% { opacity: 0.5; }
-    50% { opacity: 0.8; }
-    100% { opacity: 0.5; }
-}
-</style>
 {% endblock %} 

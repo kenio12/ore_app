@@ -2,6 +2,9 @@
 {% load static %}
 {% load app_filters %}
 
+{# ナビバーを非表示にする #}
+{% block navbar %}{% endblock %}
+
 {% block content %}
 <!-- サイバーパンク風の背景 -->
 <div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
@@ -10,31 +13,31 @@
 
 <div class="min-vh-100">
     <!-- タブナビゲーション -->
-    <div class="container mt-2">
-        <ul class="nav nav-tabs cyber-tabs" id="mainTabs" role="tablist">
+    <div class="container mt-2 cyber-tabs-container">
+        <ul class="nav nav-tabs cyber-tabs d-flex flex-nowrap" id="mainTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active cyber-tab" id="apps-tab" data-bs-toggle="tab" data-bs-target="#apps-content" type="button" role="tab" aria-controls="apps-content" aria-selected="true">
-                    <i class="bi bi-app d-none d-md-inline"></i> 公開アプリ
+                    <i class="bi bi-app"></i> <span class="d-none d-md-inline">アプリ</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link cyber-tab" id="programmers-tab" data-bs-toggle="tab" data-bs-target="#programmers-content" type="button" role="tab" aria-controls="programmers-content" aria-selected="false">
-                    <i class="bi bi-people d-none d-md-inline"></i> <span class="d-none d-md-inline">プログラマー</span><span class="d-inline d-md-none">プログラマ</span>
+                    <i class="bi bi-people"></i> <span class="d-none d-md-inline">開発者</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link cyber-tab" id="blogs-tab" data-bs-toggle="tab" data-bs-target="#blogs-content" type="button" role="tab" aria-controls="blogs-content" aria-selected="false">
-                    <i class="bi bi-journal-code d-none d-md-inline"></i> 開発ブログ
+                    <i class="bi bi-journal-code"></i> <span class="d-none d-md-inline">ブログ</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link cyber-tab" id="contest-tab" data-bs-toggle="tab" data-bs-target="#contest-content" type="button" role="tab" aria-controls="contest-content" aria-selected="false">
-                    <i class="bi bi-trophy d-none d-md-inline"></i> <span class="d-none d-md-inline">アプリ大会</span><span class="d-inline d-md-none">アプリ大会</span>
+                    <i class="bi bi-trophy"></i> <span class="d-none d-md-inline">大会</span>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link cyber-tab" id="jobs-tab" data-bs-toggle="tab" data-bs-target="#jobs-content" type="button" role="tab" aria-controls="jobs-content" aria-selected="false">
-                    <i class="bi bi-briefcase d-none d-md-inline"></i> <span class="d-none d-md-inline">お仕事</span><span class="d-inline d-md-none">お仕事</span>
+                    <i class="bi bi-briefcase"></i> <span class="d-none d-md-inline">お仕事</span>
                 </button>
             </li>
         </ul>
@@ -46,7 +49,7 @@
         <div class="tab-indicator" id="apps-indicator" data-tab="apps-tab">
             <div class="indicator-content">
                 <i class="bi bi-app"></i>
-                <span>公開アプリ</span>
+                <span>アプリ</span>
             </div>
         </div>
         
@@ -54,7 +57,7 @@
         <div class="tab-indicator" id="programmers-indicator" data-tab="programmers-tab">
             <div class="indicator-content">
                 <i class="bi bi-people"></i>
-                <span>プログラマー</span>
+                <span>開発者</span>
             </div>
         </div>
         
@@ -62,7 +65,7 @@
         <div class="tab-indicator" id="blogs-indicator" data-tab="blogs-tab">
             <div class="indicator-content">
                 <i class="bi bi-journal-code"></i>
-                <span>開発ブログ</span>
+                <span>ブログ</span>
             </div>
         </div>
         
@@ -70,7 +73,7 @@
         <div class="tab-indicator" id="contest-indicator" data-tab="contest-tab">
             <div class="indicator-content">
                 <i class="bi bi-trophy"></i>
-                <span>アプリ大会</span>
+                <span>大会</span>
             </div>
         </div>
         
@@ -245,11 +248,67 @@
                 indicator.classList.remove('show');
             });
         }
+
+        const tabsContainer = document.querySelector('.cyber-tabs-container');
+        let lastScrollTop = 0;
+        
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // 下にスクロールしたらナビを隠す、上にスクロールしたら表示
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                tabsContainer.classList.add('hidden');
+            } else {
+                tabsContainer.classList.remove('hidden');
+            }
+            
+            lastScrollTop = scrollTop;
+        });
     });
 </script>
 
 <!-- サイバーパンクスタイル -->
 <style>
+    /* 横スクロール可能なタブコンテナ */
+    .cyber-tabs-container {
+        overflow-x: auto;
+        scrollbar-width: thin;
+        -ms-overflow-style: none; /* IE, Edge 対応 */
+        position: sticky;
+        top: 0;
+        z-index: 1001;
+        padding-bottom: 5px;
+        transition: transform 0.3s ease;  /* トランジション効果を追加 */
+    }
+    
+    /* スクロール時にナビを隠す */
+    .cyber-tabs-container.hidden {
+        transform: translateY(-100%);
+    }
+    
+    /* スクロールバーを非表示（Chrome, Safari対応） */
+    .cyber-tabs-container::-webkit-scrollbar {
+        height: 3px;
+    }
+    
+    .cyber-tabs-container::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 255, 255, 0.3);
+        border-radius: 10px;
+    }
+    
+    /* プロフィールタブのスタイル */
+    .profile-tab {
+        color: #ff80c0 !important;
+        border-color: rgba(255, 0, 128, 0.5) !important;
+        box-shadow: 0 -2px 10px rgba(255, 0, 128, 0.3);
+    }
+    
+    .profile-tab:hover {
+        color: #ff40a0 !important;
+        border-color: rgba(255, 0, 128, 0.7) !important;
+        box-shadow: 0 -5px 15px rgba(255, 0, 128, 0.5);
+    }
+
     /* 背景スタイル */
     .cyber-background {
         position: fixed;
@@ -285,6 +344,13 @@
         100% { opacity: 0.5; }
     }
 
+    /* タブがコンテナ内で折り返さないようにする */
+    .cyber-tabs {
+        border-bottom: none !important;
+        display: flex;
+        flex-wrap: nowrap !important;
+    }
+    
     /* タブインジケーターのスタイル */
     .tab-indicators {
         position: fixed;
@@ -292,6 +358,7 @@
         right: 30px;
         transform: translateY(-50%);
         z-index: 1100;
+        display: none; /* インジケーターを非表示に */
     }
 
     .tab-indicator {
@@ -306,80 +373,7 @@
         transition: opacity 0.5s ease, visibility 0.5s ease;
     }
 
-    .tab-indicator.show {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    /* タブごとの色の設定 */
-    #apps-indicator .indicator-content {
-        background: linear-gradient(45deg, rgba(0, 255, 255, 0.7), rgba(0, 150, 255, 0.7));
-        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5), 0 0 30px rgba(0, 150, 255, 0.3);
-    }
-
-    #programmers-indicator .indicator-content {
-        background: linear-gradient(45deg, rgba(255, 0, 128, 0.7), rgba(255, 100, 200, 0.7));
-        box-shadow: 0 0 15px rgba(255, 0, 128, 0.5), 0 0 30px rgba(255, 100, 200, 0.3);
-    }
-
-    #blogs-indicator .indicator-content {
-        background: linear-gradient(45deg, rgba(128, 255, 0, 0.7), rgba(180, 255, 100, 0.7));
-        box-shadow: 0 0 15px rgba(128, 255, 0, 0.5), 0 0 30px rgba(180, 255, 100, 0.3);
-    }
-
-    #contest-indicator .indicator-content {
-        background: linear-gradient(45deg, rgba(255, 128, 0, 0.7), rgba(255, 180, 100, 0.7));
-        box-shadow: 0 0 15px rgba(255, 128, 0, 0.5), 0 0 30px rgba(255, 180, 100, 0.3);
-    }
-
-    #jobs-indicator .indicator-content {
-        background: linear-gradient(45deg, rgba(128, 0, 255, 0.7), rgba(180, 100, 255, 0.7));
-        box-shadow: 0 0 15px rgba(128, 0, 255, 0.5), 0 0 30px rgba(180, 100, 255, 0.3);
-    }
-
-    .indicator-content {
-        color: white;
-        padding: 12px 20px;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        font-weight: bold;
-        font-size: 1.1rem;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-    }
-
-    .indicator-content i {
-        margin-right: 8px;
-        font-size: 1.3rem;
-    }
-
-    @keyframes indicator-pulse {
-        0% { transform: translateY(-50%) scale(1); opacity: 0.8; }
-        100% { transform: translateY(-50%) scale(1.05); opacity: 1; }
-    }
-
-    /* モバイル対応 */
-    @media (max-width: 768px) {
-        .tab-indicator {
-            right: 15px;
-        }
-        
-        .indicator-content {
-            padding: 8px 15px;
-            font-size: 0.9rem;
-        }
-    }
-
-    /* タブスタイル */
-    .cyber-tabs {
-        border-bottom: none !important;
-        display: flex;
-        flex-wrap: wrap;
-    }
-
+    /* 以下は元のタブスタイル */
     .cyber-tab {
         background: linear-gradient(135deg, rgba(0, 20, 40, 0.7), rgba(0, 10, 30, 0.8)) !important;
         color: #00bfff !important;
@@ -511,8 +505,8 @@
         0% { opacity: 0.3; }
         100% { opacity: 0.7; }
     }
-
-    /* カードスタイル */
+    
+    /* カードスタイル - 復元 */
     .cyber-card {
         background-color: rgba(13, 25, 45, 0.95) !important;
         border: 1px solid rgba(0, 191, 255, 0.3) !important;
@@ -540,9 +534,15 @@
         max-height: 300px !important;
         height: auto !important;
         width: auto !important;
-        margin: 0 auto;
+        margin: 0 auto !important;
         object-fit: contain !important;
-        display: block;
+        display: block !important;
+    }
+    
+    .is-portrait .col-md-4 {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
     /* テキストスタイル */
@@ -625,108 +625,6 @@
         color: #ff00ff !important;
         box-shadow: 0 0 15px rgba(255, 0, 255, 0.5) !important;
         transform: translateY(-2px) !important;
-    }
-    
-    /* フォーム要素の共通サイバースタイル */
-    .form-control.cyber-input {
-        background-color: rgba(0, 10, 20, 0.8) !important;
-        border: 1px solid rgba(0, 191, 255, 0.3) !important;
-        color: #00bfff !important;
-        transition: all 0.3s ease;
-    }
-    
-    .form-control.cyber-input:focus {
-        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5) !important;
-        border-color: rgba(0, 255, 255, 0.5) !important;
-        background-color: rgba(0, 20, 40, 0.8) !important;
-    }
-    
-    .form-select.cyber-select {
-        background-color: rgba(0, 10, 20, 0.8) !important;
-        border: 1px solid rgba(0, 191, 255, 0.3) !important;
-        color: #00bfff !important;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300bfff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
-    }
-    
-    .form-select.cyber-select:focus {
-        box-shadow: 0 0 15px rgba(0, 255, 255, 0.5) !important;
-        border-color: rgba(0, 255, 255, 0.5) !important;
-        background-color: rgba(0, 20, 40, 0.8) !important;
-    }
-    
-    /* プレースホルダーのサイバースタイル */
-    .cyber-placeholder-content {
-        padding: 3rem;
-        text-align: center;
-        border: 2px dashed rgba(0, 191, 255, 0.3);
-        border-radius: 15px;
-        background-color: rgba(0, 10, 20, 0.5);
-    }
-    
-    .cyber-coming-soon {
-        margin-top: 2rem;
-    }
-    
-    .cyber-glitch-text {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #00ffff;
-        text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-        animation: glitch 2s infinite;
-        position: relative;
-        display: inline-block;
-    }
-    
-    @keyframes glitch {
-        0% {
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-            transform: translateX(0);
-        }
-        2% {
-            text-shadow: 2px 0 10px rgba(255, 0, 128, 0.7), -2px 0 10px rgba(0, 255, 255, 0.7);
-            transform: translateX(2px);
-        }
-        4% {
-            text-shadow: -2px 0 10px rgba(255, 0, 128, 0.7), 2px 0 10px rgba(0, 255, 255, 0.7);
-            transform: translateX(-2px);
-        }
-        6% {
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-            transform: translateX(0);
-        }
-        100% {
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
-            transform: translateX(0);
-        }
-    }
-    
-    /* オーバーレイ効果のためのスタイル */
-    .cyber-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(0, 255, 255, 0.1), rgba(0, 0, 0, 0));
-        z-index: 1;
-        pointer-events: none;
-    }
-    
-    /* 特殊なブランドカラー */
-    .cyber-blue {
-        color: #00bfff !important;
-        text-shadow: 0 0 5px rgba(0, 191, 255, 0.5) !important;
-    }
-    
-    .cyber-pink {
-        color: #ff80c0 !important;
-        text-shadow: 0 0 5px rgba(255, 128, 192, 0.5) !important;
-    }
-    
-    .cyber-green {
-        color: #80ff80 !important;
-        text-shadow: 0 0 5px rgba(128, 255, 128, 0.5) !important;
     }
 </style>
 {% endblock %} 

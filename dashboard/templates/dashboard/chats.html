@@ -1,0 +1,151 @@
+{% extends 'dashboard/base.html' %}
+
+{% block dashboard_content %}
+<div class="card bg-dark text-cyber">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 text-cyber">チャット一覧</h4>
+        <a href="{% url 'profiles:programmer_list' %}" class="btn btn-cyber-green">
+            <i class="bi bi-person-plus me-2"></i>新しいチャット
+        </a>
+    </div>
+    <div class="card-body p-0">
+        {% if chat_info %}
+            <ul class="list-group list-group-flush chat-list">
+                {% for chat in chat_info %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center chat-item">
+                        <a href="{% url 'chats:chat_detail' chat.conversation.id %}" class="d-flex align-items-center text-decoration-none w-100">
+                            <div class="chat-avatar me-3">
+                                {% if chat.other_user.profile.avatar_url %}
+                                    <img src="{{ chat.other_user.profile.avatar_url }}" alt="{{ chat.other_user.username }}" class="rounded-circle cyber-avatar">
+                                {% else %}
+                                    <div class="cyber-avatar-placeholder rounded-circle">
+                                        {{ chat.other_user.username|first }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="chat-info flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-1 chat-username">{{ chat.other_user.username }}</h5>
+                                    <small class="text-muted chat-time">
+                                        {% if chat.latest_message %}
+                                            {{ chat.latest_message.timestamp|date:"m/d H:i" }}
+                                        {% endif %}
+                                    </small>
+                                </div>
+                                <p class="mb-1 chat-preview">
+                                    {% if chat.latest_message %}
+                                        {{ chat.latest_message.content|truncatechars:40 }}
+                                    {% else %}
+                                        会話を始めましょう...
+                                    {% endif %}
+                                </p>
+                            </div>
+                            {% if chat.unread_count > 0 %}
+                                <span class="badge bg-success rounded-pill unread-badge">{{ chat.unread_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="p-4 text-center">
+                <p class="mb-3 text-light">チャットがまだありません</p>
+                <a href="{% url 'profiles:programmer_list' %}" class="btn btn-cyber-green">
+                    <i class="bi bi-chat-dots me-2"></i>新しいチャットを始める
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* チャットリストのスタイル */
+.chat-list {
+    background: rgba(18, 18, 18, 0.9);
+}
+
+.chat-item {
+    background: transparent;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.chat-item:hover {
+    background: rgba(0, 255, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.chat-avatar {
+    width: 50px;
+    height: 50px;
+}
+
+.chat-avatar img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.cyber-avatar-placeholder {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 255, 0, 0.1);
+    color: #00ff00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    border: 2px solid #00ff00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.chat-username {
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    margin-bottom: 5px;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+.chat-preview {
+    color: #cccccc;
+    font-size: 0.9rem;
+}
+
+.chat-time {
+    color: #999999;
+    font-size: 0.8rem;
+}
+
+.unread-badge {
+    background-color: #00ff00 !important;
+    color: #000000;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+}
+
+/* サイバーパンクグリーンボタンのスタイル */
+.btn-cyber-green {
+    background-color: #00ff00;
+    border: 1px solid #00ff00;
+    color: #000 !important;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+    text-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-green:hover {
+    background-color: #7fff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.9);
+    transform: translateY(-2px) scale(1.05);
+}
+</style>
+{% endblock %} 

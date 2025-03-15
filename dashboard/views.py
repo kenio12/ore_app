@@ -305,38 +305,53 @@ def notifications(request):
 
 @login_required
 def analytics(request):
-    """アナリティクスページ - ユーザーのアプリに関する統計情報を表示"""
-    # ユーザーのアプリを取得
-    user_apps = AppGallery.objects.filter(author=request.user)
+    """アナリティクスページ"""
+    return render(request, 'dashboard/analytics.html')
+
+@login_required
+def chats(request):
+    """チャット一覧ページ - ダッシュボード内に表示"""
+    from django.apps import apps
+    Conversation = apps.get_model('chats', 'Conversation')
+    Message = apps.get_model('chats', 'Message')
     
-    # 公開済みと未公開のアプリ数
-    published_apps_count = user_apps.filter(status='public').count()
-    unpublished_apps_count = user_apps.filter(status='draft').count()
+    # ユーザーが参加している会話を取得
+    conversations = Conversation.objects.filter(participants=request.user)
     
-    # 人気アプリを取得（アナリティクスが存在するもののみ）
-    from django.db.models import F, Value, IntegerField
-    from apps_gallery.models import AppAnalytics
-    
-    # 関連のanalytics.view_countが存在するアプリを取得
-    popular_apps = []
-    for app in user_apps.order_by('-created_at'):
-        try:
-            # analyticsオブジェクトを取得するか、存在しなければ作成
-            analytics, created = AppAnalytics.objects.get_or_create(app=app)
-            # ビューで使うデータにview_countを設定
-            app.view_count = analytics.view_count
-        except Exception as e:
-            # エラーが発生した場合は0を設定
-            app.view_count = 0
+    # チャット情報を整理
+    chat_info = []
+    for conversation in conversations:
+        # 相手のユーザーを特定
+        other_user = conversation.participants.exclude(id=request.user.id).first()
+        if not other_user:
+            continue
+            
+        # 最新メッセージを取得
+        latest_message = Message.objects.filter(conversation=conversation).order_by('-timestamp').first()
         
-        popular_apps.append(app)
+        # 未読メッセージ数を取得
+        unread_count = Message.objects.filter(
+            conversation=conversation,
+            is_read=False,
+            sender=other_user
+        ).count()
+        
+        chat_info.append({
+            'conversation': conversation,
+            'other_user': other_user,
+            'latest_message': latest_message,
+            'unread_count': unread_count
+        })
+    
+    # 最新メッセージの時間順にソート
+    chat_info = sorted(
+        chat_info,
+        key=lambda x: x['latest_message'].timestamp if x['latest_message'] else x['conversation'].created_at,
+        reverse=True
+    )
     
     context = {
-        'user': request.user,
-        'total_apps': user_apps.count(),
-        'published_apps_count': published_apps_count,
-        'unpublished_apps_count': unpublished_apps_count,
-        'latest_apps': popular_apps,  # テンプレートで使用される変数名は維持
+        'chat_info': chat_info
     }
     
-    return render(request, 'dashboard/analytics.html', context)
+    return render(request, 'dashboard/chats.html', context)

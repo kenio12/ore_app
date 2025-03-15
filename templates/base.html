@@ -9,6 +9,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <style>
     /* ナビゲーションのトランジション */
@@ -112,16 +114,268 @@
         background: rgba(255, 80, 80, 0.3) !important;
         box-shadow: 0 0 10px rgba(255, 80, 80, 0.3);
     }
+
+    /* 左上に固定された🤖ボタンのスタイル */
+    .robot-home-button {
+        position: fixed !important;
+        top: 20px !important;
+        left: 20px !important;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(0, 50, 100, 0.7), rgba(0, 20, 60, 0.8));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 15px rgba(0, 180, 255, 0.7), inset 0 0 10px rgba(0, 245, 255, 0.5);
+        border: 2px solid rgba(0, 191, 255, 0.6);
+        z-index: 9999 !important;
+        transition: all 0.3s ease;
+        animation: float 5s ease-in-out infinite;
+        overflow: hidden;
+        opacity: 1 !important;
+        visibility: visible !important;
+        cursor: pointer;
+    }
+
+    .robot-home-button::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(0, 245, 255, 0.3) 0%, rgba(0, 245, 255, 0) 70%);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .robot-home-button::after {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        right: -1px;
+        bottom: -1px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, transparent 40%, rgba(0, 245, 255, 0.8) 45%, rgba(0, 245, 255, 0.8) 55%, transparent 60%);
+        background-size: 200% 200%;
+        background-position: 0% 0%;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        animation: borderRotate 3s linear infinite;
+        animation-direction: reverse;
+    }
+
+    .robot-home-button:hover {
+        transform: scale(1.1) rotate(-5deg);
+        box-shadow: 0 0 25px rgba(0, 245, 255, 0.9);
+        border-color: rgba(0, 245, 255, 0.9);
+        animation-play-state: paused;
+    }
+
+    .robot-home-button:hover::before {
+        opacity: 1;
+    }
+
+    .robot-home-button:hover::after {
+        opacity: 1;
+    }
+
+    .robot-home-button svg {
+        filter: drop-shadow(0 0 5px rgba(0, 245, 255, 0.7));
+        transition: all 0.3s ease;
+    }
+
+    .robot-home-button:hover svg {
+        transform: scale(1.1) rotate(5deg);
+        filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.9));
+    }
+
+    /* 右上に固定された顔アイコンのスタイル */
+    .profile-button {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(255, 153, 0, 0.7), rgba(204, 85, 0, 0.8));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 15px rgba(255, 153, 0, 0.7);
+        border: 2px solid rgba(255, 165, 0, 0.6);
+        transition: all 0.3s ease;
+        animation: float 3s ease-in-out infinite;
+        animation-delay: 0.5s; /* ロボットとずらす */
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-button::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 165, 0, 0.3) 0%, rgba(255, 165, 0, 0) 70%);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    .profile-button::after {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: -1px;
+        right: -1px;
+        bottom: -1px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, transparent 40%, rgba(255, 69, 0, 0.8) 45%, rgba(255, 69, 0, 0.8) 55%, transparent 60%);
+        background-size: 200% 200%;
+        background-position: 0% 0%;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        animation: borderRotate 3s linear infinite;
+    }
+
+    @keyframes borderRotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .profile-button:hover {
+        transform: scale(1.1) rotate(15deg);
+        box-shadow: 0 0 25px rgba(255, 69, 0, 0.9);
+        border-color: rgba(255, 140, 0, 0.9);
+        animation-play-state: paused;
+    }
+
+    .profile-button:hover::before {
+        opacity: 1;
+    }
+
+    .profile-button:hover::after {
+        opacity: 1;
+    }
+
+    .profile-icon {
+        font-size: 24px;
+        color: #fff;
+        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+        transition: all 0.3s ease;
+    }
+
+    .profile-button:hover .profile-icon {
+        transform: scale(1.1) rotate(-15deg);
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.9));
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        25% {
+            transform: translateY(-10px) rotate(-5deg);
+        }
+        50% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        75% {
+            transform: translateY(5px) rotate(5deg);
+        }
+        100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+    }
+
+    .robot-home-button:hover {
+        transform: scale(1.1) rotate(-5deg);
+        box-shadow: 0 0 25px rgba(0, 245, 255, 0.9);
+        border-color: rgba(0, 245, 255, 0.9);
+        animation-play-state: paused;
+    }
+
+    .robot-home-button:hover::before {
+        opacity: 1;
+    }
+
+    .robot-home-button:hover::after {
+        opacity: 1;
+    }
+
+    .robot-home-button svg {
+        filter: drop-shadow(0 0 5px rgba(0, 245, 255, 0.7));
+        transition: all 0.3s ease;
+    }
+
+    .robot-home-button:hover svg {
+        transform: scale(1.1) rotate(5deg);
+        filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.9));
+    }
+
+    /* プロファイルボタンコンテナのスタイル */
+    #profile-button-container {
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
+        z-index: 9999 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* アイコン制御パネル */
+    .icon-control-panel {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(20, 30, 50, 0.8);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 10px;
+        padding: 10px;
+        z-index: 9998;
+        display: none;
+        box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .icon-control-panel button {
+        background: rgba(0, 123, 255, 0.2);
+        color: #00ffff;
+        border: 1px solid #00ffff;
+        border-radius: 5px;
+        padding: 5px 10px;
+        margin: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .icon-control-panel button:hover {
+        background: rgba(0, 123, 255, 0.4);
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .hidden-icon {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+    }
     </style>
 </head>
 <body style="background-color: #121212; color: #ffffff;">
+    {% comment %}
     {% block navbar %}
         {% include 'includes/navbar.html' %}
     {% endblock %}
+    {% endcomment %}
     
     <!-- チャット通知コンポーネント -->
-    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-        <div id="chatNotification" class="toast align-items-center text-white cyber-toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;" data-unread="0">
+        <div id="chatNotification" class="toast align-items-center text-white cyber-toast" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
             <div class="d-flex flex-column">
                 <div class="toast-body pb-0">
                     <div class="d-flex align-items-center mb-2">
@@ -130,11 +384,11 @@
                                 <i class="bi bi-person"></i>
                             </div>
                         </div>
-                        <div>
+                        <div class="chat-message-container" style="display: none;">
                             <strong class="sender-name"></strong>が、チャットで話しかけています
                         </div>
                     </div>
-                    <div class="mt-2 pt-2 border-top d-flex justify-content-end gap-2">
+                    <div class="mt-2 pt-2 border-top d-flex justify-content-end gap-2 chat-buttons-container" style="display: none;">
                         <button type="button" class="btn btn-sm block-user-btn" style="background: rgba(255, 80, 80, 0.2); color: #ff5050; border: 1px solid #ff5050;">
                             <i class="bi bi-x-circle"></i> 拒絶する
                         </button>
@@ -288,12 +542,92 @@
     {% block content %}
     {% endblock %}
 
+    <!-- 左上に固定された🤖ボタン -->
+    <a href="{% url 'home:home' %}" class="robot-home-button">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="robotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#00F5FF" />
+                    <stop offset="50%" stop-color="#00BFFF" />
+                    <stop offset="100%" stop-color="#0080FF" />
+                </linearGradient>
+                <filter id="robotGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="1.5" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+                <filter id="robotShadow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#00F5FF" flood-opacity="0.5"/>
+                </filter>
+                <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#00FFFF" />
+                    <stop offset="100%" stop-color="#00BFFF" />
+                </linearGradient>
+            </defs>
+            <path filter="url(#robotGlow)" d="M17 4H7C5.9 4 5 4.9 5 6v4H3c-.55 0-1 .45-1 1v5c0 .55.45 1 1 1h2v1c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-1h2c.55 0 1-.45 1-1v-5c0-.55-.45-1-1-1h-2V6c0-1.1-.9-2-2-2zM7 6h10v4H7V6zm10 12H7v-6h10v6zm-3-5c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1zm-6 0c0 .55-.45 1-1 1s-1-.45-1-1 .45-1 1-1 1 .45 1 1z" fill="url(#robotGradient)" filter="url(#robotShadow)" />
+            <circle cx="9" cy="13" r="1" fill="url(#eyeGradient)">
+                <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="15" cy="13" r="1" fill="url(#eyeGradient)">
+                <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite" />
+            </circle>
+        </svg>
+    </a>
+
+    <!-- 右上に固定された顔アイコン -->
+    {% if user.is_authenticated %}
+    <div id="profile-button-container">
+        <a href="{% url 'dashboard:index' %}" class="profile-button">
+            <i class="fas fa-user-tie profile-icon"></i>
+        </a>
+    </div>
+    {% endif %}
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- スクロール制御用のスクリプト -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // ホームページでのアイコンの位置調整
+        const isHomePage = window.location.pathname === '/' || window.location.pathname === '/home/';
+        const profileButtonContainer = document.getElementById('profile-button-container');
+        const robotHomeButton = document.querySelector('.robot-home-button');
+        
+        if (isHomePage) {
+            if (profileButtonContainer) {
+                profileButtonContainer.style.top = '60px'; // タブナビゲーションの下に配置
+            }
+            if (robotHomeButton) {
+                robotHomeButton.style.top = '60px'; // タブナビゲーションの下に配置
+            }
+        }
+        
+        // スクロール時もアイコンを常に表示（スクロールイベントではなく、直接スタイルを設定）
+        if (robotHomeButton) {
+            robotHomeButton.style.opacity = '1';
+            robotHomeButton.style.visibility = 'visible';
+            robotHomeButton.style.position = 'fixed'; // 固定位置を確保
+        }
+        
+        if (profileButtonContainer) {
+            profileButtonContainer.style.opacity = '1';
+            profileButtonContainer.style.visibility = 'visible';
+            profileButtonContainer.style.position = 'fixed'; // 固定位置を確保
+        }
+        
+        // スクロールイベントでも常に表示を確保
+        window.addEventListener('scroll', function() {
+            if (robotHomeButton) {
+                robotHomeButton.style.opacity = '1';
+                robotHomeButton.style.visibility = 'visible';
+            }
+            
+            if (profileButtonContainer) {
+                profileButtonContainer.style.opacity = '1';
+                profileButtonContainer.style.visibility = 'visible';
+            }
+        });
+        
         let lastScrollTop = 0;
         const navbarElement = document.querySelector('.navbar');
         
@@ -318,744 +652,7 @@
     <!-- チャット通知スクリプト -->
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // デバッグモード
-        const DEBUG = true;
-        
-        // ページ情報
-        const isChatPage = window.location.pathname.includes('/chats/');
-        const isCurrentConversationPage = isChatPage && !window.location.pathname.endsWith('/chats/');
-        
-        if (DEBUG) {
-            console.log('のページ:', window.location.pathname);
-            console.log('isChatPage:', isChatPage);
-            console.log('isCurrentConversationPage:', isCurrentConversationPage);
-        }
-        
-        // 【緊急対策】チャットページ以外では強制的に通知を非表示
-        if (!isChatPage) {
-            // トースト通知を強制的に隠す（チャット通知だけ）
-            const chatNotification = document.getElementById('chatNotification');
-            if (chatNotification) {
-                chatNotification.style.display = 'none';
-                console.log('🚫 チャット通知を強制的に非表示にしました');
-            }
-            
-            // チャット関連のモーダルだけを隠す
-            ['enterModal', 'exitModal', 'enterExitModal'].forEach(modalId => {
-                const modal = document.getElementById(modalId);
-                if (modal && modal.classList.contains('show')) {
-                    modal.classList.remove('show');
-                    modal.style.display = 'none';
-                    console.log('🚫 チャットモーダルを非表示にしました:', modalId);
-                }
-            });
-            
-            // チャット関連のバックドロップだけを削除
-            document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-                // モーダルが表示されていなければ、バックドロップを削除
-                if (document.querySelectorAll('.modal.show').length === 0) {
-                    backdrop.remove();
-                    console.log('🚫 モーダルバックドロップを削除しました');
-                }
-            });
-            
-            // body要素のスタイルをチェック - チャットモーダルがなければ修正
-            if (document.querySelectorAll('.modal.show').length === 0) {
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-            }
-        }
-        
-        // 【緊急対策】ページ読み込み時に一度だけローカルストレージをクリア
-        const isFirstLoad = !localStorage.getItem('emergency_fix_applied');
-        if (!isChatPage && isFirstLoad) {
-            // チャット通知関連のストレージをリセット
-            localStorage.removeItem('userStatus');
-            localStorage.removeItem('processedMessageIds');
-            
-            // 緊急修正フラグを設定（1回だけの実行を保証）
-            localStorage.setItem('emergency_fix_applied', 'true');
-            console.log('⚠️ 緊急対策: ローカルストレージをリセットしました');
-        }
-        
-        // ポーリング管理
-        let pollingInterval = null;
-        // 初期化済みフラグ
-        let isInitialized = false;
-        
-        // シンプルな状態管理
-        const state = {
-            // ユーザー状態管理（senderId-conversationId -> 'enter'または'exit'）
-            userStatus: {},
-            
-            // 表示中のモーダル
-            activeModals: {},
-            
-            // 処理済みメッセージIDを記録（重複表示を防ぐ）
-            processedMessageIds: new Set(),
-            
-            // メッセージIDの最大保持数
-            maxStoredMessageIds: 1000,
-            
-            // 【新規追加】通知禁止フラグ
-            suppressNotifications: !isChatPage
-        };
-        
-        // 状態をローカルストレージに保存
-        function saveState() {
-            try {
-                localStorage.setItem('userStatus', JSON.stringify(state.userStatus));
-                
-                // 処理済みメッセージIDが多すぎる場合は古いものを削除
-                cleanupProcessedIds();
-                
-                localStorage.setItem('processedMessageIds', JSON.stringify(Array.from(state.processedMessageIds)));
-                if (DEBUG) console.log('状態を保存しました');
-            } catch (e) {
-                console.error('状態の保存に失敗:', e);
-            }
-        }
-        
-        // 処理済みメッセージIDのクリーンアップ
-        function cleanupProcessedIds() {
-            if (state.processedMessageIds.size > state.maxStoredMessageIds) {
-                const idsArray = Array.from(state.processedMessageIds);
-                // 新しいものを残して古いものを削除（Set順序は挿入順）
-                const newIds = idsArray.slice(-state.maxStoredMessageIds);
-                
-                if (DEBUG) {
-                    console.log(`🧹 古いメッセージIDをクリーンアップ: ${state.processedMessageIds.size}件 → ${newIds.length}件`);
-                }
-                
-                state.processedMessageIds = new Set(newIds);
-            }
-        }
-        
-        // 状態をローカルストレージから復元
-        function loadState() {
-            try {
-                const savedState = localStorage.getItem('userStatus');
-                if (savedState) {
-                    state.userStatus = JSON.parse(savedState);
-                    if (DEBUG) console.log('状態を復元しました:', state.userStatus);
-                }
-                
-                // 処理済みメッセージIDを復元
-                const savedMessageIds = localStorage.getItem('processedMessageIds');
-                if (savedMessageIds) {
-                    const ids = JSON.parse(savedMessageIds);
-                    state.processedMessageIds = new Set(ids);
-                    if (DEBUG) console.log('処理済みメッセージIDを復元しました:', state.processedMessageIds.size, '件');
-                    
-                    // デバッグ用に最初の5件のIDを表示
-                    if (DEBUG && ids.length > 0) {
-                        const sampleIds = ids.slice(0, Math.min(5, ids.length));
-                        console.log('処理済みメッセージIDサンプル:', sampleIds);
-                    }
-                }
-            } catch (e) {
-                console.error('状態の復元に失敗:', e);
-                state.userStatus = {};
-                state.processedMessageIds = new Set();
-            }
-        }
-        
-        // 状態をリセット
-        function resetState() {
-            state.userStatus = {};
-            state.processedMessageIds = new Set();
-            localStorage.removeItem('userStatus');
-            localStorage.removeItem('processedMessageIds');
-            
-            // モーダルを全て閉じる
-            Object.values(state.activeModals).forEach(modal => {
-                if (modal && typeof modal.hide === 'function') {
-                    modal.hide();
-                }
-            });
-            state.activeModals = {};
-            
-            if (DEBUG) console.log('状態をリセットしました');
-        }
-        
-        // 【新規追加】通知を停止する処理
-        function suppressAllNotifications() {
-            state.suppressNotifications = true;
-            console.log('⚠️ 通知機能を無効化しました');
-        }
-
-        // 【新規追加】通知を再開する処理
-        function enableNotifications() {
-            state.suppressNotifications = false;
-            console.log('✅ 通知機能を有効化しました');
-        }
-        
-        // 未読メッセージをチェックする関数
-        function checkUnreadMessages() {
-            // 【緊急対策】チャットページ以外では通知をすべて抑制
-            if (!window.location.pathname.includes('/chats/')) {
-                // チャット通知だけを強制的に非表示
-                const chatNotification = document.getElementById('chatNotification');
-                if (chatNotification) {
-                    chatNotification.style.display = 'none';
-                }
-                
-                if (DEBUG) console.log('🔇 非チャットページでのチャット通知を抑制しました');
-                state.suppressNotifications = true;
-                saveState();
-                // ここではreturnしない - 処理は続行（他の正規通知を許可するため）
-            }
-            
-            // 現在のURL状態を再確認
-            const currentIsChatPage = window.location.pathname.includes('/chats/');
-            const currentIsConversationPage = currentIsChatPage && !window.location.pathname.endsWith('/chats/');
-            const currentConversationId = getCurrentConversationId();
-            
-            if (DEBUG) {
-                console.log('📊 チェック時のページ状態:');
-                console.log('- 現在のURL:', window.location.pathname);
-                console.log('- チャットページ:', currentIsChatPage);
-                console.log('- 特定の会話ページ:', currentIsConversationPage);
-                console.log('- 現在の会話ID:', currentConversationId);
-            }
-            
-            // 現在のページがチャットページでない場合、通知を一時的に抑制
-            if (!currentIsChatPage && !state.suppressNotifications) {
-                suppressAllNotifications();
-            }
-            
-            fetch('/chats/api/unread-messages/')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.unread_messages && data.unread_messages.length > 0) {
-                        if (DEBUG) console.log(`📬 新着メッセージ ${data.unread_messages.length}件の処理を開始`);
-                        
-                        // 処理前のIDセットの状態をデバッグ表示
-                        if (DEBUG) console.log(`🔍 処理前の処理済みID数: ${state.processedMessageIds.size}件`);
-
-                        // 通知が禁止されている場合は、すべてのメッセージを既読としてマークするだけ
-                        if (state.suppressNotifications || !currentIsChatPage) {
-                            if (DEBUG) console.log('🔇 通知が無効化されているため、すべてのメッセージを処理済みとしてマークします');
-                            
-                            data.unread_messages.forEach(message => {
-                                state.processedMessageIds.add(String(message.id));
-                            });
-                            
-                            saveState(); // 状態を保存
-                            return; // これ以上処理しない
-                        }
-
-                        data.unread_messages.forEach(message => {
-                            // 処理済みチェックをより厳格に行う
-                            const messageId = String(message.id);
-                            if (state.processedMessageIds.has(messageId)) {
-                                if (DEBUG) {
-                                    console.log(`⏭️ 既に処理済みのメッセージをスキップします: ID=${messageId}, ${message.sender_name}`);
-                                }
-                                return; // 処理済みなのでスキップ
-                            }
-                            
-                            // 現在のページが、このメッセージと同じ会話ページかチェック
-                            if (currentIsConversationPage && currentConversationId && 
-                                String(message.conversation_id) === String(currentConversationId)) {
-                                if (DEBUG) {
-                                    console.log(`⏭️ 現在表示中の会話(ID:${currentConversationId})の通知をスキップします: ID=${messageId}, ${message.sender_name}`);
-                                }
-                                // 処理済みとしてマークする
-                                state.processedMessageIds.add(messageId);
-                                return; // 現在表示中の会話なのでスキップ
-                            }
-
-                            // メッセージタイプの判定
-                            const isEnterMessage = message.message_type === 'enter' || 
-                                                  (message.content && message.content.includes('チャットルームに入りました'));
-                            const isLeaveMessage = message.message_type === 'leave' || 
-                                                  (message.content && message.content.includes('チャットルームから退室しました'));
-                            
-                            if (DEBUG) {
-                                if (isEnterMessage) {
-                                    console.log(`🚪 入室メッセージ検出: ${message.sender_name}（ID: ${message.sender_id}）が会話${message.conversation_id}に入室`);
-                                } else if (isLeaveMessage) {
-                                    console.log(`🚪 退室メッセージ検出: ${message.sender_name}（ID: ${message.sender_id}）が会話${message.conversation_id}から退室`);
-                                } else {
-                                    console.log(`💬 通常メッセージ検出: ${message.sender_name}（ID: ${message.sender_id}）から会話${message.conversation_id}に`);
-                                }
-                            }
-
-                            // ユーザー状態のキー
-                            const userKey = `${message.sender_id}-${message.conversation_id}`;
-
-                            if (isEnterMessage) {
-                                // 入室処理
-                                
-                                // 前回の状態を確認
-                                const previousStatus = state.userStatus[userKey];
-                                
-                                // 状態を「入室」に更新
-                                state.userStatus[userKey] = 'enter';
-                                
-                                // 「退室モーダル」が表示されていれば閉じる
-                                if (state.activeModals[`exit-${userKey}`]) {
-                                    if (DEBUG) console.log(`🔄 退室モーダルを閉じます: ${message.sender_name}`);
-                                    state.activeModals[`exit-${userKey}`].hide();
-                                    delete state.activeModals[`exit-${userKey}`];
-                                }
-                                
-                                // 【修正】入室通知の表示条件を厳格化
-                                
-                                // 1. 自分が同じチャットルームにいる場合は通知しない
-                                if (currentIsConversationPage && 
-                                    String(message.conversation_id) === String(currentConversationId)) {
-                                    if (DEBUG) console.log(`🔇 現在同じチャットルームにいるため入室通知をスキップします: ${message.sender_name}`);
-                                    state.processedMessageIds.add(String(message.id));
-                                    return;
-                                }
-                                
-                                // 2. 招待からアクセスした場合の通知をスキップ
-                                if (message.invitation_source === true || 
-                                    (message.content && message.content.includes('招待からのアクセス'))) {
-                                    if (DEBUG) console.log(`🔇 招待からのアクセスのため入室通知をスキップします: ${message.sender_name}`);
-                                    state.processedMessageIds.add(String(message.id));
-                                    return;
-                                }
-                                
-                                // ユーザーがブラウザを見ていないときはブラウザ通知
-                                if (document.hidden) {
-                                    showBrowserNotification(
-                                        `${message.sender_name}が入室しました`,
-                                        `チャットルーム: ${message.conversation_name || 'チャット'}`,
-                                        message.sender_avatar
-                                    );
-                                } else {
-                                    // 入室モーダルを表示
-                                    showEnterModal(
-                                        message.sender_id,
-                                        message.sender_name,
-                                        message.sender_avatar,
-                                        message.conversation_id
-                                    );
-                                }
-                            } else if (isLeaveMessage) {
-                                // 退室処理
-                                
-                                // 前回の状態を確認
-                                const previousStatus = state.userStatus[userKey];
-                                
-                                // 状態を「退室」に更新
-                                state.userStatus[userKey] = 'exit';
-                                
-                                // 「入室モーダル」が表示されていれば閉じる
-                                if (state.activeModals[`enter-${userKey}`]) {
-                                    if (DEBUG) console.log(`🔄 入室モーダルを閉じます: ${message.sender_name}`);
-                                    state.activeModals[`enter-${userKey}`].hide();
-                                    delete state.activeModals[`enter-${userKey}`];
-                                }
-                                
-                                // 退室メッセージは通知せずに静かに状態を更新するだけ
-                                if (DEBUG) console.log(`👻 退室メッセージを受信しましたが、通知は表示しません: ${message.sender_name}`);
-                                
-                                // 明示的にこのメッセージを処理済みとしてマーク
-                                state.processedMessageIds.add(messageId);
-                                if (DEBUG) console.log(`🔒 退室メッセージをIDで明示的に処理済みとしてマーク: ID=${messageId}`);
-                                saveState(); // 状態を確実に保存
-                                
-                                // トースト表示とモーダル表示をしない（退室は静かに処理）
-                            } else {
-                                // 通常メッセージの場合、トースト通知を表示
-                                if (!document.hidden) {
-                                    showChatToast(
-                                        message.sender_name,
-                                        message.sender_avatar,
-                                        message.conversation_id
-                                    );
-                                } else {
-                                    showBrowserNotification(
-                                        `${message.sender_name}からメッセージが届きました`,
-                                        `チャットルーム: ${message.conversation_name || 'チャット'}`,
-                                        message.sender_avatar
-                                    );
-                                }
-                            }
-                            
-                            // 処理済みとしてマーク - 明示的に文字列に変換して保存
-                            state.processedMessageIds.add(messageId);
-                        });
-                        
-                        // 処理後に必ず状態を保存
-                        saveState();
-                        
-                        // 処理後のIDセットの状態をデバッグ表示
-                        if (DEBUG) console.log(`🔍 処理後の処理済みID数: ${state.processedMessageIds.size}件`);
-                    }
-                })
-                .catch(error => {
-                    console.error('未読メッセージ取得エラー:', error);
-                });
-        }
-        
-        // 【改善】現在表示中のチャットルームIDを取得 - より厳格に
-        function getCurrentConversationId() {
-            // チャットルームページのURLパターン: /chats/123/ のような形式
-            const match = window.location.pathname.match(/\/chats\/(\d+)\/?/);
-            if (match && match[1]) {
-                const conversationId = String(match[1]);
-                if (DEBUG) console.log(`🔍 現在のチャットルームID: ${conversationId}`);
-                return conversationId;
-            }
-            if (DEBUG) console.log('🔍 チャットルーム以外のページにいます');
-            return null;
-        }
-        
-        // 入室モーダルを表示
-        function showEnterModal(senderId, senderName, senderAvatar, conversationId) {
-            const modal = document.getElementById('enterModal');
-            if (!modal) return false;
-            
-            // モーダルの内容を設定
-            const senderNameEl = document.getElementById('e-sender-name');
-            if (senderNameEl) senderNameEl.textContent = senderName;
-            
-            // 時刻表示
-            const timeEl = document.getElementById('e-time');
-            if (timeEl) timeEl.textContent = 'たった今';
-            
-            // アバター設定
-            const avatarEl = document.getElementById('e-avatar');
-            if (avatarEl && senderAvatar) {
-                avatarEl.innerHTML = `
-                    <img src="${senderAvatar}" 
-                         alt="${senderName}" 
-                         class="rounded-circle" 
-                         style="width: 48px; height: 48px; object-fit: cover;">
-                `;
-            } else if (avatarEl) {
-                avatarEl.innerHTML = `
-                    <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center" 
-                         style="width: 100%; height: 100%; background: linear-gradient(45deg, #2a5298, #1e3c72);">
-                        <i class="bi bi-person fs-4"></i>
-                    </div>
-                `;
-            }
-            
-            // チャットボタン設定
-            const chatBtn = document.getElementById('e-goto-chat');
-            if (chatBtn) {
-                chatBtn.onclick = function() {
-                    window.location.href = `/chats/${conversationId}/?from_invitation=1`;
-                };
-            }
-            
-            // バックドロップを確実に削除
-            cleanupModalBackdrops();
-            
-            // モーダル表示
-            const bsModal = new bootstrap.Modal(modal);
-            bsModal.show();
-            
-            // モーダルが閉じられた時のイベントを追加
-            modal.addEventListener('hidden.bs.modal', function() {
-                cleanupModalBackdrops();
-            });
-            
-            // アクティブモーダルリストに追加
-            const userKey = `${senderId}-${conversationId}`;
-            state.activeModals[`enter-${userKey}`] = bsModal;
-            
-            if (DEBUG) console.log(`📣 入室モーダルを表示: ${senderName}`);
-            
-            return true;
-        }
-        
-        // 退室モーダルを表示
-        function showExitModal(senderId, senderName, senderAvatar, conversationId) {
-            const modal = document.getElementById('exitModal');
-            if (!modal) return false;
-            
-            // モーダルの内容を設定
-            const senderNameEl = document.getElementById('exit-sender-name');
-            if (senderNameEl) senderNameEl.textContent = senderName;
-            
-            // 時刻表示
-            const timeEl = document.getElementById('exit-time');
-            if (timeEl) timeEl.textContent = 'たった今';
-            
-            // アバター設定
-            const avatarEl = document.getElementById('exit-avatar');
-            if (avatarEl && senderAvatar) {
-                avatarEl.innerHTML = `
-                    <img src="${senderAvatar}" 
-                         alt="${senderName}" 
-                         class="rounded-circle" 
-                         style="width: 48px; height: 48px; object-fit: cover;">
-                `;
-            } else if (avatarEl) {
-                avatarEl.innerHTML = `
-                    <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center" 
-                         style="width: 100%; height: 100%; background: linear-gradient(45deg, #2a5298, #1e3c72);">
-                        <i class="bi bi-person fs-4"></i>
-                    </div>
-                `;
-            }
-            
-            // チャットボタン設定
-            const chatBtn = document.getElementById('exit-goto-chat');
-            if (chatBtn) {
-                chatBtn.onclick = function() {
-                    window.location.href = `/chats/${conversationId}/?from_invitation=1`;
-                };
-            }
-            
-            // バックドロップを確実に削除
-            cleanupModalBackdrops();
-            
-            // モーダル表示
-            const bsModal = new bootstrap.Modal(modal);
-            bsModal.show();
-            
-            // モーダルが閉じられた時のイベントを追加
-            modal.addEventListener('hidden.bs.modal', function() {
-                cleanupModalBackdrops();
-            });
-            
-            // アクティブモーダルリストに追加
-            const userKey = `${senderId}-${conversationId}`;
-            state.activeModals[`exit-${userKey}`] = bsModal;
-            
-            if (DEBUG) console.log(`📣 退室モーダルを表示: ${senderName}`);
-            
-            return true;
-        }
-        
-        // モーダルバックドロップをクリーンアップする関数
-        function cleanupModalBackdrops() {
-            // モーダルのバックドロップを全て削除
-            const backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(backdrop => {
-                backdrop.classList.remove('show');
-                setTimeout(() => {
-                    backdrop.remove();
-                }, 150); // フェードアウト時間を考慮
-            });
-            
-            // body要素から'modal-open'クラスを削除（スクロールを戻す）
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
-            
-            if (DEBUG && backdrops.length > 0) {
-                console.log(`🧹 ${backdrops.length}個のモーダルバックドロップをクリーンアップしました`);
-            }
-        }
-        
-        // ブラウザ通知を表示
-        function showBrowserNotification(title, body, icon) {
-            if (Notification.permission === "granted") {
-                const notification = new Notification(title, {
-                    body: body,
-                    icon: icon || '/static/images/favicon.png'
-                });
-                
-                notification.onclick = function() {
-                    window.focus();
-                    notification.close();
-                };
-                
-                setTimeout(() => {
-                    notification.close();
-                }, 10000);
-                
-                return true;
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        showBrowserNotification(title, body, icon);
-                    }
-                });
-                return false;
-            }
-            return false;
-        }
-        
-        // チャットトースト通知を表示する関数
-        function showChatToast(senderName, senderAvatar, conversationId) {
-            // 【緊急対策】チャットページ以外では通知を表示しない
-            if (!window.location.pathname.includes('/chats/')) {
-                if (DEBUG) console.log('🚫 非チャットページでの通知表示をブロックしました');
-                return false;
-            }
-            
-            const toast = document.getElementById('chatNotification');
-            if (!toast) return false;
-            
-            // 送信者名を設定
-            const senderNameEl = toast.querySelector('.sender-name');
-            if (senderNameEl) senderNameEl.textContent = senderName;
-            
-            // アバターを設定
-            const avatarEl = toast.querySelector('.chat-avatar');
-            if (avatarEl && senderAvatar) {
-                avatarEl.innerHTML = `
-                    <img src="${senderAvatar}" 
-                         alt="${senderName}" 
-                         class="rounded-circle" 
-                         style="width: 30px; height: 30px; object-fit: cover;">
-                `;
-            } else if (avatarEl) {
-                avatarEl.innerHTML = `
-                    <div class="avatar-placeholder rounded-circle">
-                        <i class="bi bi-person"></i>
-                    </div>
-                `;
-            }
-            
-            // チャットボタンの設定
-            const chatBtn = toast.querySelector('.chat-reply-btn');
-            if (chatBtn) {
-                chatBtn.onclick = function() {
-                    window.location.href = `/chats/${conversationId}/?from_invitation=1`;
-                };
-            }
-            
-            // 拒絶ボタンの設定
-            const blockBtn = toast.querySelector('.block-user-btn');
-            if (blockBtn) {
-                blockBtn.onclick = function() {
-                    // トーストを閉じる
-                    const bsToast = bootstrap.Toast.getInstance(toast);
-                    if (bsToast) bsToast.hide();
-                };
-            }
-            
-            // トーストを表示
-            const bsToast = new bootstrap.Toast(toast, {
-                autohide: true,
-                delay: 5000
-            });
-            bsToast.show();
-            
-            if (DEBUG) console.log(`📣 チャットトーストを表示: ${senderName}`);
-            
-            return true;
-        }
-        
-        // ポーリングを開始
-        function startPolling() {
-            if (pollingInterval !== null) {
-                if (DEBUG) console.log('ポーリングは既に開始されています。処理をスキップします。');
-                return; // 既にポーリングが開始されている場合は何もしない
-            }
-            
-            if (!document.hidden) {
-                const interval = isChatPage ? 5000 : 10000; // チャットページ：5秒、その他：10秒
-                checkUnreadMessages();  // 即座に1回目のチェックを実行
-                pollingInterval = setInterval(checkUnreadMessages, interval);
-                if (DEBUG) console.log(`ポーリングを開始しました（間隔: ${interval}ms）`);
-            } else {
-                if (DEBUG) console.log('ページが非表示のため、ポーリングを開始しません');
-            }
-        }
-        
-        // ポーリングを停止
-        function stopPolling() {
-            if (pollingInterval) {
-                clearInterval(pollingInterval);
-                pollingInterval = null;
-                if (DEBUG) console.log('ポーリングを停止しました');
-            }
-        }
-        
-        // ページの可視性変更時の処理
-        function handleVisibilityChange() {
-            if (!document.hidden) {
-                // ページが表示状態になったとき
-                console.log("ページがアクティブになりました");
-                
-                // 保存されている状態を明示的に再読み込み
-                loadState();
-                
-                // ポーリングが停止していたら再開
-                if (pollingInterval === null) {
-                    console.log("ポーリングを再開します");
-                    startPolling();
-                }
-            } else {
-                console.log("ページが非アクティブになりました");
-                
-                // 状態を確実に保存してからポーリングを停止
-                saveState();
-                stopPolling();
-            }
-        }
-        
-        // ページの可視性変更時のハンドラを登録
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-        
-        // デバッグ用：Alt+Shift+Cキーで状態をリセット
-        if (DEBUG) {
-            document.addEventListener('keydown', function(e) {
-                if (e.altKey && e.shiftKey && e.key === 'C') {
-                    console.log('🧹 状態のリセットを実行します...');
-                    resetState();
-                    console.log('✅ 状態をリセットしました！');
-                }
-            });
-        }
-        
-        // 初期化
-        function init() {
-            // 二重初期化防止
-            if (isInitialized) {
-                if (DEBUG) console.log('既に初期化済みです。処理をスキップします。');
-                return;
-            }
-            
-            // 状態を復元
-            loadState();
-            
-            // チャットページ以外では通知を抑制
-            if (!isChatPage) {
-                suppressAllNotifications();
-            } else {
-                enableNotifications();
-            }
-            
-            // ページがアクティブならポーリング開始
-            if (!document.hidden) {
-                startPolling();
-            }
-            
-            // 初期化済みフラグを設定
-            isInitialized = true;
-            
-            if (DEBUG) {
-                console.log('=========== 初期化完了 ===========');
-                console.log('現在の状態:', state);
-                console.log('デバッグモード: Alt+Shift+Cキーで状態をリセットできます');
-                console.log('===================================');
-            }
-        }
-        
-        // クリーンアップ
-        window.addEventListener('beforeunload', function() {
-            // ページ移動前に確実に状態を保存
-            saveState();
-            stopPolling();
-        });
-        
-        // 状態の保存を一定間隔で確実に行う（10秒ごと）
-        setInterval(function() {
-            if (DEBUG) console.log('🔄 定期的な状態保存を実行');
-            saveState();
-        }, 10000);
-        
-        // 初期化を実行
-        init();
+        // チャット通知関連の処理をここに追加
     });
     </script>
     {% endif %}

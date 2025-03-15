@@ -15,4 +15,5 @@ urlpatterns = [
     path('account/delete/', views.delete_account, name='delete_account'),
     path('notifications/', views.notifications, name='notifications'),
     path('analytics/', views.analytics, name='analytics'),
+    path('chats/', views.chats, name='chats'),
 ] 

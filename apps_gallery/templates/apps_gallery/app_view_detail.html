@@ -17,23 +17,10 @@
 <!-- サイバーテーマのCSS読み込み -->
 <link rel="stylesheet" href="{% static 'apps_gallery/css/cyber-theme.css' %}">
 
-<!-- サイバーパンク風の装飾 -->
-<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
-    <div class="cyber-grid"></div>
 </div>
 
 <!-- メインコンテンツ -->
-<div id="app-view-detail" class="container-fluid mt-3">
-    <!-- ヘッダー -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="cyber-title" style="color: var(--cyber-purple) !important; 
-                                     text-shadow: 0 0 10px var(--cyber-purple),
-                                                0 0 20px var(--cyber-purple);
-                                     font-weight: bold;">
-            {{ app.title }}の詳細
-        </h2>
-    </div>
-
+<div id="app-view-detail" class="container-fluid">
     <!-- 閲覧モードインジケーター -->
     <div class="viewing-mode-indicator">
         <div class="viewing-content">
@@ -44,12 +31,6 @@
 
     <!-- タブナビゲーション -->
     <ul class="nav nav-tabs mb-3 app-tabs" id="appTabs" role="tablist">
-        <!-- ホームへ戻るボタン -->
-        <li class="nav-item" role="presentation">
-            <a href="/" class="nav-link cyber-home" title="ホームへ戻る">
-                <span class="fs-4 me-2 cyber-emoji" style="display: inline-block; font-size: 1.5rem;">&#x1F916;</span>
-            </a>
-        </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link active text-neon" id="screenshots-tab" data-bs-toggle="tab" data-bs-target="#screenshots-section" type="button" role="tab" aria-controls="screenshots-section" aria-selected="true" data-mobile-text="画像" style="color: var(--cyber-purple) !important; text-shadow: 0 0 10px var(--cyber-purple) !important; border-color: var(--cyber-purple) !important;">スクリーンショット</button>
         </li>
@@ -87,6 +68,16 @@
             <button class="nav-link text-neon" id="development-tab" data-bs-toggle="tab" data-bs-target="#development-section" type="button" role="tab" aria-controls="development-section" aria-selected="false" data-mobile-text="開発話" style="color: var(--cyber-yellow) !important; text-shadow: 0 0 10px var(--cyber-yellow) !important; border-color: var(--cyber-yellow) !important;">開発ストーリー</button>
         </li>
     </ul>
+    
+    <!-- ヘッダー -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="cyber-title" style="color: var(--cyber-purple) !important; 
+                                     text-shadow: 0 0 10px var(--cyber-purple),
+                                                0 0 20px var(--cyber-purple);
+                                     font-weight: bold;">
+            {{ app.title }}の詳細
+        </h2>
+    </div>
 
     <!-- タブコンテンツ -->
     <div class="tab-content" id="appTabsContent">
@@ -235,9 +226,6 @@
 }
 
 /* オリジナルのCSSも維持 */
-#app-view-detail {
-    margin-top: 1rem !important;
-}
 
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
