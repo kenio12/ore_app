@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.urls import reverse
 from apps_gallery.models import AppGallery
 from apps_gallery.constants import *  # __init__.pyから全ての定数をインポート
+from blogs.models import Post  # ブログのPostモデルをインポート
 
 def home(request):
     # 公開状態のアプリのみを取得（完成品条件を削除）
@@ -33,6 +34,11 @@ def home(request):
         }
         apps_data.append(app_data)
     
+    # 公開状態のブログ記事を取得
+    blog_posts = Post.objects.filter(
+        is_published=True
+    ).order_by('-published_at')
+    
     # デバッグ出力を追加
     print("=== Debug Output ===")
     for app in apps:
@@ -43,9 +49,20 @@ def home(request):
         print(f"Screenshots: {app.screenshots}")
         print("---")
     
+    # ブログ記事のデバッグ出力
+    print("=== Blog Posts Debug Output ===")
+    for post in blog_posts:
+        print(f"Post ID: {post.pk}")
+        print(f"Title: {post.title}")
+        print(f"Slug: {post.slug}")
+        print(f"Featured Image: {post.featured_image}")
+        print(f"Published At: {post.published_at}")
+        print("---")
+    
     context = {
         'apps': apps,
         'apps_data': apps_data,
+        'blog_posts': blog_posts,  # ブログ記事をコンテキストに追加
         'APP_TYPES': dict(APP_TYPES),
         'GENRES': dict(GENRES),
         'BACKEND_STACK': BACKEND_STACK,

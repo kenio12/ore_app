@@ -1,0 +1,128 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}ブログ管理{% endblock %}
+
+{% block dashboard_content %}
+<div class="card bg-dark text-cyber">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 text-cyber">ブログ管理</h4>
+        <a href="{% url 'blogs:post_create' %}" class="btn btn-cyber-create">
+            <i class="bi bi-plus me-2"></i>新規投稿
+        </a>
+    </div>
+    <div class="card-body">
+        <!-- 投稿ステータスフィルター -->
+        <div class="mb-4">
+            <div class="btn-group" role="group" aria-label="投稿ステータスフィルター">
+                <a href="{% url 'blogs:my_posts' %}" class="btn btn-outline-secondary {% if not status %}active{% endif %}">
+                    すべて <span class="badge bg-secondary ms-1">{{ all_count }}</span>
+                </a>
+                <a href="{% url 'blogs:my_posts' %}?status=published" class="btn btn-outline-success {% if status == 'published' %}active{% endif %}">
+                    公開済み <span class="badge bg-success ms-1">{{ published_count }}</span>
+                </a>
+                <a href="{% url 'blogs:my_posts' %}?status=draft" class="btn btn-outline-warning {% if status == 'draft' %}active{% endif %}">
+                    下書き <span class="badge bg-warning text-dark ms-1">{{ draft_count }}</span>
+                </a>
+            </div>
+        </div>
+        
+        {% if posts %}
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-cyber">タイトル</th>
+                        <th class="text-cyber">ステータス</th>
+                        <th class="text-cyber">公開日</th>
+                        <th class="text-cyber">コメント</th>
+                        <th class="text-cyber">いいね</th>
+                        <th class="text-cyber">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in posts %}
+                    <tr>
+                        <td class="text-cyber">
+                            <a href="{% url 'blogs:post_detail' post.slug %}" class="text-cyber">
+                                {{ post.title }}
+                            </a>
+                        </td>
+                        <td class="text-cyber">
+                            {% if post.status == 'published' %}
+                            <span class="badge badge-cyber-published">公開済み</span>
+                            {% else %}
+                            <span class="badge badge-cyber-draft">下書き</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-cyber">
+                            {% if post.published_at %}
+                            {{ post.published_at|date:"Y/m/d H:i" }}
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-cyber">
+                            <span class="badge bg-info">
+                                <i class="bi bi-chat"></i> {{ post.comments.count }}
+                            </span>
+                        </td>
+                        <td class="text-cyber">
+                            <span class="badge bg-danger">
+                                <i class="bi bi-heart"></i> {{ post.likes.count }}
+                            </span>
+                        </td>
+                        <td class="text-cyber">
+                            <div class="btn-group">
+                                <a href="{% url 'blogs:post_detail' post.slug %}" class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-eye"></i> 詳細
+                                </a>
+                                <a href="{% url 'blogs:post_edit' post.slug %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-pencil"></i> 編集
+                                </a>
+                                <a href="{% url 'blogs:post_delete' post.slug %}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i> 削除
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-center text-cyber">まだブログ投稿がありません。</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.text-cyber {
+    color: #00ff00 !important;
+}
+
+.badge-cyber-published {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.badge-cyber-draft {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid #ffc107;
+}
+
+.btn-cyber-create {
+    background: rgba(0, 123, 255, 0.2);
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-create:hover {
+    background: rgba(0, 123, 255, 0.4);
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}

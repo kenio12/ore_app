@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+{% block title %}投稿を削除{% endblock %}
+
+{% block content %}
+<!-- サイバーパンク風の背景 -->
+<div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
+    <div class="cyber-grid"></div>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <!-- 戻るボタン -->
+            <div class="mb-3">
+                <a href="{% url 'blogs:post_detail' post.slug %}" class="btn btn-cyber-outline">
+                    <i class="bi bi-arrow-left"></i> 投稿に戻る
+                </a>
+            </div>
+            
+            <!-- 削除確認カード -->
+            <div class="card cyber-card mb-4">
+                <div class="card-header cyber-card-header">
+                    <h1 class="cyber-title">投稿を削除</h1>
+                </div>
+                
+                <div class="card-body">
+                    <div class="alert alert-cyber-danger mb-4">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> 警告: この操作は取り消せません
+                    </div>
+                    
+                    <p class="cyber-text">以下の投稿を削除してもよろしいですか？</p>
+                    
+                    <div class="post-preview mb-4">
+                        <h3 class="cyber-subtitle">{{ post.title }}</h3>
+                        <div class="post-meta mb-2">
+                            <span class="me-3"><i class="bi bi-person"></i> {{ post.author.username }}</span>
+                            <span><i class="bi bi-calendar3"></i> {{ post.published_at|date:"Y/m/d H:i" }}</span>
+                        </div>
+                        <div class="post-content">
+                            {{ post.content|truncatewords:30 }}
+                        </div>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'blogs:post_detail' post.slug %}" class="btn btn-cyber-outline me-md-2">
+                                <i class="bi bi-x-circle"></i> キャンセル
+                            </a>
+                            <button type="submit" class="btn btn-cyber-danger">
+                                <i class="bi bi-trash"></i> 削除する
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.cyber-background {
+    background: linear-gradient(45deg, #001e54, #0066cc);
+}
+
+.cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.2) 1px, transparent 1px);
+    background-size: 20px 20px;
+    width: 100%;
+    height: 100%;
+    animation: gridGlow 4s ease-in-out infinite;
+}
+
+@keyframes gridGlow {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}
+
+.cyber-title {
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+}
+
+.cyber-subtitle {
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    margin-bottom: 0.5rem;
+}
+
+.cyber-card {
+    background: rgba(20, 20, 40, 0.8);
+    border: 1px solid rgba(0, 123, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+}
+
+.cyber-card-header {
+    background: rgba(0, 20, 40, 0.5);
+    border-bottom: 1px solid rgba(0, 123, 255, 0.5);
+    padding: 1rem;
+}
+
+.cyber-text {
+    color: #e0e0ff;
+    font-size: 1.1rem;
+}
+
+.post-preview {
+    background: rgba(30, 30, 50, 0.5);
+    border: 1px solid rgba(0, 123, 255, 0.3);
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.post-meta {
+    color: #aaaaff;
+    font-size: 0.9rem;
+}
+
+.post-content {
+    color: #ccccff;
+    font-size: 0.95rem;
+}
+
+.btn-cyber-outline {
+    background: transparent;
+    color: #00ffff;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.btn-cyber-outline:hover {
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.btn-cyber-danger {
+    background: rgba(220, 53, 69, 0.2);
+    color: #ff6b6b;
+    border: 1px solid rgba(220, 53, 69, 0.5);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.btn-cyber-danger:hover {
+    background: rgba(220, 53, 69, 0.3);
+    color: #ff6b6b;
+    box-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
+}
+
+.alert-cyber-danger {
+    background: rgba(220, 53, 69, 0.1);
+    color: #ff6b6b;
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    border-left: 4px solid #dc3545;
+}
+</style>
+{% endblock %} 

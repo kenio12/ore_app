@@ -5,4 +5,5 @@ python-dotenv==1.0.0
 cloudinary==1.36.0
 beautifulsoup4==4.12.3
 Pillow>=11.1.0
-python-dateutil>=2.8.2 
+python-dateutil>=2.8.2
+django-taggit>=4.0.0 

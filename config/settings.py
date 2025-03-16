@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'profiles.apps.ProfilesConfig',
     'chats.apps.ChatsConfig',
+    'blogs.apps.BlogsConfig',  # ブログアプリを追加
     'cloudinary',  # Cloudinaryを追加
+    'taggit',  # タグ機能を追加
 ]
 
 # Cloudinaryの設定

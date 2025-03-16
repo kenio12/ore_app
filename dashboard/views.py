@@ -13,10 +13,17 @@ from django.contrib import messages
 @login_required
 def index(request):
     """ダッシュボードのメインページ"""
+    # ブログ投稿を取得
+    from blogs.models import Post
+    
     context = {
         'user': request.user,
         'recent_apps': AppGallery.objects.filter(author=request.user).order_by('-created_at')[:5],
         'total_apps': AppGallery.objects.filter(author=request.user).count(),
+        'recent_posts': Post.objects.filter(author=request.user).order_by('-created_at')[:5],
+        'total_posts': Post.objects.filter(author=request.user).count(),
+        'published_posts': Post.objects.filter(author=request.user, is_published=True).count(),
+        'draft_posts': Post.objects.filter(author=request.user, is_published=False).count(),
     }
     return render(request, 'dashboard/index.html', context)
 

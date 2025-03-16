@@ -319,7 +319,7 @@
         filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.9));
     }
 
-    /* プロファイルボタンコンテナのスタイル */
+    /* プロフィールボタンコンテナのスタイル */
     #profile-button-container {
         position: fixed !important;
         top: 20px !important;
@@ -327,6 +327,86 @@
         z-index: 9999 !important;
         opacity: 1 !important;
         visibility: visible !important;
+    }
+
+    /* プロフィールタブのスタイル */
+    .profile-tabs {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        width: 250px;
+        background: rgba(20, 20, 40, 0.9);
+        border: 1px solid rgba(0, 255, 255, 0.3);
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 123, 255, 0.4);
+        z-index: 9998;
+        display: none;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+
+    .profile-tab-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        background: rgba(0, 20, 40, 0.7);
+        border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    }
+
+    .profile-tab-title {
+        color: #00ffff;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+    }
+
+    .profile-tab-close {
+        background: transparent;
+        border: none;
+        color: #00ffff;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+
+    .profile-tab-close:hover {
+        transform: rotate(90deg);
+        color: #ff3366;
+    }
+
+    .profile-tab-content {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .profile-tab-links {
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .profile-tab-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        color: #e0e0ff;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .profile-tab-link i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+        color: #00ffff;
+    }
+
+    .profile-tab-link:hover {
+        background: rgba(0, 123, 255, 0.2);
+        color: #00ffff;
+        transform: translateX(5px);
     }
 
     /* アイコン制御パネル */
@@ -339,7 +419,7 @@
         border-radius: 10px;
         padding: 10px;
         z-index: 9998;
-        display: none;
+        display: block;
         box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
     }
 
@@ -365,9 +445,27 @@
         visibility: hidden !important;
         pointer-events: none !important;
     }
+
+    /* 上下に動くアニメーション */
+    @keyframes moveUpDown {
+        0% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(calc(100vh - 120px));
+        }
+        100% {
+            transform: translateY(0);
+        }
+    }
+    
+    /* アニメーションを適用 */
+    .move-up-down {
+        animation: moveUpDown 30s linear infinite;
+    }
     </style>
 </head>
-<body style="background-color: #121212; color: #ffffff;">
+<body style="background-color: #0a0a0a; color: #cccccc;">
     {% comment %}
     {% block navbar %}
         {% include 'includes/navbar.html' %}
@@ -544,23 +642,10 @@
     {% endblock %}
 
     <!-- 左上に固定された🤖ボタン -->
-    <a href="{% url 'home:home' %}" class="robot-home-button">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="homeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#00F5FF" />
-                    <stop offset="50%" stop-color="#00BFFF" />
-                    <stop offset="100%" stop-color="#0080FF" />
-                </linearGradient>
-                <filter id="homeGlow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="1.5" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-                <filter id="homeShadow" x="-30%" y="-30%" width="160%" height="160%">
-                    <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#00F5FF" flood-opacity="0.5"/>
-                </filter>
-            </defs>
-            <path filter="url(#homeGlow)" d="M12 2.1L1 12h3v8h7v-6h2v6h7v-8h3L12 2.1zm0 2.691l6 5.4V18h-3v-6H9v6H6v-7.809l6-5.4z" fill="url(#homeGradient)" filter="url(#homeShadow)" />
+    <a href="{% url 'home:home' %}" class="robot-home-button" id="robot-home-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#00ffff" class="bi bi-house-fill" viewBox="0 0 16 16">
+            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
+            <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z"/>
         </svg>
     </a>
 
@@ -576,6 +661,59 @@
         </a>
     </div>
     {% endif %}
+
+    <!-- プロフィールタブ -->
+    <div class="profile-tabs" id="profile-tabs">
+        <div class="profile-tab-header">
+            <div class="profile-tab-title">メニュー</div>
+            <button class="profile-tab-close" id="profile-tab-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="profile-tab-content">
+            <div class="profile-tab-links">
+                <a href="{% url 'home:home' %}" class="profile-tab-link">
+                    <i class="fas fa-home"></i> ホーム
+                </a>
+                <a href="{% url 'home:home' %}" class="profile-tab-link">
+                    <i class="fas fa-th"></i> アプリ一覧
+                </a>
+                <a href="{% url 'blogs:post_list' %}" class="profile-tab-link">
+                    <i class="fas fa-blog"></i> ブログ
+                </a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'dashboard:index' %}" class="profile-tab-link">
+                    <i class="fas fa-tachometer-alt"></i> ダッシュボード
+                </a>
+                <a href="{% url 'dashboard:profile' %}" class="profile-tab-link">
+                    <i class="fas fa-user-circle"></i> プロフィール
+                </a>
+                <a href="{% url 'dashboard:apps' %}" class="profile-tab-link">
+                    <i class="fas fa-laptop-code"></i> マイアプリ
+                </a>
+                <a href="{% url 'blogs:my_posts' %}" class="profile-tab-link">
+                    <i class="fas fa-pencil-alt"></i> マイブログ
+                </a>
+                <a href="{% url 'chats:chat_list' %}" class="profile-tab-link">
+                    <i class="fas fa-comments"></i> チャット
+                </a>
+                <a href="{% url 'dashboard:account' %}" class="profile-tab-link">
+                    <i class="fas fa-cog"></i> 設定
+                </a>
+                <a href="{% url 'logout' %}" class="profile-tab-link">
+                    <i class="fas fa-sign-out-alt"></i> ログアウト
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="profile-tab-link">
+                    <i class="fas fa-sign-in-alt"></i> ログイン
+                </a>
+                <a href="{% url 'accounts:signup' %}" class="profile-tab-link">
+                    <i class="fas fa-user-plus"></i> 新規登録
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -623,6 +761,92 @@
             }
         });
         
+        // ボタンを上下に動かす関数
+        function moveButtonsUpDown() {
+            // 初期位置を取得
+            let startPositionRobot = parseInt(robotHomeButton?.style.top) || 20;
+            let startPositionProfile = parseInt(profileButtonContainer?.style.top) || 20;
+            
+            // 画面の高さを取得
+            const windowHeight = window.innerHeight;
+            // 画面下部の位置
+            const bottomPosition = windowHeight - 70;
+            
+            console.log("画面の高さ: " + windowHeight);
+            console.log("開始位置: " + startPositionRobot);
+            console.log("終了位置: " + bottomPosition);
+            
+            // 既存のアニメーションを無効化
+            if (robotHomeButton) {
+                robotHomeButton.style.animation = 'none';
+                robotHomeButton.style.transition = 'none';
+                // floatクラスを削除
+                robotHomeButton.classList.remove('float');
+            }
+            
+            if (profileButtonContainer) {
+                profileButtonContainer.style.animation = 'none';
+                profileButtonContainer.style.transition = 'none';
+                // floatクラスを削除
+                const profileButton = profileButtonContainer.querySelector('.profile-button');
+                if (profileButton) {
+                    profileButton.style.animation = 'none';
+                    profileButton.style.transition = 'none';
+                    profileButton.classList.remove('float');
+                }
+            }
+            
+            // 現在の位置（translateYの値）
+            let currentTranslateY = 0;
+            
+            // 移動方向（1: 下に移動、-1: 上に移動）
+            let direction = 1;
+            
+            // 移動速度（ピクセル/インターバル）
+            const step = 0.5; // 0.5ピクセルずつ移動（より小さく）
+            
+            // 最大移動距離
+            const maxTranslateY = bottomPosition - startPositionRobot;
+            
+            // 位置を更新する関数
+            const moveInterval = setInterval(function() {
+                // 位置を更新
+                currentTranslateY += step * direction;
+                
+                // 方向を変更
+                if (direction === 1 && currentTranslateY >= maxTranslateY) {
+                    direction = -1;
+                    console.log("下に到達: " + currentTranslateY);
+                } else if (direction === -1 && currentTranslateY <= 0) {
+                    direction = 1;
+                    console.log("上に到達: " + currentTranslateY);
+                }
+                
+                // 左右の揺れを計算（サイン波を使用）
+                const swayAmount = Math.sin(currentTranslateY / 30) * 5; // 5ピクセルの振幅で揺れる（小さく）
+                
+                // 回転を計算（サイン波を使用）
+                const rotateAmount = Math.sin(currentTranslateY / 50) * 3; // 3度の振幅で回転（小さく）
+                
+                // 位置を適用（transformを使用）- 上下の移動と左右の揺れを組み合わせる
+                if (robotHomeButton) {
+                    robotHomeButton.style.transform = `translateY(${currentTranslateY}px) translateX(${swayAmount}px) rotate(${rotateAmount}deg)`;
+                }
+                
+                if (profileButtonContainer) {
+                    profileButtonContainer.style.transform = `translateY(${currentTranslateY}px) translateX(${swayAmount}px) rotate(${rotateAmount}deg)`;
+                }
+                
+                // 現在の位置をログに出力（デバッグ用）
+                if (currentTranslateY % 50 === 0) {
+                    console.log("現在位置: " + currentTranslateY + ", 揺れ: " + swayAmount + ", 回転: " + rotateAmount);
+                }
+            }, 200); // 200ミリ秒ごとに更新（より遅く）
+        }
+        
+        // ボタンの移動を開始
+        moveButtonsUpDown();
+        
         let lastScrollTop = 0;
         const navbarElement = document.querySelector('.navbar');
         
@@ -651,5 +875,35 @@
     });
     </script>
     {% endif %}
+
+    <script>
+    // プロフィールタブの制御
+    document.addEventListener('DOMContentLoaded', function() {
+        const profileButton = document.getElementById('profile-button');
+        const profileTabs = document.getElementById('profile-tabs');
+        const profileTabClose = document.getElementById('profile-tab-close');
+        
+        if (profileButton && profileTabs && profileTabClose) {
+            // プロフィールボタンクリックでタブを表示
+            profileButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                profileTabs.style.display = 'block';
+            });
+            
+            // 閉じるボタンでタブを非表示
+            profileTabClose.addEventListener('click', function() {
+                profileTabs.style.display = 'none';
+            });
+            
+            // タブ外クリックで非表示
+            document.addEventListener('click', function(e) {
+                if (!profileTabs.contains(e.target) && e.target !== profileButton && !profileButton.contains(e.target)) {
+                    profileTabs.style.display = 'none';
+                }
+            });
+        }
+    });
+    </script>
+
 </body>
 </html>

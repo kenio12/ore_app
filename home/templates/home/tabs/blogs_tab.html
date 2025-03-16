@@ -4,10 +4,85 @@
             <div class="cyber-placeholder-content" style="padding: 2rem;">
                 <h3 class="cyber-title mb-4">開発ブログ</h3>
                 <p class="cyber-description">ここには開発者たちが投稿した開発ブログ記事が表示されます。</p>
-                <div class="cyber-coming-soon">
-                    <span class="cyber-glitch-text">COMING SOON</span>
+                
+                {% if blog_posts %}
+                <div class="row mt-4">
+                    {% for post in blog_posts %}
+                    <div class="col-md-12 mb-4">
+                        <a href="{% url 'blogs:post_detail' post.slug %}" class="text-decoration-none card-link">
+                            <div class="card cyber-card h-100 cyber-card-hover" style="max-height: 500px;">
+                                <div class="row g-0">
+                                    {% if post.featured_image %}
+                                    <div class="col-md-3">
+                                        <div class="card-img-top cyber-card-img-container h-100" style="overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.3);">
+                                            <img src="{{ post.featured_image }}" class="cyber-card-img" alt="{{ post.title }}" style="object-fit: contain; max-height: 100%; max-width: 100%; width: auto; height: auto;">
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    <div class="{% if post.featured_image %}col-md-9{% else %}col-md-12{% endif %}">
+                                        <div class="card-body cyber-card-body">
+                                            <h5 class="card-title cyber-card-title text-start" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);">{{ post.title }}</h5>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <small class="text-info me-2">{{ post.published_at|date:"Y/m/d" }}</small>
+                                                <span class="text-light">作者: <span class="text-info">{{ post.author.username }}</span></span>
+                                            </div>
+                                            {% if post.message %}
+                                            <div class="cyber-message mb-2 p-2 text-start" style="background: rgba(0, 255, 255, 0.1); border-left: 3px solid #00ffff; border-radius: 3px;">
+                                                <p class="m-0" style="color: #00ffff; font-weight: bold;">{{ post.message }}</p>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
                 </div>
+                {% else %}
+                <div class="cyber-empty-state mt-4">
+                    <p>まだブログ記事がありません。</p>
+                    <a href="{% url 'blogs:post_create' %}" class="btn btn-cyber-primary">ブログを投稿する</a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<style>
+.cyber-card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-card-hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 50px 50px 0;
+    border-color: transparent rgba(0, 255, 255, 0.3) transparent transparent;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cyber-card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.5);
+    border-color: rgba(0, 255, 255, 0.7);
+}
+
+.cyber-card-hover:hover::after {
+    opacity: 1;
+}
+
+.cyber-card-hover:hover .cyber-card-title {
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+}
+</style> 

@@ -17,6 +17,10 @@
                         <a href="{% url 'dashboard:apps' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'apps' %}active{% endif %}">
                             <i class="bi bi-cpu me-2"></i>アプリ管理
                         </a>
+                        <!-- ブログ管理へのリンク -->
+                        <a href="{% url 'blogs:my_posts' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.namespace == 'blogs' %}active{% endif %}">
+                            <i class="bi bi-journal-text me-2"></i>ブログ管理
+                        </a>
                         <!-- アナリティクスへのリンク -->
                         <a href="{% url 'dashboard:analytics' %}" class="list-group-item cyber-nav-item {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}">
                             <i class="bi bi-graph-up me-2"></i>アナリティクス

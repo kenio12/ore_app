@@ -33,6 +33,7 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     path('profiles/', include('profiles.urls')),
     path('chats/', include('chats.urls')),  # チャット機能のURL
+    path('blogs/', include('blogs.urls')),  # ブログ機能のURL
 ]
 
 # 開発環境のみメディアファイルを配信
