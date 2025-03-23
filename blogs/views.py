@@ -17,22 +17,34 @@ from .forms import BlogPostForm, CommentForm
 
 def post_list(request):
     """ブログ投稿一覧ページ"""
-    # 公開済みの投稿のみ表示
-    posts = Post.objects.filter(is_published=True)
-    
-    # ページネーション
-    paginator = Paginator(posts, 10)  # 1ページあたり10件
-    page = request.GET.get('page')
-    try:
-        posts = paginator.page(page)
-    except PageNotAnInteger:
-        # ページ番号が整数でない場合は、最初のページを表示
-        posts = paginator.page(1)
-    except EmptyPage:
-        # ページ番号が範囲外の場合は、最後のページを表示
-        posts = paginator.page(paginator.num_pages)
-    
-    return render(request, 'blogs/post_list.html', {'posts': posts})
+    # タグによるフィルタリングがある場合は、そのまま表示
+    tag = request.GET.get('tag')
+    if tag:
+        # 公開済みの投稿のみ表示
+        posts = Post.objects.filter(is_published=True)
+        posts = posts.filter(tags__name=tag)
+        
+        # ページネーション
+        paginator = Paginator(posts, 10)  # 1ページあたり10件
+        page = request.GET.get('page')
+        try:
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            # ページ番号が整数でない場合は、最初のページを表示
+            posts = paginator.page(1)
+        except EmptyPage:
+            # ページ番号が範囲外の場合は、最後のページを表示
+            posts = paginator.page(paginator.num_pages)
+        
+        context = {
+            'posts': posts,
+            'tag': tag,  # テンプレートにタグ名を渡す
+        }
+        
+        return render(request, 'blogs/post_list.html', context)
+    else:
+        # タグによるフィルタリングがない場合は、ホームページのブログタブにリダイレクト
+        return HttpResponseRedirect('/#blogs-tab')
 
 def post_detail(request, slug):
     """ブログ投稿詳細ページ"""

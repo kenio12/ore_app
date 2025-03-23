@@ -68,9 +68,38 @@
     
     /* チャット通知スタイル */
     .cyber-toast {
-        background: rgba(0, 123, 255, 0.8);
+        background: rgba(20, 30, 50, 0.9);
         border: 1px solid rgba(0, 255, 255, 0.6);
         box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+        margin-bottom: 10px;
+    }
+    
+    .cyber-toast .toast-body {
+        color: #ffffff;
+    }
+    
+    .cyber-toast .btn-close {
+        filter: invert(1) brightness(1.5);
+    }
+    
+    .cyber-toast.bg-success {
+        border-color: rgba(0, 255, 159, 0.6);
+        box-shadow: 0 0 15px rgba(0, 255, 159, 0.3);
+    }
+    
+    .cyber-toast.bg-danger {
+        border-color: rgba(255, 80, 80, 0.6);
+        box-shadow: 0 0 15px rgba(255, 80, 80, 0.3);
+    }
+    
+    .cyber-toast.bg-warning {
+        border-color: rgba(255, 193, 7, 0.6);
+        box-shadow: 0 0 15px rgba(255, 193, 7, 0.3);
+    }
+    
+    .cyber-toast.bg-info {
+        border-color: rgba(0, 255, 255, 0.6);
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
     }
     
     .cyber-toast .chat-avatar {
@@ -466,6 +495,45 @@
     </style>
 </head>
 <body style="background-color: #0a0a0a; color: #cccccc;">
+    <!-- モーダル背景の強制クリーンアップスクリプト -->
+    <script>
+    // 画面を暗くするモーダル背景問題を解決するためのスクリプト
+    document.addEventListener('DOMContentLoaded', function() {
+        // すべてのモーダル関連要素を監視
+        document.addEventListener('click', function(e) {
+            // クリックイベント後、わずかな遅延でモーダル背景をチェック
+            setTimeout(function() {
+                const modalBackdrops = document.querySelectorAll('.modal-backdrop');
+                if (modalBackdrops.length > 0 && !document.querySelector('.modal.show')) {
+                    console.log('孤立したモーダル背景を検出 - クリーンアップします');
+                    modalBackdrops.forEach(backdrop => {
+                        backdrop.classList.remove('show');
+                        backdrop.remove();
+                    });
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                }
+            }, 300);
+        });
+        
+        // 定期的にモーダル背景をチェック
+        setInterval(function() {
+            // アクティブなモーダルがない場合はモーダル背景を削除
+            if (!document.querySelector('.modal.show') && document.querySelectorAll('.modal-backdrop').length > 0) {
+                console.log('定期チェック: 孤立したモーダル背景を検出 - クリーンアップします');
+                document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+                    backdrop.classList.remove('show');
+                    backdrop.remove();
+                });
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            }
+        }, 2000); // 2秒ごとにチェック
+    });
+    </script>
+    
     {% comment %}
     {% block navbar %}
         {% include 'includes/navbar.html' %}
@@ -501,6 +569,23 @@
                 </div>
             </div>
         </div>
+        
+        <!-- システムメッセージ用トースト -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if "Homeに保存しました" not in message|stringformat:"s" %}
+                <div class="toast align-items-center text-white cyber-toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill text-success{% elif message.tags == 'error' or message.tags == 'danger' %}bi-exclamation-circle-fill text-danger{% elif message.tags == 'warning' %}bi-exclamation-triangle-fill text-warning{% else %}bi-info-circle-fill text-info{% endif %} me-2"></i>
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
     </div>
     
     <!-- 入室→退室モーダル -->
@@ -618,6 +703,7 @@
     </div>
     
     {% block messages %}
+    {% comment %}
     {% if messages %}
     <div class="container mt-3">
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -636,6 +722,7 @@
         {% endfor %}
     </div>
     {% endif %}
+    {% endcomment %}
     {% endblock %}
     
     {% block content %}
@@ -652,7 +739,7 @@
     <!-- 右上に固定された顔アイコン -->
     {% if user.is_authenticated %}
     <div id="profile-button-container">
-        <a href="{% url 'dashboard:index' %}" class="profile-button">
+        <a href="{% url 'dashboard:index' %}" class="profile-button" data-bs-toggle="tooltip" data-bs-placement="left" title="{{ request.user.username }}">
             {% if request.user.profile.avatar %}
                 <img src="{{ request.user.profile.avatar.url }}" alt="{{ request.user.username }}" class="profile-image">
             {% else %}
@@ -725,6 +812,23 @@
         const isHomePage = window.location.pathname === '/' || window.location.pathname === '/home/';
         const profileButtonContainer = document.getElementById('profile-button-container');
         const robotHomeButton = document.querySelector('.robot-home-button');
+        
+        // ツールチップの初期化
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // トーストの初期化
+        const toastElList = [].slice.call(document.querySelectorAll('.toast'));
+        const toastList = toastElList.map(function(toastEl) {
+            const toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 5000
+            });
+            toast.show();
+            return toast;
+        });
         
         if (isHomePage) {
             if (profileButtonContainer) {
@@ -870,8 +974,647 @@
     {% if user.is_authenticated %}
     <!-- チャット通知スクリプト -->
     <script>
+    // モーダル背景を削除するユーティリティ関数（グローバル関数）
+    function cleanupModalBackdrops() {
+        // すべてのモーダル背景を検索して削除
+        const existingBackdrops = document.querySelectorAll('.modal-backdrop');
+        existingBackdrops.forEach(backdrop => {
+            // クラスを削除してフェードアウト
+            backdrop.classList.remove('show');
+            backdrop.classList.add('removing');
+            
+            // アニメーション終了を待ってから削除
+            setTimeout(() => {
+                try {
+                    if (backdrop && document.body.contains(backdrop)) {
+                        backdrop.remove();
+                    }
+                } catch (e) {
+                    console.error('モーダル背景削除エラー:', e);
+                }
+            }, 300);
+        });
+        
+        if (existingBackdrops.length > 0) {
+            console.log(`モーダル背景をクリーンアップしました (${existingBackdrops.length}個)`);
+        }
+        
+        // bodyからモーダル関連のクラスとスタイルを削除
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // 誤ってモーダルのフェードエフェクトが残っている場合に対処
+        document.querySelectorAll('.modal-fade').forEach(el => el.remove());
+        
+        // すべてのモーダルを確認し、表示されていないものはhiddenイベントを強制的に発火
+        document.querySelectorAll('.modal:not(.show)').forEach(modal => {
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            if (modalInstance) {
+                modal.dispatchEvent(new Event('hidden.bs.modal'));
+            }
+        });
+    }
+    
     document.addEventListener('DOMContentLoaded', function() {
-        // チャット通知関連の処理をここに追加
+        // ページロード時にモーダル背景をクリーンアップ
+        cleanupModalBackdrops();
+        
+        // チャット詳細画面で設定される通知無効化フラグをチェック
+        if (window.disableAllChatNotifications === true) {
+            console.log('⚠️ チャット詳細画面のため、送信者通知機能を完全にスキップします');
+            // このチャットへの通知のみスキップするようにし、完全に通知機能を無効化しない
+            // return; // このスクリプトの実行を終了 - 削除
+        }
+        
+        // ユーザーIDを先に取得（グローバルスコープで使用できるように）
+        const myUserId = "{{ request.user.id }}";
+        console.log('現在のユーザーID:', myUserId);
+        
+        // 現在のURLを取得
+        const currentPath = window.location.pathname;
+        console.log('現在のURL:', currentPath);
+        
+        // チャット関連ページにいるかどうかの判定を強化（new/も含める）
+        const isOnChatPage = currentPath.includes('/chats/');
+        
+        // ページロード時に必ず全てのトースト通知を無効化（特にチャットページでは）
+        if (isOnChatPage) {
+            console.log('チャットページを表示中: すべてのトースト通知を無効化します');
+            
+            // 少し待ってからトースト初期化と削除を実行（DOMが完全に読み込まれるのを待つ）
+            setTimeout(() => {
+                // 既存のすべてのトースト要素を取得して非表示
+                document.querySelectorAll('.toast').forEach(toast => {
+                    try {
+                        // Bootstrapトーストインスタンスを取得
+                        const toastInstance = bootstrap.Toast.getInstance(toast);
+                        if (toastInstance) {
+                            toastInstance.hide();
+                            console.log('既存のトースト通知を非表示にしました');
+                        }
+                        
+                        // 直接CSSで非表示に
+                        toast.classList.remove('show');
+                        toast.style.display = 'none';
+                        toast.remove();  // 完全に削除
+                    } catch (e) {
+                        console.error('トースト非表示処理エラー:', e);
+                    }
+                });
+                
+                // 通知コンテナもクリア
+                const toastContainer = document.querySelector('.toast-container');
+                if (toastContainer) {
+                    // 内部要素を一旦全て削除（最初の子要素のみ残す）
+                    while (toastContainer.children.length > 1) {
+                        if (toastContainer.lastChild.id !== 'chatNotification') {
+                            toastContainer.removeChild(toastContainer.lastChild);
+                        }
+                    }
+                }
+                
+                console.log('トースト通知をクリアしました');
+            }, 100);
+        }
+        
+        // チャット詳細画面にいる場合、会話IDを取得
+        let currentConversationId = null;
+        // 通常の会話IDとnew形式の両方に対応
+        const chatMatch = currentPath.match(/\/chats\/(?:new\/)?(\d+)\//);
+        if (chatMatch && chatMatch[1]) {
+            currentConversationId = chatMatch[1];
+            console.log('現在表示中の会話ID:', currentConversationId);
+        }
+        
+        // SSE接続を確立
+        console.log('SSE接続を開始します...');
+        let eventSource = new EventSource("{% url 'chats:message_stream' %}");
+        const chatNotification = document.getElementById('chatNotification');
+        const toastContainer = document.querySelector('.toast-container');
+        
+        console.log('🔍 初期化確認 - chatNotification:', chatNotification);
+        console.log('🔍 初期化確認 - toastContainer:', toastContainer);
+        
+        if (!chatNotification) {
+            console.error('chatNotification要素が見つかりません！');
+        }
+        
+        if (!toastContainer) {
+            console.error('toastContainer要素が見つかりません！');
+        }
+        
+        // 接続成功時のイベント
+        eventSource.onopen = function(event) {
+            console.log('SSE接続が確立されました！');
+            console.log('SSE接続状態:', eventSource.readyState);
+            
+            // 5秒ごとに接続状態をチェック
+            setInterval(() => {
+                console.log('SSE接続状態チェック:', eventSource.readyState);
+                // 0: 接続中, 1: 開いている, 2: 閉じている
+                if (eventSource.readyState === 2) {
+                    console.log('SSE接続が閉じられています。再接続を試みます...');
+                    reconnectSSE();
+                }
+            }, 5000);
+        };
+        
+        // メッセージ受信時のイベント
+        eventSource.onmessage = function(event) {
+            // キープアライブメッセージは無視
+            if (event.data === ': keepalive') {
+                // キープアライブメッセージのログは10秒に1回だけ出力
+                const now = Date.now();
+                if (!window.lastKeepAliveLog || now - window.lastKeepAliveLog > 10000) {
+                    console.log('キープアライブメッセージを受信');
+                    window.lastKeepAliveLog = now;
+                }
+                return;
+            }
+            
+            console.log('SSEメッセージ受信（生データ）:', event.data);
+            console.log('SSEメッセージ受信（データ型）:', typeof event.data);
+            console.log('SSEメッセージ受信（長さ）:', event.data.length);
+            
+            try {
+                const data = JSON.parse(event.data);
+                console.log('SSEメッセージを受信（パース後）:', data);
+                console.log('メッセージタイプ:', data.type);
+                
+                if (data.type === 'new_message') {
+                    const messageData = data.data;
+                    console.log('新しいメッセージ:', messageData);
+                    
+                    // 自分が送信者の場合は通知を表示しない
+                    if (messageData.sender_id.toString() === myUserId) {
+                        console.log('自分が送信したメッセージなので通知をスキップします');
+                        return;
+                    }
+                    
+                    console.log('🔍 通知処理を開始します');
+                    
+                    // 現在のURLが変わっている可能性があるので再取得
+                    const currentPath = window.location.pathname;
+                    
+                    // URLパターンを改善：/chats/や/chats/new/を含むパターンに対応
+                    const isOnChatPage = currentPath.includes(`/chats/`) && 
+                        (currentPath.includes(`/${messageData.conversation_id}/`) || 
+                         currentPath.includes(`/new/${messageData.conversation_id}/`));
+                    
+                    console.log('現在のURL:', currentPath);
+                    console.log('会話ID:', messageData.conversation_id);
+                    console.log('チャットページにいるか:', isOnChatPage);
+                    
+                    // 現在のチャットページにいる場合は通知を表示しない
+                    if (isOnChatPage) {
+                        console.log('現在このチャットページを表示中のため、通知をスキップします');
+                        return;
+                    }
+                    
+                    // 通知音を再生
+                    notificationSound.play().catch(e => console.log('通知音の再生に失敗:', e));
+                    
+                    try {
+                        // 現在チャット関連ページにいる場合はすべての通知をスキップ
+                        const currentPath = window.location.pathname;
+                        const isOnAnyChat = currentPath.includes('/chats/');
+                        
+                        if (isOnAnyChat) {
+                            console.log('現在チャット画面のため、通知の表示をスキップします');
+                            return;
+                        }
+                        
+                        // 通知を表示する（チャットページにいなければ）
+                        console.log('通知を表示します');
+                        showChatNotification(messageData);
+                        
+                        // 未読カウントを更新
+                        unreadCount++;
+                        toastContainer.setAttribute('data-unread', unreadCount);
+                        console.log('未読カウント更新:', unreadCount);
+                    } catch (error) {
+                        console.error('通知表示エラー:', error);
+                    }
+                    
+                    // 入室通知の場合はモーダルを表示
+                    if (messageData.content.includes('チャットルームに入りました')) {
+                        // チャット画面内に表示される入室メッセージと重複するので、チャット画面にいる場合はトースト通知をスキップ
+                        const currentPath = window.location.pathname;
+                        const isOnAnyChat = currentPath.includes('/chats/');
+                        
+                        if (isOnAnyChat) {
+                            console.log('現在チャット画面のため、入室通知モーダルの表示をスキップします');
+                            return;
+                        }
+                        
+                        showEnterModal(messageData);
+                    }
+                    
+                    // 退室通知の場合はモーダルを表示
+                    if (messageData.content.includes('チャットルームから退室しました')) {
+                        // チャット画面内に表示される退室メッセージと重複するので、チャット画面にいる場合はトースト通知をスキップ
+                        const currentPath = window.location.pathname;
+                        const isOnAnyChat = currentPath.includes('/chats/');
+                        
+                        if (isOnAnyChat) {
+                            console.log('現在チャット画面のため、退室通知モーダルの表示をスキップします');
+                            return;
+                        }
+                        
+                        showExitModal(messageData);
+                    }
+                }
+            } catch (e) {
+                console.error('メッセージの解析エラー:', e);
+            }
+        };
+        
+        // エラー発生時のイベント
+        eventSource.onerror = function(error) {
+            console.error('SSE接続エラー:', error);
+            console.log('SSE接続状態:', eventSource.readyState);
+            
+            // 接続が閉じられた場合のみ再接続を試みる
+            if (eventSource.readyState === EventSource.CLOSED) {
+                console.log('SSE接続が閉じられました。再接続を試みます...');
+                
+                // 3秒後に再接続
+                setTimeout(reconnectSSE, 3000);
+            }
+        };
+        
+        // 再接続関数
+        function reconnectSSE() {
+            console.log('SSE再接続を実行します...');
+            
+            // 古い接続を閉じる
+            eventSource.close();
+            
+            // 新しい接続を作成
+            eventSource = new EventSource("{% url 'chats:message_stream' %}");
+            
+            // イベントハンドラを設定
+            eventSource.onopen = function(event) {
+                console.log('SSE再接続が成功しました！');
+                console.log('SSE接続状態:', eventSource.readyState);
+            };
+            
+            // 再接続後のメッセージハンドラは上記と同じものを使用するため省略
+            
+            eventSource.onerror = function(error) {
+                console.error('SSE接続エラー:', error);
+                console.log('SSE接続状態:', eventSource.readyState);
+                
+                // 接続が閉じられた場合のみ再接続を試みる
+                if (eventSource.readyState === EventSource.CLOSED) {
+                    console.log('SSE接続が閉じられました。再接続を試みます...');
+                    
+                    // 3秒後に再接続
+                    setTimeout(reconnectSSE, 3000);
+                }
+            };
+        }
+        
+        // 通知音
+        const notificationSound = new Audio("{% static 'sounds/notification.mp3' %}");
+        
+        // 通知カウンター
+        let unreadCount = parseInt(toastContainer.getAttribute('data-unread')) || 0;
+        
+        // ページロード時に未読メッセージを取得
+        fetch("{% url 'chats:get_unread_messages' %}")
+            .then(response => response.json())
+            .then(data => {
+                console.log('未読メッセージを取得:', data);
+                
+                // チャットページにいる場合はメッセージ通知をスキップ
+                if (isOnChatPage) {
+                    console.log('チャットページにいるため未読メッセージ通知をスキップします');
+                    return;
+                }
+                
+                if (data.status === 'success' && data.unread_messages && data.unread_messages.length > 0) {
+                    // 送信者ごとに最新のメッセージだけを保持
+                    const latestMessagesBySender = {};
+                    
+                    // 処理前の未読メッセージ数
+                    console.log('フィルタリング前の未読メッセージ数:', data.unread_messages.length);
+                    
+                    // 自分が送信者のメッセージと現在表示中の会話のメッセージを除外
+                    const filteredMessages = data.unread_messages.filter(message => {
+                        // 明示的に型変換して比較
+                        const isMine = String(message.sender_id) === String(myUserId);
+                        if (isMine) {
+                            console.log('自分が送信したメッセージなので通知をスキップします:', message);
+                            return false;
+                        }
+                        
+                        // 現在表示中のチャット画面のメッセージの場合は通知しない
+                        // URLパターンを改善：/chats/や/chats/new/を含むパターンに対応
+                        const isCurrentConversation = 
+                            (currentPath.includes(`/chats/${message.conversation_id}/`) || 
+                             currentPath.includes(`/chats/new/${message.conversation_id}/`));
+                        
+                        if (isCurrentConversation) {
+                            console.log('現在表示中の会話のメッセージなので通知をスキップします:', message);
+                            return false;
+                        }
+                        
+                        return true;
+                    });
+                    
+                    console.log('フィルタリング後の未読メッセージ数:', filteredMessages.length);
+                    
+                    // 表示すべきメッセージがない場合は処理を終了
+                    if (filteredMessages.length === 0) {
+                        console.log('表示すべき未読メッセージはありません');
+                        return;
+                    }
+                    
+                    // 各メッセージをループして、送信者ごとに最新のメッセージを特定
+                    filteredMessages.forEach(message => {
+                        const senderId = message.sender_id;
+                        
+                        // この送信者からのメッセージがまだない、または現在のメッセージが最新の場合
+                        if (!latestMessagesBySender[senderId] || 
+                            new Date(message.timestamp) > new Date(latestMessagesBySender[senderId].timestamp)) {
+                            latestMessagesBySender[senderId] = message;
+                        }
+                    });
+                    
+                    // 整理された最新メッセージの数を表示
+                    console.log('表示する最新メッセージ数:', Object.keys(latestMessagesBySender).length);
+                    
+                    // 最新のメッセージだけを表示
+                    Object.values(latestMessagesBySender).forEach(message => {
+                        // 念のため、もう一度確認
+                        if (String(message.sender_id) === String(myUserId)) {
+                            console.log('最終チェックで自分のメッセージをスキップ:', message);
+                            return;
+                        }
+                        
+                        const messageData = {
+                            sender_id: message.sender_id,
+                            sender_name: message.sender_name,
+                            conversation_id: message.conversation_id,
+                            content: message.content,
+                            timestamp: message.timestamp
+                        };
+                        showChatNotification(messageData);
+                        
+                        // 未読カウントを更新
+                        unreadCount++;
+                    });
+                    
+                    toastContainer.setAttribute('data-unread', unreadCount);
+                }
+            })
+            .catch(error => {
+                console.error('未読メッセージの取得エラー:', error);
+            });
+        
+        // 入室モーダルを表示する関数
+        function showEnterModal(messageData) {
+            // モーダル表示前に背景をクリーンアップ
+            cleanupModalBackdrops();
+            
+            const enterModal = document.getElementById('enterModal');
+            if (!enterModal) return;
+            
+            const senderName = document.getElementById('e-sender-name');
+            const timeElement = document.getElementById('e-time');
+            const gotoButton = document.getElementById('e-goto-chat');
+            
+            if (senderName) senderName.textContent = messageData.sender_name;
+            if (timeElement) timeElement.textContent = new Date().toLocaleTimeString();
+            
+            if (gotoButton) {
+                // 古いイベントリスナーを削除してから新しいものを追加（重複防止）
+                gotoButton.replaceWith(gotoButton.cloneNode(true));
+                const newGotoButton = document.getElementById('e-goto-chat');
+                
+                newGotoButton.addEventListener('click', function() {
+                    // リンク先に移動する前にモーダル背景を削除
+                    cleanupModalBackdrops();
+                    window.location.href = `/chats/${messageData.conversation_id}/`;
+                });
+            }
+            
+            // 拒絶するボタン
+            const rejectButton = enterModal.querySelector('.btn[style*="background: rgba(255, 80, 80, 0.2)"]');
+            if (rejectButton) {
+                rejectButton.addEventListener('click', function() {
+                    setTimeout(cleanupModalBackdrops, 100);
+                });
+            }
+            
+            // あとでボタン
+            const laterButton = enterModal.querySelector('.btn-secondary');
+            if (laterButton) {
+                laterButton.addEventListener('click', function() {
+                    setTimeout(cleanupModalBackdrops, 100);
+                });
+            }
+            
+            // 閉じるボタン
+            const closeButton = enterModal.querySelector('.btn-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    setTimeout(cleanupModalBackdrops, 100);
+                });
+            }
+            
+            const modal = new bootstrap.Modal(enterModal);
+            modal.show();
+            
+            // モーダルが閉じられた時のイベント
+            enterModal.addEventListener('hidden.bs.modal', function() {
+                setTimeout(cleanupModalBackdrops, 100);
+            });
+        }
+        
+        // チャット通知を表示する関数
+        function showChatNotification(messageData) {
+            console.log('🔍 showChatNotification関数が呼び出されました', messageData);
+            
+            // 既存の同じ送信者からの通知を削除
+            const existingNotifications = document.querySelectorAll(`.toast[data-sender-id="${messageData.sender_id}"]`);
+            console.log('既存の通知数:', existingNotifications.length);
+            existingNotifications.forEach(notification => {
+                // Bootstrapのトーストインスタンスを取得して非表示にする
+                const toastInstance = bootstrap.Toast.getInstance(notification);
+                if (toastInstance) {
+                    toastInstance.hide();
+                    console.log('既存の通知を非表示にしました');
+                }
+                // 要素を削除
+                notification.remove();
+                console.log('既存の通知を削除しました');
+            });
+            
+            // 通知要素のクローンを作成
+            const notification = chatNotification.cloneNode(true);
+            notification.id = `chatNotification-${Date.now()}`;
+            notification.setAttribute('data-sender-id', messageData.sender_id);
+            notification.style.display = 'block';
+            console.log('通知要素を作成しました:', notification.id);
+            
+            // 通知内容を設定
+            const senderName = notification.querySelector('.sender-name');
+            const messageContainer = notification.querySelector('.chat-message-container');
+            const buttonsContainer = notification.querySelector('.chat-buttons-container');
+            const replyButton = notification.querySelector('.chat-reply-btn');
+            
+            if (senderName) senderName.textContent = messageData.sender_name;
+            
+            // メッセージ内容に応じて表示テキストを変更
+            if (messageContainer) {
+                messageContainer.style.display = 'block';
+                
+                // メッセージタイプによって表示内容を変更
+                if (messageData.content && messageData.content.includes('チャットルームから退室しました')) {
+                    // 退室メッセージの場合
+                    messageContainer.innerHTML = `<strong class="sender-name">${messageData.sender_name}</strong>がチャットルームから退室しました`;
+                    
+                    // 退室通知の場合はボタンのテキストも変更
+                    const replyBtn = notification.querySelector('.chat-reply-btn');
+                    if (replyBtn) {
+                        replyBtn.textContent = 'チャットを確認';
+                    }
+                } else if (messageData.content && messageData.content.includes('チャットルームに入りました')) {
+                    // 入室メッセージの場合
+                    messageContainer.innerHTML = `<strong class="sender-name">${messageData.sender_name}</strong>がチャットルームに入室しました`;
+                } else {
+                    // 通常のメッセージの場合
+                    messageContainer.innerHTML = `<strong class="sender-name">${messageData.sender_name}</strong>が、チャットで話しかけています`;
+                }
+            }
+            
+            if (buttonsContainer) buttonsContainer.style.display = 'flex';
+            console.log('通知内容を設定しました');
+            
+            // 返信ボタンのリンク先を設定
+            if (replyButton) {
+                replyButton.addEventListener('click', function() {
+                    // リンク先に移動する前にモーダル背景を削除
+                    cleanupModalBackdrops();
+                    window.location.href = `/chats/${messageData.conversation_id}/`;
+                });
+                console.log('返信ボタンのリンクを設定しました');
+            }
+            
+            // 「あとで」ボタンにイベントリスナーを追加
+            const laterButton = notification.querySelector('[data-bs-dismiss="toast"]');
+            if (laterButton) {
+                laterButton.addEventListener('click', function() {
+                    // クリック時に明示的にモーダル背景をクリーンアップ
+                    console.log('「あとで」ボタンがクリックされました - モーダル背景をクリーンアップします');
+                    setTimeout(cleanupModalBackdrops, 100);
+                });
+            }
+            
+            // 「拒絶する」ボタンにもイベントリスナーを追加
+            const blockButton = notification.querySelector('.block-user-btn');
+            if (blockButton) {
+                blockButton.addEventListener('click', function() {
+                    // クリック時に明示的にモーダル背景をクリーンアップ
+                    console.log('「拒絶する」ボタンがクリックされました - モーダル背景をクリーンアップします');
+                    setTimeout(cleanupModalBackdrops, 100);
+                });
+            }
+            
+            // 通知を表示
+            toastContainer.appendChild(notification);
+            console.log('通知要素をDOMに追加しました');
+            
+            // 強制的にDOMの再描画を促す
+            setTimeout(() => {
+                try {
+                    // Bootstrap 5のToastクラスを使用して初期化
+                    const toast = new bootstrap.Toast(notification, {
+                        autohide: true,
+                        delay: 10000
+                    });
+                    
+                    // 明示的に表示
+                    toast.show();
+                    console.log('通知を表示しました');
+                    
+                    // 念のため、CSSでも表示を強制
+                    notification.classList.add('show');
+                    notification.style.opacity = '1';
+                    notification.style.display = 'block';
+                } catch (error) {
+                    console.error('トースト表示エラー:', error);
+                    // エラー時のフォールバック処理
+                    notification.classList.add('show');
+                    notification.style.opacity = '1';
+                    notification.style.display = 'block';
+                }
+            }, 100);
+            
+            // 通知が閉じられたときの処理
+            notification.addEventListener('hidden.bs.toast', function() {
+                notification.remove();
+                console.log('通知が閉じられ、削除されました');
+                
+                // 通知が閉じられた時にもモーダル背景をチェック
+                cleanupModalBackdrops();
+            });
+        }
+        
+        // 退室モーダルを表示する関数
+        function showExitModal(messageData) {
+            // モーダル表示前に背景をクリーンアップ
+            cleanupModalBackdrops();
+            
+            const exitModal = document.getElementById('exitModal');
+            if (!exitModal) return;
+            
+            const senderName = document.getElementById('exit-sender-name');
+            const timeElement = document.getElementById('exit-time');
+            const gotoButton = document.getElementById('exit-goto-chat');
+            
+            if (senderName) senderName.textContent = messageData.sender_name;
+            if (timeElement) timeElement.textContent = new Date().toLocaleTimeString();
+            
+            if (gotoButton) {
+                // 古いイベントリスナーを削除してから新しいものを追加（重複防止）
+                gotoButton.replaceWith(gotoButton.cloneNode(true));
+                const newGotoButton = document.getElementById('exit-goto-chat');
+                
+                newGotoButton.addEventListener('click', function() {
+                    // リンク先に移動する前にモーダル背景を削除
+                    cleanupModalBackdrops();
+                    window.location.href = `/chats/${messageData.conversation_id}/`;
+                });
+            }
+            
+            // 閉じるボタン
+            const closeButton = exitModal.querySelector('.btn-secondary');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    setTimeout(cleanupModalBackdrops, 100);
+                });
+            }
+            
+            // xボタン
+            const xButton = exitModal.querySelector('.btn-close');
+            if (xButton) {
+                xButton.addEventListener('click', function() {
+                    setTimeout(cleanupModalBackdrops, 100);
+                });
+            }
+            
+            const modal = new bootstrap.Modal(exitModal);
+            modal.show();
+            
+            // モーダルが閉じられた時のイベント
+            exitModal.addEventListener('hidden.bs.modal', function() {
+                setTimeout(cleanupModalBackdrops, 100);
+            });
+        }
     });
     </script>
     {% endif %}

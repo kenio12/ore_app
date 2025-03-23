@@ -407,8 +407,9 @@
                                 {% endif %}
                                 
                                 {% if not is_own_profile %}
-                                    <a href="{% url 'chats:new_chat' user.id %}" class="btn btn-sm btn-outline-warning" style="color: #ffff00; border-color: #ffff00; text-shadow: none;">
+                                    <a href="{% url 'chats:new_chat' user.id %}" class="btn btn-sm btn-outline-warning chat-btn" style="color: #ffff00; border-color: #ffff00; text-shadow: none;">
                                         <i class="bi bi-chat-text"></i> チャット
+                                        <span class="spinner-border spinner-border-sm ms-1 d-none" role="status" aria-hidden="true"></span>
                                     </a>
                                 {% endif %}
                             </div>
@@ -1893,5 +1894,29 @@
 </style>
 
 <!-- アプリ開発期間ガンチャート用JavaScript -->
-{% endblock %} 
-</rewritten_file>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // チャットボタンのクリックイベント
+    const chatBtn = document.querySelector('.chat-btn');
+    if (chatBtn) {
+        chatBtn.addEventListener('click', function(e) {
+            // スピナーを表示
+            const spinner = this.querySelector('.spinner-border');
+            spinner.classList.remove('d-none');
+            
+            // ボタンのテキストを変更
+            const btnText = this.childNodes[0].nodeValue;
+            this.childNodes[0].nodeValue = ' 読み込み中...';
+            
+            // ボタンを無効化（連打防止）
+            this.classList.add('disabled');
+            
+            // リンクは通常通り動作させる（リダイレクトを妨げない）
+        });
+    }
+});
+</script>
+{% endblock %}

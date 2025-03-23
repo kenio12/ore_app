@@ -7,12 +7,27 @@ import json
 from django.utils import timezone
 import threading
 import time
+from django.core.cache import cache
 
 # Create your views here.
 
 # メッセージストリーム用のグローバル変数
 message_queues = {}
 message_lock = threading.Lock()
+
+# キャッシュキーのプレフィックス
+CACHE_PREFIX = 'chat_notification_'
+
+# キャッシュからメッセージキューを取得
+def get_cached_messages(user_id):
+    cache_key = f"{CACHE_PREFIX}{user_id}"
+    messages = cache.get(cache_key, [])
+    return messages
+
+# キャッシュにメッセージキューを保存
+def save_cached_messages(user_id, messages):
+    cache_key = f"{CACHE_PREFIX}{user_id}"
+    cache.set(cache_key, messages, timeout=86400)  # 24時間有効
 
 @login_required
 def chat_list(request):
@@ -87,8 +102,8 @@ def chat_detail(request, conversation_id=None, user_id=None):
                 is_read=False,
                 message_type='enter'  # 入室メッセージであることを明示
             )
-            # リアルタイム通知を送信
-            notify_new_message(request.user, other_user, message)
+            # リアルタイム通知を送信（送信者自身には通知しない）
+            notify_new_message(request.user, other_user, message, notify_sender=False)
             print(f"🔔 {request.user.username}が{other_user.username}とのチャットルームに入室")
         except Exception as e:
             # エラーがあっても処理は続行
@@ -103,13 +118,20 @@ def chat_detail(request, conversation_id=None, user_id=None):
         is_read=False
     ).update(is_read=True)
     
-    # 会話のメッセージを取得
-    messages_list = conversation.get_messages().order_by('timestamp')
+    # 会話のメッセージを取得（最新の50件のみ）
+    messages_list = list(conversation.get_messages().order_by('-timestamp')[:50])
+    messages_list.reverse()  # タイムスタンプの昇順に並べ替え
+    
+    # メッセージの総数を取得
+    total_messages = conversation.get_messages().count()
+    has_older_messages = total_messages > 50
     
     context = {
         'conversation': conversation,
         'other_user': other_user,
-        'messages': messages_list
+        'messages': messages_list,
+        'has_older_messages': has_older_messages,
+        'total_messages': total_messages
     }
     
     return render(request, 'chats/chat_detail.html', context)
@@ -138,8 +160,8 @@ def send_message(request, conversation_id):
             # 会話の最終更新時間を更新
             conversation.save()  # auto_now=Trueフィールドを更新
             
-            # 新しいメッセージを通知
-            notify_new_message(request.user, recipient, message)
+            # 新しいメッセージを通知（送信者自身には通知しない）
+            notify_new_message(request.user, recipient, message, notify_sender=False)
             
             return JsonResponse({
                 'status': 'success',
@@ -223,19 +245,32 @@ def get_unread_messages(request):
         # デバッグ用：リクエスト情報を出力
         print(f"🔍 未読メッセージAPI呼び出し: ユーザー={request.user.username}, 時刻={current_time}")
         
-        # 未読メッセージのクエリを作成
-        unread_query = Message.objects.select_related('sender', 'conversation').filter(
+        # 送信者ごとに最新の未読メッセージのみを取得するためのクエリ
+        # 1. 送信者ごとにグループ化して最新のメッセージIDを取得
+        sender_latest_messages = {}
+        
+        # 未読メッセージを取得
+        unread_messages = Message.objects.select_related('sender', 'conversation').filter(
             recipient=request.user,
             is_read=False,
             timestamp__gte=current_time - timezone.timedelta(minutes=30)
-        ).order_by('timestamp')
+        ).order_by('-timestamp')
+        
+        # 送信者ごとに最新のメッセージだけを保持
+        for message in unread_messages:
+            sender_id = message.sender.id
+            if sender_id not in sender_latest_messages:
+                sender_latest_messages[sender_id] = message
+        
+        # 最新のメッセージだけを含むリストを作成
+        unread_query = list(sender_latest_messages.values())
         
         # デバッグ用：クエリの詳細を出力
-        print(f"🔍 未読メッセージクエリ: {unread_query.query}")
+        print(f"🔍 未読メッセージクエリ: 送信者ごとに最新の1件に制限")
         
         # 未読メッセージがある場合のみログを出力
-        if unread_query.exists() and unread_query.count() > 0:
-            print(f"🔔 新着メッセージ: {unread_query.count()}件")
+        if unread_query:
+            print(f"🔔 新着メッセージ: {len(unread_query)}件")
             
             # デバッグ用：各メッセージの詳細を出力
             for i, msg in enumerate(unread_query):
@@ -249,101 +284,28 @@ def get_unread_messages(request):
         else:
             print("📭 未読メッセージはありません")
         
-        # レスポンス用のデータを整形
+        # JSONシリアライズ可能な形式に変換
         messages_data = []
         for message in unread_query:
-            try:
-                # 送信者情報
-                sender = message.sender
-                
-                # 送信者が存在しない場合はスキップ
-                if not sender or not sender.username:
-                    print(f"⚠️ 送信者が不明なメッセージをスキップします: ID={message.id}")
-                    # このメッセージを既読にマークして今後表示されないようにする
-                    message.is_read = True
-                    message.save()
-                    continue
-                
-                # 送信者名が「名無し」の場合はスキップ
-                if sender.username == '名無し' or sender.username.strip() == '':
-                    print(f"⚠️ 送信者名が不正なメッセージをスキップします: ID={message.id}, 送信者=\"{sender.username}\"")
-                    message.is_read = True
-                    message.save()
-                    continue
-                
-                sender_avatar = None
-                
-                # プロフィール情報の安全な取得
-                if hasattr(sender, 'profile'):
-                    profile = sender.profile
-                    if hasattr(profile, 'avatar_url') and profile.avatar_url:
-                        sender_avatar = profile.avatar_url
-                
-                # 会話情報の取得（存在しない場合は作成）
-                conversation = message.conversation
-                if not conversation:
-                    # 会話が存在しない場合は作成を試みるが、エラーが発生したらスキップ
-                    try:
-                        conversation = Conversation.get_or_create_conversation(
-                            sender,
-                            message.recipient
-                        )
-                        message.conversation = conversation
-                        message.save()
-                    except Exception as e:
-                        print(f"⚠️ 会話の作成に失敗したためメッセージをスキップします: ID={message.id}, エラー={str(e)}")
-                        # このメッセージを既読にマークして今後表示されないようにする
-                        message.is_read = True
-                        message.save()
-                        continue
-                
-                # 特殊メッセージタイプの識別
-                message_type = message.message_type
-                
-                # フィールドがない古いメッセージの場合は内容で判断（後方互換性のため）
-                if not message_type or message_type == 'normal':
-                    if "チャットルームに入りました" in message.content:
-                        message_type = 'enter'
-                    elif "チャットルームから退室しました" in message.content:
-                        message_type = 'leave'
-                
-                message_data = {
-                    'id': message.id,
-                    'content': message.content,
-                    'timestamp': message.timestamp.isoformat(),
-                    'sender_id': sender.id,
-                    'sender_name': sender.username,
-                    'sender_avatar': sender_avatar,
-                    'conversation_id': conversation.id if conversation else None,
-                    'message_type': message_type
-                }
-                messages_data.append(message_data)
-                
-                # 入室・退室メッセージは30秒後に既読に設定（重複防止のため）
-                if message_type in ['enter', 'leave']:
-                    # 入室・退室メッセージが30秒以上経過している場合は既読にする
-                    if (timezone.now() - message.timestamp).total_seconds() > 30:
-                        print(f"📌 30秒以上経過した{message_type}メッセージを既読にします: {message.sender.username}")
-                        message.is_read = True
-                        message.save()
-                
-            except Exception as e:
-                print(f"❌ エラー: メッセージ処理に失敗 - {str(e)}")
-                # エラーが発生したメッセージは既読にマークして今後表示されないようにする
-                try:
-                    message.is_read = True
-                    message.save()
-                    print(f"✅ エラーが発生したメッセージを既読にマークしました: ID={message.id}")
-                except:
-                    pass
-                continue
-        
-        # 30分以上前の未読メッセージだけを一括で既読にする
-        Message.objects.filter(
-            recipient=request.user,
-            is_read=False,
-            timestamp__lt=current_time - timezone.timedelta(minutes=30)
-        ).update(is_read=True)
+            sender = message.sender
+            sender_avatar = None
+            
+            # プロフィール情報の安全な取得
+            if hasattr(sender, 'profile'):
+                profile = sender.profile
+                if hasattr(profile, 'avatar_url') and profile.avatar_url:
+                    sender_avatar = profile.avatar_url
+            
+            messages_data.append({
+                'id': message.id,
+                'content': message.content,
+                'timestamp': message.timestamp.isoformat(),
+                'sender_id': sender.id,
+                'sender_name': sender.username,
+                'sender_avatar': sender_avatar,
+                'conversation_id': message.conversation.id if message.conversation else None,
+                'message_type': message.message_type
+            })
         
         return JsonResponse({
             'status': 'success',
@@ -358,38 +320,78 @@ def get_unread_messages(request):
             'unread_messages': []
         }, status=200)
 
+@login_required
 def message_stream(request):
-    """Server-Sent Eventsエンドポイント"""
-    if not request.user.is_authenticated:
-        return HttpResponseForbidden("認証が必要です")
+    """SSEを使用したリアルタイムメッセージストリーム"""
+    user_id = request.user.id
     
-    def event_stream():
-        user_id = request.user.id
-        queue = []  # シンプルなリストを使用
+    with message_lock:
+        # ユーザーごとにメッセージキューを作成（存在しない場合）
+        if user_id not in message_queues:
+            message_queues[user_id] = []
         
-        # ユーザーのキューを登録
-        with message_lock:
-            message_queues[user_id] = queue
-        
-        # デバッグ情報：ユーザーのキューを登録したことを出力
+        # デバッグ情報：接続をログに出力
         print(f"🔌 [{request.user.username}] (ID: {user_id}) がSSEに接続しました")
         print(f"🔍 現在のキュー一覧（接続後）: {list(message_queues.keys())}")
+    
+    # キャッシュから未読メッセージを取得して追加
+    cached_messages = get_cached_messages(user_id)
+    
+    def event_stream():
+        """SSEイベントストリーム生成器"""
+        # キープアライブ用カウンター
+        keepalive_counter = 0
         
         try:
+            # キャッシュから取得したメッセージがあれば送信
+            if cached_messages:
+                for message in cached_messages:
+                    # 明示的にチェック: 自分が送信したメッセージは送らない
+                    if 'data' in message and 'sender_id' in message['data'] and message['data']['sender_id'] == user_id:
+                        print(f"⚠️ キャッシュから取得したメッセージのうち、自分が送信者のメッセージはスキップします: {message}")
+                        continue
+                    
+                    # 送信するメッセージをシリアライズ
+                    yield f"data: {json.dumps(message)}\n\n"
+                
+                # キャッシュをクリア（送信済みとしてマーク）
+                save_cached_messages(user_id, [])
+            
+            # 接続が維持されている間、メッセージを送信し続ける
             while True:
+                # キープアライブ送信（30秒ごと）
+                keepalive_counter += 1
+                if keepalive_counter >= 30:
+                    yield ": keepalive\n\n"
+                    keepalive_counter = 0
+                
                 # キューにメッセージがあれば送信
                 with message_lock:
-                    if queue:
-                        message = queue.pop(0)
-                        yield f"data: {json.dumps(message)}\n\n"
-                    else:
-                        yield ": keepalive\n\n"  # キープアライブ
+                    if user_id in message_queues and message_queues[user_id]:
+                        # 自分が送信者のメッセージを除外するフィルタリング
+                        filtered_messages = []
+                        for message in message_queues[user_id]:
+                            # 明示的にチェック: 自分が送信したメッセージは送らない
+                            if 'data' in message and 'sender_id' in message['data'] and message['data']['sender_id'] == user_id:
+                                print(f"⚠️ 送信キューのメッセージのうち、自分が送信者のメッセージはスキップします: {message}")
+                                continue
+                            filtered_messages.append(message)
+                        
+                        # フィルタリング後のメッセージを処理
+                        if filtered_messages:
+                            for message in filtered_messages:
+                                print(f"📤 メッセージを送信: ユーザー={request.user.username}, データ={json.dumps(message)[:100]}...")
+                                yield f"data: {json.dumps(message)}\n\n"
+                            
+                            # 送信済みのメッセージをキューから削除
+                            message_queues[user_id] = []
                 
-                # 少し待機
-                time.sleep(0.5)
-        
+                # 100ミリ秒待機
+                time.sleep(0.1)
+        except Exception as e:
+            print(f"❌ SSEストリームエラー: {str(e)}")
         finally:
-            # クリーンアップ
+            # 切断時にキューを削除
             with message_lock:
                 if user_id in message_queues:
                     del message_queues[user_id]
@@ -406,18 +408,21 @@ def message_stream(request):
     response['X-Accel-Buffering'] = 'no'
     return response
 
-def notify_new_message(sender, recipient, message):
+def notify_new_message(sender, recipient, message, notify_sender=True):
     """新しいメッセージを受信したユーザーに通知"""
     print(f"=== 新メッセージ通知 ===")
     print(f"送信者: {sender.username} (ID: {sender.id})")
     print(f"受信者: {recipient.username} (ID: {recipient.id})")
     print(f"メッセージID: {message.id}")
+    print(f"メッセージ内容: {message.content[:50]}...")
     print(f"会話ID: {message.conversation.id if message.conversation else 'なし'}")
+    print(f"送信者に通知する: {notify_sender}")
     
     # デバッグ情報：利用可能なキューの一覧
     with message_lock:
         print(f"🔍 現在のキュー一覧: {list(message_queues.keys())}")
         print(f"🔍 recipient.id = {recipient.id}（{recipient.username}）")
+        print(f"🔍 recipient.id がキューに存在するか: {recipient.id in message_queues}")
     
     # 安全に会話IDを取得
     conversation_id = None
@@ -445,19 +450,40 @@ def notify_new_message(sender, recipient, message):
         }
     }
     
-    # 重要：キューがない場合はキューを作成し、通知を保存する（ポーリングに通知が表示されるように）
-    # これにより、SSEが未接続でも通知を受け取れるようになる
-    print(f"📢 キューが存在しないため、データベースへの保存に依存します。")
+    # 通知データの形式を確認
+    print(f"🔍 通知データ: {json.dumps(notification_data)}")
     
-    # 受信者のキューにメッセージを追加
+    # 受信者のみ通知キューに追加
+    # キャッシュから受信者のメッセージキューを取得
+    cached_messages = get_cached_messages(recipient.id)
+    print(f"🔍 キャッシュから取得したメッセージ数: {len(cached_messages)}")
+    
+    # 通知をキャッシュに追加
+    cached_messages.append(notification_data)
+    save_cached_messages(recipient.id, cached_messages)
+    print(f"✅ キャッシュに通知を保存しました。キュー長: {len(cached_messages)}")
+    
+    # 受信者のキューにメッセージを追加（リアルタイム通知用）
     with message_lock:
         if recipient.id in message_queues:
             print(f"メッセージキューが存在します。通知を追加します。")
             message_queues[recipient.id].append(notification_data)
+            print(f"通知処理完了 - キュー長: {len(message_queues[recipient.id])}")
         else:
-            print(f"メッセージキューが存在しません。通知は保存されません。")
+            print(f"⚠️ 警告: 受信者 {recipient.username} (ID: {recipient.id}) のメッセージキューが見つかりません")
+            print(f"⚠️ 現在のキュー一覧: {list(message_queues.keys())}")
+            # キューが存在しない場合でも、一時的にキューを作成して通知を保存
+            message_queues[recipient.id] = [notification_data]
+            print(f"✅ 一時的なキューを作成しました。次回のSSE接続時に通知が表示されます。")
     
-    print(f"通知処理完了")
+    # オプション: 送信者自身にも通知が必要な場合（システムメッセージなど）
+    if notify_sender:
+        # システムメッセージの場合のみ送信者にも通知する
+        sender_notification_data = notification_data.copy()
+        with message_lock:
+            if sender.id in message_queues:
+                message_queues[sender.id].append(sender_notification_data)
+                print(f"送信者にも通知を送信しました")
 
 @login_required
 def leave_chat(request, conversation_id):
@@ -507,8 +533,8 @@ def leave_chat(request, conversation_id):
                     message_type=message_type
                 )
                 
-                # 新しいメッセージを通知（リアルタイム通知を送信）
-                notify_new_message(request.user, other_user, message)
+                # 新しいメッセージを通知（リアルタイム通知を送信）- 送信者自身には通知しない
+                notify_new_message(request.user, other_user, message, notify_sender=False)
                 
                 print(action_log)
                 
@@ -557,3 +583,53 @@ def mark_message_read(request, message_id):
         'status': 'error', 
         'message': '不正なリクエストです'
     }, status=400)
+
+@login_required
+def get_older_messages(request, conversation_id):
+    """APIエンドポイント: 古いメッセージを取得する"""
+    try:
+        # 会話を取得
+        conversation = Conversation.objects.get(id=conversation_id, participants=request.user)
+        
+        # 最も古いメッセージのID（これより古いメッセージを取得）
+        oldest_id = request.GET.get('oldest_id')
+        
+        # 一度に取得するメッセージ数
+        limit = 20
+        
+        # メッセージを取得
+        messages_query = conversation.get_messages().order_by('-timestamp')
+        
+        if oldest_id:
+            # 指定されたIDより古いメッセージを取得
+            messages_query = messages_query.filter(id__lt=oldest_id)
+        
+        # 残りのメッセージ数を取得
+        remaining_count = messages_query.count() - limit if messages_query.count() > limit else 0
+        
+        # 指定された数だけメッセージを取得
+        messages_query = messages_query[:limit]
+        
+        # メッセージをJSONに変換
+        messages_data = []
+        for msg in messages_query:
+            messages_data.append({
+                'id': msg.id,
+                'sender_id': msg.sender.id,
+                'sender_name': msg.sender.username,
+                'content': msg.content,
+                'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                'is_mine': msg.sender.id == request.user.id
+            })
+        
+        return JsonResponse({
+            'status': 'success',
+            'messages': messages_data,
+            'has_more': remaining_count > 0,
+            'remaining_count': remaining_count
+        })
+        
+    except Conversation.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': '会話が見つかりません'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

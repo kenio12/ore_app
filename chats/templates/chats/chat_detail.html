@@ -7,6 +7,117 @@
 <!-- 通知を非表示にするためにemptyブロックでオーバーライド -->
 {% endblock %}
 
+{% block extra_head %}
+<!-- チャット詳細画面では通知を完全に無効化 -->
+<style>
+/* チャット詳細画面ではトーストを強制的に非表示にする */
+.toast-container {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+.toast {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+</style>
+
+<script>
+// DOMContentLoadedより先に実行される即時関数
+(function() {
+    // ページロード時点で通知機能を完全に無効化
+    window.disableAllChatNotifications = true;
+    
+    // 既存の通知を即座に削除する関数を定義
+    window.clearAllChatNotifications = function() {
+        console.log('🛑 チャット画面: すべての通知を強制的に無効化します');
+        
+        // トーストを完全に削除する関数
+        function removeToasts() {
+            // 全てのトースト要素を取得
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                try {
+                    // Bootstrap トーストインスタンスがあれば非表示に
+                    const instance = bootstrap.Toast.getInstance(toast);
+                    if (instance) instance.hide();
+                    
+                    // 要素自体も削除
+                    toast.remove();
+                    console.log('トースト要素を削除しました');
+                } catch (e) {
+                    console.error('トースト削除エラー:', e);
+                }
+            });
+            
+            // トーストコンテナをクリア
+            const container = document.querySelector('.toast-container');
+            if (container) {
+                // 必要な要素以外を全て削除
+                while (container.children.length > 1) {
+                    if (container.lastChild.id !== 'chatNotification') {
+                        container.removeChild(container.lastChild);
+                    }
+                }
+                console.log('トーストコンテナをクリアしました');
+            }
+        }
+        
+        // DOM読み込み前に一度実行
+        removeToasts();
+        
+        // MutationObserverを使って新しいトースト要素が追加されたら即座に削除
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length) {
+                    // 新しく追加された要素のうち、トースト要素があれば削除
+                    mutation.addedNodes.forEach(node => {
+                        if (node.classList && node.classList.contains('toast')) {
+                            console.log('新しいトースト要素を検出: 即座に削除します');
+                            try {
+                                node.remove();
+                            } catch(e) {
+                                console.error('新規トースト削除エラー:', e);
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        // body要素の変更を監視（読み込みが完了していなくても設定可能）
+        document.addEventListener('DOMContentLoaded', function() {
+            // body要素の子要素の変更を監視
+            observer.observe(document.body, { childList: true, subtree: true });
+            console.log('トースト削除の監視を開始しました');
+            
+            // DOM読み込み後にもう一度実行
+            removeToasts();
+            
+            // トーストコンテナのスタイルを直接上書き
+            const container = document.querySelector('.toast-container');
+            if (container) {
+                container.style.display = 'none';
+                container.style.visibility = 'hidden';
+                container.style.opacity = '0';
+                container.style.pointerEvents = 'none';
+                container.style.position = 'absolute';
+                container.style.left = '-9999px';
+                console.log('トーストコンテナを完全に非表示にしました');
+            }
+        });
+    };
+    
+    // 関数を即時実行
+    window.clearAllChatNotifications();
+})();
+</script>
+{% endblock %}
+
 {% block content %}
 <!-- サイバーパンク風の背景 -->
 <div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
@@ -98,10 +209,25 @@
                 <div class="card-body chat-body">
                     <!-- 退出中表示オーバーレイ -->
                     <div class="chat-overlay" id="chatOverlay">
-                        <div class="chat-overlay-message">
-                            <i class="bi bi-info-circle me-2"></i>チャットルームから退出しました
+                        <div class="chat-overlay-content">
+                            <i class="bi bi-door-closed display-1"></i>
+                            <h3 class="mt-3">チャットルームから退出中</h3>
+                            <p>チャットに参加するには「入場する」ボタンをクリックしてください。</p>
+                            <button type="button" id="enterChatBtn" class="btn btn-cyber-primary mt-3">
+                                <i class="bi bi-box-arrow-in-left me-2"></i>入場する
+                            </button>
                         </div>
                     </div>
+                    
+                    <!-- 古いメッセージを読み込むボタン -->
+                    {% if has_older_messages %}
+                    <div class="text-center mb-3 load-more-container">
+                        <button id="loadOlderMessages" class="btn btn-sm btn-cyber-secondary">
+                            <i class="bi bi-arrow-up-circle"></i> 古いメッセージを読み込む ({{ total_messages|add:"-50" }}件)
+                        </button>
+                    </div>
+                    {% endif %}
+                    
                     <div class="messages-container" id="messagesContainer">
                         {% if messages %}
                             {% for message in messages %}
@@ -141,10 +267,10 @@
                 </div>
                 
                 <div class="card-footer chat-footer">
-                    <form id="messageForm" class="d-flex">
+                    <form id="messageForm" class="w-100 d-flex align-items-center">
                         {% csrf_token %}
-                        <textarea class="form-control message-input" id="messageContent" placeholder="メッセージを入力..." rows="1"></textarea>
-                        <button type="submit" class="btn btn-cyber-primary ms-2 send-button">
+                        <textarea class="form-control message-input flex-grow-1" id="messageContent" placeholder="メッセージを入力..." rows="1"></textarea>
+                        <button type="submit" class="btn btn-cyber-primary ms-2 send-button flex-shrink-0">
                             <i class="bi bi-send"></i>
                         </button>
                     </form>
@@ -200,6 +326,10 @@
     background: rgba(10, 15, 35, 0.9);
     border-top: 1px solid rgba(0, 123, 255, 0.5);
     padding: 10px 15px;
+    transition: min-height 0.1s ease-in-out;
+    min-height: 65px;
+    display: flex;
+    align-items: center;
 }
 
 .chat-avatar {
@@ -290,6 +420,14 @@
     color: white;
     border: 1px solid rgba(0, 123, 255, 0.3);
     resize: none;
+    min-height: 45px;
+    max-height: 200px;
+    overflow-y: auto;
+    transition: height 0.1s ease-in-out;
+    line-height: 1.5;
+    padding: 10px 15px;
+    width: 100%;
+    flex: 1;
 }
 
 .message-input:focus {
@@ -301,10 +439,12 @@
 .send-button {
     width: 45px;
     height: 45px;
+    min-width: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .empty-chat {
@@ -550,14 +690,31 @@
     font-weight: bold;
     box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
 }
+
+/* フォームスタイルの追加 */
+#messageForm {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // ページ読み込み時にモーダル背景をクリーンアップ
+    const existingBackdrops = document.querySelectorAll('.modal-backdrop');
+    existingBackdrops.forEach(backdrop => {
+        backdrop.classList.remove('show');
+        backdrop.remove();
+    });
+    
     const messageForm = document.getElementById('messageForm');
     const messageContent = document.getElementById('messageContent');
     const messagesContainer = document.getElementById('messagesContainer');
-    const conversationId = {{ conversation.id }};
+    
+    // テンプレート構文をJavaScript変数に変換する部分を修正（リンターエラー回避）
+    const conversationId = parseInt("{{ conversation.id }}");
+    
     const chatStatus = document.getElementById('chatStatus');
     const chatStatusText = document.getElementById('chatStatusText');
     const chatOverlay = document.getElementById('chatOverlay');
@@ -1014,6 +1171,28 @@ document.addEventListener('DOMContentLoaded', function() {
         isIMEComposing = false;
     });
     
+    // テキストエリアの高さ自動調整機能
+    function autoResizeTextarea(el) {
+        // 一度高さをリセットして正確な値を取得できるようにする
+        el.style.height = 'auto';
+        
+        // スクロールの高さに1pxを追加（微調整）
+        const newHeight = Math.min(el.scrollHeight + 1, 200); // 最大高さを200pxに制限
+        el.style.height = newHeight + 'px';
+        
+        console.log(`テキストエリアの高さを調整: ${newHeight}px`);
+    }
+    
+    // 入力内容が変更されたときに高さを自動調整
+    messageContent.addEventListener('input', function() {
+        autoResizeTextarea(this);
+    });
+    
+    // フォーカス時にも高さを自動調整
+    messageContent.addEventListener('focus', function() {
+        autoResizeTextarea(this);
+    });
+    
     // Enterキーで送信（Shift+Enterで改行、IME入力中は送信しない）
     messageContent.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey && !isIMEComposing) {
@@ -1023,6 +1202,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageForm.dispatchEvent(new Event('submit'));
             }
             return false;
+        }
+        
+        // Shift+Enterの場合は高さを自動調整
+        if (e.key === 'Enter' && e.shiftKey) {
+            setTimeout(() => autoResizeTextarea(this), 0);
         }
     });
     
@@ -1046,7 +1230,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.status === 'success') {
                 messageContent.value = '';
-                messageContent.style.height = 'auto';
+                messageContent.style.height = 'auto'; // 高さをリセット
                 // 送信したメッセージを表示して、IDを記録
                 appendMessage(data.message, true);
                 lastMessageId = data.message.id;  // 最後のメッセージIDを更新
@@ -1081,6 +1265,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // システムメッセージ（入室・退室通知）の場合
         if (message.message_type === 'enter' || message.message_type === 'leave') {
+            // 自分が送信者のシステムメッセージは自分には表示しない
+            if (isMine) {
+                // 表示せずに表示済みとしてマークするだけ
+                displayedMessages.add(message.id);
+                return;
+            }
+            
             const systemNotification = document.createElement('div');
             systemNotification.className = 'system-notification';
             systemNotification.dataset.messageId = message.id;
@@ -1319,6 +1510,92 @@ document.addEventListener('DOMContentLoaded', function() {
             exitedModal.show();
         }
     });
+    
+    // 古いメッセージを読み込むボタン
+    const loadOlderMessagesBtn = document.getElementById('loadOlderMessages');
+    if (loadOlderMessagesBtn) {
+        loadOlderMessagesBtn.addEventListener('click', function() {
+            // ボタンを無効化して連打を防止
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 読み込み中...';
+            
+            // 現在表示されているメッセージの中で最も古いメッセージのIDを取得
+            const firstMessage = document.querySelector('.message');
+            const oldestMessageId = firstMessage ? firstMessage.getAttribute('data-message-id') : null;
+            
+            // 古いメッセージを取得するAPIを呼び出す
+            fetch(`/chats/api/get-older-messages/${conversationId}/?oldest_id=${oldestMessageId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // 古いメッセージを表示
+                        const oldMessages = data.messages;
+                        if (oldMessages.length > 0) {
+                            // 現在のスクロール位置を記憶
+                            const scrollPos = messagesContainer.scrollHeight - messagesContainer.scrollTop;
+                            
+                            // メッセージを追加
+                            let messagesHTML = '';
+                            oldMessages.forEach(message => {
+                                const isMine = message.is_mine;
+                                const messageClass = isMine ? 'message-mine' : 'message-other';
+                                
+                                messagesHTML += `
+                                <div class="message ${messageClass}" data-message-id="${message.id}">
+                                    <div class="message-content">
+                                        ${message.content}
+                                    </div>
+                                    <div class="message-time">
+                                        ${formatTimestamp(message.timestamp)}
+                                    </div>
+                                </div>
+                                `;
+                            });
+                            
+                            // メッセージを先頭に追加
+                            const messagesDiv = document.getElementById('messages');
+                            messagesDiv.innerHTML = messagesHTML + messagesDiv.innerHTML;
+                            
+                            // スクロール位置を調整（新しいメッセージが追加されても位置を維持）
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight - scrollPos;
+                            
+                            // もう古いメッセージがない場合はボタンを非表示
+                            if (!data.has_more) {
+                                loadOlderMessagesBtn.parentElement.style.display = 'none';
+                            } else {
+                                // ボタンのテキストを更新
+                                loadOlderMessagesBtn.innerHTML = `<i class="bi bi-arrow-up-circle"></i> 古いメッセージを読み込む (${data.remaining_count}件)`;
+                                loadOlderMessagesBtn.disabled = false;
+                            }
+                        } else {
+                            // メッセージがない場合はボタンを非表示
+                            loadOlderMessagesBtn.parentElement.style.display = 'none';
+                        }
+                    } else {
+                        // エラーの場合はボタンを元に戻す
+                        loadOlderMessagesBtn.innerHTML = `<i class="bi bi-arrow-up-circle"></i> 古いメッセージを読み込む`;
+                        loadOlderMessagesBtn.disabled = false;
+                        console.error('メッセージの取得に失敗:', data.message);
+                    }
+                })
+                .catch(error => {
+                    // エラーの場合はボタンを元に戻す
+                    loadOlderMessagesBtn.innerHTML = `<i class="bi bi-arrow-up-circle"></i> 古いメッセージを読み込む`;
+                    loadOlderMessagesBtn.disabled = false;
+                    console.error('エラー:', error);
+                });
+        });
+    }
+    
+    // 日時フォーマット関数
+    function formatTimestamp(timestamp) {
+        const date = new Date(timestamp);
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${month}/${day} ${hours}:${minutes}`;
+    }
 });
 </script>
 {% endblock %} 

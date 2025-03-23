@@ -1,41 +1,71 @@
 <div class="container mb-5 mt-1">
     <div class="row">
-        <div class="col-12 text-center py-3">
-            <div class="cyber-placeholder-content" style="padding: 2rem;">
-                <h3 class="cyber-title mb-4">開発ブログ</h3>
-                <p class="cyber-description">ここには開発者たちが投稿した開発ブログ記事が表示されます。</p>
-                
+        <div class="col-12 py-3">
+            <div class="cyber-placeholder-content" style="padding: 1rem;">
                 {% if blog_posts %}
-                <div class="row mt-4">
+                <div class="row mt-2">
                     {% for post in blog_posts %}
                     <div class="col-md-12 mb-4">
-                        <a href="{% url 'blogs:post_detail' post.slug %}" class="text-decoration-none card-link">
-                            <div class="card cyber-card h-100 cyber-card-hover" style="max-height: 500px;">
-                                <div class="row g-0">
-                                    {% if post.featured_image %}
-                                    <div class="col-md-3">
-                                        <div class="card-img-top cyber-card-img-container h-100" style="overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.3);">
-                                            <img src="{{ post.featured_image }}" class="cyber-card-img" alt="{{ post.title }}" style="object-fit: contain; max-height: 100%; max-width: 100%; width: auto; height: auto;">
+                        <div class="card cyber-card h-100 cyber-card-hover">
+                            <div class="row g-0">
+                                <!-- 画像部分 - 常に左側に配置 -->
+                                <div class="col-3" style="min-width: 30%; max-width: 30%;">
+                                    <a href="{% url 'blogs:post_detail' post.slug %}" class="text-decoration-none">
+                                        <div class="card-img-top cyber-card-img-container h-100" style="overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: rgba(0, 0, 0, 0.3); min-height: 200px;">
+                                            {% if post.featured_image %}
+                                            <img src="{{ post.featured_image }}" class="cyber-card-img" alt="{{ post.title }}" style="object-fit: cover; width: 100%; height: 100%;">
+                                            {% else %}
+                                            <i class="bi bi-code-slash" style="font-size: 3rem; color: #00ff00;"></i>
+                                            {% endif %}
                                         </div>
-                                    </div>
-                                    {% endif %}
-                                    <div class="{% if post.featured_image %}col-md-9{% else %}col-md-12{% endif %}">
-                                        <div class="card-body cyber-card-body">
-                                            <h5 class="card-title cyber-card-title text-start" style="color: #00ffff; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);">{{ post.title }}</h5>
+                                    </a>
+                                </div>
+                                
+                                <!-- 内容部分 - 常に右側に配置 -->
+                                <div class="col-9" style="width: 70%;">
+                                    <div class="card-body cyber-card-body">
+                                        <a href="{% url 'blogs:post_detail' post.slug %}" class="text-decoration-none">
+                                            <h5 class="card-title cyber-card-title">{{ post.title }}</h5>
                                             <div class="d-flex align-items-center mb-2">
                                                 <small class="text-info me-2">{{ post.published_at|date:"Y/m/d" }}</small>
                                                 <span class="text-light">作者: <span class="text-info">{{ post.author.username }}</span></span>
                                             </div>
                                             {% if post.message %}
-                                            <div class="cyber-message mb-2 p-2 text-start" style="background: rgba(0, 255, 255, 0.1); border-left: 3px solid #00ffff; border-radius: 3px;">
+                                            <div class="cyber-message mb-2 p-2" style="background: rgba(0, 255, 255, 0.1); border-left: 3px solid #00ffff; border-radius: 3px;">
                                                 <p class="m-0" style="color: #00ffff; font-weight: bold;">{{ post.message }}</p>
                                             </div>
                                             {% endif %}
+                                        </a>
+                                        
+                                        <!-- タグ、いいね数、コメント数の表示 -->
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <!-- タグ -->
+                                            <div class="tags-container">
+                                                {% if post.tags.all %}
+                                                <div class="d-flex flex-wrap">
+                                                    {% for tag in post.tags.all %}
+                                                    <a href="{% url 'blogs:post_list' %}?tag={{ tag.name }}" class="badge bg-cyber-tag text-decoration-none me-1 mb-1">
+                                                        #{{ tag.name }}
+                                                    </a>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <!-- いいね数とコメント数 -->
+                                            <div class="d-flex">
+                                                <span class="badge bg-cyber-blue me-2">
+                                                    <i class="bi bi-chat"></i> {{ post.comments.count }}
+                                                </span>
+                                                <span class="badge bg-cyber-pink">
+                                                    <i class="bi bi-heart"></i> {{ post.likes.count }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
@@ -55,6 +85,8 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     overflow: hidden;
+    background: rgba(30, 30, 50, 0.9);
+    border: 1px solid rgba(0, 123, 255, 0.5);
 }
 
 .cyber-card-hover::after {
@@ -84,5 +116,50 @@
 .cyber-card-hover:hover .cyber-card-title {
     color: #ffffff;
     text-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+}
+
+.cyber-card-img-container {
+    min-height: 200px;
+    border-right: 1px solid rgba(0, 123, 255, 0.3);
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.cyber-card-body {
+    padding: 1.25rem;
+    text-align: left;
+}
+
+.cyber-card-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+/* タグのスタイル */
+.bg-cyber-tag {
+    background-color: rgba(0, 255, 255, 0.2);
+    color: #00ffff;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.bg-cyber-tag:hover {
+    background-color: rgba(0, 255, 255, 0.4);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+/* バッジのスタイル */
+.bg-cyber-blue {
+    background-color: rgba(0, 123, 255, 0.7);
+}
+
+.bg-cyber-pink {
+    background-color: rgba(255, 0, 128, 0.7);
+}
+
+.card-footer {
+    padding: 0.75rem 1.25rem;
 }
 </style> 
