@@ -35,10 +35,7 @@
                 </p>
             </div>
             <div class="modal-footer border-0 justify-content-center">
-                <form action="{% url 'accounts:signup' %}" method="get">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-cyber-primary">新規登録する</button>
-                </form>
+                <a href="{% url 'accounts:signup' %}" class="btn btn-cyber-primary">新規登録する</a>
                 <a href="{% url 'accounts:login' %}" class="btn btn-cyber-secondary">ログイン</a>
                 <button type="button" class="btn btn-cyber-tertiary" data-bs-dismiss="modal">閲覧を続ける</button>
             </div>
@@ -156,28 +153,29 @@
     document.addEventListener('DOMContentLoaded', function() {
         // ウェルカムモーダルの表示
         {% if not request.user.is_authenticated %}
-        // 一時的にCookie制御を完全に無効化し、常にモーダルを表示
+        // 一定時間（5秒）の遅延後に1回だけモーダルを表示
+        var modalShown = false;
         setTimeout(function() {
             try {
                 // bootstrapがロードされているか確認
-                if (typeof bootstrap !== 'undefined') {
+                if (typeof bootstrap !== 'undefined' && !modalShown) {
                     var welcomeModalElement = document.getElementById('welcomeModal');
                     if (welcomeModalElement) {
                         var welcomeModal = new bootstrap.Modal(welcomeModalElement);
                         welcomeModal.show();
+                        modalShown = true;
                         
-                        // Cookieを設定せず、毎回モーダルを表示
                         console.log('ウェルカムモーダルを表示しました');
                     } else {
                         console.error('welcomeModal要素が見つかりません');
                     }
-                } else {
+                } else if (typeof bootstrap === 'undefined') {
                     console.error('bootstrapが定義されていません');
                 }
             } catch (error) {
                 console.error('モーダル表示中にエラーが発生しました:', error);
             }
-        }, 3000);
+        }, 2000);
         {% endif %}
 
         // アプリカード関連の処理

@@ -58,7 +58,7 @@ class SignUpView(CreateView):
             msg = EmailMultiAlternatives(
                 subject,
                 text_content,
-                'from@example.com',
+                settings.DEFAULT_FROM_EMAIL,
                 [user.email]
             )
             msg.attach_alternative(html_content, "text/html")
