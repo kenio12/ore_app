@@ -161,19 +161,35 @@
             return null;
         }
         
-        // welcomeModalShownがない場合は表示
-        if (!getCookie('welcomeModalShown')) {
-            // 少し遅延させて表示（ページ読み込み完了後）
-            setTimeout(() => {
-                const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
-                welcomeModal.show();
-                
-                // Cookieを設定して、次回表示しないようにする（30日間）
-                const date = new Date();
-                date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
-                document.cookie = `welcomeModalShown=true; expires=${date.toUTCString()}; path=/`;
-            }, 1500);
-        }
+        // welcomeModalShownがない場合は表示（強制的に表示するため、条件を一時的に無効化）
+        // if (!getCookie('welcomeModalShown')) {
+            // より長い遅延を設定（3秒）
+            setTimeout(function() {
+                try {
+                    // bootstrapがロードされているか確認
+                    if (typeof bootstrap !== 'undefined') {
+                        var welcomeModalElement = document.getElementById('welcomeModal');
+                        if (welcomeModalElement) {
+                            var welcomeModal = new bootstrap.Modal(welcomeModalElement);
+                            welcomeModal.show();
+                            
+                            // Cookieを設定して、次回表示しないようにする（30日間）
+                            const date = new Date();
+                            date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
+                            document.cookie = `welcomeModalShown=true; expires=${date.toUTCString()}; path=/`;
+                            
+                            console.log('ウェルカムモーダルを表示しました');
+                        } else {
+                            console.error('welcomeModal要素が見つかりません');
+                        }
+                    } else {
+                        console.error('bootstrapが定義されていません');
+                    }
+                } catch (error) {
+                    console.error('モーダル表示中にエラーが発生しました:', error);
+                }
+            }, 3000);
+        // }
         {% endif %}
 
         // アプリカード関連の処理
