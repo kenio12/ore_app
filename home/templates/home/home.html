@@ -11,6 +11,39 @@
     <div class="cyber-grid" id="cyber-grid"></div>
 </div>
 
+<!-- ウェルカムモーダル - ログインしていないユーザー向け -->
+{% if not request.user.is_authenticated %}
+<div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content cyber-modal">
+            <div class="modal-header border-0">
+                <h5 class="modal-title cyber-title" id="welcomeModalLabel">ようこそOreAppへ！</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="cyber-description mb-3">
+                    OreAppは、プログラマーが自作アプリを宣伝・共有するためのプラットフォームです。
+                </p>
+                <p class="cyber-description mb-3">
+                    ✓ 開発したアプリを世界に発信<br>
+                    ✓ コードを共有して初学者の参考に<br>
+                    ✓ 開発ブログで経験をシェア<br>
+                    ✓ プログラマー同士で交流
+                </p>
+                <p class="cyber-description mb-4">
+                    アカウント登録すると、あなた自身のアプリを公開したり、他の開発者とチャットしたりできます。
+                </p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center">
+                <a href="{% url 'accounts:signup' %}" class="btn btn-cyber-primary">新規登録する</a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-cyber-secondary">ログイン</a>
+                <button type="button" class="btn btn-cyber-tertiary" data-bs-dismiss="modal">閲覧を続ける</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="min-vh-100">
     <!-- タブナビゲーション -->
     <div class="container mt-2 cyber-tabs-container">
@@ -118,6 +151,31 @@
 <!-- JavaScriptの変数を定義して、アプリデータを保持 -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // ウェルカムモーダルの表示
+        {% if not request.user.is_authenticated %}
+        // Cookieをチェックして、初回訪問かどうかを確認
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+        
+        // welcomeModalShownがない場合は表示
+        if (!getCookie('welcomeModalShown')) {
+            // 少し遅延させて表示（ページ読み込み完了後）
+            setTimeout(() => {
+                const welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+                welcomeModal.show();
+                
+                // Cookieを設定して、次回表示しないようにする（30日間）
+                const date = new Date();
+                date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
+                document.cookie = `welcomeModalShown=true; expires=${date.toUTCString()}; path=/`;
+            }, 1500);
+        }
+        {% endif %}
+
         // アプリカード関連の処理
         const apps_data = [
             {% for app in apps %}
@@ -269,6 +327,48 @@
 
 <!-- サイバーパンクスタイル -->
 <style>
+    /* ウェルカムモーダルのスタイル */
+    .cyber-modal {
+        background: linear-gradient(135deg, rgba(10, 20, 40, 0.95), rgba(5, 15, 35, 0.98)) !important;
+        border: 1px solid rgba(0, 191, 255, 0.4) !important;
+        border-radius: 15px !important;
+        box-shadow: 0 0 30px rgba(0, 150, 255, 0.5) !important;
+        backdrop-filter: blur(10px);
+    }
+    
+    .modal-title.cyber-title {
+        font-size: 1.6rem;
+        color: #00ffff !important;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.7) !important;
+    }
+    
+    .btn-cyber-primary {
+        background: rgba(0, 128, 255, 0.3) !important;
+        color: #80dfff !important;
+        border: 1px solid rgba(0, 191, 255, 0.7) !important;
+        transition: all 0.3s ease !important;
+        padding: 8px 20px;
+    }
+    
+    .btn-cyber-primary:hover {
+        background: rgba(0, 150, 255, 0.5) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.7) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .btn-cyber-tertiary {
+        background: rgba(60, 60, 80, 0.2) !important;
+        color: #a0a0b0 !important;
+        border: 1px solid rgba(100, 100, 120, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .btn-cyber-tertiary:hover {
+        background: rgba(70, 70, 90, 0.3) !important;
+        color: #c0c0d0 !important;
+    }
+    
     /* 横スクロール可能なタブコンテナ */
     .cyber-tabs-container {
         overflow-x: auto;
