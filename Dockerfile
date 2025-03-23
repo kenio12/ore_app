@@ -1,11 +1,10 @@
 FROM python:3.11
 
-# 環境変数の設定（ここを追加）
-ENV ALLOWED_HOSTS=oreapp-production.up.railway.app,.railway.app,*
-ENV DEBUG=False
-
-# Pythonの出力バッファリングを無効化
+# 環境変数の設定
 ENV PYTHONUNBUFFERED=1
+ENV DEBUG=False
+ENV ALLOWED_HOSTS=localhost,127.0.0.1,oreapp-production.up.railway.app,.railway.app,*
+ENV DJANGO_SETTINGS_MODULE=config.settings
 
 WORKDIR /code
 

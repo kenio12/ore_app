@@ -29,13 +29,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(kjbp$@^)&ft&m3h$ur9z24vfx*d326=m)dc5-c4iiz4^yh(^-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+debug_value = os.getenv('DEBUG', 'True')
+DEBUG = debug_value.lower() not in ('false', '0', 'no', 'off')
 
-# ALLOWED_HOSTSの設定を修正
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# ALLOWED_HOSTSの設定
+allowed_hosts_default = 'localhost,127.0.0.1,oreapp-production.up.railway.app,.railway.app'
+allowed_hosts = os.getenv('ALLOWED_HOSTS', allowed_hosts_default).split(',')
+django_allowed_hosts = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 
-# より強力な設定（一時的な対応）
-ALLOWED_HOSTS = ['oreapp-production.up.railway.app', '.railway.app', '*']
+# 両方の環境変数からホストを取得して結合
+ALLOWED_HOSTS = list(set(allowed_hosts + django_allowed_hosts))
+if '' in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.remove('')
 
 
 # Application definition
