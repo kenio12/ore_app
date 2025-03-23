@@ -35,7 +35,10 @@
                 </p>
             </div>
             <div class="modal-footer border-0 justify-content-center">
-                <a href="{% url 'accounts:signup' %}" class="btn btn-cyber-primary">新規登録する</a>
+                <form action="{% url 'accounts:signup' %}" method="get">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-cyber-primary">新規登録する</button>
+                </form>
                 <a href="{% url 'accounts:login' %}" class="btn btn-cyber-secondary">ログイン</a>
                 <button type="button" class="btn btn-cyber-tertiary" data-bs-dismiss="modal">閲覧を続ける</button>
             </div>
@@ -153,43 +156,28 @@
     document.addEventListener('DOMContentLoaded', function() {
         // ウェルカムモーダルの表示
         {% if not request.user.is_authenticated %}
-        // Cookieをチェックして、初回訪問かどうかを確認
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
-        }
-        
-        // welcomeModalShownがない場合は表示（強制的に表示するため、条件を一時的に無効化）
-        // if (!getCookie('welcomeModalShown')) {
-            // より長い遅延を設定（3秒）
-            setTimeout(function() {
-                try {
-                    // bootstrapがロードされているか確認
-                    if (typeof bootstrap !== 'undefined') {
-                        var welcomeModalElement = document.getElementById('welcomeModal');
-                        if (welcomeModalElement) {
-                            var welcomeModal = new bootstrap.Modal(welcomeModalElement);
-                            welcomeModal.show();
-                            
-                            // Cookieを設定して、次回表示しないようにする（30日間）
-                            const date = new Date();
-                            date.setTime(date.getTime() + (30 * 24 * 60 * 60 * 1000));
-                            document.cookie = `welcomeModalShown=true; expires=${date.toUTCString()}; path=/`;
-                            
-                            console.log('ウェルカムモーダルを表示しました');
-                        } else {
-                            console.error('welcomeModal要素が見つかりません');
-                        }
+        // 一時的にCookie制御を完全に無効化し、常にモーダルを表示
+        setTimeout(function() {
+            try {
+                // bootstrapがロードされているか確認
+                if (typeof bootstrap !== 'undefined') {
+                    var welcomeModalElement = document.getElementById('welcomeModal');
+                    if (welcomeModalElement) {
+                        var welcomeModal = new bootstrap.Modal(welcomeModalElement);
+                        welcomeModal.show();
+                        
+                        // Cookieを設定せず、毎回モーダルを表示
+                        console.log('ウェルカムモーダルを表示しました');
                     } else {
-                        console.error('bootstrapが定義されていません');
+                        console.error('welcomeModal要素が見つかりません');
                     }
-                } catch (error) {
-                    console.error('モーダル表示中にエラーが発生しました:', error);
+                } else {
+                    console.error('bootstrapが定義されていません');
                 }
-            }, 3000);
-        // }
+            } catch (error) {
+                console.error('モーダル表示中にエラーが発生しました:', error);
+            }
+        }, 3000);
         {% endif %}
 
         // アプリカード関連の処理

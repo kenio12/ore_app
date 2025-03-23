@@ -244,7 +244,13 @@ LOGGING = {
 # CSRF設定
 CSRF_COOKIE_SECURE = False  # 開発環境ではFalse、本番環境ではTrue
 CSRF_COOKIE_HTTPONLY = False  # 開発環境ではFalse、本番環境ではTrue
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']  # 開発環境用
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'https://oreapp-production.up.railway.app',
+    'http://oreapp-production.up.railway.app',
+    'https://*.railway.app',
+    'http://*.railway.app'
+]
 
 # セッション設定
 SESSION_COOKIE_SECURE = False  # 開発環境ではFalse、本番環境ではTrue
