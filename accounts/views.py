@@ -24,7 +24,9 @@ class SignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save(commit=False)
-        user.is_active = False
+        
+        # 開発用：メール確認なしでアカウントを有効化（本番環境では無効にすること）
+        user.is_active = True  # 開発中のみTrue、本番では元のFalseに戻す
         
         # 確認コードを生成して保存
         verification_code = user.generate_verification_code()
@@ -55,6 +57,9 @@ class SignUpView(CreateView):
         })
 
         try:
+            print(f"メール送信開始: 宛先={user.email}, 送信元={settings.DEFAULT_FROM_EMAIL}")
+            print(f"SMTP設定: HOST={settings.EMAIL_HOST}, PORT={settings.EMAIL_PORT}, USER={settings.EMAIL_HOST_USER}")
+            
             msg = EmailMultiAlternatives(
                 subject,
                 text_content,
