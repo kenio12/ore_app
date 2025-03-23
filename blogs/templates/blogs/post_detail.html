@@ -2,6 +2,12 @@
 
 {% block title %}{{ post.title }}{% endblock %}
 
+{% block extra_head %}
+<!-- PrismJS for Code Highlighting -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/themes/prism-tomorrow.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/plugins/line-numbers/prism-line-numbers.min.css">
+{% endblock %}
+
 {% block content %}
 <!-- サイバーパンク風の背景 -->
 <div class="cyber-background position-fixed w-100 h-100" style="top: 0; left: 0; z-index: -1;">
@@ -26,6 +32,11 @@
                         <div class="post-meta">
                             <span class="me-3"><i class="bi bi-person"></i> {{ post.author.username }}</span>
                             <span><i class="bi bi-calendar3"></i> {{ post.published_at|date:"Y/m/d H:i" }}</span>
+                            {% if user == post.author %}
+                            <a href="{% url 'blogs:post_edit' post.slug %}" class="btn btn-cyber-edit ms-3">
+                                <i class="bi bi-pencil-square"></i> 編集する
+                            </a>
+                            {% endif %}
                         </div>
                     </div>
                     
@@ -51,19 +62,19 @@
                     {% endif %}
                 </div>
                 
-                {% if post.featured_image %}
-                <div class="cyber-featured-image">
-                    <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="img-fluid">
-                </div>
-                {% endif %}
-                
                 <div class="card-body">
                     {% if post.message %}
                     <div class="cyber-section mb-4">
-                        <h4 class="cyber-subtitle mb-2">今回のブログで伝えたいこと</h4>
-                        <div class="cyber-content-box">
+                        <h3 class="cyber-highlight-title mb-3">今回のブログで伝えたいこと</h3>
+                        <div class="cyber-highlight-box">
                             {{ post.message|linebreaks }}
                         </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if post.featured_image %}
+                    <div class="cyber-featured-image mb-4">
+                        <img src="{{ post.featured_image }}" alt="{{ post.title }}" class="img-fluid">
                     </div>
                     {% endif %}
                     
@@ -231,6 +242,33 @@
     margin-bottom: 0.5rem;
 }
 
+/* 「今回のブログで伝えたいこと」用の強調タイトルスタイル */
+.cyber-highlight-title {
+    color: #ffcc00;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+    margin-bottom: 0.8rem;
+    font-size: 1.7rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(255, 204, 0, 0.5);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+/* 「今回のブログで伝えたいこと」用のコンテンツボックス */
+.cyber-highlight-box {
+    color: #ffffff;
+    line-height: 1.8;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    background-color: rgba(50, 50, 70, 0.4);
+    padding: 25px;
+    border-radius: 5px;
+    border-left: 4px solid rgba(255, 204, 0, 0.7);
+    margin-bottom: 2rem;
+}
+
 .cyber-card {
     background: rgba(20, 20, 40, 0.8);
     border: 1px solid rgba(0, 123, 255, 0.5);
@@ -303,6 +341,61 @@
     background: rgba(0, 255, 255, 0.1);
     color: #00ffff;
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* 編集ボタンのスタイル */
+.btn-cyber-edit {
+    background: rgba(255, 165, 0, 0.2);
+    color: #ffcc00;
+    border: 1px solid rgba(255, 165, 0, 0.5);
+    transition: all 0.3s ease;
+    font-weight: bold;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.btn-cyber-edit:hover {
+    background: rgba(255, 165, 0, 0.3);
+    color: #ffcc00;
+    box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.btn-cyber-edit i {
+    margin-right: 5px;
+}
+
+/* 大きな編集ボタンのスタイル */
+.btn-cyber-edit-large {
+    background: rgba(255, 165, 0, 0.2);
+    color: #ffcc00;
+    border: 2px solid rgba(255, 165, 0, 0.6);
+    transition: all 0.3s ease;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 0.5rem 1.2rem;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 4px;
+    box-shadow: 0 0 15px rgba(255, 165, 0, 0.3);
+}
+
+.btn-cyber-edit-large:hover {
+    background: rgba(255, 165, 0, 0.3);
+    color: #ffcc00;
+    box-shadow: 0 0 20px rgba(255, 165, 0, 0.6);
+    transform: translateY(-3px);
+    text-decoration: none;
+}
+
+.btn-cyber-edit-large i {
+    margin-right: 8px;
+    font-size: 1.1rem;
 }
 
 .btn-cyber-primary {
@@ -432,6 +525,102 @@
     border-radius: 5px;
     border-left: 2px solid rgba(0, 255, 255, 0.3);
 }
+
+/* コードブロックのスタイル */
+pre[class*="language-"] {
+    margin: 1.5em 0;
+    border-radius: 6px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    border-left: 4px solid #00eeff;
+}
+code[class*="language-"] {
+    text-shadow: 0 1px rgba(0, 0, 0, 0.6);
+    font-family: 'Fira Code', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+}
+.code-header {
+    background: rgba(0, 23, 41, 0.8);
+    padding: 6px 12px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    color: #00eeff;
+    font-family: monospace;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 238, 255, 0.3);
+}
+.code-header .language-name {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+.code-copy-btn {
+    background: rgba(0, 238, 255, 0.2);
+    border: none;
+    color: #00eeff;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.code-copy-btn:hover {
+    background: rgba(0, 238, 255, 0.3);
+    box-shadow: 0 0 8px rgba(0, 238, 255, 0.4);
+}
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+    color: #8a8f98;
+}
+.token.punctuation {
+    color: #cdd3de;
+}
+.token.namespace {
+    opacity: 0.7;
+}
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+    color: #ff80bf;
+}
+.token.boolean,
+.token.number {
+    color: #ff9d00;
+}
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+    color: #a5ff90;
+}
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+    color: #ffea00;
+}
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+    color: #00eeff;
+}
+.token.function,
+.token.class-name {
+    color: #ff9d00;
+}
+.token.regex,
+.token.important,
+.token.variable {
+    color: #ff80bf;
+}
 </style>
 
 <script>
@@ -441,29 +630,20 @@ document.addEventListener('DOMContentLoaded', function() {
     if (likeButton) {
         likeButton.addEventListener('click', function() {
             const postId = this.getAttribute('data-post-id');
+            const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
             
-            // CSRFトークンを取得
-            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-            
-            // FormDataを作成
-            const formData = new FormData();
-            formData.append('post_id', postId);
-            
-            fetch('/blogs/like/', {
+            fetch('/blogs/like/' + postId + '/', {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
                 },
-                body: formData,
-                credentials: 'same-origin'
             })
             .then(response => response.json())
             .then(data => {
-                // カウントを更新
                 const likeCount = document.getElementById('likeCount');
-                likeCount.textContent = data.count;
+                likeCount.textContent = data.likes_count;
                 
-                // アイコンを更新
                 if (data.liked) {
                     likeButton.classList.add('liked');
                     likeButton.querySelector('i').classList.remove('bi-heart');
@@ -474,43 +654,125 @@ document.addEventListener('DOMContentLoaded', function() {
                     likeButton.querySelector('i').classList.add('bi-heart');
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+            });
         });
     }
+    
+    // コード自動ハイライト
+    highlightCodeBlocks();
 });
 
-// コメント削除の処理
+// コメント削除
 function deleteComment(commentId) {
-    if (confirm('このコメントを削除してもよろしいですか？')) {
-        // CSRFトークンを取得
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    if (confirm('本当にこのコメントを削除しますか？')) {
+        const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
         
-        fetch(`/blogs/comment/delete/${commentId}/`, {
+        fetch('/blogs/comment/' + commentId + '/delete/', {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken,
                 'Content-Type': 'application/json',
             },
-            credentials: 'same-origin'
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                // ページをリロード
+        .then(response => {
+            if (response.ok) {
                 window.location.reload();
+            } else {
+                alert('コメントの削除に失敗しました');
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            alert('エラーが発生しました');
+        });
     }
 }
 
-// URLをクリップボードにコピー
+// シェア機能
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(function() {
-        alert('URLをコピーしました！');
-    }, function(err) {
-        console.error('URLのコピーに失敗しました:', err);
-    });
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            alert('URLをクリップボードにコピーしました');
+        })
+        .catch(err => {
+            console.error('クリップボードへのコピーに失敗しました', err);
+        });
+}
+
+// コードブロックハイライト処理
+function highlightCodeBlocks() {
+    // 内容の中からコードブロックを探して強調表示
+    const contentBox = document.querySelector('.cyber-content-box');
+    if (contentBox) {
+        // マークダウン形式のコードブロックを探す
+        const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+        let content = contentBox.innerHTML;
+        
+        // コードブロックを置換
+        content = content.replace(codeBlockRegex, function(match, language, code) {
+            language = language || 'plaintext';
+            const escapedCode = code
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+            
+            return `
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="language-name">${language}</span>
+                        <button class="code-copy-btn" onclick="copyCode(this)">コピー</button>
+                    </div>
+                    <pre class="line-numbers"><code class="language-${language}">${escapedCode}</code></pre>
+                </div>
+            `;
+        });
+        
+        contentBox.innerHTML = content;
+        
+        // Prismを呼び出して構文ハイライトを適用
+        if (typeof Prism !== 'undefined') {
+            Prism.highlightAll();
+        }
+    }
+}
+
+// コードコピー機能
+function copyCode(button) {
+    const pre = button.parentElement.nextElementSibling;
+    const code = pre.querySelector('code');
+    const text = code.innerText;
+    
+    navigator.clipboard.writeText(text)
+        .then(() => {
+            button.textContent = 'コピー完了！';
+            setTimeout(() => {
+                button.textContent = 'コピー';
+            }, 2000);
+        })
+        .catch(err => {
+            console.error('クリップボードへのコピーに失敗しました', err);
+            button.textContent = 'エラー';
+            setTimeout(() => {
+                button.textContent = 'コピー';
+            }, 2000);
+        });
 }
 </script>
+
+<!-- PrismJSスクリプト -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<!-- 追加言語のサポート -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/components/prism-python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/components/prism-javascript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/components/prism-css.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/components/prism-java.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/components/prism-json.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/components/prism-sql.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.28.0/components/prism-markup.min.js"></script>
 {% endblock %} 

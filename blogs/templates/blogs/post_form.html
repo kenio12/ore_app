@@ -29,9 +29,39 @@
                         </div>
                         {% endif %}
                         
+                        <!-- タイトル -->
+                        <div class="form-section-title mb-3">
+                            <label for="{{ form.title.id_for_label }}" class="cyber-label">タイトル</label>
+                            {{ form.title.errors }}
+                            <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" class="form-control cyber-input readonly-field {% if form.title.errors %}is-invalid{% endif %}" value="{{ form.title.value|default:'' }}" readonly>
+                            <small id="title-help-text" class="form-text text-muted">関連アプリを選択すると、タイトルは自動的に「アプリ名の開発ブログ その〇」の形式で生成されます。</small>
+                        </div>
+                        
+                        <!-- スラッグ -->
+                        <div class="form-section-slug mb-3">
+                            <label for="{{ form.slug.id_for_label }}" class="cyber-label">スラッグ（URLの識別子）</label>
+                            {{ form.slug.errors }}
+                            <input type="text" name="{{ form.slug.name }}" id="{{ form.slug.id_for_label }}" class="form-control cyber-input {% if form.slug.errors %}is-invalid{% endif %}" value="{{ form.slug.value|default:'' }}" {% if form.related_app.value and form.slug.value %}readonly{% endif %}>
+                            <small id="slug-help-text" class="form-text text-muted">URLに使用される文字列です。英数字、ハイフン、アンダースコアのみ使用できます。</small>
+                            <button type="button" id="slug-hint-btn" class="btn btn-sm btn-cyber-outline mt-2" style="display: none;">
+                                <i class="bi bi-question-circle"></i> スラグの作り方
+                            </button>
+                        </div>
+                        
+                        <!-- タグ -->
+                        <div class="form-section-tags mb-3">
+                            <label for="{{ form.tags.id_for_label }}" class="cyber-label">タグ</label>
+                            {{ form.tags.errors }}
+                            <input type="text" name="{{ form.tags.name }}" id="{{ form.tags.id_for_label }}" class="form-control cyber-input {% if form.tags.errors %}is-invalid{% endif %}" value="{% if form.instance.tags.all %}{% for tag in form.instance.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}{{ form.tags.value|default:'' }}{% endif %}">
+                            <div class="form-text">
+                                カンマ区切りでタグを入力してください（例: Django, Python, 開発日記）<br>
+                                タグを付けると、同じテーマの記事をまとめて表示できるようになります。
+                            </div>
+                        </div>
+                        
                         <!-- 関連アプリ -->
-                        <div class="mb-3">
-                            <label for="{{ form.related_app.id_for_label }}" class="form-label cyber-label">関連アプリ</label>
+                        <div class="form-section-app mb-3">
+                            <label for="{{ form.related_app.id_for_label }}" class="cyber-label">関連アプリ</label>
                             {{ form.related_app.errors }}
                             <div class="d-flex align-items-center">
                                 <select name="{{ form.related_app.name }}" id="{{ form.related_app.id_for_label }}" class="form-select cyber-input me-2 {% if form.related_app.errors %}is-invalid{% endif %}" required>
@@ -46,49 +76,10 @@
                             </div>
                             <small class="form-text text-muted">{{ form.related_app.help_text }}</small>
                         </div>
-                        
-                        <!-- タイトル -->
-                        <div class="mb-3">
-                            <label for="{{ form.title.id_for_label }}" class="form-label cyber-label">タイトル</label>
-                            {{ form.title.errors }}
-                            <input type="text" name="{{ form.title.name }}" id="{{ form.title.id_for_label }}" class="form-control cyber-input readonly-field {% if form.title.errors %}is-invalid{% endif %}" value="{{ form.title.value|default:'' }}" readonly>
-                            <small id="title-help-text" class="form-text text-muted">関連アプリを選択すると、タイトルは自動的に「アプリ名の開発ブログ その〇」の形式で生成されます。</small>
-                        </div>
-                        
-                        <!-- 伝えたいこと -->
-                        <div class="mb-3">
-                            <label for="{{ form.message.id_for_label }}" class="form-label cyber-label">今回のブログで伝えたいこと</label>
-                            {{ form.message.errors }}
-                            <textarea name="{{ form.message.name }}" id="{{ form.message.id_for_label }}" class="form-control cyber-input {% if form.message.errors %}is-invalid{% endif %}" rows="3" placeholder="この記事で伝えたいことを簡潔に（例：Djangoの基本を学ぼう！）">{{ form.message.value|default:'' }}</textarea>
-                            <div class="form-text">
-                                記事で伝えたいことを簡潔に表現してください（100文字以内）。
-                            </div>
-                        </div>
-                        
-                        <!-- スラッグ -->
-                        <div class="form-group mb-3">
-                            <label for="{{ form.slug.id_for_label }}" class="form-label cyber-label">スラッグ（URLの識別子）</label>
-                            {{ form.slug.errors }}
-                            <input type="text" name="{{ form.slug.name }}" id="{{ form.slug.id_for_label }}" class="form-control cyber-input {% if form.slug.errors %}is-invalid{% endif %}" value="{{ form.slug.value|default:'' }}" {% if form.related_app.value and form.slug.value %}readonly{% endif %}>
-                            <small id="slug-help-text" class="form-text text-muted">URLに使用される文字列です。英数字、ハイフン、アンダースコアのみ使用できます。</small>
-                            <button type="button" id="slug-hint-btn" class="btn btn-sm btn-cyber-outline mt-2" style="display: none;">
-                                <i class="bi bi-question-circle"></i> スラグの作り方
-                            </button>
-                        </div>
-                        
-                        <!-- 内容 -->
-                        <div class="mb-3">
-                            <label for="{{ form.content.id_for_label }}" class="form-label cyber-label">内容</label>
-                            {{ form.content.errors }}
-                            <textarea name="{{ form.content.name }}" id="{{ form.content.id_for_label }}" class="form-control cyber-input {% if form.content.errors %}is-invalid{% endif %}" rows="10" required>{{ form.content.value|default:'' }}</textarea>
-                            {% if form.content.help_text %}
-                            <div class="form-text">{{ form.content.help_text }}</div>
-                            {% endif %}
-                        </div>
-                        
+
                         <!-- アイキャッチ画像 -->
-                        <div class="mb-3">
-                            <label for="{{ form.featured_image.id_for_label }}" class="form-label cyber-label">アイキャッチ画像</label>
+                        <div class="form-section-image mb-3">
+                            <label for="{{ form.featured_image.id_for_label }}" class="cyber-label">アイキャッチ画像</label>
                             {{ form.featured_image.errors }}
                             
                             <div class="cyber-file-upload">
@@ -124,14 +115,54 @@
                             </div>
                         </div>
                         
-                        <!-- タグ -->
-                        <div class="mb-3">
-                            <label for="{{ form.tags.id_for_label }}" class="form-label cyber-label">タグ</label>
-                            {{ form.tags.errors }}
-                            <input type="text" name="{{ form.tags.name }}" id="{{ form.tags.id_for_label }}" class="form-control cyber-input {% if form.tags.errors %}is-invalid{% endif %}" value="{{ form.tags.value|default:'' }}">
+                        <!-- 内容 -->
+                        <div class="form-section-content mb-3">
+                            <label for="{{ form.content.id_for_label }}" class="cyber-label">内容</label>
+                            {{ form.content.errors }}
+                            <textarea name="{{ form.content.name }}" id="{{ form.content.id_for_label }}" class="form-control cyber-input {% if form.content.errors %}is-invalid{% endif %}" rows="10" required>{{ form.content.value|default:'' }}</textarea>
+                            {% if form.content.help_text %}
+                            <div class="form-text">{{ form.content.help_text }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- コードサンプル -->
+                        <div class="form-section-code mb-3">
+                            <label for="{{ form.code_sample.id_for_label }}" class="cyber-label">コードサンプル</label>
+                            {{ form.code_sample.errors }}
+                            <div class="code-editor-container mb-2">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div>
+                                        <select id="codeLang" class="form-select cyber-input code-select">
+                                            <option value="python">Python</option>
+                                            <option value="javascript">JavaScript</option>
+                                            <option value="html">HTML</option>
+                                            <option value="css">CSS</option>
+                                            <option value="bash">Bash</option>
+                                            <option value="sql">SQL</option>
+                                            <option value="json">JSON</option>
+                                            <option value="java">Java</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <button type="button" id="insertCodeBtn" class="btn btn-cyber-code">
+                                            <i class="bi bi-code-square"></i> コードを本文に挿入
+                                        </button>
+                                    </div>
+                                </div>
+                                <textarea id="codeSample" class="form-control cyber-input code-editor" rows="8" placeholder="// ここにコードを入力してください&#10;function hello() {&#10;  console.log('Hello, World!');&#10;}"></textarea>
+                            </div>
                             <div class="form-text">
-                                カンマ区切りでタグを入力してください（例: Django, Python, 開発日記）<br>
-                                タグを付けると、同じテーマの記事をまとめて表示できるようになります。
+                                コードサンプルを入力し、「コードを本文に挿入」ボタンをクリックすると、構文強調表示されたコードが本文に挿入されます。
+                            </div>
+                        </div>
+                        
+                        <!-- 伝えたいこと -->
+                        <div class="form-section-message mb-3">
+                            <label for="{{ form.message.id_for_label }}" class="cyber-label">今回のブログで伝えたいこと</label>
+                            {{ form.message.errors }}
+                            <textarea name="{{ form.message.name }}" id="{{ form.message.id_for_label }}" class="form-control cyber-input {% if form.message.errors %}is-invalid{% endif %}" rows="3" placeholder="この記事で伝えたいことを簡潔に（例：Djangoの基本を学ぼう！）">{{ form.message.value|default:'' }}</textarea>
+                            <div class="form-text">
+                                記事で伝えたいことを簡潔に表現してください（100文字以内）。
                             </div>
                         </div>
                         
@@ -146,8 +177,8 @@
                         {% endif %}
                         
                         <!-- 公開状態 -->
-                        <div class="mb-3">
-                            <label class="form-label cyber-label">公開状態</label>
+                        <div class="form-section-publish mb-3">
+                            <label class="cyber-label">公開状態</label>
                             <div class="cyber-radio-group p-3">
                                 <div class="form-check mb-2">
                                     <input type="radio" name="{{ form.is_published.name }}" id="{{ form.is_published.id_for_label }}_published" class="form-check-input cyber-radio" value="True" {% if form.is_published.value != False %}checked{% endif %} required>
@@ -397,10 +428,294 @@ input[readonly]:focus, textarea[readonly]:focus {
     font-size: 14px;
     opacity: 0.7;
 }
+
+/* セクションごとの読み取り専用フィールドスタイル */
+.form-section-title .cyber-input[readonly] {
+    background-color: rgba(255, 153, 0, 0.15) !important;
+    border-color: rgba(255, 153, 0, 0.4) !important;
+    border-left: 4px solid #ff9900 !important;
+    color: #ff9900 !important;
+}
+
+.form-section-title .readonly-field::after {
+    color: #ff9900;
+}
+
+.form-section-slug .cyber-input[readonly] {
+    background-color: rgba(255, 0, 255, 0.15) !important;
+    border-color: rgba(255, 0, 255, 0.4) !important;
+    border-left: 4px solid #ff00ff !important;
+    color: #ff00ff !important;
+}
+
+.form-section-slug .readonly-field::after {
+    color: #ff00ff;
+}
+
+/* フォームセクションのスタイル - 各項目の色分け */
+.form-section-app .cyber-label {
+    color: #00ffff;
+}
+.form-section-app .cyber-input, 
+.form-section-app .form-select {
+    border-left: 4px solid #00ffff;
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+}
+.form-section-app .cyber-input:focus,
+.form-section-app .form-select:focus {
+    border-color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+.form-section-app .form-text,
+.form-section-app small.form-text,
+.form-section-app .text-muted {
+    color: #00ffff !important;
+    opacity: 0.8;
+}
+
+.form-section-title .cyber-label {
+    color: #ff9900;
+}
+.form-section-title .cyber-input {
+    border-left: 4px solid #ff9900;
+    background: rgba(255, 153, 0, 0.1);
+    color: #ff9900;
+}
+.form-section-title .cyber-input:focus {
+    border-color: #ff9900;
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.5);
+}
+.form-section-title .form-text,
+.form-section-title small.form-text,
+.form-section-title .text-muted {
+    color: #ff9900 !important;
+    opacity: 0.8;
+}
+
+.form-section-slug .cyber-label {
+    color: #ff00ff;
+}
+.form-section-slug .cyber-input {
+    border-left: 4px solid #ff00ff;
+    background: rgba(255, 0, 255, 0.1);
+    color: #ff00ff;
+}
+.form-section-slug .cyber-input:focus {
+    border-color: #ff00ff;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+.form-section-slug .form-text,
+.form-section-slug small.form-text,
+.form-section-slug .text-muted {
+    color: #ff00ff !important;
+    opacity: 0.8;
+}
+
+.form-section-tags .cyber-label {
+    color: #66ff66;
+}
+.form-section-tags .cyber-input {
+    border-left: 4px solid #66ff66;
+    background: rgba(102, 255, 102, 0.1);
+    color: #66ff66;
+}
+.form-section-tags .cyber-input:focus {
+    border-color: #66ff66;
+    box-shadow: 0 0 10px rgba(102, 255, 102, 0.5);
+}
+.form-section-tags .form-text,
+.form-section-tags small.form-text,
+.form-section-tags .text-muted {
+    color: #66ff66 !important;
+    opacity: 0.8;
+}
+
+.form-section-message .cyber-label {
+    color: #ffff00;
+}
+.form-section-message .cyber-input {
+    border-left: 4px solid #ffff00;
+    background: rgba(255, 255, 0, 0.1);
+    color: #ffff00;
+}
+.form-section-message .cyber-input:focus {
+    border-color: #ffff00;
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+}
+.form-section-message .form-text,
+.form-section-message small.form-text,
+.form-section-message .text-muted {
+    color: #ffff00 !important;
+    opacity: 0.8;
+}
+
+.form-section-image .cyber-label {
+    color: #00ccff;
+}
+.form-section-image .cyber-file-upload {
+    border-left: 4px solid #00ccff;
+    background: rgba(0, 204, 255, 0.05);
+    padding-left: 10px;
+}
+.form-section-image .cyber-input {
+    color: #00ccff;
+}
+.form-section-image .cyber-input:focus {
+    border-color: #00ccff;
+    box-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+}
+.form-section-image .form-text,
+.form-section-image small.form-text,
+.form-section-image .text-muted {
+    color: #00ccff !important;
+    opacity: 0.8;
+}
+
+.form-section-content .cyber-label {
+    color: #ff6666;
+}
+.form-section-content .cyber-input {
+    border-left: 4px solid #ff6666;
+    background: rgba(255, 102, 102, 0.1);
+    color: #ff6666;
+}
+.form-section-content .cyber-input:focus {
+    border-color: #ff6666;
+    box-shadow: 0 0 10px rgba(255, 102, 102, 0.5);
+}
+.form-section-content .form-text,
+.form-section-content small.form-text,
+.form-section-content .text-muted {
+    color: #ff6666 !important;
+    opacity: 0.8;
+}
+
+.form-section-publish .cyber-label {
+    color: #99ff99;
+}
+.form-section-publish .cyber-radio-group {
+    border-left: 4px solid #99ff99;
+    background: rgba(153, 255, 153, 0.1);
+}
+.form-section-publish .form-check-label {
+    color: #99ff99;
+}
+.form-section-publish .form-text,
+.form-section-publish small.form-text,
+.form-section-publish .text-muted {
+    color: #99ff99 !important;
+    opacity: 0.8;
+}
+
+/* コードセクションのスタイル */
+.form-section-code .cyber-label {
+    color: #00eeff;
+}
+.form-section-code .cyber-input,
+.form-section-code .form-select {
+    border-left: 4px solid #00eeff;
+    background: rgba(0, 238, 255, 0.1);
+    color: #00eeff;
+}
+.form-section-code .cyber-input:focus,
+.form-section-code .form-select:focus {
+    border-color: #00eeff;
+    box-shadow: 0 0 10px rgba(0, 238, 255, 0.5);
+}
+.form-section-code .form-text,
+.form-section-code small.form-text,
+.form-section-code .text-muted {
+    color: #00eeff !important;
+    opacity: 0.8;
+}
+.code-editor {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    background: rgba(20, 20, 40, 0.8) !important;
+    color: #00eeff !important;
+}
+.code-editor::placeholder {
+    color: rgba(0, 238, 255, 0.5) !important;
+}
+.code-select {
+    max-width: 200px;
+}
+.btn-cyber-code {
+    background: rgba(0, 238, 255, 0.2);
+    color: #00eeff;
+    border: 1px solid rgba(0, 238, 255, 0.5);
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+.btn-cyber-code:hover {
+    background: rgba(0, 238, 255, 0.3);
+    color: #00eeff;
+    box-shadow: 0 0 10px rgba(0, 238, 255, 0.5);
+}
+.code-editor-container {
+    border: 1px solid rgba(0, 238, 255, 0.3);
+    border-radius: 5px;
+    padding: 10px;
+    background: rgba(0, 0, 20, 0.3);
+}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // コード挿入機能
+    const codeLangSelect = document.getElementById('codeLang');
+    const codeSampleArea = document.getElementById('codeSample');
+    const insertCodeBtn = document.getElementById('insertCodeBtn');
+    const contentArea = document.getElementById('id_content');
+    
+    if (insertCodeBtn && contentArea) {
+        insertCodeBtn.addEventListener('click', function() {
+            const code = codeSampleArea.value.trim();
+            if (!code) {
+                alert('コードを入力してください');
+                return;
+            }
+            
+            const language = codeLangSelect.value;
+            // マークダウン形式でコードブロックを挿入
+            const codeBlock = `\n\`\`\`${language}\n${code}\n\`\`\`\n`;
+            
+            // テキストエリアの現在のカーソル位置にコードを挿入
+            const startPos = contentArea.selectionStart;
+            const endPos = contentArea.selectionEnd;
+            const beforeText = contentArea.value.substring(0, startPos);
+            const afterText = contentArea.value.substring(endPos, contentArea.value.length);
+            
+            // 挿入
+            contentArea.value = beforeText + codeBlock + afterText;
+            
+            // カーソル位置を更新
+            const newCursorPos = startPos + codeBlock.length;
+            contentArea.setSelectionRange(newCursorPos, newCursorPos);
+            contentArea.focus();
+            
+            // 少しスクロールして、挿入したコードを見えるようにする
+            contentArea.scrollTop = contentArea.scrollHeight;
+        });
+        
+        // コードエディタのタブキー処理
+        codeSampleArea.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                
+                // タブをスペース4つとして挿入
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                
+                // カーソル位置を調整
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+    }
+    
     // 関連アプリが選択された時の処理
     document.getElementById('id_related_app').addEventListener('change', function() {
         const selectedApp = this.options[this.selectedIndex].text;

@@ -1,5 +1,9 @@
 FROM python:3.11
 
+# 環境変数の設定（ここを追加）
+ENV ALLOWED_HOSTS=oreapp-production.up.railway.app,.railway.app,*
+ENV DEBUG=False
+
 # Pythonの出力バッファリングを無効化
 ENV PYTHONUNBUFFERED=1
 
