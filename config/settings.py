@@ -33,7 +33,7 @@ debug_value = os.getenv('DEBUG', 'True')
 DEBUG = debug_value.lower() not in ('false', '0', 'no', 'off')
 
 # ALLOWED_HOSTSの設定
-allowed_hosts_default = 'localhost,127.0.0.1,oreapp-production.up.railway.app,.railway.app'
+allowed_hosts_default = 'localhost,127.0.0.1,oreapp-production.up.railway.app,.railway.app,*'
 allowed_hosts = os.getenv('ALLOWED_HOSTS', allowed_hosts_default).split(',')
 django_allowed_hosts = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 
@@ -41,6 +41,9 @@ django_allowed_hosts = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 ALLOWED_HOSTS = list(set(allowed_hosts + django_allowed_hosts))
 if '' in ALLOWED_HOSTS:
     ALLOWED_HOSTS.remove('')
+
+# この行を追加して、確実にすべてのホストを許可する（デバッグ目的）
+ALLOWED_HOSTS.append('*')
 
 
 # Application definition

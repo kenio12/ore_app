@@ -14,3 +14,8 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 application = get_wsgi_application()
+
+# Railwayのために$PORT環境変数を確認
+port = os.environ.get('PORT', '8000')
+if port:
+    print(f"PORT環境変数が設定されています: {port}")
