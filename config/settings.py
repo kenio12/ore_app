@@ -269,5 +269,5 @@ PORT = os.environ.get('PORT')
 if PORT:
     print(f"PORT環境変数が設定されています: {PORT}")
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
