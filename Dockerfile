@@ -5,6 +5,7 @@ ENV PYTHONUNBUFFERED=1
 ENV DEBUG=False
 ENV ALLOWED_HOSTS=localhost,127.0.0.1,oreapp-production.up.railway.app,.railway.app,*
 ENV DJANGO_SETTINGS_MODULE=config.settings
+ENV PORT=8000
 
 WORKDIR /code
 
@@ -29,3 +30,6 @@ RUN set -ex && \
 COPY crontab /etc/cron.d/app-cron
 RUN chmod 0644 /etc/cron.d/app-cron && \
     crontab /etc/cron.d/app-cron 
+
+# デフォルトコマンドとしてgunicornを使用（Railway用）
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT 
