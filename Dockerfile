@@ -10,7 +10,8 @@ ENV PORT=8000
 WORKDIR /code
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt && \
+    pip install gunicorn
 
 COPY . .
 
