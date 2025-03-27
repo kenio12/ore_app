@@ -9,9 +9,12 @@ ENV PORT=8000
 
 WORKDIR /code
 
+# まずgunicornと必要なパッケージを確実にインストール
+RUN pip install gunicorn==21.2.0 whitenoise==6.4.0 dj-database-url==2.1.0
+
+# 残りのパッケージをインストール 
 COPY requirements.txt .
-RUN pip install -r requirements.txt && \
-    pip install gunicorn==21.2.0 whitenoise==6.4.0 dj-database-url==2.1.0
+RUN pip install -r requirements.txt
 
 COPY . .
 
@@ -23,7 +26,8 @@ RUN set -ex && \
     apt-get update --allow-insecure-repositories && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated \
         ca-certificates \
-        cron && \
+        cron \
+        curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -35,5 +39,8 @@ RUN chmod 0644 /etc/cron.d/app-cron && \
 # 静的ファイルを収集
 RUN python manage.py collectstatic --noinput
 
+# gunicornのインストールを確認
+RUN which gunicorn || echo "gunicorn not found"
+
 # デフォルトコマンドとしてgunicornを使用（Railway用）
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --log-level debug 
+CMD python -m gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --log-level debug 
