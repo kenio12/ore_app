@@ -283,5 +283,5 @@ if PORT:
     print(f"PORT環境変数が設定されています: {PORT}")
 
 # 静的ファイルの設定
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'  # Manifestを使わない方式に変更
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'  # 基本のストレージに戻す
 
