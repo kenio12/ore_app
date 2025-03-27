@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
+import logging
 
 # Load environment variables from .env file
 load_dotenv()
@@ -31,6 +32,12 @@ SECRET_KEY = 'django-insecure-(kjbp$@^)&ft&m3h$ur9z24vfx*d326=m)dc5-c4iiz4^yh(^-
 # SECURITY WARNING: don't run with debug turned on in production!
 debug_value = os.getenv('DEBUG', 'True')
 DEBUG = True  # デバッグ用に一時的にTrueにする
+
+# ログをコンソールに出力
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(message)s',
+)
 
 # ALLOWED_HOSTSの設定
 allowed_hosts_default = 'localhost,127.0.0.1,oreapp-production.up.railway.app,.railway.app,*'
