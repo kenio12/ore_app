@@ -282,6 +282,6 @@ PORT = os.environ.get('PORT')
 if PORT:
     print(f"PORT環境変数が設定されています: {PORT}")
 
-# 静的ファイルの設定
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'  # 基本のストレージに戻す
+# WhiteNoiseの設定を削除
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'  # 基本のストレージに戻す
 
