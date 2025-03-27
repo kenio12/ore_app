@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED=1
 ENV DEBUG=False
 ENV ALLOWED_HOSTS=localhost,127.0.0.1,oreapp-production.up.railway.app,.railway.app,*
 ENV DJANGO_SETTINGS_MODULE=config.settings
-ENV PORT=8000
+ENV PORT=8080
 
 WORKDIR /code
 
@@ -43,4 +43,4 @@ RUN python manage.py collectstatic --noinput
 RUN which gunicorn || echo "gunicorn not found"
 
 # デフォルトコマンドとしてgunicornを使用（Railway用）
-CMD python -m gunicorn config.wsgi:application --bind 0.0.0.0:8000 --log-level debug 
+CMD python -m gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --log-level debug 

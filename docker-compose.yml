@@ -11,7 +11,7 @@ services:
       - DJANGO_SETTINGS_MODULE=config.settings
       - DEBUG=False
       - ALLOWED_HOSTS=localhost,127.0.0.1,oreapp-production.up.railway.app,.railway.app,*
-      - PORT=8000
+      - PORT=8080
     command: >
       sh -c '
         # サービス起動前のヘルスチェック
@@ -33,14 +33,14 @@ services:
         python manage.py collectstatic --noinput &&
         
         # gunicornでの起動
-        python -m gunicorn config.wsgi:application --bind 0.0.0.0:8000 --log-level debug
+        python -m gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --log-level debug
       '
     volumes:
       - .:/code
       # ログ永続化用のボリューム
       - app_logs:/var/log
     ports:
-      - "8000:8000"
+      - "8080:8080"
     env_file:
       - .env
     depends_on:
@@ -48,7 +48,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/"]
       interval: 30s
       timeout: 10s
       retries: 3
