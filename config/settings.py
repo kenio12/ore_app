@@ -86,7 +86,7 @@ CLOUDINARY_STORAGE = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # 'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoiseを一時的に無効化
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoiseを復活
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -173,6 +173,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',  # プロジェクトのルートディレクトリにstaticフォルダを作成
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# WhiteNoiseの設定を復活
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'  # シンプルな圧縮版を使用
 
 # Media files
 MEDIA_URL = '/media/'
@@ -281,7 +284,4 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 PORT = os.environ.get('PORT')
 if PORT:
     print(f"PORT環境変数が設定されています: {PORT}")
-
-# WhiteNoiseの設定を削除
-# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'  # 基本のストレージに戻す
 

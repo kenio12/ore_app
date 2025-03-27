@@ -10,7 +10,7 @@ ENV PORT=8080
 WORKDIR /app
 
 # まずgunicornと必要なパッケージを確実にインストール
-RUN pip install gunicorn==21.2.0 dj-database-url==2.1.0
+RUN pip install gunicorn==21.2.0 dj-database-url==2.1.0 whitenoise==6.6.0
 
 # 残りのパッケージをインストール 
 COPY requirements.txt .
