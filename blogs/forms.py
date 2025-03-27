@@ -141,7 +141,7 @@ class BlogPostForm(forms.ModelForm):
                         max_number = 0
                         for post in related_posts:
                             if post.slug.startswith(f"{base_slug}-blog-"):
-                                match = re.search(f"{re.escape(base_slug)}-blog-(\d+)$", post.slug)
+                                match = re.search(f"{re.escape(base_slug)}-blog-(\\d+)$", post.slug)
                                 if match:
                                     number = int(match.group(1))
                                     max_number = max(max_number, number)
