@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-(kjbp$@^)&ft&m3h$ur9z24vfx*d326=m)dc5-c4iiz4^yh(^-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 debug_value = os.getenv('DEBUG', 'True')
-DEBUG = debug_value.lower() not in ('false', '0', 'no', 'off')
+DEBUG = True  # デバッグ用に一時的にTrueにする
 
 # ALLOWED_HOSTSの設定
 allowed_hosts_default = 'localhost,127.0.0.1,oreapp-production.up.railway.app,.railway.app,*'

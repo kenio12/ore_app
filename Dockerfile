@@ -11,7 +11,7 @@ WORKDIR /code
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt && \
-    pip install gunicorn
+    pip install gunicorn==21.2.0 whitenoise==6.4.0 dj-database-url==2.1.0
 
 COPY . .
 
@@ -32,5 +32,8 @@ COPY crontab /etc/cron.d/app-cron
 RUN chmod 0644 /etc/cron.d/app-cron && \
     crontab /etc/cron.d/app-cron 
 
+# 静的ファイルを収集
+RUN python manage.py collectstatic --noinput
+
 # デフォルトコマンドとしてgunicornを使用（Railway用）
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT 
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --log-level debug 
