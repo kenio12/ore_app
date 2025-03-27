@@ -43,4 +43,4 @@ RUN python manage.py collectstatic --noinput
 RUN python manage.py migrate
 
 # デフォルトコマンドとしてgunicornを使用（Render用）
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120 
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --log-level debug 
