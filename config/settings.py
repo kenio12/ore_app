@@ -52,6 +52,9 @@ if '' in ALLOWED_HOSTS:
 # この行を追加して、確実にすべてのホストを許可する（デバッグ目的）
 ALLOWED_HOSTS.append('*')
 
+# 本番環境の設定
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Application definition
 
@@ -86,10 +89,8 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'dashboard.middleware.SessionInfoMiddleware',  # セッション情報を記録するカスタムミドルウェア
 ]
 
@@ -279,5 +280,6 @@ PORT = os.environ.get('PORT')
 if PORT:
     print(f"PORT環境変数が設定されています: {PORT}")
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# 静的ファイルの設定
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'  # Manifestを使わない方式に変更
 
